@@ -8,6 +8,7 @@ import { useContentStore } from '@store/useContentStore'
 import useModalStore, { ModalsType } from '@store/useModalStore'
 import { Snippet, useSnippetStore } from '@store/useSnippetStore'
 import { ButtonFields } from '@style/Form'
+import { PrimaryText } from '@style/Integration'
 import { useForm } from 'react-hook-form'
 import toast from 'react-hot-toast'
 import Modal from 'react-modal'
@@ -44,7 +45,7 @@ const TemplateModal = () => {
     }
 
     return () => {
-      setCurrentTemplate()
+      setCurrentTemplate(undefined)
     }
   }, [nodeid, open])
 
@@ -90,10 +91,19 @@ const TemplateModal = () => {
     >
       <InviteWrapper>
         {templates.length !== 0 ? (
-          <>
-            <Title>Set Template for {getTitleFromPath(node?.path)}</Title>
-            <p>Auto fill new notes using template</p>
-          </>
+          !currentTemplate ? (
+            <>
+              <Title>Set Template for {getTitleFromPath(node?.path)}</Title>
+              <p>Auto fill new notes using template</p>
+            </>
+          ) : (
+            <>
+              <Title>Update Template for {getTitleFromPath(node?.path)}</Title>
+              <p>
+                Currently using <PrimaryText>{currentTemplate.title}</PrimaryText>
+              </p>
+            </>
+          )
         ) : (
           <Title>No templates found</Title>
         )}
