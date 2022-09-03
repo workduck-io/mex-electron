@@ -17,7 +17,7 @@ import { Title, LoadingButton } from '@workduck-io/mex-components'
 
 import { InviteWrapper, InviteFormWrapper } from '../Mention/ShareModal.styles'
 import SidebarList from '../Sidebar/SidebarList'
-import { TemplateContainer } from './TemplateModal.style'
+import { RemovalButton, TemplateContainer } from './TemplateModal.style'
 
 const TemplateModal = () => {
   const { getILinkFromNodeid, getTitleFromPath } = useLinks()
@@ -131,7 +131,7 @@ const TemplateModal = () => {
           )}
           <ButtonFields position="end">
             {currentTemplate && (
-              <LoadingButton
+              <RemovalButton
                 loading={isSubmitting}
                 alsoDisabled={
                   errors?.templateID !== undefined ||
@@ -143,7 +143,7 @@ const TemplateModal = () => {
                 large
               >
                 Remove Template
-              </LoadingButton>
+              </RemovalButton>
             )}
             <LoadingButton
               loading={isSubmitting}
