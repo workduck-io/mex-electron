@@ -1,7 +1,7 @@
 import bookmarkFill from '@iconify/icons-ri/bookmark-fill'
 import bookmarkLine from '@iconify/icons-ri/bookmark-line'
 import { Icon } from '@iconify/react'
-import { LoadingButton } from '@workduck-io/mex-components'
+import { LoadingButton, ToolbarTooltip } from '@workduck-io/mex-components'
 import React, { useEffect, useState } from 'react'
 import { useBookmarks } from '../../../hooks/useBookmarks'
 
@@ -37,10 +37,15 @@ const BookmarkButton = ({ nodeid }: BookmarkButtonProps) => {
   }
 
   // mog('BookmarkButton', { bmed, bookmarks, loading, nodeid })
-
+  const label = bmed ? 'Pin Note' : 'Unpin Note'
   return (
     <LoadingButton dots={2} loading={loading} highlight={bmed} onClick={onBookmark} transparent={false}>
-      <Icon width={24} icon={bmed ? bookmarkFill : bookmarkLine} />
+      <ToolbarTooltip content={label}>
+        <span tabIndex={0}>
+          <BookmarkButton nodeid={nodeid} />
+        </span>
+      </ToolbarTooltip>
+      <Icon width={24} icon={bmed ? bookmarkFill : bookmarkLine} /> {label}
     </LoadingButton>
   )
 }

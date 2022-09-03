@@ -35,11 +35,6 @@ const Toolbar = () => {
       {fetchingContent && <Loading transparent dots={3} />}
       <InfoTools {...getFocusProps(focusMode)}>
         <ToolbarTooltip singleton={source} />
-        <ToolbarTooltip singleton={target} content="Bookmark">
-          <span tabIndex={0}>
-            <BookmarkButton nodeid={nodeid} />
-          </span>
-        </ToolbarTooltip>
         <IconButton
           size={24}
           singleton={target}
