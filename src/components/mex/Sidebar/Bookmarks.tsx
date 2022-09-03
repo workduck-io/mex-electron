@@ -15,7 +15,6 @@ import useDataStore from '../../../store/useDataStore'
 import SidebarList from './SidebarList'
 import SidebarListItemComponent from './SidebarListItem'
 import BookmarkButton from '../Buttons/BookmarkButton'
-import { useEditorStore } from '@store/useEditorStore'
 
 export const Centered = styled.div`
   display: flex;
@@ -32,7 +31,6 @@ const Bookmarks = () => {
   const { push } = useNavigation()
   const match = useMatch(`${ROUTE_PATHS.node}/:nodeid`)
   const { goTo } = useRouting()
-  const node = useEditorStore((s) => s.node)
   // const [ bookmarks, setBookmarks ] = useState<string[]>([])
   const [source, target] = useSingleton()
 
@@ -51,6 +49,7 @@ const Bookmarks = () => {
     .filter((item) => item.label !== undefined)
     .reverse()
     .slice(0, 5)
+    .reverse()
 
   mog('Bookmarks', { bookmarks, bookmarkItems })
 
@@ -75,7 +74,7 @@ const Bookmarks = () => {
             tippyTarget={target}
           />
         ))}
-        <BookmarkButton nodeid={node.nodeid} />
+        <BookmarkButton />
       </PinnedList>
     </>
   )

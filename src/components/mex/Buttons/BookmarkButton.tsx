@@ -1,18 +1,21 @@
-import bookmarkFill from '@iconify/icons-ri/bookmark-fill'
-import bookmarkLine from '@iconify/icons-ri/bookmark-line'
 import { Icon } from '@iconify/react'
-import { LoadingButton, ToolbarTooltip } from '@workduck-io/mex-components'
+import { LoadingButton } from '@workduck-io/mex-components'
 import React, { useEffect, useState } from 'react'
 import { useBookmarks } from '../../../hooks/useBookmarks'
+import pushpinLine from '@iconify/icons-ri/pushpin-line'
+import { useEditorStore } from '@store/useEditorStore'
 
-interface BookmarkButtonProps {
-  nodeid: string
-}
+// interface BookmarkButtonProps {
+//   nodeid: string
+// }
 
-const BookmarkButton = ({ nodeid }: BookmarkButtonProps) => {
+const BookmarkButton = () => {
+  const node = useEditorStore((s) => s.node)
   const { isBookmark, addBookmark, removeBookmark } = useBookmarks()
   const [bmed, setBmed] = useState(false)
   const [loading, setLoading] = useState(false)
+
+  const nodeid = node?.nodeid ?? ''
 
   useEffect(() => {
     const con = isBookmark(nodeid)
@@ -40,12 +43,8 @@ const BookmarkButton = ({ nodeid }: BookmarkButtonProps) => {
   const label = bmed ? 'Pin Note' : 'Unpin Note'
   return (
     <LoadingButton dots={2} loading={loading} highlight={bmed} onClick={onBookmark} transparent={false}>
-      <ToolbarTooltip content={label}>
-        <span tabIndex={0}>
-          <BookmarkButton nodeid={nodeid} />
-        </span>
-      </ToolbarTooltip>
-      <Icon width={24} icon={bmed ? bookmarkFill : bookmarkLine} /> {label}
+      <Icon width={24} icon={pushpinLine} />
+      {label}
     </LoadingButton>
   )
 }
