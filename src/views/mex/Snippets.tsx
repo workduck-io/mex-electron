@@ -1,14 +1,25 @@
-import magicLine from '@iconify/icons-ri/magic-line'
+import React, { useEffect, useMemo } from 'react'
+
+import { useApi } from '@apis/useSaveApi'
 import deleteBin6Line from '@iconify/icons-ri/delete-bin-6-line'
+import magicLine from '@iconify/icons-ri/magic-line'
 import quillPenLine from '@iconify/icons-ri/quill-pen-line'
 import { Icon } from '@iconify/react'
 import { ELEMENT_PARAGRAPH } from '@udecode/plate'
+import { mog } from '@utils/lib/helper'
+import { nanoid } from 'nanoid'
 import generateName from 'project-name-generator'
-import React, { useEffect, useMemo } from 'react'
+
+import { Button, IconButton, Infobox } from '@workduck-io/mex-components'
+
 import SearchView, { RenderItemProps, RenderPreviewProps } from '../../components/mex/Search/SearchView'
 import { View } from '../../components/mex/Search/ViewSelector'
+import { IS_DEV } from '../../data/Defaults/dev_'
+import { SnippetHelp } from '../../data/Defaults/helpText'
 import { DRAFT_NODE, generateSnippetId } from '../../data/Defaults/idPrefixes'
 import EditorPreviewRenderer from '../../editor/EditorPreviewRenderer'
+import { useSaveData } from '../../hooks/useSaveData'
+import { useSearch } from '../../hooks/useSearch'
 import { useSnippets } from '../../hooks/useSnippets'
 import { useUpdater } from '../../hooks/useUpdater'
 import { Snippet, useSnippetStore } from '../../store/useSnippetStore'
@@ -24,21 +35,12 @@ import {
   ItemTag,
   SplitSearchPreviewWrapper
 } from '../../style/Search'
+import { SnippetsSearchContainer } from '../../style/Snippets'
 import { Title } from '../../style/Typography'
+import { GenericSearchResult } from '../../types/search'
 // import { mog } from '../../utils/lib/helper'
 import { convertContentToRawText } from '../../utils/search/parseData'
 import { NavigationType, ROUTE_PATHS, useRouting } from '../routes/urls'
-
-import { useSearch } from '../../hooks/useSearch'
-import { GenericSearchResult } from '../../types/search'
-import { nanoid } from 'nanoid'
-import { useSaveData } from '../../hooks/useSaveData'
-import { SnippetHelp } from '../../data/Defaults/helpText'
-import { IS_DEV } from '../../data/Defaults/dev_'
-import { SnippetsSearchContainer } from '../../style/Snippets'
-import { useApi } from '@apis/useSaveApi'
-import { mog } from '@utils/lib/helper'
-import { Button, IconButton, Infobox } from '@workduck-io/mex-components'
 
 export type SnippetsProps = {
   title?: string
@@ -241,7 +243,7 @@ const Snippets = () => {
             <EditorPreviewRenderer
               onDoubleClick={(e) => onDoubleClick(e, item.id, item.title)}
               content={snip.content}
-              editorId={`SnippetSearchPreview_editor_${item.id}`}
+              editorId={`${item.id}_Snippet_Preview_Editor`}
             />
           </SplitSearchPreviewWrapper>
         )

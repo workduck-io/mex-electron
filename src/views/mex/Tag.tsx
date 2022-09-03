@@ -1,7 +1,9 @@
 import React from 'react'
+
 import { useParams } from 'react-router-dom'
 import { useTransition } from 'react-spring'
 import styled from 'styled-components'
+
 import { View } from '../../components/mex/Search/ViewSelector'
 import { defaultContent } from '../../data/Defaults/baseData'
 import EditorPreviewRenderer from '../../editor/EditorPreviewRenderer'
@@ -62,7 +64,7 @@ const Tag = () => {
             const content = con ? con.content : defaultContent.content
             return (
               <Result
-                onClick={() => {
+                onClick={(ev) => {
                   loadNode(nodeid)
                   goTo(ROUTE_PATHS.node, NavigationType.push, nodeid)
                 }}
@@ -74,7 +76,7 @@ const Tag = () => {
                   <ResultTitle>{path}</ResultTitle>
                 </ResultHeader>
                 <SearchPreviewWrapper>
-                  <EditorPreviewRenderer content={content} editorId={`editor_${tag}_preview_${nodeid}`} />
+                  <EditorPreviewRenderer content={content} editorId={`${nodeid}_editor_${tag}_preview`} />
                 </SearchPreviewWrapper>
               </Result>
             )

@@ -11,6 +11,7 @@ import { useEditorStore } from '@store/useEditorStore'
 import useMultipleEditors from '@store/useEditorsStore'
 import { useEditorRef, moveSelection, useFloatingTree } from '@udecode/plate'
 import { mog } from '@utils/lib/helper'
+import { useMatch } from 'react-router-dom'
 import { useReadOnly, useFocused, useSelected } from 'slate-react'
 
 import { useLinks } from '../../../../hooks/useLinks'
@@ -77,6 +78,7 @@ export const ILinkElement = ({ attributes, children, element }: ILinkElementProp
   const path = getPathFromNodeid(element.value)
   const { goTo } = useRouting()
   const isSpotlightCtx = useSpotlightContext()
+  const match = useMatch(`${ROUTE_PATHS.node}/:nodeid`)
 
   const { setPreviewEditorNode } = useSpotlightEditorStore((store) => ({
     setPreviewEditorNode: store.setNode
@@ -111,7 +113,7 @@ export const ILinkElement = ({ attributes, children, element }: ILinkElementProp
 
   const onPreviewShow = (noteId: string) => {
     const existingPreview = isPreviewPresent(noteId)
-    const currentMainNode = useEditorStore.getState().node.nodeid
+    const currentMainNode = match?.params?.nodeid
 
     if (currentMainNode === noteId) return
 
