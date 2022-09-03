@@ -1,19 +1,22 @@
+import React, { useEffect, useState } from 'react'
+
 import { useApi } from '@apis/useSaveApi'
 import { defaultContent } from '@data/Defaults/baseData'
 import EditorPreviewRenderer from '@editor/EditorPreviewRenderer'
+import { useLinks } from '@hooks/useLinks'
 import { useContentStore } from '@store/useContentStore'
+import useModalStore, { ModalsType } from '@store/useModalStore'
 import { Snippet, useSnippetStore } from '@store/useSnippetStore'
 import { ButtonFields } from '@style/Form'
-import { Title, LoadingButton } from '@workduck-io/mex-components'
-import React, { useEffect, useState } from 'react'
 import { useForm } from 'react-hook-form'
 import toast from 'react-hot-toast'
 import Modal from 'react-modal'
+
+import { Title, LoadingButton } from '@workduck-io/mex-components'
+
 import { InviteWrapper, InviteFormWrapper } from '../Mention/ShareModal.styles'
-import { TemplateContainer } from './TemplateModal.style'
 import SidebarList from '../Sidebar/SidebarList'
-import { useLinks } from '@hooks/useLinks'
-import useModalStore, { ModalsType } from '@store/useModalStore'
+import { TemplateContainer } from './TemplateModal.style'
 
 const TemplateModal = () => {
   const { getILinkFromNodeid, getTitleFromPath } = useLinks()
@@ -30,7 +33,8 @@ const TemplateModal = () => {
   const { saveDataAPI } = useApi()
 
   useEffect(() => {
-    const metadata = getMetadata(nodeid)
+    const contents = useContentStore.getState().contents
+    const metadata = contents[nodeid]?.metadata
     if (metadata?.templateID) {
       const template = templates.find((item) => item.id === metadata.templateID)
       setCurrentTemplate(template)
@@ -38,7 +42,11 @@ const TemplateModal = () => {
     } else {
       setSelectedTemplate(templates[0])
     }
-  }, [nodeid])
+
+    return () => {
+      setCurrentTemplate()
+    }
+  }, [nodeid, open])
 
   const {
     handleSubmit,
