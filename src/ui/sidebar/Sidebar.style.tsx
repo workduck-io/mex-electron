@@ -16,7 +16,7 @@ export const SingleSpace = styled.div`
   display: flex;
   flex-direction: column;
   flex-grow: 1;
-  height: 93%;
+  height: calc(100% - 4rem);
   gap: ${({ theme }) => theme.spacing.large};
 `
 
@@ -68,6 +68,14 @@ export const SidebarToggle = styled.div<{ isVisible?: boolean }>`
 export const PinnedList = styled.div`
   display: flex;
   flex-direction: column;
+`
+
+export const MexTreeWrapper = styled.div`
+  display: flex;
+  flex-direction: column;
+  flex-grow: 1;
+  height: calc(100% - 8rem);
+  gap: ${({ theme }) => theme.spacing.small};
 `
 
 export const SpaceList = styled.div`

@@ -19,7 +19,7 @@ import { CenteredMainContent, EditorStyles, EditorWrapper, NodeInfo, StyledEdito
 import { GridWrapper } from '../Grid'
 import { InfobarTools, InfoBarWrapper } from '../infobar'
 import { ServiceCard } from '../Integration'
-import { NavWrapper, SideNav } from '../Nav'
+import { NavWrapper, RHSideNav, SideNav } from '../Nav'
 import { Result, SearchFilterListWrap } from '../Search'
 import { SidebarDiv } from '../Sidebar'
 import { CreateSnippet, SSnippet } from '../Snippets'
@@ -166,6 +166,13 @@ export const SpaceBlocksCss = (props: SpaceProps) => {
       min-height: ${heightMain};
     }
     ${SideNav} {
+      padding: 0;
+      border-radius: ${({ theme }) => theme.borderRadius.small};
+      height: ${heightMain};
+      min-height: ${heightMain};
+    }
+    ${RHSideNav} {
+      ${containerStyle}
       padding: 0;
       border-radius: ${({ theme }) => theme.borderRadius.small};
       height: ${heightMain};

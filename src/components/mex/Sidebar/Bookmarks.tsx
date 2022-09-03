@@ -4,6 +4,7 @@ import Tippy, { useSingleton } from '@tippyjs/react'
 import { PinnedList } from '@ui/sidebar/Sidebar.style'
 import { mog } from '@utils/lib/helper'
 import { getPartialTreeGroups } from '@utils/lib/paths'
+import pushpinLine from '@iconify/icons-ri/pushpin-line'
 import { NavigationType, ROUTE_PATHS, useRouting } from '@views/routes/urls'
 import React from 'react'
 import { useMatch } from 'react-router-dom'
@@ -41,10 +42,11 @@ const Bookmarks = () => {
     .map((nodeid) => ({
       id: nodeid,
       label: getPathFromNodeid(nodeid),
-      icon: bookmarkLine,
+      icon: pushpinLine,
       data: {}
     }))
     .filter((item) => item.label !== undefined)
+    .reverse()
     .slice(0, 5)
 
   mog('Bookmarks', { bookmarks, bookmarkItems })

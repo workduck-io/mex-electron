@@ -236,7 +236,7 @@ const sidebarPos = ({ $overlaySidebar, theme, $side }) =>
           position: fixed;
           top: ${theme.additional.hasBlocks ? '2rem' : '0'};
           left: ${theme.additional.hasBlocks ? 'calc(86px + 1rem)' : '86px'};
-          background: ${theme.colors.background.sidebar}
+          background: ${transparentize(0.5, theme.colors.background.sidebar)}
   backdrop-filter: blur(10px);
         `
       : css`
@@ -248,12 +248,11 @@ const sidebarPos = ({ $overlaySidebar, theme, $side }) =>
         position: fixed;
         top: ${theme.additional.hasBlocks ? '2rem' : '0'};
         right: ${theme.additional.hasBlocks ? '1rem' : '0'};
-          background: ${theme.colors.background.sidebar}
-  backdrop-filter: blur(10px);
+          background: ${transparentize(0.5, theme.colors.background.sidebar)}
+        backdrop-filter: blur(10px);
       `
     : css`
         position: relative;
-        background: ${theme.colors.background.sidebar};
       `
 
 export const SideNav = styled(animated.div)<SideNavProps>`
@@ -280,7 +279,9 @@ export const SideNav = styled(animated.div)<SideNavProps>`
   ${focusStyles}
 `
 
-export const RHSideNav = styled(SideNav)``
+export const RHSideNav = styled(SideNav)`
+  background: ${({ theme }) => theme.colors.background.sidebar};
+`
 
 export const NavWrapper = styled(animated.div)<NavWrapperProps>`
   display: flex;
@@ -290,6 +291,8 @@ export const NavWrapper = styled(animated.div)<NavWrapperProps>`
   min-height: 100%;
   padding: 0 0;
   user-select: none;
+
+  background: ${({ theme }) => theme.colors.background.sidebar};
 
   ${(props) => focusStyles(props)}
 
