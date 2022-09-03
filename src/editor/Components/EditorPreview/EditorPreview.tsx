@@ -164,7 +164,7 @@ const EditablePreview = ({ content, editorId, id: nodeId, onClose, hover }: any)
     const unsubscribe = tinykeys(window, {
       KeyE: (e) => {
         const lastOpened = lastOpenedEditorId()
-        if ((nodeId === lastOpened?.nodeId && !lastOpened?.editorState?.editing) || hover) {
+        if ((nodeId === lastOpened?.nodeId || hover) && !lastOpened?.editorState?.editing) {
           onEditorClick(e)
           const editor = getPlateEditorRef(editorId)
           if (editor) selectEditor(editor, { edge: 'start', focus: true })

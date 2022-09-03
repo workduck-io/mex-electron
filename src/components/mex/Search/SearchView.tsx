@@ -1,9 +1,13 @@
+import React, { RefObject, useEffect, useMemo, useRef, useState } from 'react'
+
 import searchLine from '@iconify/icons-ri/search-line'
 import { Icon } from '@iconify/react'
-import { idxKey } from '../../../types/search'
+import useMultipleEditors from '@store/useEditorsStore'
+import SearchIndexInput from '@ui/components/search/IndexInput'
 import { debounce } from 'lodash'
-import React, { RefObject, useEffect, useMemo, useRef, useState } from 'react'
+
 import { tinykeys } from '@workduck-io/tinykeys'
+
 import { SearchFilter, useFilters, useFilterStore } from '../../../hooks/useFilters'
 import {
   InputWrapper,
@@ -14,10 +18,10 @@ import {
   SearchInput,
   SearchViewContainer
 } from '../../../style/Search'
+import { idxKey } from '../../../types/search'
 import SplitView, { RenderSplitProps, SplitOptions, SplitType } from '../../../ui/layout/splitView'
 import { mog } from '../../../utils/lib/helper'
 import ViewSelector, { View } from './ViewSelector'
-import SearchIndexInput from '@ui/components/search/IndexInput'
 
 interface SearchViewState<Item> {
   selected: number
@@ -206,6 +210,7 @@ const SearchView = <Item,>({
   const [view, setView] = useState<View>(options?.view)
   const setIndexes = useFilterStore((store) => store.setIndexes)
   const setSelected = (selected: number) => setSS((s) => ({ ...s, selected }))
+  const isEditingPreview = useMultipleEditors((store) => store.isEditingAnyPreview)
 
   const setResult = (result: Item[], searchTerm: string) => {
     // mog('setresult', { result, searchTerm })
@@ -322,75 +327,80 @@ const SearchView = <Item,>({
     return fElement && fElement.tagName === 'INPUT' && fElement.classList.contains('FilterInput')
   }
 
+  const enableShortcutHandler = (callback: () => void, skipLocalChecks = false) => {
+    if (isEditingPreview() || !useMultipleEditors.getState().editors) return
+
+    if (!skipLocalChecks && isOnSearchFilter()) return
+
+    callback()
+  }
+
   useEffect(() => {
     const unsubscribe = tinykeys(window, {
       Escape: (event) => {
-        event.preventDefault()
+        enableShortcutHandler(() => {
+          event.preventDefault()
+          event.stopPropagation()
 
-        resetCurrentFilters()
-        if (inpRef.current) {
-          if (inpRef.current.value !== '') {
-            inpRef.current.value = ''
-            executeSearch('')
-            if (selected > -1) {
-              setSelected(-1)
+          resetCurrentFilters()
+          if (inpRef.current) {
+            if (inpRef.current.value !== '') {
+              inpRef.current.value = ''
+              executeSearch('')
+              if (selected > -1) {
+                setSelected(-1)
+              }
+            } else {
+              onEscapeExit()
             }
-          } else {
-            onEscapeExit()
           }
-        }
+        }, true)
       },
       Tab: (event) => {
-        event.preventDefault()
-        if (isOnSearchFilter()) return
-        // Blur the input if necessary (not needed currently)
-        // if (inputRef.current) inputRef.current.blur()
-        if (event.shiftKey) {
-          selectPrev()
-        } else {
-          selectNext()
-        }
+        enableShortcutHandler(() => {
+          // Blur the input if necessary (not needed currently)
+          // if (inputRef.current) inputRef.current.blur()
+          event.preventDefault()
+          if (event.shiftKey) {
+            selectPrev()
+          } else {
+            selectNext()
+          }
+        })
       },
       ArrowDown: (event) => {
-        event.preventDefault()
-        if (isOnSearchFilter()) return
-        selectNext()
+        // event.preventDefault()
+        enableShortcutHandler(selectNext)
       },
 
       ArrowUp: (event) => {
-        event.preventDefault()
-        if (isOnSearchFilter()) return
-        selectPrev()
+        enableShortcutHandler(() => {
+          selectPrev()
+        })
       },
 
       Enter: (event) => {
         // Only when the selected index is -1
-        if (isOnSearchFilter()) return
-        if (selected > -1) {
-          onSelect(result[selected] as Item)
-        }
+        enableShortcutHandler(() => {
+          if (selected > -1) {
+            onSelect(result[selected] as Item)
+          }
+        })
       },
       Delete: (event) => {
         // Only when the selected index is -1
-        if (isOnSearchFilter()) return
-        if (selected > -1) {
-          onDelete(result[selected] as Item)
-          setSelected(-1)
-        }
+        enableShortcutHandler(() => {
+          if (selected > -1) {
+            onDelete(result[selected] as Item)
+            setSelected(-1)
+          }
+        })
       }
     })
     return () => {
       unsubscribe()
     }
   }, [result, selected, initialItems])
-
-  // onKeyDown handler function
-  const keyDownHandler = (event: React.KeyboardEvent<HTMLDivElement>) => {
-    // mog('keyDownHandler', { code: event.code })
-    if (event.code === 'Escape') {
-      // setInput()
-    }
-  }
 
   const splitOptions = options?.splitOptions ?? {
     type: selected > -1 ? SplitType.SIDE : SplitType.NONE,
@@ -426,7 +436,7 @@ const SearchView = <Item,>({
 
   // mog('SearchContainer', { options, result, initialItems, id, selected, view })
   return (
-    <SearchViewContainer key={id} id={id} onKeyDown={keyDownHandler}>
+    <SearchViewContainer key={id} id={id}>
       <SearchHeader>
         <InputWrapper>
           <Icon icon={searchLine} />
