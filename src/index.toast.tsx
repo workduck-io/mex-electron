@@ -1,5 +1,8 @@
-import App from './app.toast'
 import React from 'react'
-import { render } from 'react-dom'
 
-render(<App />, document.getElementById('root'))
+import { createRoot } from 'react-dom/client'
+
+import App from './app.toast'
+
+const root = createRoot(document.getElementById('toast'))
+root.render(<App />)
