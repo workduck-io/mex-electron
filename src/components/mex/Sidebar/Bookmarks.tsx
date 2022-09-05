@@ -8,7 +8,7 @@ import pushpinLine from '@iconify/icons-ri/pushpin-line'
 import { NavigationType, ROUTE_PATHS, useRouting } from '@views/routes/urls'
 import React, { useEffect, useMemo } from 'react'
 import styled from 'styled-components'
-import { useLinks } from '../../../hooks/useLinks'
+import { getTitleFromPath, useLinks } from '../../../hooks/useLinks'
 import { useNavigation } from '../../../hooks/useNavigation'
 import useDataStore from '../../../store/useDataStore'
 import BookmarkButton from '../Buttons/BookmarkButton'
@@ -48,7 +48,7 @@ const Bookmarks = () => {
   const bookmarkItems = bookmarks
     .map((nodeid) => ({
       id: nodeid,
-      label: getPathFromNodeid(nodeid),
+      label: getTitleFromPath(getPathFromNodeid(nodeid)),
       icon: pushpinLine,
       hoverIcon: closeCircleLine,
 

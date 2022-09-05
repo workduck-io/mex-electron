@@ -34,6 +34,7 @@ interface Props {
  * Create New Menu, uses CreateNewMenu hook to get the create new menu
  */
 export const CreateNewMenu = ({ children, placement }: Props) => {
+  // Ref: https://codesandbox.io/s/quizzical-water-b3dedw?file=/src/Popover.tsx
   const [open, setOpen] = useState(false)
 
   const { getCreateNewMenuItems } = useCreateNewMenu()

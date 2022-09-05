@@ -1,10 +1,11 @@
 import { Icon } from '@iconify/react'
-import React, { useEffect, useState } from 'react'
+import React, { useEffect, useMemo, useState } from 'react'
 import { useBookmarks } from '../../../hooks/useBookmarks'
 import pushpinLine from '@iconify/icons-ri/pushpin-line'
 import { useEditorStore } from '@store/useEditorStore'
 import useDataStore from '@store/useDataStore'
 import { PinNoteButton } from '@ui/sidebar/Sidebar.style'
+import { getTitleFromPath, useLinks } from '@hooks/useLinks'
 
 // interface BookmarkButtonProps {
 //   nodeid: string
@@ -15,6 +16,8 @@ const BookmarkButton = () => {
   const { isBookmark, addBookmark, removeBookmark } = useBookmarks()
   const [bmed, setBmed] = useState(false)
   const [loading, setLoading] = useState(false)
+
+  const { getPathFromNodeid } = useLinks()
 
   const nodeid = node?.nodeid ?? ''
 
@@ -42,8 +45,12 @@ const BookmarkButton = () => {
     setLoading(false)
   }
 
+  const noteTitle = useMemo(() => {
+    return getTitleFromPath(getPathFromNodeid(node.nodeid))
+  }, [node])
+
   // mog('BookmarkButton', { bmed, bookmarks, loading, nodeid })
-  const label = bmed ? 'Unpin Note' : 'Pin Note'
+  const label = bmed ? `Unpin ${noteTitle}` : `Pin ${noteTitle}`
 
   return (
     <PinNoteButton dots={2} loading={loading} highlight={bmed} onClick={onBookmark} transparent={false}>

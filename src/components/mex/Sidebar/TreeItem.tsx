@@ -12,6 +12,7 @@ import {
   ItemContent,
   ItemCount,
   ItemTitle,
+  ItemTitleText,
   StyledTreeItem,
   StyledTreeItemSwitcher,
   StyledTreeSwitcher,
@@ -69,7 +70,7 @@ const ItemTitleWithAnalysis = ({ item }: { item: TreeItem }) => {
   return (
     <ItemTitle>
       <Icon icon={item.data.mex_icon ?? fileList2Line} />
-      <span>{title}</span>
+      <ItemTitleText>{title}</ItemTitleText>
     </ItemTitle>
   )
 }

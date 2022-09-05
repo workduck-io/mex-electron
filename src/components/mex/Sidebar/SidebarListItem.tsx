@@ -2,7 +2,7 @@ import { useLastOpened } from '@hooks/useLastOpened'
 import { Icon } from '@iconify/react'
 import * as ContextMenu from '@radix-ui/react-context-menu'
 import { useUserPreferenceStore } from '@store/userPreferenceStore'
-import { ItemContent, ItemCount, ItemTitle, UnreadIndicator, StyledTreeItem } from '@style/Sidebar'
+import { ItemContent, ItemCount, ItemTitle, UnreadIndicator, StyledTreeItem, ItemTitleText } from '@style/Sidebar'
 import checkboxBlankCircleFill from '@iconify/icons-ri/checkbox-blank-circle-fill'
 import Tippy from '@tippyjs/react'
 import React, { useMemo, useState } from 'react'
@@ -76,7 +76,7 @@ const SidebarListItemComponent = <T extends Entity>({
               selected={item?.id === selectedItemId}
             >
               <ItemContent onClick={() => onSelect(item?.id)}>
-                <ItemTitle hasIconHover>
+                <ItemTitle hasIconHover={!!item.hoverIcon}>
                   {item.hoverIcon && (
                     <Icon
                       className="iconOnHover"
@@ -88,7 +88,7 @@ const SidebarListItemComponent = <T extends Entity>({
                     />
                   )}
                   <Icon className="defaultIcon" icon={item.icon} />
-                  <span>{item.label}</span>
+                  <ItemTitleText>{item.label}</ItemTitleText>
                 </ItemTitle>
               </ItemContent>
               {isUnread && (

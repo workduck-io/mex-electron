@@ -97,6 +97,13 @@ export const StyledTreeItemSwitcher = styled(StyledTreeSwitcher)`
   }
 `
 
+export const ItemTitleText = styled.div`
+  width: 100%;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+`
+
 export const ItemTitle = styled.div<{ hasIconHover?: boolean }>`
   flex-grow: 1;
   flex-shrink: 1;
@@ -104,9 +111,6 @@ export const ItemTitle = styled.div<{ hasIconHover?: boolean }>`
   display: flex;
   align-items: center;
   gap: ${({ theme }) => theme.spacing.tiny};
-  span {
-    ${Ellipsis}
-  }
 
   svg {
     flex-shrink: 0;
@@ -115,7 +119,7 @@ export const ItemTitle = styled.div<{ hasIconHover?: boolean }>`
   }
 
   ${({ hasIconHover }) =>
-    hasIconHover &&
+    hasIconHover === true &&
     css`
       .iconOnHover {
         display: none;

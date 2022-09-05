@@ -81,8 +81,8 @@ export const SidebarToggleWrapper = styled.div<SidebarToggleWrappperProps>`
   z-index: 11;
   padding: 8px;
   border-radius: 100%;
-  background: ${({ theme }) => theme.colors.secondary};
-  color: ${({ theme }) => theme.colors.text.oppositePrimary};
+  background: ${({ theme }) => theme.colors.background.sidebar};
+  color: ${({ theme }) => theme.colors.text.fade};
 
   ${({ show }) =>
     !show &&
@@ -93,12 +93,14 @@ export const SidebarToggleWrapper = styled.div<SidebarToggleWrappperProps>`
   &:hover {
     cursor: pointer;
     box-shadow: 0px 3px 8px rgba(0, 0, 0, 0.25);
-    background: ${({ theme }) => theme.colors.secondary};
+    background: ${({ theme }) => theme.colors.primary};
+    color: ${({ theme }) => theme.colors.text.oppositePrimary};
   }
 
   &:active {
     transition: background 0.1s ease;
     background-color: ${({ theme }) => theme.colors.primary};
+    color: ${({ theme }) => theme.colors.text.oppositePrimary};
   }
 `
 

@@ -52,7 +52,7 @@ export const SidebarToggle = styled.div<{ isVisible?: boolean }>`
   align-items: center;
   padding: ${({ theme }) => theme.spacing.small};
   color: ${({ theme }) => theme.colors.text.fade};
-  border-radius: ${({ theme }) => theme.borderRadius.small};
+  border-radius: 50%;
 
   :hover {
     color: ${({ theme }) => theme.colors.text.heading};
