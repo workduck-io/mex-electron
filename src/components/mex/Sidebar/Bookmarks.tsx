@@ -62,7 +62,7 @@ const Bookmarks = () => {
     .slice(0, 5)
     .reverse()
 
-  mog('Bookmarks', { bookmarks, bookmarkItems })
+  // mog('Bookmarks', { bookmarks, bookmarkItems })
 
   return (
     <>

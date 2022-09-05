@@ -16,6 +16,7 @@ export const NoteSidebar = () => {
   // const { getAllBookmarks } = useBookmarks()
   //
   const changeIndex = (newIndex: number) => {
+    if (newIndex === index.current) return
     setIndex((s) => ({ current: newIndex, prev: s.current }))
   }
 
@@ -57,13 +58,13 @@ export const NoteSidebar = () => {
     from: (item) => {
       // console.log({ item })
       const direction = Math.sign(item.current - item.prev)
-      return { opacity: 0, transform: `translate3d(${direction * 100}%,0,0) scale(0.75)` }
+      return { opacity: 0, transform: `translate3d(${direction * 100}%,0,0)` }
     },
-    enter: { opacity: 1, transform: 'translate3d(0%,0,0) scale(1)' },
+    enter: { opacity: 1, transform: 'translate3d(0%,0,0)' },
     leave: (item) => {
       // console.log({ item })
       const direction = Math.sign(item.current - item.prev)
-      return { opacity: 0, transform: `translate3d(${-direction * 100}%,0,0) scale(0.75)` }
+      return { opacity: 0, transform: `translate3d(${direction * 100}%,0,0)` }
     }
   })
 
