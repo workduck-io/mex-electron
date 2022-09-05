@@ -146,6 +146,7 @@
     "react-hot-toast": "^2.1.0",
     "react-linkify": "^1.0.0-alpha",
     "react-markdown": "^8.0.2",
+    "react-merge-refs": "^2.0.1",
     "react-modal": "^3.14.2",
     "react-oembed-container": "^1.0.0",
     "react-remove-scroll": "^2.5.5",

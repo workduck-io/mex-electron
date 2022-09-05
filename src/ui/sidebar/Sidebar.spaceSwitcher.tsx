@@ -1,6 +1,7 @@
 import addCircleLine from '@iconify/icons-ri/add-circle-line'
 import { Icon } from '@iconify/react'
 import React from 'react'
+import { CreateNewMenu } from './Sidebar.createNew'
 import { CreateNewButton, SpaceItem, SpaceSwitcher, SwitcherSpaceItems } from './Sidebar.style'
 import { SidebarSpace } from './Sidebar.types'
 
@@ -25,9 +26,11 @@ export const SidebarSpaceSwitcher = ({ currentSpace, spaces, setCurrentSpace }: 
         ))}
       </SwitcherSpaceItems>
 
-      <CreateNewButton>
-        <Icon icon={addCircleLine} />
-      </CreateNewButton>
+      <CreateNewMenu>
+        <CreateNewButton>
+          <Icon icon={addCircleLine} />
+        </CreateNewButton>
+      </CreateNewMenu>
     </SpaceSwitcher>
   )
 }

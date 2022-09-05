@@ -96,7 +96,9 @@ export const SpaceSwitcher = styled.div`
 export const SwitcherSpaceItems = styled.div`
   display: flex;
   gap: ${({ theme }) => theme.spacing.small};
+  flex-grow: 1;
   align-items: center;
+  justify-content: center;
 `
 
 export const SpaceItem = styled.div<{ active: boolean }>`
@@ -118,17 +120,50 @@ export const SpaceItem = styled.div<{ active: boolean }>`
   }
 
   svg {
-    height: 24px;
-    width: 24px;
+    height: 20px;
+    width: 20px;
   }
 `
-export const CreateNewButton = styled.div`
+export const CreateNewButton = styled.button`
   display: flex;
   align-items: center;
   padding: ${({ theme }) => theme.spacing.small};
+  border-radius: ${({ theme }) => theme.borderRadius.small};
+  color: ${({ theme }) => theme.colors.text.default};
+  background-color: transparent;
+
+  :hover {
+    color: ${({ theme }) => theme.colors.primary};
+    background-color: ${({ theme }) => theme.colors.gray[8]};
+  }
+
   svg {
-    height: 24px;
-    width: 24px;
+    height: 20px;
+    width: 20px;
+  }
+`
+
+export const CreateNewMenuWrapper = styled.div`
+  display: flex;
+  align-items: center;
+  padding: ${({ theme }) => theme.spacing.small};
+  flex-direction: column;
+  min-width: 200px;
+  border-radius: ${({ theme }) => theme.spacing.small};
+  background: ${({ theme }) => theme.colors.gray[8]};
+`
+
+export const CreateNewMenuItemWrapper = styled.div`
+  display: flex;
+  align-items: center;
+  width: 100%;
+  padding: ${({ theme }) => theme.spacing.small};
+  border-radius: ${({ theme }) => theme.spacing.tiny};
+  gap: ${({ theme }) => theme.spacing.tiny};
+
+  &:hover {
+    background-color: ${({ theme }) => theme.colors.primary};
+    color: ${({ theme }) => theme.colors.text.oppositePrimary};
   }
 `
 
