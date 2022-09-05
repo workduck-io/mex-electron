@@ -1,11 +1,7 @@
 import { SharedNodeIconify } from '@components/icons/Icons'
 import Bookmarks from '@components/mex/Sidebar/Bookmarks'
 import SharedNotes from '@components/mex/Sidebar/SharedNotes'
-import { useBookmarks } from '@hooks/useBookmarks'
-import { useLinks } from '@hooks/useLinks'
-import bookmarkLine from '@iconify/icons-ri/bookmark-line'
 import useDataStore from '@store/useDataStore'
-import { useLayoutStore } from '@store/useLayoutStore'
 import React, { useMemo, useState } from 'react'
 import { SidebarSpaceComponent } from './Sidebar.space'
 import { SidebarSpaceSwitcher } from './Sidebar.spaceSwitcher'
@@ -14,20 +10,9 @@ import { SidebarSpace } from './Sidebar.types'
 
 export const NoteSidebar = () => {
   const ilinks = useDataStore((store) => store.ilinks)
-  const bookmarks = useDataStore((store) => store.bookmarks)
   // const { getAllBookmarks } = useBookmarks()
 
   const [openedSpace, setOpenedSpace] = useState<string>('personal')
-
-  const { getPathFromNodeid } = useLinks()
-
-  const bookmarkItems = bookmarks
-    .map((nodeid) => ({
-      id: nodeid,
-      label: getPathFromNodeid(nodeid),
-      icon: bookmarkLine
-    }))
-    .filter((item) => item.label !== undefined)
 
   const spaces: Array<SidebarSpace> = useMemo(
     () => [
@@ -57,8 +42,6 @@ export const NoteSidebar = () => {
   )
 
   const currentSpace = spaces.find((space) => space.id === openedSpace)
-
-  // usePolling()
 
   return (
     <SpaceWrapper>

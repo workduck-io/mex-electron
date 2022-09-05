@@ -1,3 +1,5 @@
+import { LoadingButton } from '@workduck-io/mex-components'
+import { transparentize } from 'polished'
 import styled, { css } from 'styled-components'
 
 export const SidebarWrapper = styled.div`
@@ -127,5 +129,27 @@ export const CreateNewButton = styled.div`
   svg {
     height: 24px;
     width: 24px;
+  }
+`
+
+export const PinNoteButton = styled(LoadingButton)`
+  background: ${({ theme }) => transparentize(0.75, theme.colors.gray[9])};
+  border: 1px dashed ${({ theme }) => theme.colors.gray[8]};
+  padding: 0.5rem;
+  justify-content: flex-start;
+  box-shadow: none;
+  color: ${({ theme }) => theme.colors.text.fade};
+
+  &:hover,
+  &:focus,
+  &:active {
+    color: ${({ theme }) => theme.colors.primary};
+    background: ${({ theme }) => transparentize(0.75, theme.colors.gray[9])};
+    border: 1px dashed ${({ theme }) => theme.colors.primary};
+  }
+
+  svg {
+    height: 16px;
+    width: 16px;
   }
 `

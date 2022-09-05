@@ -5,7 +5,7 @@ import { useUserPreferenceStore } from '@store/userPreferenceStore'
 import { ItemContent, ItemCount, ItemTitle, UnreadIndicator, StyledTreeItem } from '@style/Sidebar'
 import checkboxBlankCircleFill from '@iconify/icons-ri/checkbox-blank-circle-fill'
 import Tippy from '@tippyjs/react'
-import React, { useMemo } from 'react'
+import React, { useMemo, useState } from 'react'
 import { LastOpenedState } from '../../../types/userPreference'
 import { SidebarListItem } from './SidebarList.types'
 import { TooltipContent } from './TreeItem'
@@ -76,8 +76,18 @@ const SidebarListItemComponent = <T extends Entity>({
               selected={item?.id === selectedItemId}
             >
               <ItemContent onClick={() => onSelect(item?.id)}>
-                <ItemTitle>
-                  <Icon icon={item.icon} />
+                <ItemTitle hasIconHover>
+                  {item.hoverIcon && (
+                    <Icon
+                      className="iconOnHover"
+                      onClick={(e) => {
+                        e.preventDefault()
+                        item.onIconClick && item.onIconClick(item.id)
+                      }}
+                      icon={item.hoverIcon}
+                    />
+                  )}
+                  <Icon className="defaultIcon" icon={item.icon} />
                   <span>{item.label}</span>
                 </ItemTitle>
               </ItemContent>

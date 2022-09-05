@@ -1,20 +1,19 @@
-import bookmarkLine from '@iconify/icons-ri/bookmark-line'
-import { Icon } from '@iconify/react'
+import closeCircleLine from '@iconify/icons-ri/close-circle-line'
 import Tippy, { useSingleton } from '@tippyjs/react'
 import { PinnedList } from '@ui/sidebar/Sidebar.style'
 import { mog } from '@utils/lib/helper'
-import { getPartialTreeGroups } from '@utils/lib/paths'
+
+import { useBookmarks } from '@hooks/useBookmarks'
 import pushpinLine from '@iconify/icons-ri/pushpin-line'
 import { NavigationType, ROUTE_PATHS, useRouting } from '@views/routes/urls'
-import React from 'react'
-import { useMatch } from 'react-router-dom'
+import React, { useEffect, useMemo } from 'react'
 import styled from 'styled-components'
 import { useLinks } from '../../../hooks/useLinks'
 import { useNavigation } from '../../../hooks/useNavigation'
 import useDataStore from '../../../store/useDataStore'
-import SidebarList from './SidebarList'
-import SidebarListItemComponent from './SidebarListItem'
 import BookmarkButton from '../Buttons/BookmarkButton'
+import SidebarListItemComponent from './SidebarListItem'
+import { useEditorStore } from '@store/useEditorStore'
 
 export const Centered = styled.div`
   display: flex;
@@ -29,10 +28,17 @@ const Bookmarks = () => {
   const bookmarks = useDataStore((store) => store.bookmarks)
   const { getPathFromNodeid } = useLinks()
   const { push } = useNavigation()
-  const match = useMatch(`${ROUTE_PATHS.node}/:nodeid`)
+  const node = useEditorStore((s) => s.node)
+  // const match = useMatch(`${ROUTE_PATHS.node}/:nodeid`)
   const { goTo } = useRouting()
   // const [ bookmarks, setBookmarks ] = useState<string[]>([])
   const [source, target] = useSingleton()
+  const { removeBookmark } = useBookmarks()
+
+  const currentBmed = useMemo(() => {
+    // mog('Bookmarked?', { con })
+    return bookmarks.includes(node.nodeid)
+  }, [node.nodeid, bookmarks])
 
   const onOpenNode = (nodeid: string) => {
     push(nodeid, { fetch: true })
@@ -44,6 +50,11 @@ const Bookmarks = () => {
       id: nodeid,
       label: getPathFromNodeid(nodeid),
       icon: pushpinLine,
+      hoverIcon: closeCircleLine,
+
+      onIconClick: (nodeid: string) => {
+        removeBookmark(nodeid)
+      },
       data: {}
     }))
     .filter((item) => item.label !== undefined)
@@ -74,7 +85,7 @@ const Bookmarks = () => {
             tippyTarget={target}
           />
         ))}
-        <BookmarkButton />
+        {!currentBmed && bookmarkItems.length < 5 && <BookmarkButton />}
       </PinnedList>
     </>
   )

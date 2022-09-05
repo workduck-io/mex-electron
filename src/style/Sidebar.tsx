@@ -97,7 +97,7 @@ export const StyledTreeItemSwitcher = styled(StyledTreeSwitcher)`
   }
 `
 
-export const ItemTitle = styled.div`
+export const ItemTitle = styled.div<{ hasIconHover?: boolean }>`
   flex-grow: 1;
   flex-shrink: 1;
   max-width: 220px;
@@ -113,6 +113,22 @@ export const ItemTitle = styled.div`
     width: 16px;
     height: 16px;
   }
+
+  ${({ hasIconHover }) =>
+    hasIconHover &&
+    css`
+      .iconOnHover {
+        display: none;
+      }
+      &:hover {
+        .iconOnHover {
+          display: inherit;
+        }
+        .defaultIcon {
+          display: none;
+        }
+      }
+    `}
 `
 
 export const ItemCount = styled.div`

@@ -8,7 +8,12 @@ export interface SidebarListItem<T> extends DesignItem {
   lastOpenedId?: string
   // Used to pass the state computed to the context menu
   lastOpenedState?: LastOpenedState
-  // tooltip?: string
+
+  /**
+   * Icon to show when the user hovers over the icon
+   */
+  hoverIcon?: string | IconifyIcon
+  onIconClick?: (id: string) => void
 }
 
 export interface SidebarListProps<T> {

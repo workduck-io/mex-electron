@@ -23,6 +23,7 @@ export const SidebarSpaceComponent = ({ space }: SidebarSpaceProps) => {
   const isUserEdititng = useEditorStore((store) => store.isEditing)
   const { getFocusProps } = useLayout()
 
+  // return <div>Space</div>
   return (
     <SingleSpace>
       <SpaceHeader>

@@ -1,9 +1,10 @@
 import { Icon } from '@iconify/react'
-import { LoadingButton } from '@workduck-io/mex-components'
 import React, { useEffect, useState } from 'react'
 import { useBookmarks } from '../../../hooks/useBookmarks'
 import pushpinLine from '@iconify/icons-ri/pushpin-line'
 import { useEditorStore } from '@store/useEditorStore'
+import useDataStore from '@store/useDataStore'
+import { PinNoteButton } from '@ui/sidebar/Sidebar.style'
 
 // interface BookmarkButtonProps {
 //   nodeid: string
@@ -17,12 +18,14 @@ const BookmarkButton = () => {
 
   const nodeid = node?.nodeid ?? ''
 
+  const bookmarks = useDataStore((state) => state.addBookmarks)
+
   useEffect(() => {
     const con = isBookmark(nodeid)
 
     // mog('Bookmarked?', { con })
     setBmed(con)
-  }, [nodeid])
+  }, [nodeid, bookmarks])
 
   const onBookmark = async (e: any) => {
     e.preventDefault()
@@ -41,11 +44,12 @@ const BookmarkButton = () => {
 
   // mog('BookmarkButton', { bmed, bookmarks, loading, nodeid })
   const label = bmed ? 'Unpin Note' : 'Pin Note'
+
   return (
-    <LoadingButton dots={2} loading={loading} highlight={bmed} onClick={onBookmark} transparent={false}>
+    <PinNoteButton dots={2} loading={loading} highlight={bmed} onClick={onBookmark} transparent={false}>
       <Icon width={24} icon={pushpinLine} />
       {label}
-    </LoadingButton>
+    </PinNoteButton>
   )
 }
 
