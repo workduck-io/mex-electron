@@ -3,6 +3,7 @@ import { IpcAction } from '@data/IpcAction'
 import Toast from '@electron/Toast'
 import { windows } from '@electron/main'
 import MenuBuilder from '@electron/menu'
+import { mog } from '@utils/lib/helper'
 import { sanitizeHtml } from '@utils/sanitizeHtml'
 import chokidar from 'chokidar'
 import { session, app, BrowserWindow, screen } from 'electron'
@@ -26,6 +27,20 @@ const MEX_WINDOW_OPTIONS = {
   maximizable: true,
   titleBarStyle: 'hidden' as const,
   trafficLightPosition: { x: 16, y: 8 },
+  webPreferences: {
+    nodeIntegration: true,
+    contextIsolation: false,
+    enableRemoteModule: true
+  }
+}
+
+const PINNED_NOTES_WINDOW_OPTIONS = {
+  width: 400,
+  height: 400,
+  vibrancy: 'popover' as any,
+  maximizable: false,
+  titleBarStyle: 'hidden' as const,
+  trafficLightPosition: { x: 20, y: 20 },
   webPreferences: {
     nodeIntegration: true,
     contextIsolation: false,
@@ -98,6 +113,34 @@ export const sendToRenderer = (selection: any) => {
     text
   }
   windows.spotlight?.webContents.send(IpcAction.SELECTED_TEXT, metaSelection)
+}
+
+export const createNoteWindow = (dataForPreviewWindow: { from: AppType; data: any }) => {
+  const noteWindow =
+    isDevelopment && import.meta.env.VITE_NOTE_WINDOW_DEV_SERVER_URL !== undefined
+      ? import.meta.env.VITE_NOTE_WINDOW_DEV_SERVER_URL
+      : new URL('dist/note.html', 'file://' + __dirname).toString()
+
+  let window = createWindow({
+    windowConstructorOptions: PINNED_NOTES_WINDOW_OPTIONS,
+    loadURL: { url: noteWindow },
+    onLoad: (win) => {
+      if (dataForPreviewWindow) {
+        const { from, data } = dataForPreviewWindow
+        win?.webContents?.send(IpcAction.PIN_NOTE_WINDOW, data)
+      }
+    }
+  })
+
+  window.on('close', () => {
+    window = null
+  })
+
+
+  window.setAlwaysOnTop(true, 'modal-panel', 50)
+  window.setVisibleOnAllWorkspaces(true, { visibleOnFullScreen: true })
+
+  return window
 }
 
 export const createMexWindow = (tempData?: any) => {

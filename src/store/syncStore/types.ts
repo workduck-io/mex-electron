@@ -29,4 +29,5 @@ export type PartialSyncStateType = {
 export type SyncMessageType = {
   updatedAt: number
   state: PartialSyncStateType
+  init?: boolean
 }

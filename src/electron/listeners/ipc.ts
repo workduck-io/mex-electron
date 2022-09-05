@@ -9,7 +9,7 @@ import {
 } from '@electron/utils/fileLocations'
 import { getDataOfLocation, getFileData, setDataAtLocation, setFileData } from '@electron/utils/filedata'
 import { copyToClipboard, getGlobalShortcut, useSnippetFromClipboard } from '@electron/utils/getSelectedText'
-import { closeWindow, handleToggleMainWindow, notifyOtherWindow } from '@electron/utils/helper'
+import { closeWindow, createNoteWindow, handleToggleMainWindow, notifyOtherWindow } from '@electron/utils/helper'
 import { getIndexData } from '@electron/utils/indexData'
 import {
   addDoc,
@@ -179,6 +179,10 @@ const handleIPCListener = () => {
   ipcMain.on(IpcAction.CLEAR_RECENTS, (_event, arg) => {
     const { from } = arg
     notifyOtherWindow(IpcAction.CLEAR_RECENTS, from)
+  })
+
+  ipcMain.on(IpcAction.PIN_NOTE_WINDOW, (_event, data) => {
+    const window = createNoteWindow(data)
   })
 
   ipcMain.on(IpcAction.SHOW_RELEASE_NOTES, (_event, arg) => {

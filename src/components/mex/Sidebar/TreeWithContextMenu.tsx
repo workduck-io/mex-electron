@@ -24,8 +24,12 @@ import useModalStore, { ModalsType } from '@store/useModalStore'
 import { NavigationType, ROUTE_PATHS, useRouting } from '@views/routes/urls'
 import { useContentStore } from '@store/useContentStore'
 import { useSnippetStore } from '@store/useSnippetStore'
-
+import { appNotifierWindow } from '@electron/utils/notifiers'
+import { IpcAction } from '@data/IpcAction'
+import { AppType } from '@hooks/useInitialize'
 export const MENU_ID = 'Tree-Menu'
+import PinIcon from '@iconify/icons-ri/pushpin-2-line'
+import useMultipleEditors from '@store/useEditorsStore'
 
 interface MuteMenuItemProps {
   nodeid: string
@@ -74,7 +78,7 @@ export const TreeContextMenu = ({ item }: TreeContextMenuProps) => {
   const openShareModal = useShareModalStore((store) => store.openModal)
   const toggleModal = useModalStore((store) => store.toggleOpen)
   const { goTo } = useRouting()
-
+  const pinNote = useMultipleEditors(store => store.pinNote)
   const contents = useContentStore((store) => store.contents)
 
   const hasTemplate = useMemo(() => {
@@ -99,6 +103,13 @@ export const TreeContextMenu = ({ item }: TreeContextMenuProps) => {
     // mog('handleCreateChild', { item })
     const node = createNewNote({ parent: item.data.path })
     goTo(ROUTE_PATHS.node, NavigationType.push, node?.nodeid)
+  }
+
+  const handlePinNote = (item: TreeItem) => {
+    const noteId = item?.data?.nodeid
+
+    pinNote(noteId)
+    appNotifierWindow(IpcAction.PIN_NOTE_WINDOW, AppType.MEX, { noteId })
   }
 
   const handleTemplate = (item: TreeItem) => {
@@ -131,6 +142,14 @@ export const TreeContextMenu = ({ item }: TreeContextMenuProps) => {
         >
           <Icon icon={addCircleLine} />
           New Note
+        </ContextMenuItem>
+        <ContextMenuItem
+          onSelect={(args) => {
+            handlePinNote(item)
+          }}
+        >
+          <Icon icon={PinIcon} />
+          Pin this Note
         </ContextMenuItem>
         <ContextMenuItem
           onSelect={(args) => {

@@ -1,19 +1,21 @@
-import { Plate } from '@udecode/plate'
 import React, { useEffect, useMemo } from 'react'
-import { EditorStyles } from '../style/Editor'
-import generatePlugins from './Plugins/plugins'
-import { editorPreviewComponents } from './Components/components'
+
+import { useEditorChange } from '@hooks/useEditorActions'
+import { Plate } from '@udecode/plate'
+import { debounce } from 'lodash'
+import { ErrorBoundary } from 'react-error-boundary'
+import { components } from 'react-select'
 import styled from 'styled-components'
+
+import { EditorStyles } from '../style/Editor'
+import { FadeContainer } from '../style/animation/fade'
+import { NodeEditorContent } from '../types/Types'
 import { TodoContainer } from '../ui/components/Todo.style'
 import { useBlockHighlightStore, useFocusBlock } from './Actions/useFocusBlock'
-import { FadeContainer } from '../style/animation/fade'
-import { useEditorChange } from '@hooks/useEditorActions'
-import { NodeEditorContent } from '../types/Types'
-import { debounce } from 'lodash'
-import { components } from 'react-select'
-import useEditorPluginConfig from './Plugins/useEditorPluginConfig'
+import { editorPreviewComponents } from './Components/components'
 import { MultiComboboxContainer } from './Components/multi-combobox/multiComboboxContainer'
-import { ErrorBoundary } from 'react-error-boundary'
+import generatePlugins from './Plugins/plugins'
+import useEditorPluginConfig from './Plugins/useEditorPluginConfig'
 
 interface EditorPreviewRendererProps {
   content: any[] // eslint-disable-line @typescript-eslint/no-explicit-any

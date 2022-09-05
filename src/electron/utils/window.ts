@@ -1,9 +1,6 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
-
 import { IS_DEV } from '@data/Defaults/dev_'
 import { IpcAction } from '@data/IpcAction'
-import { windows } from '@electron/main'
-import { mog } from '@utils/lib/helper'
 import { BrowserWindow, BrowserWindowConstructorOptions, LoadURLOptions, shell } from 'electron'
 
 const toggleWindow = (window: any, isSelection: boolean) => {
@@ -20,7 +17,7 @@ type LoadURLType = { url: string; options?: LoadURLOptions }
 const createWindow = (options: {
   windowConstructorOptions: BrowserWindowConstructorOptions
   loadURL: LoadURLType
-  onLoad?: () => void
+  onLoad?: (window?: BrowserWindow) => void
   onBlurHide?: boolean
   onLoadShow?: boolean
 }): BrowserWindow => {
@@ -32,7 +29,7 @@ const createWindow = (options: {
       throw new Error('Unable to initialize Browser window!')
     }
 
-    if (options.onLoad) options.onLoad()
+    if (options.onLoad) options.onLoad(window)
 
     if (options.onLoadShow) {
       window.focus()
@@ -41,11 +38,11 @@ const createWindow = (options: {
   })
 
   window.on('blur', () => {
-    if (options.onBlurHide) window.hide()
+    if (options?.onBlurHide) window.hide()
     window.webContents.send(IpcAction.WINDOW_BLUR)
   })
 
-  if (IS_DEV) window.webContents.openDevTools()
+  if (IS_DEV) window.webContents.openDevTools({ mode: 'right' })
 
   // Open urls in the user's browser
   window.webContents.on('new-window', (event, url) => {
