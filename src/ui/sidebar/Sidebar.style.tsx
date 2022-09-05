@@ -74,7 +74,7 @@ export const MexTreeWrapper = styled.div`
   display: flex;
   flex-direction: column;
   flex-grow: 1;
-  height: calc(100% - 8rem);
+  height: 0%;
   gap: ${({ theme }) => theme.spacing.small};
 `
 

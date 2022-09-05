@@ -40,7 +40,7 @@ const BookmarkButton = () => {
   }
 
   // mog('BookmarkButton', { bmed, bookmarks, loading, nodeid })
-  const label = bmed ? 'Pin Note' : 'Unpin Note'
+  const label = bmed ? 'Unpin Note' : 'Pin Note'
   return (
     <LoadingButton dots={2} loading={loading} highlight={bmed} onClick={onBookmark} transparent={false}>
       <Icon width={24} icon={pushpinLine} />
