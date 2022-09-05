@@ -8,17 +8,17 @@ import { SidebarSpace } from './Sidebar.types'
 interface SidebarSpaceSwitcherProps {
   currentSpace: string
   spaces: SidebarSpace[]
-  setCurrentSpace: (id: string) => void
+  setCurrentIndex: (index: number) => void
 }
 
-export const SidebarSpaceSwitcher = ({ currentSpace, spaces, setCurrentSpace }: SidebarSpaceSwitcherProps) => {
+export const SidebarSpaceSwitcher = ({ currentSpace, spaces, setCurrentIndex }: SidebarSpaceSwitcherProps) => {
   return (
     <SpaceSwitcher>
       <SwitcherSpaceItems>
-        {spaces.map((s) => (
+        {spaces.map((s, index) => (
           <SpaceItem
             active={currentSpace === s.id}
-            onClick={() => setCurrentSpace(s.id)}
+            onClick={() => setCurrentIndex(index)}
             key={`spaceSwitcher_item_${s.id}`}
           >
             <Icon icon={s.icon ?? 'heroicons-outline:view-grid'} />

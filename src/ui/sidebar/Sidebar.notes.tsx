@@ -2,17 +2,19 @@ import { SharedNodeIconify } from '@components/icons/Icons'
 import Bookmarks from '@components/mex/Sidebar/Bookmarks'
 import SharedNotes from '@components/mex/Sidebar/SharedNotes'
 import useDataStore from '@store/useDataStore'
-import React, { useMemo, useState } from 'react'
+import React, { useEffect, useMemo, useState } from 'react'
 import { SidebarSpaceComponent } from './Sidebar.space'
 import { SidebarSpaceSwitcher } from './Sidebar.spaceSwitcher'
-import { SpaceWrapper } from './Sidebar.style'
+import { SpaceContentWrapper, SpaceWrapper } from './Sidebar.style'
 import { SidebarSpace } from './Sidebar.types'
+import { useTransition, useSpringRef } from '@react-spring/web'
 
 export const NoteSidebar = () => {
   const ilinks = useDataStore((store) => store.ilinks)
+  const [index, setIndex] = useState(0)
   // const { getAllBookmarks } = useBookmarks()
 
-  const [openedSpace, setOpenedSpace] = useState<string>('personal')
+  // const [openedSpace, setOpenedSpace] = useState<string>('personal')
 
   const spaces: Array<SidebarSpace> = useMemo(
     () => [
@@ -41,12 +43,30 @@ export const NoteSidebar = () => {
     []
   )
 
-  const currentSpace = spaces.find((space) => space.id === openedSpace)
+  const currentSpace = spaces[index]
+  // const onClick = useCallback(() => set(state => (state + 1) % 3), [])
+  const transRef = useSpringRef()
+  const transitions = useTransition(index, {
+    ref: transRef,
+    keys: null,
+    from: { opacity: 0, transform: 'translate3d(100%,0,0)' },
+    enter: { opacity: 1, transform: 'translate3d(0%,0,0)' },
+    leave: { opacity: 0, transform: 'translate3d(-50%,0,0)' }
+  })
+
+  useEffect(() => {
+    transRef.start()
+  }, [index])
 
   return (
     <SpaceWrapper>
-      {currentSpace && <SidebarSpaceComponent space={currentSpace} />}
-      <SidebarSpaceSwitcher currentSpace={openedSpace} spaces={spaces} setCurrentSpace={setOpenedSpace} />
+      <SpaceContentWrapper>
+        {transitions((style, i) => {
+          return <SidebarSpaceComponent space={spaces[i]} style={style} />
+        })}
+      </SpaceContentWrapper>
+      {/* currentSpace && <SidebarSpaceComponent style={} space={currentSpace} />*/}
+      <SidebarSpaceSwitcher currentSpace={currentSpace.id} spaces={spaces} setCurrentIndex={setIndex} />
     </SpaceWrapper>
   )
 }

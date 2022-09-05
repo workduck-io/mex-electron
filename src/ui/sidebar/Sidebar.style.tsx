@@ -1,5 +1,6 @@
 import { LoadingButton } from '@workduck-io/mex-components'
 import { transparentize } from 'polished'
+import { animated } from 'react-spring'
 import styled, { css } from 'styled-components'
 
 export const SidebarWrapper = styled.div`
@@ -11,15 +12,21 @@ export const SidebarWrapper = styled.div`
 `
 
 export const SpaceWrapper = styled(SidebarWrapper)`
-  gap: ${({ theme }) => theme.spacing.medium};
+  gap: ${({ theme }) => theme.spacing.small};
 `
 
-export const SingleSpace = styled.div`
+export const SpaceContentWrapper = styled.div`
+  height: calc(100% - 4rem);
+  overflow: hidden;
+`
+export const SingleSpace = styled(animated.div)`
+  position: absolute;
   display: flex;
   flex-direction: column;
   flex-grow: 1;
-  height: calc(100% - 4rem);
+  height: calc(100% - 8rem);
   gap: ${({ theme }) => theme.spacing.large};
+  width: 95%;
 `
 
 export const SpaceHeader = styled.div`

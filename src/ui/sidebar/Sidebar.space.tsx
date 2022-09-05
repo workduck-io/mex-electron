@@ -1,5 +1,5 @@
 import Tree from '@components/mex/Sidebar/Tree'
-import React, { useMemo } from 'react'
+import React, { CSSProperties, useMemo } from 'react'
 import { PinnedList, SidebarToggle, SingleSpace, SpaceHeader, SpaceTitle, SpaceTitleWrapper } from './Sidebar.style'
 import { MexTree } from './Sidebar.tree'
 import { FlatSidebarItem, SidebarFlatList, SidebarSpace } from './Sidebar.types'
@@ -10,12 +10,14 @@ import { useEditorStore } from '@store/useEditorStore'
 import { Icon } from '@iconify/react'
 import useLayout from '@hooks/useLayout'
 import SidebarListItemComponent from '@components/mex/Sidebar/SidebarListItem'
+import { AnimatedProps } from '@react-spring/web'
 
 interface SidebarSpaceProps {
   space: SidebarSpace
+  style: CSSProperties
 }
 
-export const SidebarSpaceComponent = ({ space }: SidebarSpaceProps) => {
+export const SidebarSpaceComponent = ({ space, style }: AnimatedProps<SidebarSpaceProps>) => {
   const sidebar = useLayoutStore((state) => state.sidebar)
   // const node = useEditorStore((store) => store.node)
   const toggleSidebar = useLayoutStore((store) => store.toggleSidebar)
@@ -25,7 +27,7 @@ export const SidebarSpaceComponent = ({ space }: SidebarSpaceProps) => {
 
   // return <div>Space</div>
   return (
-    <SingleSpace>
+    <SingleSpace style={style}>
       <SpaceHeader>
         <SpaceTitleWrapper>
           <SpaceTitle>
