@@ -24,7 +24,6 @@ import Tippy from '@tippyjs/react'
 import React, { useMemo } from 'react'
 import { PathMatch } from 'react-router-dom'
 import { TreeContextMenu } from './TreeWithContextMenu'
-// import { complexTree } from '../mockdata/complexTree'
 
 const defaultSnap = {
   isDragging: false,
@@ -101,6 +100,7 @@ interface TreeItemProps extends RenderItemParams {
   contextOpenNodeId: string
   isInEditor: boolean
   match: PathMatch<'nodeid'>
+  isHighlighted: boolean
   setContextOpenNodeId: (nodeid: string | null) => void
   onClick: (e: React.MouseEvent<HTMLDivElement, MouseEvent>, item: TreeItem) => void
 }
@@ -115,6 +115,7 @@ export const RenderTreeItem = ({
   contextOpenNodeId,
   setContextOpenNodeId,
   isInEditor,
+  isHighlighted,
   match,
   onClick
 }: TreeItemProps) => {
@@ -150,6 +151,7 @@ export const RenderTreeItem = ({
               isStub={item?.data?.stub}
               isBeingDroppedAt={isTrue}
               isUnread={isUnread}
+              isHighlighted={isHighlighted}
               onContextMenu={(e) => {
                 console.log('ContextySe', e, item)
               }}

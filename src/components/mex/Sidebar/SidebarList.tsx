@@ -55,7 +55,7 @@ const SidebarList = ({
   useEffect(() => {
     if (showSearch) {
       if (search && search !== '') {
-        const filtered = fuzzySearch(items, search, (item) => item.title)
+        const filtered = fuzzySearch(items, search, (item) => item.label)
         mog('Search', { search, filtered })
         setListItems(filtered)
       }

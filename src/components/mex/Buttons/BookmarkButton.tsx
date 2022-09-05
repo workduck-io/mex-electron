@@ -49,13 +49,12 @@ const BookmarkButton = () => {
     return getTitleFromPath(getPathFromNodeid(node.nodeid))
   }, [node])
 
-  // mog('BookmarkButton', { bmed, bookmarks, loading, nodeid })
   const label = bmed ? `Unpin ${noteTitle}` : `Pin ${noteTitle}`
 
   return (
-    <PinNoteButton dots={2} loading={loading} highlight={bmed} onClick={onBookmark} transparent={false}>
+    <PinNoteButton dots={5} loading={loading} highlight={bmed} onClick={onBookmark} transparent={false}>
       <Icon width={24} icon={pushpinLine} />
-      {label}
+      <span>{label}</span>
     </PinNoteButton>
   )
 }

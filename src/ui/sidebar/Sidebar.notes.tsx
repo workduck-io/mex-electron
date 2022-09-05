@@ -46,7 +46,7 @@ export const NoteSidebar = () => {
         }
       }
     ],
-    []
+    [ilinks]
   )
 
   const currentSpace = spaces[index.current]
@@ -57,13 +57,13 @@ export const NoteSidebar = () => {
     keys: null,
     from: (item) => {
       // console.log({ item })
-      const direction = Math.sign(item.current - item.prev)
+      const direction = item.prev > -1 ? Math.sign(item.current - item.prev) : -1
       return { opacity: 0, transform: `translate3d(${direction * 100}%,0,0)` }
     },
     enter: { opacity: 1, transform: 'translate3d(0%,0,0)' },
     leave: (item) => {
       // console.log({ item })
-      const direction = Math.sign(item.current - item.prev)
+      const direction = item.prev > -1 ? Math.sign(item.current - item.prev) : -1
       return { opacity: 0, transform: `translate3d(${direction * 100}%,0,0)` }
     }
   })

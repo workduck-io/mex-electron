@@ -104,7 +104,7 @@ export const ItemTitleText = styled.div`
   text-overflow: ellipsis;
 `
 
-export const ItemTitle = styled.div<{ hasIconHover?: boolean }>`
+export const ItemTitle = styled.div`
   flex-grow: 1;
   flex-shrink: 1;
   max-width: 220px;
@@ -117,22 +117,6 @@ export const ItemTitle = styled.div<{ hasIconHover?: boolean }>`
     width: 16px;
     height: 16px;
   }
-
-  ${({ hasIconHover }) =>
-    hasIconHover === true &&
-    css`
-      .iconOnHover {
-        display: none;
-      }
-      &:hover {
-        .iconOnHover {
-          display: inherit;
-        }
-        .defaultIcon {
-          display: none;
-        }
-      }
-    `}
 `
 
 export const ItemCount = styled.div`
@@ -175,12 +159,14 @@ export const UnreadIndicator = styled.div`
 
 export const StyledTreeItem = styled.div<{
   selected?: boolean
+  hasIconHover?: boolean
   isStub?: boolean
   isDragging?: boolean
   isBeingDroppedAt?: boolean
   hasMenuOpen?: boolean
   noSwitcher?: boolean
   isUnread?: boolean
+  isHighlighted?: boolean
 }>`
   display: flex;
   align-items: center;
@@ -202,8 +188,8 @@ export const StyledTreeItem = styled.div<{
       padding-left: ${theme.spacing.small};
     `}
 
-  ${({ hasMenuOpen, theme }) =>
-    hasMenuOpen &&
+  ${({ hasMenuOpen, isHighlighted, theme }) =>
+    (hasMenuOpen || isHighlighted) &&
     css`
       background: ${transparentize(0.5, theme.colors.gray[7])};
       color: ${theme.colors.text.fade};
@@ -255,6 +241,23 @@ export const StyledTreeItem = styled.div<{
       `}
       background: ${theme.colors.gray[7]};
       box-shadow: inset 0 0 0 1px ${isDragging ? theme.colors.secondary : theme.colors.secondary};
+    `}
+
+
+  ${({ hasIconHover }) =>
+    hasIconHover === true &&
+    css`
+      .iconOnHover {
+        display: none;
+      }
+      &:hover {
+        .iconOnHover {
+          display: inherit;
+        }
+        .defaultIcon {
+          display: none;
+        }
+      }
     `}
 `
 

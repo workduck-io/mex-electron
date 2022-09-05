@@ -74,14 +74,16 @@ const SidebarListItemComponent = <T extends Entity>({
               noSwitcher
               isUnread={isUnread}
               selected={item?.id === selectedItemId}
+              hasIconHover={!!item.hoverIcon}
             >
               <ItemContent onClick={() => onSelect(item?.id)}>
-                <ItemTitle hasIconHover={!!item.hoverIcon}>
+                <ItemTitle>
                   {item.hoverIcon && (
                     <Icon
                       className="iconOnHover"
                       onClick={(e) => {
                         e.preventDefault()
+                        e.stopPropagation()
                         item.onIconClick && item.onIconClick(item.id)
                       }}
                       icon={item.hoverIcon}

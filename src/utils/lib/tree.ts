@@ -318,7 +318,7 @@ export const generateTree = (
         // add to tree and update parent
         const newId = `1${TREE_SEPARATOR}${getIdFromBaseNestedTree(baseNestedTree, n.id, n.nodeid)}`
         // Order is important for rendering children
-        parentItem.children.unshift(newId)
+        parentItem.children.push(newId)
         parentItem.hasChildren = true
         nestedTree.items[parentId] = parentItem
         nestedTree.items[newId] = {

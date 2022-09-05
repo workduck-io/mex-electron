@@ -40,6 +40,9 @@ export const getTreeFromLinks = (links: ILink[]) => {
   return tree
 }
 
+/**
+ * returns tree data and also the matched items in flat order of occurrence
+ */
 export const getPartialTreeFromLinks = (matchedLinks: ILink[], allLinks: ILink[]) => {
   // Contains duplicates
   const dirtyTreeFlatItems = matchedLinks.reduce((p, c) => {
@@ -70,6 +73,12 @@ export const getPartialTreeFromLinks = (matchedLinks: ILink[], allLinks: ILink[]
     }
   )
 
-  // mog('Made the partialTree From Links', { matchedLinks, allLinks, tree, dirtyTreeLinks, treeLinks })
-  return tree
+  const matchedFlatItems = Object.keys(tree.items)
+    .sort()
+    .filter((i) => tree.items[i].data.stub === false)
+    .map((i) => tree.items[i])
+
+  // mog('Made the partialTree From Links', { matchedLinks, allLinks, tree, treeFlatItems })
+
+  return { tree, matchedFlatItems }
 }

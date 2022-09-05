@@ -24,9 +24,10 @@ import { getNameFromPath, SEPARATOR } from './treeUtils'
 
 interface TreeProps {
   initTree: TreeData
+  selectedItemId?: string
 }
 
-const Tree = ({ initTree }: TreeProps) => {
+const Tree = ({ initTree, selectedItemId }: TreeProps) => {
   const [tree, setTreeState] = React.useState<TreeData>(initTree)
   const [contextOpenNodeId, setContextOpenNodeId] = useState<string>(null)
   const location = useLocation()
@@ -72,6 +73,7 @@ const Tree = ({ initTree }: TreeProps) => {
         onClick={onClick}
         match={match}
         isInEditor={isInEditor}
+        isHighlighted={renderProps.item?.data?.nodeid === selectedItemId}
         target={target}
         contextOpenNodeId={contextOpenNodeId}
         setContextOpenNodeId={setContextOpenNodeId}

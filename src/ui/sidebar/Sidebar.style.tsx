@@ -1,4 +1,4 @@
-import { LoadingButton } from '@workduck-io/mex-components'
+import { Ellipsis, LoadingButton } from '@workduck-io/mex-components'
 import { transparentize } from 'polished'
 import { animated } from 'react-spring'
 import styled, { css } from 'styled-components'
@@ -181,6 +181,10 @@ export const PinNoteButton = styled(LoadingButton)`
   justify-content: flex-start;
   box-shadow: none;
   color: ${({ theme }) => theme.colors.text.fade};
+  width: 100%;
+  span {
+    ${Ellipsis}
+  }
 
   &:hover,
   &:focus,
@@ -190,7 +194,12 @@ export const PinNoteButton = styled(LoadingButton)`
     border: 1px dashed ${({ theme }) => theme.colors.primary};
   }
 
+  &:disabled {
+    background: transparent;
+  }
+
   svg {
+    flex-shrink: 0;
     height: 16px;
     width: 16px;
   }
