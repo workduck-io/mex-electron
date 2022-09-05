@@ -11,8 +11,13 @@ import { useTransition, useSpringRef } from '@react-spring/web'
 
 export const NoteSidebar = () => {
   const ilinks = useDataStore((store) => store.ilinks)
-  const [index, setIndex] = useState(0)
+  const [index, setIndex] = useState({ current: 0, prev: -1 })
+  // Required to find direction of the animation
   // const { getAllBookmarks } = useBookmarks()
+  //
+  const changeIndex = (newIndex: number) => {
+    setIndex((s) => ({ current: newIndex, prev: s.current }))
+  }
 
   // const [openedSpace, setOpenedSpace] = useState<string>('personal')
 
@@ -43,15 +48,23 @@ export const NoteSidebar = () => {
     []
   )
 
-  const currentSpace = spaces[index]
+  const currentSpace = spaces[index.current]
   // const onClick = useCallback(() => set(state => (state + 1) % 3), [])
   const transRef = useSpringRef()
   const transitions = useTransition(index, {
     ref: transRef,
     keys: null,
-    from: { opacity: 0, transform: 'translate3d(100%,0,0)' },
-    enter: { opacity: 1, transform: 'translate3d(0%,0,0)' },
-    leave: { opacity: 0, transform: 'translate3d(-50%,0,0)' }
+    from: (item) => {
+      // console.log({ item })
+      const direction = Math.sign(item.current - item.prev)
+      return { opacity: 0, transform: `translate3d(${direction * 100}%,0,0) scale(0.75)` }
+    },
+    enter: { opacity: 1, transform: 'translate3d(0%,0,0) scale(1)' },
+    leave: (item) => {
+      // console.log({ item })
+      const direction = Math.sign(item.current - item.prev)
+      return { opacity: 0, transform: `translate3d(${-direction * 100}%,0,0) scale(0.75)` }
+    }
   })
 
   useEffect(() => {
@@ -62,11 +75,11 @@ export const NoteSidebar = () => {
     <SpaceWrapper>
       <SpaceContentWrapper>
         {transitions((style, i) => {
-          return <SidebarSpaceComponent space={spaces[i]} style={style} />
+          return <SidebarSpaceComponent space={spaces[i.current]} style={style} />
         })}
       </SpaceContentWrapper>
       {/* currentSpace && <SidebarSpaceComponent style={} space={currentSpace} />*/}
-      <SidebarSpaceSwitcher currentSpace={currentSpace.id} spaces={spaces} setCurrentIndex={setIndex} />
+      <SidebarSpaceSwitcher currentSpace={currentSpace.id} spaces={spaces} setCurrentIndex={changeIndex} />
     </SpaceWrapper>
   )
 }

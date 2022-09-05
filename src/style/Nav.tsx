@@ -236,8 +236,8 @@ const sidebarPos = ({ $overlaySidebar, theme, $side }) =>
           position: fixed;
           top: ${theme.additional.hasBlocks ? '2rem' : '0'};
           left: ${theme.additional.hasBlocks ? 'calc(86px + 1rem)' : '86px'};
-          background: ${transparentize(0.5, theme.colors.background.sidebar)}
-  backdrop-filter: blur(10px);
+          background: ${transparentize(0.5, theme.colors.background.sidebar)};
+          backdrop-filter: blur(10px);
         `
       : css`
           position: relative;
