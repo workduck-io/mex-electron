@@ -28,10 +28,7 @@ import { useSlashCommandOnChange } from '../SlashCommands/useSlashCommandOnChang
 import { ComboConfigData, ConfigDataSlashCommands, SingleComboboxConfig } from './types'
 import { ComboSearchType } from './types'
 
-export interface ComboTypeHandlers {
-  slateElementType: string
-  newItemHandler: (newItem: string, parentId?) => any // eslint-disable-line @typescript-eslint/no-explicit-any
-}
+
 
 export const useElementOnChange = (elementComboType: SingleComboboxConfig, keys?: any) => {
   const { trackEvent } = useAnalytics()

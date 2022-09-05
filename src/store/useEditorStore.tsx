@@ -2,13 +2,9 @@ import React from 'react'
 import create from 'zustand'
 import { ComboTriggerType } from '../editor/Components/combobox/useComboboxStore'
 import { getInitialNode } from '../utils/helpers'
+import { NodeProperties } from './type'
 
-export interface NodeProperties {
-  title: string
-  id: string
-  nodeid: string
-  path: string
-}
+
 
 export type EditorContextType = {
   // State

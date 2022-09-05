@@ -1,18 +1,12 @@
 import { UseComboboxReturnValue } from 'downshift'
 import { BaseRange, Point, Range } from 'slate'
-import { useEditorStore } from '../../../store/useEditorStore'
+import { useEditorStore } from '../../../store/type'
 import { ComboSearchType, ComboboxType } from '../multi-combobox/types'
 import { createStore, setStoreValue } from '../store/createStore'
 import { IComboboxItem } from './components/Combobox.types'
+import { ComboboxKey } from './type'
 
-export enum ComboboxKey {
-  TAG = 'tag',
-  MENTION = 'mention',
-  INTERNAL = 'internal',
-  INLINE_BLOCK = 'inline_block',
-  SLASH_COMMAND = 'slash_command',
-  BLOCK = 'block'
-}
+
 
 export type ComboTriggerType = ComboboxType & { at?: Point; blockAt?: Point }
 

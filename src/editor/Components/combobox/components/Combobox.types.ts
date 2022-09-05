@@ -1,10 +1,9 @@
 import { PlateEditor, TElement, Value } from '@udecode/plate'
 import { QuickLinkType } from '../../../../components/mex/NodeSelect/NodeSelect'
 import { SlashType } from '../../multi-combobox/types'
+import { ComboboxItemProps, RenderFunction } from './type'
 
-export interface RenderFunction<P = { [key: string]: any }> {
-  (props: P, defaultRender?: (props?: P) => JSX.Element | null): JSX.Element | null
-}
+
 
 export enum ComboboxItemType {
   Normal = 0,
@@ -65,9 +64,7 @@ export interface IComboboxItem {
   data?: unknown
 }
 
-export interface ComboboxItemProps {
-  item: IComboboxItem
-}
+
 
 export type ComboboxOptions = {
   showPreview?: boolean
