@@ -1,30 +1,28 @@
-import { client, useAuth } from '@workduck-io/dwindle'
-import { UserCred } from '@workduck-io/dwindle/lib/esm/AuthStore/useAuthStore'
-import { ipcRenderer } from 'electron'
-import { nanoid } from 'nanoid'
 import { useState } from 'react'
-import { apiURLs } from '../../apis/routes'
+
 // import { useApi } from '../../apis/useSaveApi'
-import { IpcAction } from '../../data/IpcAction'
-import { useUpdater } from '../../hooks/useUpdater'
-import { RegisterFormData } from '../../views/mex/Register'
-import create, { State } from 'zustand'
-import { devtools, persist } from 'zustand/middleware'
-import useAnalytics from '../analytics'
-import { Properties, CustomEvents } from '../analytics/events'
-import { mog } from '../../utils/lib/helper'
-import useActions from '../../components/spotlight/Actions/useActions'
 import { useActionsPerfomerClient } from '@components/spotlight/Actions/useActionPerformer'
 import { useActionsCache } from '@components/spotlight/Actions/useActionsCache'
+import { useHelpStore } from '@store/useHelpStore'
 import { useLayoutStore } from '@store/useLayoutStore'
-
-import { UpdatableUserDetails, UserDetails } from '../../types/auth'
+import { useRecentsStore } from '@store/useRecentsStore'
 import { useUserCacheStore } from '@store/useUserCacheStore'
 import { NavigationType, ROUTE_PATHS, useRouting } from '@views/routes/urls'
-import { useHelpStore } from '@store/useHelpStore'
-import { useTokenStore } from './useTokens'
+import { nanoid } from 'nanoid'
 import toast from 'react-hot-toast'
-import { useRecentsStore } from '@store/useRecentsStore'
+import create, { State } from 'zustand'
+import { devtools, persist } from 'zustand/middleware'
+
+import { client, useAuth } from '@workduck-io/dwindle'
+
+import { apiURLs } from '../../apis/routes'
+import useActions from '../../components/spotlight/Actions/useActions'
+import { UpdatableUserDetails, UserDetails } from '../../types/auth'
+import { mog } from '../../utils/lib/helper'
+import { RegisterFormData } from '../../views/mex/Register'
+import useAnalytics from '../analytics'
+import { CustomEvents, Properties } from '../analytics/events'
+import { useTokenStore } from './useTokens'
 
 interface WorkspaceDetails {
   name: string
@@ -86,7 +84,6 @@ export const useAuthentication = () => {
   const setAuthenticated = useAuthStore((store) => store.setAuthenticated)
   const setUnAuthenticated = useAuthStore((store) => store.setUnAuthenticated)
   const setRegistered = useAuthStore((store) => store.setRegistered)
-  const { updateDefaultServices, updateServices } = useUpdater()
   const clearActionCache = useActionsCache((store) => store.clearActionCache)
   const { signIn, signUp, verifySignUp, signOut, googleSignIn, refreshToken } = useAuth()
   const { identifyUser, addUserProperties, addEventProperties } = useAnalytics()
@@ -99,12 +96,11 @@ export const useAuthentication = () => {
   const { goTo } = useRouting()
   const clearShortcuts = useHelpStore((store) => store.clearShortcuts)
   const removeGoogleCalendarToken = useTokenStore((store) => store.removeGoogleCalendarToken)
-
   const login = async (
     email: string,
     password: string,
     getWorkspace = false
-  ): Promise<{ data: UserCred; v: string; authDetails: AuthDetails }> => {
+  ): Promise<{ data: any; v: string; authDetails: AuthDetails }> => {
     let data: any // eslint-disable-line @typescript-eslint/no-explicit-any
     let authDetails: any // eslint-disable-line @typescript-eslint/no-explicit-any
     const v = await signIn(email, password)
@@ -225,7 +221,7 @@ export const useAuthentication = () => {
   async function registerUserForGoogle(result: any, data: any) {
     mog('Registering user for google', { result })
     setSensitiveData({ email: result.email, name: data.name, password: '', roles: [], alias: data.alias ?? data.name })
-    const uCred: UserCred = {
+    const uCred: any = {
       username: result.userCred.username,
       email: result.userCred.email,
       userId: result.userCred.userId,
