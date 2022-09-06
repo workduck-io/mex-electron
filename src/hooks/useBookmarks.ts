@@ -8,6 +8,10 @@ import { useLinks } from './useLinks'
 
 import { useAuthStore } from '../services/auth/useAuth'
 
+/**
+ * Has been repurposed into starred notes
+ * TODO: Refactor after namespaces from backend
+ */
 export const useBookmarks = () => {
   const setBookmarks = useDataStore((state) => state.setBookmarks)
   const getBookmarks = useDataStore((state) => state.getBookmarks)

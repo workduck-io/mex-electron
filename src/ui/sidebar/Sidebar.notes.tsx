@@ -1,5 +1,5 @@
 import { SharedNodeIconify } from '@components/icons/Icons'
-import Bookmarks from '@components/mex/Sidebar/Bookmarks'
+import StarredNotes from '@components/mex/Sidebar/StarredNotes'
 import SharedNotes from '@components/mex/Sidebar/SharedNotes'
 import useDataStore from '@store/useDataStore'
 import React, { useEffect, useMemo, useState } from 'react'
@@ -33,7 +33,7 @@ export const NoteSidebar = () => {
           type: 'hierarchy',
           items: ilinks
         },
-        pinnedItems: () => <Bookmarks />
+        pinnedItems: () => <StarredNotes />
       },
       {
         id: 'shared',

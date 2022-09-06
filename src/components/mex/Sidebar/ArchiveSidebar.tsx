@@ -16,7 +16,7 @@ import ArchiveContextMenu from '../Archive/ArchiveContextMenu'
 import { Margin } from '../Archive/styled'
 import { MexIcon } from '@style/Layouts'
 import { useTheme } from 'styled-components'
-import { Centered } from './Bookmarks'
+import { Centered } from './StarredNotes'
 import { getTreeFromLinks } from '@hooks/useTreeFromLinks'
 import { SidebarWrapper } from '@ui/sidebar/Sidebar.style'
 

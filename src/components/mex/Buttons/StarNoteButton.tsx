@@ -1,17 +1,18 @@
 import { Icon } from '@iconify/react'
 import React, { useEffect, useMemo, useState } from 'react'
 import { useBookmarks } from '../../../hooks/useBookmarks'
+import starLine from '@iconify/icons-ri/star-line'
 import pushpinLine from '@iconify/icons-ri/pushpin-line'
 import { useEditorStore } from '@store/useEditorStore'
 import useDataStore from '@store/useDataStore'
-import { PinNoteButton } from '@ui/sidebar/Sidebar.style'
+import { SStarNoteButton } from '@ui/sidebar/Sidebar.style'
 import { getTitleFromPath, useLinks } from '@hooks/useLinks'
 
 // interface BookmarkButtonProps {
 //   nodeid: string
 // }
 
-const BookmarkButton = () => {
+const StarNoteButton = () => {
   const node = useEditorStore((s) => s.node)
   const { isBookmark, addBookmark, removeBookmark } = useBookmarks()
   const [bmed, setBmed] = useState(false)
@@ -49,14 +50,14 @@ const BookmarkButton = () => {
     return getTitleFromPath(getPathFromNodeid(node.nodeid))
   }, [node])
 
-  const label = bmed ? `Unpin ${noteTitle}` : `Pin ${noteTitle}`
+  const label = bmed ? `Unstar ${noteTitle}` : `Star ${noteTitle}`
 
   return (
-    <PinNoteButton dots={5} loading={loading} highlight={bmed} onClick={onBookmark} transparent={false}>
-      <Icon width={24} icon={pushpinLine} />
+    <SStarNoteButton dots={5} loading={loading} highlight={bmed} onClick={onBookmark} transparent={false}>
+      <Icon width={24} icon={starLine} />
       <span>{label}</span>
-    </PinNoteButton>
+    </SStarNoteButton>
   )
 }
 
-export default BookmarkButton
+export default StarNoteButton

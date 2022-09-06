@@ -174,7 +174,7 @@ export const CreateNewMenuItemWrapper = styled.div`
   }
 `
 
-export const PinNoteButton = styled(LoadingButton)`
+export const SStarNoteButton = styled(LoadingButton)`
   background: ${({ theme }) => transparentize(0.75, theme.colors.gray[9])};
   border: 1px dashed ${({ theme }) => theme.colors.gray[8]};
   padding: 0.5rem;

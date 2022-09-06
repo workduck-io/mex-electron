@@ -2,16 +2,16 @@ import closeCircleLine from '@iconify/icons-ri/close-circle-line'
 import Tippy, { useSingleton } from '@tippyjs/react'
 import { PinnedList } from '@ui/sidebar/Sidebar.style'
 import { mog } from '@utils/lib/helper'
+import starFill from '@iconify/icons-ri/star-fill'
 
 import { useBookmarks } from '@hooks/useBookmarks'
-import pushpinLine from '@iconify/icons-ri/pushpin-line'
 import { NavigationType, ROUTE_PATHS, useRouting } from '@views/routes/urls'
 import React, { useEffect, useMemo } from 'react'
 import styled from 'styled-components'
 import { getTitleFromPath, useLinks } from '../../../hooks/useLinks'
 import { useNavigation } from '../../../hooks/useNavigation'
 import useDataStore from '../../../store/useDataStore'
-import BookmarkButton from '../Buttons/BookmarkButton'
+import StarNoteButton from '../Buttons/StarNoteButton'
 import SidebarListItemComponent from './SidebarListItem'
 import { useEditorStore } from '@store/useEditorStore'
 
@@ -24,7 +24,7 @@ export const Centered = styled.div`
   flex-direction: column;
 `
 
-const Bookmarks = () => {
+const StarredNotes = () => {
   const bookmarks = useDataStore((store) => store.bookmarks)
   const { getPathFromNodeid } = useLinks()
   const { push } = useNavigation()
@@ -49,7 +49,7 @@ const Bookmarks = () => {
     .map((nodeid) => ({
       id: nodeid,
       label: getTitleFromPath(getPathFromNodeid(nodeid)),
-      icon: pushpinLine,
+      icon: starFill,
       hoverIcon: closeCircleLine,
 
       onIconClick: (nodeid: string) => {
@@ -85,10 +85,10 @@ const Bookmarks = () => {
             tippyTarget={target}
           />
         ))}
-        {!currentBmed && bookmarkItems.length < 5 && <BookmarkButton />}
+        {!currentBmed && bookmarkItems.length < 5 && <StarNoteButton />}
       </PinnedList>
     </>
   )
 }
 
-export default Bookmarks
+export default StarredNotes

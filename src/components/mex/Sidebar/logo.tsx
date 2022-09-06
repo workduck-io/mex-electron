@@ -57,16 +57,16 @@ export const SidebarToggleWrapper = styled.div<SidebarToggleWrappperProps>`
             display: none;
           `
         : css`
-            top: ${theme.additional.hasBlocks ? 67 : 64}px;
+            top: ${theme.additional.hasBlocks ? 67 : 44}px;
             left: ${theme.additional.hasBlocks ? 86 : 70}px;
           `
       : expanded
       ? css`
-          top: ${theme.additional.hasBlocks ? 67 : 64}px;
+          top: ${theme.additional.hasBlocks ? 67 : 44}px;
           right: calc(${(endColumnWidth ?? '400px') + ' + ' + (theme.additional.hasBlocks ? 0 : -15)}px);
         `
       : css`
-          top: ${theme.additional.hasBlocks ? 67 : 64}px;
+          top: ${theme.additional.hasBlocks ? 67 : 44}px;
           right: ${theme.additional.hasBlocks ? 8 : 8}px;
         `}
 
@@ -83,6 +83,11 @@ export const SidebarToggleWrapper = styled.div<SidebarToggleWrappperProps>`
   border-radius: 100%;
   background: ${({ theme }) => theme.colors.background.sidebar};
   color: ${({ theme }) => theme.colors.text.fade};
+
+  svg {
+    height: 16px;
+    width: 16px;
+  }
 
   ${({ show }) =>
     !show &&
