@@ -1,3 +1,4 @@
+import { TagFlex, TagsFlex } from '@components/mex/Tags/TagsRelated.styles'
 import { Ellipsis, LoadingButton } from '@workduck-io/mex-components'
 import { transparentize } from 'polished'
 import { animated } from 'react-spring'
@@ -35,7 +36,9 @@ export const SpaceHeader = styled.div`
 
   gap: ${({ theme }) => theme.spacing.medium};
 
-  width: 100%;
+  ${TagsFlex} {
+    min-width: 276px;
+  }
 `
 
 export const SpaceTitleWrapper = styled.div`
