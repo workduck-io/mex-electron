@@ -47,12 +47,12 @@ const StarNoteButton = () => {
     return getTitleFromPath(getPathFromNodeid(node.nodeid))
   }, [node])
 
-  const label = `Star ${noteTitle}`
-
   return (
     <SStarNoteButton dots={5} loading={loading} highlight={bmed} onClick={onBookmark} transparent={false}>
       <Icon width={24} icon={starLine} />
-      <span>{label}</span>
+      <span>
+        Star <span className="noteTitle">{noteTitle}</span>
+      </span>
     </SStarNoteButton>
   )
 }

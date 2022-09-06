@@ -172,7 +172,7 @@ export const StyledTreeItem = styled.div<{
   align-items: center;
   gap: ${({ theme }) => theme.spacing.tiny};
   border-radius: ${({ theme }) => theme.borderRadius.small};
-  padding-right: 16px;
+  padding-right: 8px;
 
   transition: 0.25s ease;
 

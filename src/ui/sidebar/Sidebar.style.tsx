@@ -26,7 +26,7 @@ export const SingleSpace = styled(animated.div)`
   flex-direction: column;
   flex-grow: 1;
   height: calc(100% - 8rem);
-  gap: ${({ theme }) => theme.spacing.large};
+  gap: ${({ theme }) => theme.spacing.medium};
   width: 95%;
 `
 
@@ -34,7 +34,7 @@ export const SpaceHeader = styled.div`
   display: flex;
   flex-direction: column;
 
-  gap: ${({ theme }) => theme.spacing.medium};
+  gap: ${({ theme }) => theme.spacing.large};
 
   ${TagsFlex} {
     min-width: 276px;
@@ -97,6 +97,13 @@ export const SpaceList = styled.div`
   overflow-x: hidden;
 `
 
+export const SpaceSeparator = styled.div`
+  height: 1px;
+  width: 100%;
+  margin: auto;
+
+  background: ${({ theme }) => theme.colors.gray[8]};
+`
 export const SpaceSwitcher = styled.div`
   flex-shrink: 0;
   display: flex;
@@ -204,12 +211,19 @@ export const SStarNoteButton = styled(LoadingButton)`
     ${Ellipsis}
   }
 
+  .noteTitle {
+    color: ${({ theme }) => transparentize(0.25, theme.colors.primary)};
+  }
+
   &:hover,
   &:focus,
   &:active {
     color: ${({ theme }) => theme.colors.primary};
     background: ${({ theme }) => transparentize(0.75, theme.colors.gray[9])};
     border: 1px dashed ${({ theme }) => theme.colors.primary};
+    .noteTitle {
+      color: ${({ theme }) => theme.colors.primary};
+    }
   }
 
   &:disabled {

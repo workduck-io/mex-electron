@@ -7,7 +7,7 @@ import { useLayoutStore } from '@store/useLayoutStore'
 import Tippy from '@tippyjs/react'
 import { TitleWithShortcut } from '@workduck-io/mex-components'
 import React, { CSSProperties } from 'react'
-import { SidebarToggle, SingleSpace, SpaceHeader, SpaceTitle, SpaceTitleWrapper } from './Sidebar.style'
+import { SidebarToggle, SingleSpace, SpaceHeader, SpaceSeparator, SpaceTitle, SpaceTitleWrapper } from './Sidebar.style'
 import { MexTree } from './Sidebar.tree'
 import { SidebarSpace } from './Sidebar.types'
 
@@ -49,6 +49,7 @@ export const SidebarSpaceComponent = ({ space, style }: AnimatedProps<SidebarSpa
         {space.popularTags && space.popularTags.length > 0 && <TagsLabel tags={space.popularTags} />}
       </SpaceHeader>
 
+      <SpaceSeparator />
       {
         {
           hierarchy: space.list.type === 'hierarchy' && <MexTree items={space.list.items} filterText="Filter Notes" />,
