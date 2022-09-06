@@ -34,7 +34,7 @@ export const SpaceHeader = styled.div`
   display: flex;
   flex-direction: column;
 
-  gap: ${({ theme }) => theme.spacing.large};
+  gap: ${({ theme }) => theme.spacing.medium};
 
   ${TagsFlex} {
     min-width: 276px;

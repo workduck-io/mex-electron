@@ -45,7 +45,7 @@ export const SidebarSpaceComponent = ({ space, style }: AnimatedProps<SidebarSpa
             </SidebarToggle>
           </Tippy>
         </SpaceTitleWrapper>
-        {space.pinnedItems && <space.pinnedItems />}
+        {/*space.pinnedItems && <space.pinnedItems />*/}
         {space.popularTags && space.popularTags.length > 0 && <TagsLabel tags={space.popularTags} />}
       </SpaceHeader>
 
