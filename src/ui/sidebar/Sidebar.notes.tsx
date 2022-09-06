@@ -8,10 +8,14 @@ import { SidebarSpaceSwitcher } from './Sidebar.spaceSwitcher'
 import { SpaceContentWrapper, SpaceWrapper } from './Sidebar.style'
 import { SidebarSpace } from './Sidebar.types'
 import { useTransition, useSpringRef } from '@react-spring/web'
+import { useTags } from '@hooks/useTags'
+import { mog } from '@utils/lib/helper'
 
 export const NoteSidebar = () => {
   const ilinks = useDataStore((store) => store.ilinks)
   const [index, setIndex] = useState({ current: 0, prev: -1 })
+  const { getMostUsedTags } = useTags()
+  const tags = useDataStore((s) => s.tags)
   // Required to find direction of the animation
   // const { getAllBookmarks } = useBookmarks()
   //
@@ -19,6 +23,16 @@ export const NoteSidebar = () => {
     if (newIndex === index.current) return
     setIndex((s) => ({ current: newIndex, prev: s.current }))
   }
+
+  const mostUsedTags = useMemo(() => {
+    const topUsedTags = getMostUsedTags()
+      .sort((a, b) => a.freq - b.freq)
+      .reverse()
+      .slice(0, 5)
+      .map((t) => ({ value: t.tag }))
+    // mog('AllTag', { allTagFreq })
+    return topUsedTags
+  }, [tags])
 
   // const [openedSpace, setOpenedSpace] = useState<string>('personal')
 
@@ -33,6 +47,7 @@ export const NoteSidebar = () => {
           type: 'hierarchy',
           items: ilinks
         },
+        popularTags: mostUsedTags,
         pinnedItems: () => <StarredNotes />
       },
       {

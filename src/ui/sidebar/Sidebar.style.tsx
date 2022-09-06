@@ -33,7 +33,7 @@ export const SpaceHeader = styled.div`
   display: flex;
   flex-direction: column;
 
-  gap: ${({ theme }) => theme.spacing.small};
+  gap: ${({ theme }) => theme.spacing.medium};
 
   width: 100%;
 `
@@ -114,6 +114,7 @@ export const SpaceItem = styled.div<{ active: boolean }>`
   justify-content: center;
   padding: ${({ theme }) => theme.spacing.small};
   border-radius: ${({ theme }) => theme.borderRadius.small};
+  transition: 0.15s transform ease-out, 0.2s color ease-in;
 
   color: ${({ theme }) => theme.colors.gray[6]};
   ${({ theme, active }) =>
@@ -123,6 +124,7 @@ export const SpaceItem = styled.div<{ active: boolean }>`
     `}
 
   :hover {
+    transform: translateY(-10%) scale(1.25);
     background-color: ${({ theme }) => theme.colors.gray[8]};
   }
 
@@ -131,18 +133,31 @@ export const SpaceItem = styled.div<{ active: boolean }>`
     width: 20px;
   }
 `
-export const CreateNewButton = styled.button`
+
+interface CreateNewButtonProps {
+  menuOpen?: boolean
+}
+
+export const CreateNewButton = styled.button<CreateNewButtonProps>`
   display: flex;
   align-items: center;
   padding: ${({ theme }) => theme.spacing.small};
   border-radius: ${({ theme }) => theme.borderRadius.small};
   color: ${({ theme }) => theme.colors.text.default};
-  background-color: transparent;
+  background-color: ${({ theme }) => theme.colors.gray[8]};
+  transition: 0.15s transform ease-out, 0.5s color ease-in;
 
   :hover {
+    transform: translateY(-10%) scale(1.25);
     color: ${({ theme }) => theme.colors.primary};
-    background-color: ${({ theme }) => theme.colors.gray[8]};
   }
+
+  ${({ menuOpen }) =>
+    menuOpen &&
+    css`
+      transform: translateY(-10%) scale(1.25);
+      color: ${({ theme }) => theme.colors.primary};
+    `}
 
   svg {
     height: 20px;

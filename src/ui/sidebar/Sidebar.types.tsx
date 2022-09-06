@@ -1,6 +1,6 @@
 import { DesignItem } from '../../types/design'
 import { LastOpenedState } from '../../types/userPreference'
-import { ILink } from '../../types/Types'
+import { ILink, Tag } from '../../types/Types'
 import { IconifyIcon } from '@iconify/react'
 
 /**
@@ -73,5 +73,5 @@ export interface SidebarSpace {
   /**
    * Tags that have been used most often in a given space
    */
-  popularTags?: string[]
+  popularTags?: Tag[]
 }

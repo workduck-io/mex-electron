@@ -64,7 +64,7 @@ export const CreateNewMenu = ({ children, placement }: Props) => {
 
   return (
     <>
-      {cloneElement(children, getReferenceProps({ ref, ...children.props }))}
+      {cloneElement(children, getReferenceProps({ ref, ...children.props, menuOpen: open }))}
       {open && (
         <FloatingFocusManager context={context} modal={false} order={['reference', 'content']} returnFocus={false}>
           <CreateNewMenuWrapper

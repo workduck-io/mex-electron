@@ -174,7 +174,7 @@ export const StyledTreeItem = styled.div<{
   border-radius: ${({ theme }) => theme.borderRadius.small};
   padding-right: 16px;
 
-  transition: 0.1s ease;
+  transition: 0.25s ease;
 
   ${({ isUnread }) =>
     isUnread &&

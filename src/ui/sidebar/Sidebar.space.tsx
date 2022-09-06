@@ -1,16 +1,15 @@
-import Tree from '@components/mex/Sidebar/Tree'
-import React, { CSSProperties, useMemo } from 'react'
-import { PinnedList, SidebarToggle, SingleSpace, SpaceHeader, SpaceTitle, SpaceTitleWrapper } from './Sidebar.style'
-import { MexTree } from './Sidebar.tree'
-import { FlatSidebarItem, SidebarFlatList, SidebarSpace } from './Sidebar.types'
+import { TagsLabel } from '@components/mex/Tags/TagLabel'
+import useLayout from '@hooks/useLayout'
+import { Icon } from '@iconify/react'
+import { AnimatedProps } from '@react-spring/web'
+import { useEditorStore } from '@store/useEditorStore'
+import { useLayoutStore } from '@store/useLayoutStore'
 import Tippy from '@tippyjs/react'
 import { TitleWithShortcut } from '@workduck-io/mex-components'
-import { useLayoutStore } from '@store/useLayoutStore'
-import { useEditorStore } from '@store/useEditorStore'
-import { Icon } from '@iconify/react'
-import useLayout from '@hooks/useLayout'
-import SidebarListItemComponent from '@components/mex/Sidebar/SidebarListItem'
-import { AnimatedProps } from '@react-spring/web'
+import React, { CSSProperties } from 'react'
+import { SidebarToggle, SingleSpace, SpaceHeader, SpaceTitle, SpaceTitleWrapper } from './Sidebar.style'
+import { MexTree } from './Sidebar.tree'
+import { SidebarSpace } from './Sidebar.types'
 
 interface SidebarSpaceProps {
   space: SidebarSpace
@@ -47,16 +46,9 @@ export const SidebarSpaceComponent = ({ space, style }: AnimatedProps<SidebarSpa
           </Tippy>
         </SpaceTitleWrapper>
         {space.pinnedItems && <space.pinnedItems />}
+        {space.popularTags && space.popularTags.length > 0 && <TagsLabel tags={space.popularTags} />}
       </SpaceHeader>
 
-      {/*
-      {space.popularTags && space.popularTags.length > 0 && (
-        <div>
-          {space.popularTags.map((t) => (
-            <div key={`tag_${t}`}>#{t}</div>
-          ))}
-        </div>
-      ) */}
       {
         {
           hierarchy: space.list.type === 'hierarchy' && <MexTree items={space.list.items} filterText="Filter Notes" />,
