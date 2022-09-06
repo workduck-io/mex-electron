@@ -1,14 +1,14 @@
 import {
-    default as AtlaskitTree,
-    ItemId,
-    mutateTree,
-    RenderItemParams,
-    TreeData,
-    TreeDestinationPosition,
-    TreeItem,
-    TreeSourcePosition
+  default as AtlaskitTree,
+  ItemId,
+  mutateTree,
+  RenderItemParams,
+  TreeData,
+  TreeDestinationPosition,
+  TreeItem,
+  TreeSourcePosition
 } from '@atlaskit/tree'
-import { useTreeFromLinks } from '@hooks/useTreeFromLinks'
+import { getTreeFromLinks } from '@hooks/useTreeFromLinks'
 import useDataStore from '@store/useDataStore'
 import { useEditorStore } from '@store/useEditorStore'
 import { useTreeStore } from '@store/useTreeStore'
@@ -24,9 +24,10 @@ import { getNameFromPath, SEPARATOR } from './treeUtils'
 
 interface TreeProps {
   initTree: TreeData
+  selectedItemId?: string
 }
 
-const Tree = ({ initTree }: TreeProps) => {
+const Tree = ({ initTree, selectedItemId }: TreeProps) => {
   const [tree, setTreeState] = React.useState<TreeData>(initTree)
   const [contextOpenNodeId, setContextOpenNodeId] = useState<string>(null)
   const location = useLocation()
@@ -72,6 +73,7 @@ const Tree = ({ initTree }: TreeProps) => {
         onClick={onClick}
         match={match}
         isInEditor={isInEditor}
+        isHighlighted={renderProps.item?.data?.nodeid === selectedItemId}
         target={target}
         contextOpenNodeId={contextOpenNodeId}
         setContextOpenNodeId={setContextOpenNodeId}
@@ -163,8 +165,6 @@ const Tree = ({ initTree }: TreeProps) => {
 export const TreeContainer = () => {
   const node = useEditorStore((store) => store.node)
   const ilinks = useDataStore((store) => store.ilinks)
-
-  const { getTreeFromLinks } = useTreeFromLinks()
 
   const initTree = useMemo(() => getTreeFromLinks(ilinks), [node, ilinks])
 

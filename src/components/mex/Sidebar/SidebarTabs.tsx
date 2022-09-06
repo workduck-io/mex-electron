@@ -16,6 +16,7 @@ import { mog } from '@utils/lib/helper'
 import ArchiveSidebar from './ArchiveSidebar'
 import TaskViewList from './TaskViewList'
 import TagList from './TagList'
+import { NoteSidebar } from '@ui/sidebar/Sidebar.notes'
 
 const NodeSidebar = () => {
   const sidebar = useLayoutStore((store) => store.sidebar)
@@ -36,13 +37,13 @@ const NodeSidebar = () => {
         component: <SharedNotes />,
         type: SidebarTab.shared,
         tooltip: 'Shared Notes'
-      },
-      {
-        label: <MexIcon noHover icon="ri:bookmark-line" width={24} height={24} />,
-        type: SidebarTab.bookmarks,
-        component: <Bookmarks />,
-        tooltip: 'Bookmarks'
       }
+      // {
+      //   label: <MexIcon noHover icon="ri:bookmark-line" width={24} height={24} />,
+      //   type: SidebarTab.bookmarks,
+      //   component: <Bookmarks />,
+      //   tooltip: 'Bookmarks'
+      // }
     ],
     [theme]
   )
@@ -77,7 +78,7 @@ const SidebarTabs = () => {
 
   if (!sidebar.show) return <></>
 
-  if (isEditor) return <NodeSidebar />
+  if (isEditor) return <NoteSidebar />
 
   if (isSnippet || isSnippetNote) return <SnippetList />
 

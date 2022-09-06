@@ -6,17 +6,16 @@ interface SidebarListWrapperProps {
 }
 export const SidebarListWrapper = styled.div<SidebarListWrapperProps>`
   margin-top: ${({ noMargin }) => (noMargin ? '0' : '4rem')};
-  padding: ${({ theme }) => theme.spacing.small};
   flex-grow: 1;
+  display: flex;
+  flex-direction: column;
+  gap: ${({ theme }) => theme.spacing.small};
 `
 
 export const FilteredItemsWrapper = styled.div<{ hasDefault?: boolean }>`
   display: flex;
   flex-direction: column;
-  height: calc(
-    100vh - ${({ theme }) => (theme.additional.hasBlocks ? '14rem' : '13rem')} -
-      ${({ hasDefault }) => (hasDefault ? '2rem' : '0rem')}
-  );
+  height: 100%;
 
   flex-grow: 1;
   overflow-y: auto;
@@ -36,7 +35,7 @@ export const SidebarListFilter = styled.div<SidebarListWrapperProps>`
   display: flex;
   align-items: center;
   padding: 0 ${({ theme }) => theme.spacing.small};
-  margin: ${({ theme }) => `0 0 ${theme.spacing.small}`};
+  margin: ${({ theme }) => `0 0`};
   margin-top: ${({ noMargin, theme }) => (noMargin ? '0' : theme.spacing.medium)};
   background: ${({ theme }) => theme.colors.form.input.bg};
   border-radius: ${({ theme }) => theme.borderRadius.small};

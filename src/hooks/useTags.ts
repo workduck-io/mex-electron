@@ -185,5 +185,21 @@ export const useTags = () => {
     }
   }
 
-  return { getRelatedNodes, getNodesAndCleanCacheForTag, updateTagsFromContent, getTags, getAllTags, hasTags }
+  const getMostUsedTags = () => {
+    const tagsCache = useDataStore.getState().tagsCache
+    const tagsWithFreq: Array<{ tag: string; freq: number }> = Object.entries(tagsCache).reduce((p, [k, v]) => {
+      return [...p, { tag: k, freq: v.nodes.length }]
+    }, [])
+    return tagsWithFreq
+  }
+
+  return {
+    getRelatedNodes,
+    getMostUsedTags,
+    getNodesAndCleanCacheForTag,
+    updateTagsFromContent,
+    getTags,
+    getAllTags,
+    hasTags
+  }
 }

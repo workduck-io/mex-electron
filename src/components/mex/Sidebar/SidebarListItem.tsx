@@ -2,17 +2,18 @@ import { useLastOpened } from '@hooks/useLastOpened'
 import { Icon } from '@iconify/react'
 import * as ContextMenu from '@radix-ui/react-context-menu'
 import { useUserPreferenceStore } from '@store/userPreferenceStore'
-import { ItemContent, ItemCount, ItemTitle, UnreadIndicator, StyledTreeItem } from '@style/Sidebar'
+import { ItemContent, ItemCount, ItemTitle, UnreadIndicator, StyledTreeItem, ItemTitleText } from '@style/Sidebar'
 import checkboxBlankCircleFill from '@iconify/icons-ri/checkbox-blank-circle-fill'
 import Tippy from '@tippyjs/react'
-import React, { useMemo } from 'react'
+import React, { useMemo, useState } from 'react'
 import { LastOpenedState } from '../../../types/userPreference'
 import { SidebarListItem } from './SidebarList.types'
 import { TooltipContent } from './TreeItem'
+import { Entity } from '../../../types/data'
 
-interface SidebarListItemProps {
+interface SidebarListItemProps<T> {
   tippyTarget: any
-  item: SidebarListItem
+  item: SidebarListItem<T>
   index: number
 
   select: {
@@ -23,13 +24,19 @@ interface SidebarListItemProps {
 
   // To render the context menu if the item is right-clicked
   contextMenu: {
-    ItemContextMenu?: (props: { item: SidebarListItem }) => JSX.Element
+    ItemContextMenu?: (props: { item: SidebarListItem<T> }) => JSX.Element
     setContextOpenViewId: (viewId: string) => void
     contextOpenViewId: string
   }
 }
 
-const SidebarListItemComponent = ({ tippyTarget, select, index, item, contextMenu }: SidebarListItemProps) => {
+const SidebarListItemComponent = <T extends Entity>({
+  tippyTarget,
+  select,
+  index,
+  item,
+  contextMenu
+}: SidebarListItemProps<T>) => {
   const { ItemContextMenu, setContextOpenViewId, contextOpenViewId } = contextMenu
   const { selectedItemId, selectIndex, onSelect } = select
 
@@ -51,7 +58,7 @@ const SidebarListItemComponent = ({ tippyTarget, select, index, item, contextMen
       placement="right"
       singleton={tippyTarget}
       key={`DisplayTippy_${item.id}`}
-      content={<TooltipContent item={{ id: item.id, children: [], data: { title: item.title } }} />}
+      content={<TooltipContent item={{ id: item.id, children: [], data: { title: item.label } }} />}
     >
       <span>
         <ContextMenu.Root
@@ -67,11 +74,23 @@ const SidebarListItemComponent = ({ tippyTarget, select, index, item, contextMen
               noSwitcher
               isUnread={isUnread}
               selected={item?.id === selectedItemId}
+              hasIconHover={!!item.hoverIcon}
             >
               <ItemContent onClick={() => onSelect(item?.id)}>
                 <ItemTitle>
-                  <Icon icon={item.icon} />
-                  <span>{item.title}</span>
+                  {item.hoverIcon && (
+                    <Icon
+                      className="iconOnHover"
+                      onClick={(e) => {
+                        e.preventDefault()
+                        e.stopPropagation()
+                        item.onIconClick && item.onIconClick(item.id)
+                      }}
+                      icon={item.hoverIcon}
+                    />
+                  )}
+                  <Icon className="defaultIcon" icon={item.icon} />
+                  <ItemTitleText>{item.label}</ItemTitleText>
                 </ItemTitle>
               </ItemContent>
               {isUnread && (

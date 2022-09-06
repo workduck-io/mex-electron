@@ -1,6 +1,7 @@
 import { generateTheme } from '../themeGenerator'
 
 export const spotlightTheme = generateTheme({
+  type: 'light',
   // Colors
   primary: '#5b94ff',
   secondary: '#2b76cc',

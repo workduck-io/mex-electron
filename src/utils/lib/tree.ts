@@ -117,6 +117,7 @@ export interface FlatItem {
   reminders?: number
   lastOpenedState?: LastOpenedState
   icon?: string
+  stub?: boolean
 }
 
 const getItem = (treeFlat: FlatItem[], id: string): number | undefined => {
@@ -250,21 +251,24 @@ export const getBaseNestedTree = (flatTree: FlatItem[]): BaseTreeNode[] => {
     }
   })
 
-  const sortedBaseNestedTree = sortTreeWithPriority(baseNestedTree)
-
   // mog('baseNestedTree', { baseNestedTree, sortedBaseNestedTree })
 
-  return sortedBaseNestedTree
+  return baseNestedTree
 }
 
 // Generate nested node tree from a list of ordered id strings
 // Expanded - path of the nodes that are expanded in tree
 // Note that id of FlatItem is the path
 // And id of TreeItem is the index+1 in nested tree like `1-2-3`
-export const generateTree = (treeFlat: FlatItem[], expanded: string[]): TreeData => {
+export const generateTree = (
+  treeFlat: FlatItem[],
+  expanded: string[],
+  sort?: (a: BaseTreeNode, b: BaseTreeNode) => number
+): TreeData => {
   // tree should be sorted
   mog('FLAT TREE', { treeFlat })
-  const baseNestedTree = getBaseNestedTree(treeFlat)
+  const unsortedBaseNestedTree = getBaseNestedTree(treeFlat)
+  const baseNestedTree = sort ? unsortedBaseNestedTree.sort(sort) : sortTreeWithPriority(unsortedBaseNestedTree)
   const nestedTree: TreeData = {
     rootId: '1',
     items: {}
@@ -298,6 +302,7 @@ export const generateTree = (treeFlat: FlatItem[], expanded: string[]): TreeData
           nodeid: n.nodeid,
           path: n.id,
           mex_icon: n.icon,
+          stub: n.stub,
           tasks: nestedItem.tasks,
           reminders: nestedItem.reminders,
           lastOpenedState: nestedItem.lastOpenedState
@@ -313,7 +318,7 @@ export const generateTree = (treeFlat: FlatItem[], expanded: string[]): TreeData
         // add to tree and update parent
         const newId = `1${TREE_SEPARATOR}${getIdFromBaseNestedTree(baseNestedTree, n.id, n.nodeid)}`
         // Order is important for rendering children
-        parentItem.children.unshift(newId)
+        parentItem.children.push(newId)
         parentItem.hasChildren = true
         nestedTree.items[parentId] = parentItem
         nestedTree.items[newId] = {
@@ -322,6 +327,7 @@ export const generateTree = (treeFlat: FlatItem[], expanded: string[]): TreeData
             nodeid: n.nodeid,
             path: n.id,
             mex_icon: n.icon,
+            stub: n.stub,
             tasks: nestedItem.tasks,
             reminders: nestedItem.reminders,
             lastOpenedState: nestedItem.lastOpenedState

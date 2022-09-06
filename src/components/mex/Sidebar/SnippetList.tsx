@@ -4,6 +4,7 @@ import { NavigationType, ROUTE_PATHS, useRouting } from '@views/routes/urls'
 import React from 'react'
 import SidebarList from './SidebarList'
 import magicLine from '@iconify/icons-ri/magic-line'
+import { SidebarWrapper } from '@ui/sidebar/Sidebar.style'
 
 const SnippetList = () => {
   const snippets = useSnippetStore((store) => store.snippets)
@@ -30,20 +31,23 @@ const SnippetList = () => {
       })
       .map((snippet) => ({
         id: snippet.id,
-        title: snippet.title,
-        icon: snippet.template ? magicLine : quillPenLine
+        label: snippet.title,
+        icon: snippet.template ? magicLine : quillPenLine,
+        data: snippet
       }))
   }, [snippets])
 
   return (
-    <SidebarList
-      items={sortedSnippets}
-      onClick={onOpenSnippet}
-      selectedItemId={currentSnippet?.id}
-      showSearch
-      searchPlaceholder="Filter Snippets..."
-      emptyMessage="No Snippets Found"
-    />
+    <SidebarWrapper>
+      <SidebarList
+        items={sortedSnippets}
+        onClick={onOpenSnippet}
+        selectedItemId={currentSnippet?.id}
+        showSearch
+        searchPlaceholder="Filter Snippets..."
+        emptyMessage="No Snippets Found"
+      />
+    </SidebarWrapper>
   )
 }
 

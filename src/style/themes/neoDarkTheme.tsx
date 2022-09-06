@@ -1,5 +1,6 @@
 import { generateTheme } from '../themeGenerator'
 export const neoDark = generateTheme({
+  type: 'dark',
   // border-radius: 43px;
   // background: #c4cce0;
   // box-shadow:  13px 13px 26px #acb4c5,

@@ -1,6 +1,6 @@
 import useLayout from '@hooks/useLayout'
 import { useLayoutStore } from '@store/useLayoutStore'
-import { SideNav } from '@style/Nav'
+import { RHSideNav, SideNav } from '@style/Nav'
 import { mog } from '@utils/lib/helper'
 import { ROUTE_PATHS } from '@views/routes/urls'
 import React from 'react'
@@ -32,7 +32,7 @@ const RHSidebar = () => {
   // mog('IS RHSIDEBAR', { rhSidebar })
 
   return (
-    <SideNav
+    <RHSideNav
       style={rhSidebarSpringProps}
       $show={rhSidebar.show}
       $expanded={rhSidebar.expanded}
@@ -41,7 +41,7 @@ const RHSidebar = () => {
       {...getFocusProps(focusMode)}
     >
       <RHSidebarContent />
-    </SideNav>
+    </RHSideNav>
   )
 }
 

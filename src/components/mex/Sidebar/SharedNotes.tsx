@@ -1,4 +1,5 @@
 import { SharedNodeIcon, SharedNodeIconify } from '@components/icons/Icons'
+import { SharedNode } from '../../../types/Types'
 import { useEditorStore } from '@store/useEditorStore'
 import { ContextMenuContent } from '@ui/components/menus/contextMenu'
 import { NavigationType, ROUTE_PATHS, useRouting } from '@views/routes/urls'
@@ -6,13 +7,13 @@ import React from 'react'
 import { useTheme } from 'styled-components'
 import { useNavigation } from '../../../hooks/useNavigation'
 import useDataStore from '../../../store/useDataStore'
-import { Centered } from './Bookmarks'
+import { Centered } from './StarredNotes'
 import SidebarList from './SidebarList'
 import { SidebarListItem } from './SidebarList.types'
 import { MuteMenuItem } from './TreeWithContextMenu'
 
 interface SharedNoteContextMenuProps {
-  item: SidebarListItem
+  item: SidebarListItem<SharedNode>
 }
 
 const SharedNoteContextMenu = ({ item }: SharedNoteContextMenuProps) => {
@@ -44,15 +45,16 @@ const SharedNotes = () => {
       noMargin
       items={sharedNodes.map((node) => ({
         id: node.nodeid,
-        title: node.path,
+        label: node.path,
         icon: SharedNodeIconify,
-        lastOpenedId: node.nodeid
+        lastOpenedId: node.nodeid,
+        data: node
       }))}
       onClick={onOpenNode}
       showSearch
       ItemContextMenu={SharedNoteContextMenu}
       selectedItemId={node.nodeid}
-      searchPlaceholder="Filter shared notes..."
+      searchPlaceholder="Filter Shared Notes"
       emptyMessage="No shared notes found"
     />
   ) : (

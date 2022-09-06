@@ -31,6 +31,12 @@ const getLinksFromContent = (content: any[]): string[] => {
   return uniq(links)
 }
 
+export const getTitleFromPath = (path: string, withNoteId = false) => {
+  const separator = withNoteId ? HASH_SEPARATOR : SEPARATOR
+  const titleAt = withNoteId ? -2 : -1
+
+  return path?.split(separator)?.slice(titleAt)[0]
+}
 export const useLinks = () => {
   const contents = useContentStore((state) => state.contents)
   const addInternalLink = useDataStore((state) => state.addInternalLink)
@@ -195,13 +201,6 @@ export const useLinks = () => {
     if (link) return link
   }
 
-  const getTitleFromPath = (path: string, withNoteId = false) => {
-    const separator = withNoteId ? HASH_SEPARATOR : SEPARATOR
-    const titleAt = withNoteId ? -2 : -1
-
-    return path?.split(separator)?.slice(titleAt)[0]
-  }
-
   const getNodeidFromPath = (path: string) => {
     const links = useDataStore.getState().ilinks
     const archive = useDataStore.getState().archive
@@ -292,7 +291,6 @@ export const useLinks = () => {
     getLinkCount,
     getLinks,
     getBacklinks,
-    getTitleFromPath,
     updateLinksFromContent,
     getNodeidFromPath,
     getILinkFromNodeid,

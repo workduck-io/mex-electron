@@ -13,6 +13,7 @@ import useDataStore from '@store/useDataStore'
 import { useHelpStore } from '@store/useHelpStore'
 import { useLayoutStore } from '@store/useLayoutStore'
 import archiveLine from '@iconify/icons-ri/archive-line'
+import { useEditorStore } from '@store/useEditorStore'
 import {
   ComingSoon,
   Count,
@@ -32,7 +33,7 @@ import { NavigationType, ROUTE_PATHS, useRouting } from '@views/routes/urls'
 import React, { useEffect } from 'react'
 import { tinykeys } from '@workduck-io/tinykeys'
 import NavigationCluster from './NavigationCluster'
-import SidebarTabs from './SidebarTabs'
+import SidebarTabs from '@ui/sidebar/Sidebar'
 import { useSidebarTransition } from './Transition'
 import { NavTooltip, TitleWithShortcut } from '@workduck-io/mex-components'
 
@@ -191,6 +192,7 @@ const Nav = () => {
   const sidebar = useLayoutStore((store) => store.sidebar)
   const focusMode = useLayoutStore((store) => store.focusMode)
   const toggleSidebar = useLayoutStore((store) => store.toggleSidebar)
+  const isUserEditing = useEditorStore((store) => store.isEditing)
   const { getFocusProps } = useLayout()
 
   const [source, target] = useSingleton()
@@ -228,13 +230,14 @@ const Nav = () => {
         <SideNav
           onMouseUp={(e) => e.stopPropagation()}
           style={springProps}
+          $isUserEditing={isUserEditing}
           $expanded={sidebar.expanded}
           $show={sidebar.show}
           $overlaySidebar={overlaySidebar}
           $side="left"
           {...getFocusProps(focusMode)}
         >
-          {/* Notes, Shared, Bookmarks */}
+          {/* Notes,  Shared, Bookmarks */}
           <SidebarTabs />
         </SideNav>
       </NavWrapper>

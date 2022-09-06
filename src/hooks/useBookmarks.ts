@@ -8,6 +8,10 @@ import { useLinks } from './useLinks'
 
 import { useAuthStore } from '../services/auth/useAuth'
 
+/**
+ * Has been repurposed into starred notes
+ * TODO: Refactor after namespaces from backend
+ */
 export const useBookmarks = () => {
   const setBookmarks = useDataStore((state) => state.setBookmarks)
   const getBookmarks = useDataStore((state) => state.getBookmarks)
@@ -21,7 +25,7 @@ export const useBookmarks = () => {
 
   const isBookmark = (nodeid: string) => {
     const bookmarks = useDataStore.getState().bookmarks
-    return bookmarks.indexOf(nodeid) > -1
+    return [...bookmarks].indexOf(nodeid) > -1
   }
 
   const addBookmark = async (nodeid: string): Promise<boolean> => {

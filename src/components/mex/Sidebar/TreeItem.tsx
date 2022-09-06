@@ -12,6 +12,7 @@ import {
   ItemContent,
   ItemCount,
   ItemTitle,
+  ItemTitleText,
   StyledTreeItem,
   StyledTreeItemSwitcher,
   StyledTreeSwitcher,
@@ -23,7 +24,6 @@ import Tippy from '@tippyjs/react'
 import React, { useMemo } from 'react'
 import { PathMatch } from 'react-router-dom'
 import { TreeContextMenu } from './TreeWithContextMenu'
-// import { complexTree } from '../mockdata/complexTree'
 
 const defaultSnap = {
   isDragging: false,
@@ -69,7 +69,7 @@ const ItemTitleWithAnalysis = ({ item }: { item: TreeItem }) => {
   return (
     <ItemTitle>
       <Icon icon={item.data.mex_icon ?? fileList2Line} />
-      <span>{title}</span>
+      <ItemTitleText>{title}</ItemTitleText>
     </ItemTitle>
   )
 }
@@ -100,6 +100,7 @@ interface TreeItemProps extends RenderItemParams {
   contextOpenNodeId: string
   isInEditor: boolean
   match: PathMatch<'nodeid'>
+  isHighlighted: boolean
   setContextOpenNodeId: (nodeid: string | null) => void
   onClick: (e: React.MouseEvent<HTMLDivElement, MouseEvent>, item: TreeItem) => void
 }
@@ -114,6 +115,7 @@ export const RenderTreeItem = ({
   contextOpenNodeId,
   setContextOpenNodeId,
   isInEditor,
+  isHighlighted,
   match,
   onClick
 }: TreeItemProps) => {
@@ -146,8 +148,10 @@ export const RenderTreeItem = ({
               selected={isInEditor && item.data && match?.params?.nodeid === item.data.nodeid}
               isDragging={snapshot.isDragging}
               hasMenuOpen={contextOpenNodeId === item.data.nodeid}
+              isStub={item?.data?.stub}
               isBeingDroppedAt={isTrue}
               isUnread={isUnread}
+              isHighlighted={isHighlighted}
               onContextMenu={(e) => {
                 console.log('ContextySe', e, item)
               }}

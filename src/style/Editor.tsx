@@ -3,6 +3,7 @@ import { Button } from '@workduck-io/mex-components'
 import { lighten, mix, transparentize } from 'polished'
 import styled, { css } from 'styled-components'
 import { focusStyles } from './focus'
+import { ScrollStyles } from './helpers'
 import { FadeInOut } from './Layouts'
 import { FocusModeProp } from './props'
 
@@ -42,9 +43,10 @@ interface StyledEditorProps {
   showGraph?: boolean
 }
 
-export const EditorWrapper = styled.div<{ comboboxOpen?: boolean }>`
+export const EditorWrapper = styled.div<{ comboboxOpen?: boolean; isUserEditing?: boolean }>`
   height: 100%;
   overflow-y: auto;
+  ${({ isUserEditing }) => ScrollStyles(isUserEditing ? 'transparent' : undefined)}
   ${({ comboboxOpen }) =>
     comboboxOpen &&
     css`
@@ -71,7 +73,7 @@ export const CenteredMainContent = styled.div`
   }
 `
 
-export const StyledEditor = styled(CenteredMainContent) <StyledEditorProps>``
+export const StyledEditor = styled(CenteredMainContent)<StyledEditorProps>``
 
 export const EditorBreadcrumbs = styled.div<{ isVisible?: boolean }>`
   display: flex;

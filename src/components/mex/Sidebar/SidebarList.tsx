@@ -1,18 +1,15 @@
 import searchLine from '@iconify/icons-ri/search-line'
 import { Icon } from '@iconify/react'
-import * as ContextMenu from '@radix-ui/react-context-menu'
 import { Input } from '@style/Form'
 import { ItemContent, ItemTitle, StyledTreeItem } from '@style/Sidebar'
 import Tippy, { useSingleton } from '@tippyjs/react'
 import { fuzzySearch } from '@utils/lib/fuzzySearch'
 import { mog } from '@utils/lib/helper'
+import { tinykeys } from '@workduck-io/tinykeys'
 import { debounce } from 'lodash'
 import React, { useEffect, useState } from 'react'
-import { tinykeys } from '@workduck-io/tinykeys'
 import { EmptyMessage, FilteredItemsWrapper, SidebarListFilter, SidebarListWrapper } from './SidebarList.style'
-import { TooltipContent } from './TreeItem'
 import { SidebarListProps } from './SidebarList.types'
-import { LastOpenedState } from '../../../types/userPreference'
 import SidebarListItemComponent from './SidebarListItem'
 
 const SidebarList = ({
@@ -25,7 +22,7 @@ const SidebarList = ({
   searchPlaceholder,
   emptyMessage,
   noMargin
-}: SidebarListProps) => {
+}: SidebarListProps<any>) => {
   const [contextOpenViewId, setContextOpenViewId] = useState<string>(null)
   const [search, setSearch] = useState('')
   const [listItems, setListItems] = useState(items)
@@ -58,7 +55,7 @@ const SidebarList = ({
   useEffect(() => {
     if (showSearch) {
       if (search && search !== '') {
-        const filtered = fuzzySearch(items, search, (item) => item.title)
+        const filtered = fuzzySearch(items, search, (item) => item.label)
         mog('Search', { search, filtered })
         setListItems(filtered)
       }
@@ -118,7 +115,7 @@ const SidebarList = ({
           <ItemContent onClick={() => onSelectItem(defaultItem.id)}>
             <ItemTitle>
               <Icon icon={defaultItem.icon} />
-              <span>{defaultItem.title}</span>
+              <span>{defaultItem.label}</span>
             </ItemTitle>
           </ItemContent>
         </StyledTreeItem>

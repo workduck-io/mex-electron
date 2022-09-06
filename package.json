@@ -1,7 +1,7 @@
 {
   "name": "mex-alpha",
   "productName": "Mex Alpha",
-  "version": "0.14.0-alpha.13",
+  "version": "0.15.0-alpha.1",
   "description": "Mex it to flex it",
   "main": "dist/main.cjs",
   "scripts": {
@@ -104,7 +104,7 @@
     "@workduck-io/action-request-helper": "^0.1.6",
     "@workduck-io/dwindle": "^0.0.19",
     "@workduck-io/flexsearch": "^0.7.22",
-    "@workduck-io/mex-components": "^0.0.9",
+    "@workduck-io/mex-components": "^0.0.11",
     "@workduck-io/tinykeys": "1.5.0",
     "active-win-universal": "^7.6.2",
     "axios": "^0.21.1",
@@ -146,6 +146,7 @@
     "react-hot-toast": "^2.1.0",
     "react-linkify": "^1.0.0-alpha",
     "react-markdown": "^8.0.2",
+    "react-merge-refs": "^2.0.1",
     "react-modal": "^3.14.2",
     "react-oembed-container": "^1.0.0",
     "react-remove-scroll": "^2.5.5",

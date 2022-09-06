@@ -1,6 +1,7 @@
 import { generateTheme } from '../themeGenerator'
 
 export const mexTheme = generateTheme({
+  type: 'dark',
   // Colors
   primary: '#55A2EA',
   secondary: '#B877EC',

@@ -37,6 +37,8 @@ export interface SearchFilter<Item> {
   // sort: 'asc' | 'desc'
 }
 
+export type Entity = Record<string, unknown>
+
 export interface NodeMetadata {
   createdBy?: string
   createdAt?: number

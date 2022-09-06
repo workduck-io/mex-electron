@@ -1,6 +1,7 @@
 import { generateTheme } from '../themeGenerator'
 
 export const vvkTheme = generateTheme({
+  type: 'dark',
   // Colors
   primary: '#C792EA',
   secondary: '#8d39c1',

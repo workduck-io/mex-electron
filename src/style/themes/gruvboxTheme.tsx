@@ -1,6 +1,7 @@
 import { generateTheme } from '../themeGenerator'
 
 export const gruvboxTheme = generateTheme({
+  type: 'dark',
   // Colors
   primary: '#b8bb26',
   secondary: '#fabd2f',
