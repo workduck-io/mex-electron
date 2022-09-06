@@ -13,6 +13,7 @@ import useDataStore from '@store/useDataStore'
 import { useHelpStore } from '@store/useHelpStore'
 import { useLayoutStore } from '@store/useLayoutStore'
 import archiveLine from '@iconify/icons-ri/archive-line'
+import { useEditorStore } from '@store/useEditorStore'
 import {
   ComingSoon,
   Count,
@@ -191,6 +192,7 @@ const Nav = () => {
   const sidebar = useLayoutStore((store) => store.sidebar)
   const focusMode = useLayoutStore((store) => store.focusMode)
   const toggleSidebar = useLayoutStore((store) => store.toggleSidebar)
+  const isUserEditing = useEditorStore((store) => store.isEditing)
   const { getFocusProps } = useLayout()
 
   const [source, target] = useSingleton()
@@ -228,6 +230,7 @@ const Nav = () => {
         <SideNav
           onMouseUp={(e) => e.stopPropagation()}
           style={springProps}
+          $isUserEditing={isUserEditing}
           $expanded={sidebar.expanded}
           $show={sidebar.show}
           $overlaySidebar={overlaySidebar}

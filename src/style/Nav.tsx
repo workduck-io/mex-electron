@@ -8,6 +8,7 @@ import { CollapseHeader, CollapseWrapper } from '../ui/layout/Collapse/Collapse.
 import { focusStyles } from './focus'
 import { FocusModeProp } from './props'
 import { Scroll } from './spotlight/layout'
+import { ScrollStyles } from './helpers'
 
 export const NavTitle = styled.span`
   flex-grow: 1;
@@ -227,6 +228,7 @@ export interface NavWrapperProps extends FocusModeProp {
 export interface SideNavProps extends NavWrapperProps {
   $overlaySidebar: boolean
   $side: 'left' | 'right'
+  $isUserEditing?: boolean
 }
 
 const sidebarPos = ({ $overlaySidebar, theme, $side }) =>
@@ -263,6 +265,9 @@ export const SideNav = styled(animated.div)<SideNavProps>`
   z-index: 10;
   padding: ${({ theme }) => theme.spacing.large} 0 0;
 
+  & div {
+    ${({ $isUserEditing }) => ScrollStyles($isUserEditing ? 'transparent' : undefined)}
+  }
   ${sidebarPos}
 
   ${({ $expanded, $show }) =>

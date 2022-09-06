@@ -55,6 +55,7 @@ const ContentEditor = () => {
   const { shortcutHandler } = useKeyListener()
   const { getSuggestions } = useSuggestions()
   const shortcuts = useHelpStore((store) => store.shortcuts)
+  const isUserEditing = useEditorStore((store) => store.isEditing)
 
   const editorRef = usePlateEditorRef()
 
@@ -148,7 +149,7 @@ const ContentEditor = () => {
 
         {isBlockMode ? <BlockInfoBar /> : <Metadata node={node} />}
 
-        <EditorWrapper comboboxOpen={isComboOpen} ref={editorWrapperRef} onClick={onFocusClick}>
+        <EditorWrapper comboboxOpen={isComboOpen} isUserEditing={isUserEditing} ref={editorWrapperRef} onClick={onFocusClick}>
           <Editor
             showBalloonToolbar
             onAutoSave={onAutoSave}
