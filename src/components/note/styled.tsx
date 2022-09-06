@@ -8,6 +8,13 @@ export const NoteWindowLayout = styled.section`
   padding: ${({ theme }) => theme.spacing.medium};
 `
 
+export const NoteHeaderContainer = styled.div`
+  margin: 0.15rem 1rem 0.15rem 7rem;
+  display: flex;
+  align-items: center;
+`
+
+
 export const MainFont = css`
   font-size: 14px;
 `
@@ -16,6 +23,11 @@ export const BodyFont = css`
   font-size: 12px;
 `
 
+export const NoteTitle = styled.div`
+  margin: 0;
+  flex-grow: 1;
+  ${MainFont}
+`
 export const GlobalNoteStyles = createGlobalStyle`
   ${normalize}
 

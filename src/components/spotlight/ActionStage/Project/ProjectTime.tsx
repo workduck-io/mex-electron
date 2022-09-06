@@ -4,7 +4,7 @@ import { Relative, RelativeTime } from '../../../mex/RelativeTime'
 import { FieldLabel, FieldValue } from './ProjectIcon'
 import { TemplateCss, TemplateItemProp } from './ProjectTitle'
 
-const ProjectTimeStyled = styled.div<{ isView?: boolean }>`
+export const ProjectTimeStyled = styled.div<{ isView?: boolean }>`
   ${TemplateCss}
 
   color: ${({ theme }) => theme.colors.gray[5]};

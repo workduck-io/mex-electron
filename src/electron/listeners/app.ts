@@ -1,6 +1,5 @@
 import { IpcAction } from '@data/IpcAction'
 import Toast from '@electron/Toast'
-import { windows } from '@electron/main'
 import createTray from '@electron/tray'
 import { setupUpdateService } from '@electron/update'
 import { SEARCH_INDEX_LOCATION, TEMP_DATA_BEFORE_UPDATE } from '@electron/utils/fileLocations'
@@ -9,9 +8,11 @@ import { handleToggleMainWindow, createAllWindows, createMexWindow, createSpotLi
 import extensionsForDevX from '@electron/utils/installExtensions'
 import { getRedirectPath } from '@electron/utils/redirect'
 import { dumpIndexDisk } from '@electron/worker/controller'
-import { app, BrowserWindow, globalShortcut } from 'electron'
+import { app, globalShortcut } from 'electron'
+import { windowManager } from '@electron/WindowManager'
+import { AppType } from '@hooks/useInitialize'
 
-export type WindowsType = { spotlight?: BrowserWindow; mex?: BrowserWindow; toast?: Toast }
+export type WindowsType = { toast?: Toast }
 
 const appEventListeners = () => {
   app
@@ -29,12 +30,12 @@ const appEventListeners = () => {
       return tempData
     })
     .then((d) => createAllWindows(d))
-    .then(() => setupUpdateService(windows.mex))
+    .then(() => setupUpdateService())
     .catch(console.error)
 
   app.on('activate', () => {
-    if (windows.mex === null) createMexWindow()
-    if (windows.spotlight === null) createSpotLighWindow()
+    if (windowManager.getWindow(AppType.MEX) === null) createMexWindow()
+    if (windowManager.getWindow(AppType.SPOTLIGHT) === null) createSpotLighWindow()
   })
 
   app.on('window-all-closed', () => {
@@ -44,7 +45,7 @@ const appEventListeners = () => {
   })
 
   app.once('before-quit', () => {
-    windows?.mex?.webContents.send(IpcAction.SAVE_AND_EXIT)
+    windowManager.sendToWindow(AppType.MEX, IpcAction.SAVE_AND_EXIT)
   })
 
   app.on('before-quit', async () => {
@@ -63,10 +64,10 @@ const appEventListeners = () => {
   app.removeAsDefaultProtocolClient('mex')
   app.setAsDefaultProtocolClient('mex')
 
-  app.on('open-url', function (event, url) {
+  app.on('open-url', function(event, url) {
     event.preventDefault()
 
-    getRedirectPath(windows.mex, url)
+    getRedirectPath(windowManager.getWindow(AppType.MEX), url)
   })
 }
 

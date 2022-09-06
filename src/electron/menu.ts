@@ -1,3 +1,4 @@
+import { AppType } from '@hooks/useInitialize'
 import { BrowserWindow, Menu, MenuItemConstructorOptions, app, shell, dialog } from 'electron'
 import fs from 'fs/promises'
 import path from 'path'
@@ -8,6 +9,7 @@ import { ToastStatus } from '../types/toast'
 import { windows } from './main'
 import { checkForUpdatesAndNotifyWrapper } from './update'
 import { checkIfAlpha } from './utils/version'
+import { windowManager } from './WindowManager'
 
 interface DarwinMenuItemConstructorOptions extends MenuItemConstructorOptions {
   selector?: string
@@ -134,8 +136,8 @@ export default class MenuBuilder {
           label: 'Toggle Developer Tools',
           accelerator: 'Alt+Command+I',
           click: () => {
-            windows.mex?.webContents.openDevTools()
-            windows.spotlight?.webContents.openDevTools()
+            windowManager.getWindow(AppType.MEX)?.webContents.openDevTools()
+            windowManager.getWindow(AppType.SPOTLIGHT)?.webContents.openDevTools()
           }
         },
         {
@@ -189,42 +191,12 @@ export default class MenuBuilder {
         { label: 'Bring All to Front', selector: 'arrangeInFront:' }
       ]
     }
-    const subMenuHelp: MenuItemConstructorOptions = {
-      label: 'Help',
-      submenu: [
-        {
-          label: 'Learn More',
-          click() {
-            shell.openExternal('https://electronjs.org')
-          }
-        },
-        {
-          label: 'Documentation',
-          click() {
-            shell.openExternal('https://github.com/electron/electron/tree/master/docs#readme')
-          }
-        },
-        {
-          label: 'Community Discussions',
-          click() {
-            shell.openExternal('https://www.electronjs.org/community')
-          }
-        },
-        {
-          label: 'Search Issues',
-          click() {
-            shell.openExternal('https://github.com/electron/electron/issues')
-          }
-        }
-      ]
-    }
-
     const subMenuView =
       process.env.MODE === 'development' || process.env.DEBUG_PROD === 'true' || isAlpha
         ? subMenuViewDev
         : subMenuViewProd
 
-    return [subMenuAbout, subMenuEdit, subMenuView, subMenuWindow, subMenuHelp]
+    return [subMenuAbout, subMenuEdit, subMenuView, subMenuWindow]
   }
 
   buildDefaultTemplate() {
@@ -250,66 +222,37 @@ export default class MenuBuilder {
         submenu:
           process.env.MODE === 'development' || process.env.DEBUG_PROD === 'true'
             ? [
-                {
-                  label: '&Reload',
-                  accelerator: 'Ctrl+R',
-                  click: () => {
-                    this.mainWindow?.webContents.reload()
-                  }
-                },
-                {
-                  label: 'Toggle &Full Screen',
-                  accelerator: 'F11',
-                  click: () => {
-                    this.mainWindow.setFullScreen(!this.mainWindow.isFullScreen())
-                  }
-                },
-                {
-                  label: 'Toggle &Developer Tools',
-                  accelerator: 'Alt+Ctrl+I',
-                  click: () => {
-                    this.mainWindow?.webContents.toggleDevTools()
-                  }
+              {
+                label: '&Reload',
+                accelerator: 'Ctrl+R',
+                click: () => {
+                  this.mainWindow?.webContents.reload()
                 }
-              ]
+              },
+              {
+                label: 'Toggle &Full Screen',
+                accelerator: 'F11',
+                click: () => {
+                  this.mainWindow.setFullScreen(!this.mainWindow.isFullScreen())
+                }
+              },
+              {
+                label: 'Toggle &Developer Tools',
+                accelerator: 'Alt+Ctrl+I',
+                click: () => {
+                  this.mainWindow?.webContents.toggleDevTools()
+                }
+              }
+            ]
             : [
-                {
-                  label: 'Toggle &Full Screen',
-                  accelerator: 'F11',
-                  click: () => {
-                    this.mainWindow.setFullScreen(!this.mainWindow.isFullScreen())
-                  }
+              {
+                label: 'Toggle &Full Screen',
+                accelerator: 'F11',
+                click: () => {
+                  this.mainWindow.setFullScreen(!this.mainWindow.isFullScreen())
                 }
-              ]
-      },
-      {
-        label: 'Help',
-        submenu: [
-          {
-            label: 'Learn More',
-            click() {
-              shell.openExternal('https://electronjs.org')
-            }
-          },
-          {
-            label: 'Documentation',
-            click() {
-              shell.openExternal('https://github.com/electron/electron/tree/master/docs#readme')
-            }
-          },
-          {
-            label: 'Community Discussions',
-            click() {
-              shell.openExternal('https://www.electronjs.org/community')
-            }
-          },
-          {
-            label: 'Search Issues',
-            click() {
-              shell.openExternal('https://github.com/electron/electron/issues')
-            }
-          }
-        ]
+              }
+            ]
       }
     ]
 

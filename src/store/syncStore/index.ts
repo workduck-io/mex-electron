@@ -56,7 +56,6 @@ export const syncStoreState = <T extends State, K extends keyof T>(
     }, {} as Record<string, PartialSyncStateType>)
 
     if (!isEmpty(partialState)) {
-      mog('STATE IS', { partialState })
       newBroadCastSyncChannel.postMessage({ updatedAt: lastSyncedStateTimestamp, state: partialState })
     }
   })

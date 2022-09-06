@@ -1,9 +1,10 @@
 import { trayIconBase64, twitterIconBase64 } from '@data/Defaults/images'
 import { IpcAction } from '@data/IpcAction'
+import { AppType } from '@hooks/useInitialize'
 import { nativeImage, Tray, Menu, app, shell } from 'electron'
 import { SPOTLIGHT_SHORTCUT } from './listeners/ipc'
-import { windows } from './main'
 import { handleToggleMainWindow } from './utils/helper'
+import { windowManager } from './WindowManager'
 
 const createTray = () => {
   const icon = nativeImage.createFromDataURL(trayIconBase64)
@@ -22,22 +23,22 @@ const createTray = () => {
     {
       label: 'New Note',
       click: () => {
-        windows.mex?.webContents.send(IpcAction.CREATE_NEW_NODE)
-        windows.mex?.show()
+        windowManager.sendToWindow(AppType.MEX, IpcAction.CREATE_NEW_NODE)
+        windowManager?.getWindow(AppType.MEX)?.show()
       }
     },
     { type: 'separator' },
     {
       label: 'Open Mex',
       click: () => {
-        windows.mex?.show()
+        windowManager.getWindow(AppType.MEX)?.show()
       }
     },
     {
       label: 'Open Spotlight',
       accelerator: SPOTLIGHT_SHORTCUT,
       click: () => {
-        windows.spotlight?.show()
+        windowManager.getWindow(AppType.SPOTLIGHT)?.show()
       }
     },
     { type: 'separator' },
@@ -52,8 +53,8 @@ const createTray = () => {
     {
       label: 'Open Preferences',
       click: () => {
-        windows.mex?.webContents.send(IpcAction.OPEN_PREFERENCES)
-        windows.mex?.show()
+        windowManager.sendToWindow(AppType.MEX, IpcAction.OPEN_PREFERENCES)
+        windowManager.getWindow(AppType.MEX)?.show()
       }
     },
     {
@@ -68,7 +69,7 @@ const createTray = () => {
       label: 'Quit Mex',
       accelerator: 'Command+Q',
       click: () => {
-        windows.mex?.webContents.send(IpcAction.SAVE_AND_EXIT)
+        windowManager.sendToWindow(AppType.MEX, IpcAction.SAVE_AND_EXIT)
         app.quit()
       }
     }
