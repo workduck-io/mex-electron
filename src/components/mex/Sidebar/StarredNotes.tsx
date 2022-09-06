@@ -85,7 +85,7 @@ const StarredNotes = () => {
             tippyTarget={target}
           />
         ))}
-        {!currentBmed && bookmarkItems.length < 5 && <StarNoteButton />}
+        {bookmarkItems.length < 5 && <StarNoteButton />}
       </PinnedList>
     </>
   )

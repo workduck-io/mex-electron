@@ -198,6 +198,14 @@ export const SStarNoteButton = styled(LoadingButton)`
     background: transparent;
   }
 
+  ${({ highlight }) =>
+    highlight &&
+    css`
+      transition: 0s;
+      opacity: 0;
+      pointer-events: none;
+    `}
+
   svg {
     flex-shrink: 0;
     height: 16px;

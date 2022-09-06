@@ -2,7 +2,6 @@ import { Icon } from '@iconify/react'
 import React, { useEffect, useMemo, useState } from 'react'
 import { useBookmarks } from '../../../hooks/useBookmarks'
 import starLine from '@iconify/icons-ri/star-line'
-import pushpinLine from '@iconify/icons-ri/pushpin-line'
 import { useEditorStore } from '@store/useEditorStore'
 import useDataStore from '@store/useDataStore'
 import { SStarNoteButton } from '@ui/sidebar/Sidebar.style'
@@ -22,12 +21,10 @@ const StarNoteButton = () => {
 
   const nodeid = node?.nodeid ?? ''
 
-  const bookmarks = useDataStore((state) => state.addBookmarks)
+  const bookmarks = useDataStore((state) => state.bookmarks)
 
   useEffect(() => {
     const con = isBookmark(nodeid)
-
-    // mog('Bookmarked?', { con })
     setBmed(con)
   }, [nodeid, bookmarks])
 
@@ -50,7 +47,7 @@ const StarNoteButton = () => {
     return getTitleFromPath(getPathFromNodeid(node.nodeid))
   }, [node])
 
-  const label = bmed ? `Unstar ${noteTitle}` : `Star ${noteTitle}`
+  const label = `Star ${noteTitle}`
 
   return (
     <SStarNoteButton dots={5} loading={loading} highlight={bmed} onClick={onBookmark} transparent={false}>

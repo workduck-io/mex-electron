@@ -25,7 +25,7 @@ export const useBookmarks = () => {
 
   const isBookmark = (nodeid: string) => {
     const bookmarks = useDataStore.getState().bookmarks
-    return [...bookmarks].reverse().slice(0, 5).indexOf(nodeid) > -1
+    return [...bookmarks].indexOf(nodeid) > -1
   }
 
   const addBookmark = async (nodeid: string): Promise<boolean> => {
