@@ -2600,10 +2600,10 @@
     object-hash "^3.0.0"
     riot-tmpl "^3.0.8"
 
-"@workduck-io/dwindle@^0.0.17":
-  version "0.0.17"
-  resolved "https://npm.pkg.github.com/download/@workduck-io/dwindle/0.0.17/d804a53fc13224c5f07fbe6ded2d9a670ef84fb7#d804a53fc13224c5f07fbe6ded2d9a670ef84fb7"
-  integrity sha512-8oZYRRATfC23W+DaAvxVL7XUK+ggEePiyEwOy8tlgh7upm1L1PqEsfsg/NJRX5pCrYZhyY7N8STcOdXjaDOuGA==
+"@workduck-io/dwindle@^0.0.19":
+  version "0.0.19"
+  resolved "https://npm.pkg.github.com/download/@workduck-io/dwindle/0.0.19/9bb5a8c361b355b404728b4dc02680e2c3a23ec6#9bb5a8c361b355b404728b4dc02680e2c3a23ec6"
+  integrity sha512-/smcREW0MWvrxjNTHmic0Z9FvrYnllKKWTi7fyEHUiWdMVnQORYNVHKJoz0ClALu7y9sNU2rfOyMmnoxIrg8bA==
   dependencies:
     "@types/jsonwebtoken" "^8.5.5"
     amazon-cognito-identity-js "^5.2.0"

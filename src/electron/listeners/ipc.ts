@@ -1,11 +1,11 @@
 import { IpcAction } from '@data/IpcAction'
 import { windows } from '@electron/main'
 import {
-  TOKEN_LOCATION,
   MENTION_LOCATION,
   SAVE_LOCATION,
   SEARCH_INDEX_LOCATION,
-  TEMP_DATA_BEFORE_UPDATE
+  TEMP_DATA_BEFORE_UPDATE,
+  TOKEN_LOCATION
 } from '@electron/utils/fileLocations'
 import { getDataOfLocation, getFileData, setDataAtLocation, setFileData } from '@electron/utils/filedata'
 import { copyToClipboard, getGlobalShortcut, useSnippetFromClipboard } from '@electron/utils/getSelectedText'
@@ -29,7 +29,7 @@ import { app, globalShortcut, ipcMain } from 'electron'
 import { autoUpdater } from 'electron-updater'
 import fs from 'fs'
 
-import useAuthStore from '@workduck-io/dwindle/lib/esm/AuthStore/useAuthStore'
+import { useAuthStore } from '@workduck-io/dwindle'
 
 import { AuthTokenData } from '../../types/auth'
 import { FileData } from '../../types/data'

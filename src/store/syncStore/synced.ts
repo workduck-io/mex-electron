@@ -1,18 +1,20 @@
+import { useActionsCache } from '@components/spotlight/Actions/useActionsCache'
+import { useBufferStore } from '@hooks/useEditorBuffer'
+import { useReminderStore } from '@hooks/useReminders'
+import { useAuthStore } from '@services/auth/useAuth'
+import { useTokenStore } from '@services/auth/useTokens'
 import { useContentStore } from '@store/useContentStore'
 import useDataStore from '@store/useDataStore'
+import { useMentionStore } from '@store/useMentionStore'
 import { useRecentsStore } from '@store/useRecentsStore'
 import { useSnippetStore } from '@store/useSnippetStore'
-import { useAuthStore } from '@services/auth/useAuth'
-import useDwindleAuthStore from '@workduck-io/dwindle/lib/esm/AuthStore/useAuthStore'
+import useTodoStore from '@store/useTodoStore'
+import { useUserPreferenceStore } from '@store/userPreferenceStore'
+
+import { useAuthStore as useDwindleAuthStore } from '@workduck-io/dwindle'
+
 import { syncStoreState } from '.'
 import { BroadcastSyncedChannel } from './types'
-import { useActionsCache } from '@components/spotlight/Actions/useActionsCache'
-import { useReminderStore } from '@hooks/useReminders'
-import { useMentionStore } from '@store/useMentionStore'
-import { useTokenStore } from '@services/auth/useTokens'
-import { useUserPreferenceStore } from '@store/userPreferenceStore'
-import { useBufferStore } from '@hooks/useEditorBuffer'
-import useTodoStore from '@store/useTodoStore'
 
 const syncStores = () => {
   if ('BroadcastChannel' in globalThis) {

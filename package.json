@@ -102,7 +102,7 @@
     "@udecode/plate-highlight": "~16.3.0",
     "@uifabric/styling": "^7.19.0",
     "@workduck-io/action-request-helper": "^0.1.6",
-    "@workduck-io/dwindle": "^0.0.17",
+    "@workduck-io/dwindle": "^0.0.19",
     "@workduck-io/flexsearch": "^0.7.22",
     "@workduck-io/mex-components": "^0.0.9",
     "@workduck-io/tinykeys": "1.5.0",
