@@ -148,14 +148,14 @@ export const CreateNewButton = styled.button<CreateNewButtonProps>`
   transition: 0.15s transform ease-out, 0.5s color ease-in;
 
   :hover {
-    transform: translateY(-10%) scale(1.25);
+    transform: translateY(-10%) translateX(-10%) scale(1.25);
     color: ${({ theme }) => theme.colors.primary};
   }
 
   ${({ menuOpen }) =>
     menuOpen &&
     css`
-      transform: translateY(-10%) scale(1.25);
+      transform: translateY(-10%) translateX(-10%) scale(1.25);
       color: ${({ theme }) => theme.colors.primary};
     `}
 

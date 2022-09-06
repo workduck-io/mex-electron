@@ -74,7 +74,7 @@ const StarredNotes = () => {
             item={b}
             contextMenu={{
               setContextOpenViewId: () => undefined,
-              contextOpenViewId: ''
+              contextOpenViewId: node.nodeid
             }}
             select={{
               onSelect: onOpenNode,

@@ -16,6 +16,7 @@ const NavBreadCrumbs = ({ nodeId }: NavBreadCrumbsType) => {
   const isUserEditing = useEditorStore((store) => store.isEditing)
 
   const openBreadcrumb = (nodeId: string) => {
+    if (nodeId.startsWith('space')) return
     goTo(ROUTE_PATHS.node, NavigationType.push, nodeId)
   }
 

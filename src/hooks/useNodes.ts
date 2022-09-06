@@ -6,6 +6,8 @@ import { AccessLevel } from '../types/mentions'
 import { useRecentsStore } from '@store/useRecentsStore'
 import { getAllParentIds, getNameFromPath } from '@components/mex/Sidebar/treeUtils'
 import { BreadcrumbItem } from '@workduck-io/mex-components'
+import { getParentBreadcurmbs } from '@utils/lib/paths'
+import { SharedNodeIconify } from '@components/icons/Icons'
 
 // Used to ensure no path clashes while adding ILink.
 // path functions to check wether clash is happening can be also used
@@ -116,27 +118,36 @@ export const useNodes = () => {
     const nodes = useDataStore.getState().ilinks
     const node = nodes.find((l) => l.nodeid === nodeid)
 
-    if (!node) return []
+    if (node) {
+      const parents = getParentBreadcurmbs(node.path, nodes)
 
-    const allParents = getAllParentIds(node.path)
+      parents.unshift({
+        id: 'space-personal',
+        icon: 'ri:user-line',
+        label: 'Personal',
+        hideLabel: true
+      })
 
-    const parents: BreadcrumbItem[] = allParents.reduce((val, p) => {
-      const parentNode = nodes.find((l) => l.path === p)
-      if (parentNode) {
-        return [
-          ...val,
-          {
-            id: parentNode.nodeid,
-            icon: parentNode.icon ?? 'ri:file-list-2-line',
-            label: getNameFromPath(parentNode.path)
-          }
-        ]
-      }
-      return val
-    }, [])
+      // mog('We have them breadcrumbs', { parents, nodeid, allParents })
+      return parents
+    }
 
-    // mog('We have them breadcrumbs', { parents, nodeid, allParents })
-    return parents
+    const sharedNodes = useDataStore.getState().sharedNodes
+    const sharedNode = sharedNodes.find((n) => n.nodeid === nodeid)
+    if (sharedNode) {
+      const parents = getParentBreadcurmbs(sharedNode.path, sharedNodes)
+
+      parents.unshift({
+        id: 'space-shared',
+        icon: 'ri:share-line',
+        label: 'Shared Notes',
+        hideLabel: true
+      })
+
+      return parents
+    }
+
+    return []
   }
 
   return {

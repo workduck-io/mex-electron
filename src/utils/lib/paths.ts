@@ -1,9 +1,17 @@
+import { ILink } from '../../types/Types'
 import toast from 'react-hot-toast'
-import { getParentFromPath, isElder, SEPARATOR } from '../../components/mex/Sidebar/treeUtils'
+import {
+  getAllParentIds,
+  getNameFromPath,
+  getParentFromPath,
+  isElder,
+  SEPARATOR
+} from '../../components/mex/Sidebar/treeUtils'
 import { BASE_DRAFT_PATH, BASE_MEETING_PATH, BASE_TASKS_PATH } from '../../data/Defaults/baseData'
 import { FlowCommandPrefix } from '../../editor/Components/SlashCommands/useSyncConfig'
 import { SnippetCommandPrefix } from '../../hooks/useSnippets'
 import { mog } from './helper'
+import { BreadcrumbItem } from '@workduck-io/mex-components'
 
 const RESERVED_PATHS: string[] = [
   BASE_DRAFT_PATH,
@@ -179,4 +187,25 @@ export const getPartialTreeGroups = <T>(
   mog('getPartialTreeGroups', { groupedPaths, itemArrayGrouped, toGroupItems, groupedItems })
 
   return groupedItems
+}
+
+export const getParentBreadcurmbs = (path: string, nodes: ILink[]) => {
+  const allParents = getAllParentIds(path)
+
+  const parents: BreadcrumbItem[] = allParents.reduce((val, p) => {
+    const parentNode = nodes.find((l) => l.path === p)
+    if (parentNode) {
+      return [
+        ...val,
+        {
+          id: parentNode.nodeid,
+          icon: parentNode.icon ?? 'ri:file-list-2-line',
+          label: getNameFromPath(parentNode.path)
+        }
+      ]
+    }
+    return val
+  }, [])
+
+  return parents
 }
