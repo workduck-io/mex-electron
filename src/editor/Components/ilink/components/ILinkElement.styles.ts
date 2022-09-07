@@ -22,6 +22,8 @@ export const SILink = styled.div<SILinkProps>`
   justify-content: center;
   align-items: center;
   cursor: pointer;
+  
+  pointer-events: auto;
 
   ${StyledIcon} {
     color: ${({ theme }) => transparentize(0.3, theme.colors.primary)};

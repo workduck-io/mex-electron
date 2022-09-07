@@ -31,15 +31,15 @@ class Toast {
         ? import.meta.env.VITE_TOAST_DEV_SERVER_URL
         : new URL('dist/toast.html', 'file://' + __dirname).toString()
 
-    this.window.loadURL(toastURL)
-    this.window.setParentWindow(spotlightWindow)
+    this.window?.loadURL(toastURL)
+    this.window?.setParentWindow(spotlightWindow)
     // this.window.webContents.openDevTools({ mode: 'detach' })
-    this.window.setAlwaysOnTop(true, 'status')
-    this.window.setVisibleOnAllWorkspaces(true, { visibleOnFullScreen: true })
+    this.window?.setAlwaysOnTop(true, 'status')
+    this.window?.setVisibleOnAllWorkspaces(true, { visibleOnFullScreen: true })
 
     this.setParent(spotlightWindow)
 
-    this.window.on('close', () => {
+    this.window?.on('close', () => {
       this.window = null
     })
 
@@ -48,16 +48,16 @@ class Toast {
         throw new Error('Main Window is not initialized!')
       }
 
-      this.window.hide()
+      this.window?.hide()
     })
   }
 
   public setParent(parent: BrowserWindow) {
-    this.window.setParentWindow(parent)
+    this.window?.setParentWindow(parent)
     // parent.setHasShadow(false)
 
     const bounds = parent?.getBounds()
-    this.window.setPosition(
+    this.window?.setPosition(
       bounds.x + bounds.width - TOAST_DIMENSIONS.width,
       bounds.y + bounds.height + TOAST_DIMENSIONS.offset
     )
@@ -80,15 +80,15 @@ class Toast {
   }
 
   public openReminder(size: { height: number; width: number }, timeout?: number) {
-    if (this.window.isVisible()) {
+    if (this.window?.isVisible()) {
       return
     }
-    this.window.setParentWindow(null)
+    this.window?.setParentWindow(null)
 
     this.updateReminderSize(size, true)
 
-    this.window.showInactive()
-    this.window.setHasShadow(true)
+    this.window?.showInactive()
+    this.window?.setHasShadow(true)
 
     if (this.timeoutId) clearTimeout(this.timeoutId)
 
@@ -99,11 +99,11 @@ class Toast {
     }
   }
   public open(independent?: boolean, center?: boolean, noHide?: boolean) {
-    if (center) this.window.center()
-    if (independent) this.window.setParentWindow(null)
+    if (center) this.window?.center()
+    if (independent) this.window?.setParentWindow(null)
 
-    this.window.showInactive()
-    this.window.setHasShadow(true)
+    this.window?.showInactive()
+    this.window?.setHasShadow(true)
 
     if (this.timeoutId) clearTimeout(this.timeoutId)
 
@@ -115,9 +115,9 @@ class Toast {
   }
 
   public setOnFullScreen() {
-    this.window.setFullScreenable(false)
-    this.window.setFullScreen(false)
-    this.window.setMaximizable(false)
+    this.window?.setFullScreenable(false)
+    this.window?.setFullScreen(false)
+    this.window?.setMaximizable(false)
   }
 
   public send(action: IpcAction, data: any) {
@@ -126,7 +126,7 @@ class Toast {
 
   public hide() {
     this.window.setSize(TOAST_DIMENSIONS.width, TOAST_DIMENSIONS.height)
-    this.window && this.window.hide()
+    this.window && this.window?.hide()
   }
 
   public showMessageAfterDelay(action: IpcAction, data: any) {
@@ -136,12 +136,12 @@ class Toast {
       this?.send(action, data)
 
       if (data?.description) {
-        this.window.setSize(TOAST_DIMENSIONS.width, TOAST_DIMENSIONS.height + TOAST_DIMENSIONS.delta, true)
+        this.window?.setSize(TOAST_DIMENSIONS.width, TOAST_DIMENSIONS.height + TOAST_DIMENSIONS.delta, true)
       }
 
       if (!data?.dontHide)
         setTimeout(() => {
-          this.window.hide()
+          this.window?.hide()
         }, 1000)
     }, 1000)
   }

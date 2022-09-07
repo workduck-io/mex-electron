@@ -1,6 +1,6 @@
 import React, { useEffect, useMemo, useRef } from 'react'
 
-import { NestedFloating } from '@components/FloatingElements'
+import { Floating, NestedFloating } from '@components/FloatingElements'
 import { useBufferStore, useEditorBuffer } from '@hooks/useEditorBuffer'
 import closeCircleLine from '@iconify/icons-ri/close-circle-line'
 import fileList2Line from '@iconify/icons-ri/file-list-2-line'
@@ -11,7 +11,7 @@ import { useMatch } from 'react-router-dom'
 
 import { Button, MexIcon } from '@workduck-io/mex-components'
 import { tinykeys } from '@workduck-io/tinykeys'
-
+import { Tooltip } from '@components/FloatingElements/Tooltip'
 import { getNameFromPath } from '../../../components/mex/Sidebar/treeUtils'
 import { TagsRelatedTiny } from '../../../components/mex/Tags/TagsRelated'
 import { useLinks } from '../../../hooks/useLinks'
@@ -28,6 +28,7 @@ import {
   EditorPreviewWrapper,
   PreviewActionHeader
 } from './EditorPreview.styles'
+import { useTheme } from 'styled-components'
 
 export interface EditorPreviewProps {
   nodeid: string
@@ -42,6 +43,7 @@ export interface EditorPreviewProps {
   content?: NodeEditorContent
   allowClosePreview?: boolean
   icon?: string
+  iconTooltip?: string
   setPreview?: (open: boolean) => void
 }
 
@@ -55,6 +57,7 @@ const EditorPreview = ({
   editable = true,
   setPreview,
   icon,
+  iconTooltip,
   preview
 }: EditorPreviewProps) => {
   const { getILinkFromNodeid } = useLinks()
@@ -91,6 +94,7 @@ const EditorPreview = ({
     return isPresent || isEditorNote
   }
 
+  const theme = useTheme()
   const showPreview = !checkIfAlreadyPresent(nodeid)
 
   if (cc) {
@@ -112,7 +116,11 @@ const EditorPreview = ({
                         <Icon icon={ilink?.icon ?? fileList2Line} />
                         {getNameFromPath(ilink.path)}
                       </EditorPreviewNoteName>
-                      <MexIcon noHover icon={icon} height="14" width="14" />
+                      {
+                        icon && iconTooltip && <Tooltip key={labelId} content={iconTooltip}>
+                          <MexIcon color={theme.colors.gray[5]} noHover icon={icon} height="14" width="14" />
+                        </Tooltip>
+                      }
                     </PreviewActionHeader>
                   )}
                   <PreviewActionHeader>

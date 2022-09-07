@@ -14,6 +14,7 @@ const scale = keyframes`
 
 export const TooltipWrapper = styled.div`
   background: ${({ theme }) => theme.colors.gray[7]};
+  z-index: 20;
   color: ${({ theme }) => theme.colors.text.default};
   pointer-events: none;
   border-radius: ${({ theme }) => theme.spacing.small};

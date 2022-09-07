@@ -7,11 +7,9 @@ import eyeOffLine from '@iconify/icons-ri/eye-off-line'
 import shareLine from '@iconify/icons-ri/share-line'
 import { useSpotlightContext } from '@store/Context/context.spotlight'
 import { useSpotlightEditorStore } from '@store/editor.spotlight'
-import { useEditorStore } from '@store/useEditorStore'
 import useMultipleEditors from '@store/useEditorsStore'
-import { AccessLevel } from '@types/mentions'
+import { AccessLevel } from '../../../../types/mentions'
 import { useEditorRef, moveSelection, useFloatingTree } from '@udecode/plate'
-import { mog } from '@utils/lib/helper'
 import { useMatch } from 'react-router-dom'
 import { useReadOnly, useFocused, useSelected } from 'slate-react'
 
@@ -49,7 +47,7 @@ const SharedNodeLink = ({
 
 const ArchivedNode = ({ selected, archivedNode }: { selected: boolean; archivedNode: ILink }) => {
   return (
-    <SILink selected={selected} color="#df7777" archived={true}>
+    <SILink selected={selected} color="#df7777">
       <StyledIcon icon={archivedIcon} color="#df7777" />
       <span className="ILink_decoration ILink_decoration_left">[[</span>
       <span className="ILink_decoration ILink_decoration_value"> {archivedNode?.path}</span>
@@ -230,6 +228,7 @@ export const ILinkElement = ({ attributes, children, element }: ILinkElementProp
               preview={preview}
               nodeid={element.value}
               allowClosePreview
+              iconTooltip={sharedNode?.currentUserAccess && `You have ${sharedNode?.currentUserAccess?.toLowerCase()} access`}
               icon={sharedAccessIcon[sharedNode?.currentUserAccess]}
               editable={sharedNode?.currentUserAccess !== 'READ'}
               content={content}
