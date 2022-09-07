@@ -12,8 +12,8 @@ export const MultipleInviteWrapper = styled.div`
     justify-content: space-between;
     gap: ${({ theme }) => theme.spacing.small};
     flex-wrap: wrap;
-
-    ${SelectWrapper} {
+    max-width: 600px;
+    ${SelectWrapper}:nth-of-type(2) {
       width: 60%;
     }
   }

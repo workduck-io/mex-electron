@@ -1,4 +1,4 @@
-import { getEmailStart, MultiEmailValidate } from '@data/Defaults/auth'
+import { EMAIL_REG, getEmailStart } from '@data/Defaults/auth'
 import { useLinks } from '@hooks/useLinks'
 import { useMentions } from '@hooks/useMentions'
 import { useAuthStore } from '@services/auth/useAuth'
@@ -13,7 +13,6 @@ import { LoadingButton } from '@workduck-io/mex-components'
 import React, { useMemo } from 'react'
 import { Controller, useForm } from 'react-hook-form'
 import { AccessLevel, DefaultPermission, DefaultPermissionValue, permissionOptions } from '../../../types/mentions'
-import { InputFormError } from '../Forms/Input'
 import { ModalControls, ModalHeader } from '../Refactor/styles'
 import { InviteFormFieldset, InviteFormWrapper, MultipleInviteWrapper } from './ShareModal.styles'
 import { InviteModalData, useShareModalStore } from './ShareModalStore'
@@ -23,7 +22,7 @@ export const MultiEmailInviteModalContent = ({ disabled }: { disabled?: boolean 
   const addMentionable = useMentionStore((state) => state.addMentionable)
   const modalData = useShareModalStore((state) => state.data)
   // const closeModal = useShareModalStore((state) => state.closeModal)
-  const { getUserDetails } = useUserService()
+  const { getUserDetails, getAllKnownUsers } = useUserService()
   const { getPathFromNodeid } = useLinks()
   const { saveMentionData } = useMentions()
   const { grantUsersPermission } = usePermission()
@@ -33,6 +32,7 @@ export const MultiEmailInviteModalContent = ({ disabled }: { disabled?: boolean 
     handleSubmit,
     register,
     control,
+    reset,
     formState: { errors, isSubmitting }
   } = useForm<InviteModalData>()
 
@@ -42,7 +42,7 @@ export const MultiEmailInviteModalContent = ({ disabled }: { disabled?: boolean 
     mog('data', data)
 
     if (nodeid) {
-      const allMails = data.email.split(',').map((e) => e.trim())
+      const allMails = data.email.map((e) => e.value.trim())
       const access = (data?.access?.value as AccessLevel) ?? DefaultPermission
 
       const userDetailPromises = allMails
@@ -99,9 +99,16 @@ export const MultiEmailInviteModalContent = ({ disabled }: { disabled?: boolean 
 
       saveMentionData()
 
+      reset({ email: [] })
       // closeModal()
     }
   }
+
+  const allEmails = getAllKnownUsers().map((u) => ({
+    value: u.email,
+    label: `@${u?.alias}`,
+    error: false
+  }))
 
   // mog('MultiEmailInvite', { errors })
 
@@ -113,22 +120,28 @@ export const MultiEmailInviteModalContent = ({ disabled }: { disabled?: boolean 
       </p>
       <InviteFormWrapper onSubmit={handleSubmit(onSubmit)}>
         <InviteFormFieldset disabled={disabled}>
-          <InputFormError
-            name="email"
-            label="Emails"
-            inputProps={{
-              autoFocus: true,
-              placeholder: 'alice@email.com, bob@email.com',
-              type: 'email',
-              // Accepts multiple emails
-              multiple: true,
-              ...register('email', {
-                required: true,
-                validate: MultiEmailValidate
-              })
-            }}
-            errors={errors}
-          ></InputFormError>
+          <SelectWrapper>
+            <Label htmlFor="email">Emails</Label>
+            <Controller
+              control={control}
+              render={({ field }) => (
+                <StyledCreatatbleSelect
+                  {...field}
+                  placeholder="Invite Users via email / alias"
+                  formatCreateLabel={(inputValue: string) => `Invite ${inputValue} `}
+                  isValidNewOption={(inpVal: string, _val) => {
+                    const res = inpVal.match(EMAIL_REG)
+                    return res !== null
+                  }}
+                  isMulti
+                  options={allEmails}
+                  closeMenuOnSelect={true}
+                  closeMenuOnBlur={true}
+                />
+              )}
+              name="email"
+            />
+          </SelectWrapper>
 
           <SelectWrapper>
             <Label htmlFor="access">Permission</Label>

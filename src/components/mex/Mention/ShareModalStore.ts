@@ -16,9 +16,18 @@ interface ChangedInvitedUser extends InvitedUser {
   change: UserChange[]
 }
 
+export interface EmailOption {
+  value: string
+  label: string
+  error?: boolean
+  // Added by the select library indicating
+  // if this is a new created field
+  __isNew__?: boolean
+}
+
 export interface InviteModalData {
   alias: string
-  email: string
+  email: EmailOption[]
   access: {
     value: AccessLevel | 'NONE'
     label: string

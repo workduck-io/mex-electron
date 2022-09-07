@@ -8,6 +8,7 @@ import { useUserPreferenceStore } from '@store/userPreferenceStore'
 import { useDebouncedCallback } from 'use-debounce'
 import { useEffect } from 'react'
 import { useVersionStore } from '@store/useAppDataStore'
+
 export interface TempUser {
   email: string
   userID?: string
@@ -143,5 +144,17 @@ export const useUserService = () => {
     }
   }
 
-  return { getUserDetails, getUserDetailsUserId, updateUserInfo, updateUserPreferences, getCurrentUser }
+  const getAllKnownUsers = () => {
+    const cache = useUserCacheStore.getState().cache
+    return cache
+  }
+
+  return {
+    getAllKnownUsers,
+    getUserDetails,
+    getUserDetailsUserId,
+    updateUserInfo,
+    updateUserPreferences,
+    getCurrentUser
+  }
 }
