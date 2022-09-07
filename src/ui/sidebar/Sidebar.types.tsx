@@ -2,6 +2,7 @@ import { DesignItem } from '../../types/design'
 import { LastOpenedState } from '../../types/userPreference'
 import { ILink, Tag } from '../../types/Types'
 import { IconifyIcon } from '@iconify/react'
+import { PollActions } from '@store/useApiStore'
 
 /**
  * A generic item to be shown in sidebar
@@ -74,4 +75,10 @@ export interface SidebarSpace {
    * Tags that have been used most often in a given space
    */
   popularTags?: Tag[]
+
+  /**
+   * If provided the polling action is added to the poll hook
+   * when the space is opened
+   */
+  pollAction?: PollActions
 }

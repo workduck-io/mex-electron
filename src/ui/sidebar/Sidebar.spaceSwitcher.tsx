@@ -1,3 +1,4 @@
+import { Tooltip } from '@components/FloatingElements/Tooltip'
 import addCircleLine from '@iconify/icons-ri/add-circle-line'
 import { Icon } from '@iconify/react'
 import React from 'react'
@@ -16,13 +17,11 @@ export const SidebarSpaceSwitcher = ({ currentSpace, spaces, setCurrentIndex }: 
     <SpaceSwitcher>
       <SwitcherSpaceItems>
         {spaces.map((s, index) => (
-          <SpaceItem
-            active={currentSpace === s.id}
-            onClick={() => setCurrentIndex(index)}
-            key={`spaceSwitcher_item_${s.id}`}
-          >
-            <Icon icon={s.icon ?? 'heroicons-outline:view-grid'} />
-          </SpaceItem>
+          <Tooltip key={`spaceSwitcher_item_${s.id}`} content={s.label}>
+            <SpaceItem active={currentSpace === s.id} onClick={() => setCurrentIndex(index)}>
+              <Icon icon={s.icon ?? 'heroicons-outline:view-grid'} />
+            </SpaceItem>
+          </Tooltip>
         ))}
       </SwitcherSpaceItems>
 
