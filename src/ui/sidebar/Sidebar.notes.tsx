@@ -10,12 +10,15 @@ import { SidebarSpace } from './Sidebar.types'
 import { useTransition, useSpringRef } from '@react-spring/web'
 import { useTags } from '@hooks/useTags'
 import { mog } from '@utils/lib/helper'
+import { PollActions, useApiStore } from '@store/useApiStore'
+import { usePolling } from '@apis/usePolling'
 
 export const NoteSidebar = () => {
   const ilinks = useDataStore((store) => store.ilinks)
   const [index, setIndex] = useState({ current: 0, prev: -1 })
   const { getMostUsedTags } = useTags()
   const tags = useDataStore((s) => s.tags)
+  const replaceAndAddActionToPoll = useApiStore((store) => store.replaceAndAddActionToPoll)
   // Required to find direction of the animation
   // const { getAllBookmarks } = useBookmarks()
   //
@@ -34,8 +37,6 @@ export const NoteSidebar = () => {
     return topUsedTags
   }, [tags])
 
-  // const [openedSpace, setOpenedSpace] = useState<string>('personal')
-
   const spaces: Array<SidebarSpace> = useMemo(
     () => [
       {
@@ -48,7 +49,8 @@ export const NoteSidebar = () => {
           items: ilinks
         },
         popularTags: mostUsedTags,
-        pinnedItems: () => <StarredNotes />
+        pinnedItems: () => <StarredNotes />,
+        pollAction: PollActions.hierarchy
       },
       {
         id: 'shared',
@@ -58,7 +60,8 @@ export const NoteSidebar = () => {
         list: {
           type: 'flat',
           renderItems: () => <SharedNotes />
-        }
+        },
+        pollAction: PollActions.shared
       }
     ],
     [ilinks]
@@ -83,9 +86,17 @@ export const NoteSidebar = () => {
     }
   })
 
+  usePolling()
+
   useEffect(() => {
     transRef.start()
   }, [index])
+
+  useEffect(() => {
+    if (currentSpace.pollAction) {
+      replaceAndAddActionToPoll(currentSpace.pollAction)
+    }
+  }, [currentSpace])
 
   return (
     <SpaceWrapper>
