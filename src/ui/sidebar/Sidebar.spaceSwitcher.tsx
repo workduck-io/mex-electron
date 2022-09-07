@@ -17,7 +17,7 @@ export const SidebarSpaceSwitcher = ({ currentSpace, spaces, setCurrentIndex }: 
     <SpaceSwitcher>
       <SwitcherSpaceItems>
         {spaces.map((s, index) => (
-          <Tooltip offsetPx={12} key={`spaceSwitcher_item_${s.id}`} label={s.label}>
+          <Tooltip key={`spaceSwitcher_item_${s.id}`} content={s.label}>
             <SpaceItem active={currentSpace === s.id} onClick={() => setCurrentIndex(index)}>
               <Icon icon={s.icon ?? 'heroicons-outline:view-grid'} />
             </SpaceItem>

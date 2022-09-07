@@ -1,4 +1,4 @@
-import React, { cloneElement, useMemo, useState } from 'react'
+import React, { cloneElement, useCallback, useMemo, useState } from 'react'
 import {
   Placement,
   offset,
@@ -10,16 +10,20 @@ import {
   useHover,
   useFocus,
   useRole,
-  useDismiss
+  useDismiss,
+  useDelayGroup,
+  useDelayGroupContext
 } from '@floating-ui/react-dom-interactions'
 import { mergeRefs } from 'react-merge-refs'
 import { TooltipWrapper } from './Tooltip.style'
+import { mog } from '@utils/lib/helper'
 
 interface Props {
-  label: JSX.Element | string
+  content: JSX.Element | string
   placement?: Placement
   children: JSX.Element
   offsetPx?: number
+  delay?: number
 }
 
 /**
@@ -27,7 +31,7 @@ interface Props {
  *
  * Ref: https://codesandbox.io/s/winter-tree-wmmffl?file=/src/App.tsx
  */
-export const Tooltip = ({ children, label, offsetPx = 5, placement = 'top' }: Props) => {
+export const Tooltip = ({ children, content, delay = 500, offsetPx = 5, placement = 'top' }: Props) => {
   const [open, setOpen] = useState(false)
 
   const { x, y, reference, floating, strategy, context } = useFloating({
@@ -39,8 +43,13 @@ export const Tooltip = ({ children, label, offsetPx = 5, placement = 'top' }: Pr
   })
 
   const { getReferenceProps, getFloatingProps } = useInteractions([
-    useHover(context),
-    useFocus(context),
+    useHover(context, {
+      delay: {
+        open: delay,
+        close: 0
+      },
+      restMs: delay
+    }),
     useRole(context, { role: 'tooltip' }),
     useDismiss(context)
   ])
@@ -61,7 +70,7 @@ export const Tooltip = ({ children, label, offsetPx = 5, placement = 'top' }: Pr
           }}
           {...getFloatingProps()}
         >
-          {label}
+          {content}
         </TooltipWrapper>
       )}
     </>
