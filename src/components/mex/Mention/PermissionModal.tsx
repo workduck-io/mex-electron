@@ -97,8 +97,8 @@ export const PermissionModalContent = (/*{}: PermissionModalContentProps*/) => {
     // mog('onPermissionChange', { userid, alias })
 
     // Change the user and add to changedUsers
-    const changedUser = changedUsers.find((u) => u.userID === userid)
-    const dataUser = sharedUsers.find((u) => u.userID === userid)
+    const changedUser = changedUsers?.find((u) => u.userID === userid)
+    const dataUser = sharedUsers?.find((u) => u.userID === userid)
 
     if (changedUser) {
       const hasBeenRevoked = changedUser.change.includes('revoke')
@@ -111,14 +111,14 @@ export const PermissionModalContent = (/*{}: PermissionModalContentProps*/) => {
       }
     } else if (dataUser) {
       const changeUser = { ...dataUser, change: ['revoke' as const] }
-      setChangedUsers([...changedUsers, changeUser])
+      setChangedUsers([...(changedUsers ?? []), changeUser])
     }
   }
 
   const onPermissionChange = (userid: string, access: AccessLevel) => {
     // Change the user and add to changedUsers
-    const changedUser = changedUsers.find((u) => u.userID === userid)
-    const dataUser = sharedUsers.find((u) => u.userID === userid)
+    const changedUser = changedUsers?.find((u) => u.userID === userid)
+    const dataUser = sharedUsers?.find((u) => u.userID === userid)
 
     // TODO: Filter for the case when user permission is reverted to the og one
     if (changedUser) {
@@ -158,8 +158,9 @@ export const PermissionModalContent = (/*{}: PermissionModalContentProps*/) => {
           change: ['permission' as const],
           access: { ...dataUser.access, [nodeid]: access }
         }
-        // changeUser.access[nodeid] = access
-        setChangedUsers([...changedUsers, changeUser])
+        //
+
+        setChangedUsers([...(changedUsers ?? []), changeUser])
       }
     }
   }
