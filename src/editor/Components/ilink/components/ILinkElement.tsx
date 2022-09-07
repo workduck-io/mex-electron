@@ -9,6 +9,7 @@ import { useSpotlightContext } from '@store/Context/context.spotlight'
 import { useSpotlightEditorStore } from '@store/editor.spotlight'
 import { useEditorStore } from '@store/useEditorStore'
 import useMultipleEditors from '@store/useEditorsStore'
+import { AccessLevel } from '@types/mentions'
 import { useEditorRef, moveSelection, useFloatingTree } from '@udecode/plate'
 import { mog } from '@utils/lib/helper'
 import { useMatch } from 'react-router-dom'
@@ -27,9 +28,17 @@ import { ILinkElementProps } from './ILinkElement.types'
 
 /**
  * ILinkElement with no default styles. [Use the `styles` API to add your own styles.](https://github.com/OfficeDev/office-ui-fabric-react/wiki/Component-Styling) */
-const SharedNodeLink = ({ selected, sharedNode }: { selected: boolean; sharedNode: SharedNode }) => {
+const SharedNodeLink = ({
+  selected,
+  sharedNode,
+  onClick
+}: {
+  selected: boolean
+  sharedNode: SharedNode
+  onClick: any
+}) => {
   return (
-    <SILink selected={selected}>
+    <SILink selected={selected} onClick={onClick}>
       <StyledIcon icon={shareLine} />
       <span className="ILink_decoration ILink_decoration_left">[[</span>
       <span className="ILink_decoration ILink_decoration_value"> {sharedNode?.path}</span>
@@ -197,6 +206,13 @@ export const ILinkElement = ({ attributes, children, element }: ILinkElementProp
   const archivedNode = nodeType === NodeType.ARCHIVED ? getArchiveNode(element.value) : undefined
   const sharedNode = nodeType === NodeType.SHARED ? getSharedNode(element.value) : undefined
 
+  const sharedAccessIcon: Record<AccessLevel, string> = {
+    READ: 'bi:eye-fill',
+    WRITE: 'fa-solid:user-edit',
+    MANAGE: 'fa6-solid:user-lock',
+    OWNER: 'fa:user'
+  }
+
   return (
     <SILinkRoot
       {...attributes}
@@ -208,7 +224,25 @@ export const ILinkElement = ({ attributes, children, element }: ILinkElementProp
       {
         // The key to the temporary object defines what to render
         {
-          [NodeType.SHARED]: <SharedNodeLink selected={selected} sharedNode={sharedNode} />,
+          [NodeType.SHARED]: (
+            <EditorPreview
+              placement="auto"
+              preview={preview}
+              nodeid={element.value}
+              allowClosePreview
+              icon={sharedAccessIcon[sharedNode?.currentUserAccess]}
+              editable={sharedNode?.currentUserAccess !== 'READ'}
+              content={content}
+              setPreview={setPreview}
+            >
+              <SILink selected={selected} onClick={onClickProps}>
+                <StyledIcon icon={shareLine} />
+                <span className="ILink_decoration ILink_decoration_left">[[</span>
+                <span className="ILink_decoration ILink_decoration_value"> {sharedNode?.path}</span>
+                <span className="ILink_decoration ILink_decoration_right">]]</span>
+              </SILink>
+            </EditorPreview>
+          ),
           [NodeType.ARCHIVED]: <ArchivedNode selected={selected} archivedNode={archivedNode} />,
           [NodeType.DEFAULT]: (
             <EditorPreview

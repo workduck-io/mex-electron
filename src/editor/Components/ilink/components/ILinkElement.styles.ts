@@ -11,7 +11,6 @@ export const SILinkRoot = styled.div`
 
 interface SILinkProps {
   selected: boolean
-  archived?: boolean
 }
 
 export const StyledIcon = styled(Icon)`
@@ -22,7 +21,6 @@ export const SILink = styled.div<SILinkProps>`
   display: inline-flex;
   justify-content: center;
   align-items: center;
-  /* color: ${({ theme, archived }) => (archived ? theme.colors.fade : theme.colors.secondary)}; */
   cursor: pointer;
 
   ${StyledIcon} {

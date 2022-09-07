@@ -9,7 +9,7 @@ import useMultipleEditors from '@store/useEditorsStore'
 import { getPlateEditorRef, selectEditor } from '@udecode/plate'
 import { useMatch } from 'react-router-dom'
 
-import { Button } from '@workduck-io/mex-components'
+import { Button, MexIcon } from '@workduck-io/mex-components'
 import { tinykeys } from '@workduck-io/tinykeys'
 
 import { getNameFromPath } from '../../../components/mex/Sidebar/treeUtils'
@@ -37,9 +37,11 @@ export interface EditorPreviewProps {
   preview?: boolean
   previewRef?: any
   hover?: boolean
+  editable?: boolean
   label?: string
   content?: NodeEditorContent
   allowClosePreview?: boolean
+  icon?: string
   setPreview?: (open: boolean) => void
 }
 
@@ -50,7 +52,9 @@ const EditorPreview = ({
   content,
   hover,
   label,
+  editable = true,
   setPreview,
+  icon,
   preview
 }: EditorPreviewProps) => {
   const { getILinkFromNodeid } = useLinks()
@@ -68,7 +72,7 @@ const EditorPreview = ({
     return ccx
   }, [nodeid, editorContentFromStore])
 
-  const ilink = getILinkFromNodeid(nodeid)
+  const ilink = getILinkFromNodeid(nodeid, true)
 
   const editorId = `${nodeid}_Preview`
 
@@ -103,10 +107,13 @@ const EditorPreview = ({
               {(allowClosePreview || hasTags(nodeid) || ilink?.path) && (
                 <EditorPreviewControls hasTags={hasTags(nodeid)}>
                   {ilink?.path && (
-                    <EditorPreviewNoteName onClick={onClickNavigate}>
-                      <Icon icon={ilink?.icon ?? fileList2Line} />
-                      {getNameFromPath(ilink.path)}
-                    </EditorPreviewNoteName>
+                    <PreviewActionHeader>
+                      <EditorPreviewNoteName onClick={onClickNavigate}>
+                        <Icon icon={ilink?.icon ?? fileList2Line} />
+                        {getNameFromPath(ilink.path)}
+                      </EditorPreviewNoteName>
+                      <MexIcon noHover icon={icon} height="14" width="14" />
+                    </PreviewActionHeader>
                   )}
                   <PreviewActionHeader>
                     <TagsRelatedTiny nodeid={nodeid} />
@@ -123,7 +130,14 @@ const EditorPreview = ({
                   </PreviewActionHeader>
                 </EditorPreviewControls>
               )}
-              <EditablePreview onClose={close} id={nodeid} hover={hover} editorId={editorId} content={cc} />
+              <EditablePreview
+                editable={editable}
+                onClose={close}
+                id={nodeid}
+                hover={hover}
+                editorId={editorId}
+                content={cc}
+              />
             </EditorPreviewWrapper>
           )
         }
@@ -134,7 +148,7 @@ const EditorPreview = ({
   } else return children
 }
 
-const EditablePreview = ({ content, editorId, id: nodeId, onClose, hover }: any) => {
+const EditablePreview = ({ content, editable, editorId, id: nodeId, onClose, hover }: any) => {
   const addToBuffer = useBufferStore((store) => store.add)
   const removeEditor = useMultipleEditors((store) => store.removeEditor)
   const presentEditor = useMultipleEditors((store) => store.editors)?.[nodeId]
@@ -148,7 +162,7 @@ const EditablePreview = ({ content, editorId, id: nodeId, onClose, hover }: any)
     e.preventDefault()
     e.stopPropagation()
 
-    changeEditorState(nodeId, { editing: true })
+    if (editable) changeEditorState(nodeId, { editing: true })
   }
 
   useEffect(() => {
@@ -164,7 +178,7 @@ const EditablePreview = ({ content, editorId, id: nodeId, onClose, hover }: any)
     const unsubscribe = tinykeys(window, {
       KeyE: (e) => {
         const lastOpened = lastOpenedEditorId()
-        if ((nodeId === lastOpened?.nodeId || hover) && !lastOpened?.editorState?.editing) {
+        if (editable && (nodeId === lastOpened?.nodeId || hover) && !lastOpened?.editorState?.editing) {
           onEditorClick(e)
           const editor = getPlateEditorRef(editorId)
           if (editor) selectEditor(editor, { edge: 'start', focus: true })
@@ -197,7 +211,7 @@ const EditablePreview = ({ content, editorId, id: nodeId, onClose, hover }: any)
       <EditorPreviewRenderer
         onChange={onChange}
         content={content}
-        readOnly={!presentEditor?.editing}
+        readOnly={!editable || !presentEditor?.editing}
         editorId={editorId}
       />
     </EditorPreviewEditorWrapper>
