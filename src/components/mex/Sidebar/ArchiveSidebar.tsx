@@ -1,26 +1,27 @@
-import React, { useEffect } from 'react'
-import Tree, { RenderItemParams, ItemId, mutateTree, TreeItem, TreeData } from '@atlaskit/tree'
-import Tippy, { useSingleton } from '@tippyjs/react'
-import useDataStore from '@store/useDataStore'
+import Tree, { ItemId, mutateTree, RenderItemParams, TreeData, TreeItem } from '@atlaskit/tree'
 import archiveLine from '@iconify/icons-ri/archive-line'
+import useDataStore from '@store/useDataStore'
+import Tippy, { useSingleton } from '@tippyjs/react'
+import React, { useEffect } from 'react'
 
-import { GetIcon, TooltipContent } from './TreeItem'
-import * as ContextMenu from '@radix-ui/react-context-menu'
-import { ItemContent, ItemCount, ItemTitle, StyledTreeItem } from '@style/Sidebar'
-import { mog } from '@utils/lib/helper'
-import { useMatch } from 'react-router-dom'
-import { NavigationType, ROUTE_PATHS, useRouting } from '@views/routes/urls'
-import { Icon } from '@iconify/react'
+import { getTreeFromLinks } from '@hooks/useTreeFromLinks'
 import fileList2Line from '@iconify/icons-ri/file-list-2-line'
+import { Icon } from '@iconify/react'
+import * as ContextMenu from '@radix-ui/react-context-menu'
+import { MexIcon } from '@style/Layouts'
+import { ItemContent, ItemCount, ItemTitle, StyledTreeItem } from '@style/Sidebar'
+import { SidebarHeaderLite } from '@ui/sidebar/Sidebar.space.header'
+import { SidebarWrapper } from '@ui/sidebar/Sidebar.style'
+import { mog } from '@utils/lib/helper'
+import { NavigationType, ROUTE_PATHS, useRouting } from '@views/routes/urls'
+import { useMatch } from 'react-router-dom'
+import { useTheme } from 'styled-components'
 import ArchiveContextMenu from '../Archive/ArchiveContextMenu'
 import { Margin } from '../Archive/styled'
-import { MexIcon } from '@style/Layouts'
-import { useTheme } from 'styled-components'
 import { Centered } from './StarredNotes'
-import { getTreeFromLinks } from '@hooks/useTreeFromLinks'
-import { SidebarWrapper } from '@ui/sidebar/Sidebar.style'
+import { GetIcon, TooltipContent } from './TreeItem'
 
-const ArchiveTree: React.FC<{ tree: any }> = ({ tree }) => {
+const ArchiveTree: React.FC<{ tree: TreeData }> = ({ tree }) => {
   const [archiveTree, setArchiveTree] = React.useState(tree)
 
   useEffect(() => {
@@ -93,6 +94,8 @@ const ArchiveTree: React.FC<{ tree: any }> = ({ tree }) => {
   return (
     <Margin margin="1rem 0 0">
       <Tippy theme="mex" placement="right" singleton={source} />
+      <SidebarHeaderLite title="Archive" icon={archiveLine} />
+
       <Tree
         offsetPerLevel={16}
         tree={archiveTree}
