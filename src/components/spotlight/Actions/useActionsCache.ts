@@ -1,7 +1,10 @@
 import { initActions } from '@data/Actions'
-import { ActionGroup, ActionHelperConfig, LOCALSTORAGE_NAMESPACES } from '@workduck-io/action-request-helper'
+import { mog } from '@utils/lib/helper'
 import create from 'zustand'
 import { persist, devtools } from 'zustand/middleware'
+
+import { ActionGroup, ActionHelperConfig, LOCALSTORAGE_NAMESPACES } from '@workduck-io/action-request-helper'
+
 import { ListItemType } from '../SearchResults/types'
 import { getActionCacheKey, actionPerformer, getIndexedResult } from './useActionPerformer'
 import { ActionGroupType } from './useActionStore'
@@ -67,8 +70,10 @@ export const useActionsCache = create<ActionsCacheType>(
             const key = useActionsCache.getState().resultHashCache?.[savedKey]
 
             const result = actionPerformer.getItem(LOCALSTORAGE_NAMESPACES.REQUEST_CACHE, key)
-
-            if (result && key) return getIndexedResult(result)
+            if (result && key) {
+              const isObject = !Array.isArray(result?.contextData)
+              return isObject ? result : getIndexedResult(result)
+            }
 
             return undefined
           },
@@ -76,11 +81,8 @@ export const useActionsCache = create<ActionsCacheType>(
           addResultInCache: (actionId, result) => {
             const cache = get().resultCache
 
-            // const isMenuAction = useActionMenuStore.getState().isActionMenuOpen
-
             set({
               resultCache: { ...cache, [actionId]: result }
-              // selectionCache: isMenuAction ? selection : { ...selection, [actionId]: undefined }
             })
           },
 
