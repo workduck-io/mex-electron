@@ -1,5 +1,6 @@
 import { useTags } from '@hooks/useTags'
 import hashtag from '@iconify/icons-ri/hashtag'
+import { SidebarHeaderLite } from '@ui/sidebar/Sidebar.space.header'
 import { SidebarWrapper } from '@ui/sidebar/Sidebar.style'
 import { mog } from '@utils/lib/helper'
 import { NavigationType, ROUTE_PATHS, useRouting } from '@views/routes/urls'
@@ -31,6 +32,8 @@ const TagList = () => {
 
   return (
     <SidebarWrapper>
+      <SidebarHeaderLite title="Tags" icon={hashtag} />
+
       <SidebarList
         showSearch
         searchPlaceholder="Filter tags..."

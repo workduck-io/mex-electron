@@ -185,7 +185,7 @@ const getIdFromBaseNestedTree = (baseNestedTree: BaseTreeNode[], path: string, n
     const node = baseNestedTree[i]
     if (!node) return undefined
 
-    if (node.nodeid === nodeid || node.path === path) {
+    if (node.nodeid === nodeid && node.path === path) {
       return `${i + 1}`
     }
     if (isElder(path, node.path)) {
@@ -311,9 +311,11 @@ export const generateTree = (
       }
     } else {
       // Will have a parent
-      const parentId = `1${TREE_SEPARATOR}${getIdFromBaseNestedTree(baseNestedTree, parentPath, n.parentNodeId)}`
+      const parent = treeFlat.find((l) => l.id === parentPath)
+      const parentNodeId = parent && parent.nodeid
+      const parentId = `1${TREE_SEPARATOR}${getIdFromBaseNestedTree(baseNestedTree, parentPath, parentNodeId)}`
       const parentItem = nestedTree.items[parentId]
-      // mog('hasParent Internal', { parentId, nestedItem, parentItem, parentPath, n, i })
+      // mog('hasParent Internal', { parentId, nestedItem, parentNodeId, parentItem, parentPath, n, i })
       if (parentItem) {
         // add to tree and update parent
         const newId = `1${TREE_SEPARATOR}${getIdFromBaseNestedTree(baseNestedTree, n.id, n.nodeid)}`

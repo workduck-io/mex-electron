@@ -1,6 +1,7 @@
 import { useViewStore } from '@hooks/useTaskViews'
 import home7Line from '@iconify/icons-ri/home-7-line'
 import stackLine from '@iconify/icons-ri/stack-line'
+import { SidebarHeaderLite } from '@ui/sidebar/Sidebar.space.header'
 import { SidebarWrapper } from '@ui/sidebar/Sidebar.style'
 import { NavigationType, ROUTE_PATHS, useRouting } from '@views/routes/urls'
 import React from 'react'
@@ -60,6 +61,7 @@ const TaskViewList = () => {
 
   return (
     <SidebarWrapper>
+      <SidebarHeaderLite title="Task Views" icon={stackLine} />
       <SidebarList
         ItemContextMenu={TaskViewContextMenu}
         items={sortedViews.map(({ title, ...t }) => ({ ...t, label: title, data: t }))}

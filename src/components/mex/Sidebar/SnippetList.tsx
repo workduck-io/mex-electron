@@ -5,6 +5,7 @@ import React from 'react'
 import SidebarList from './SidebarList'
 import magicLine from '@iconify/icons-ri/magic-line'
 import { SidebarWrapper } from '@ui/sidebar/Sidebar.style'
+import { SidebarHeaderLite } from '@ui/sidebar/Sidebar.space.header'
 
 const SnippetList = () => {
   const snippets = useSnippetStore((store) => store.snippets)
@@ -39,6 +40,7 @@ const SnippetList = () => {
 
   return (
     <SidebarWrapper>
+      <SidebarHeaderLite title="Snippets" icon={quillPenLine} />
       <SidebarList
         items={sortedSnippets}
         onClick={onOpenSnippet}
