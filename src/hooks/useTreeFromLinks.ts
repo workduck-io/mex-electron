@@ -47,16 +47,15 @@ export const getPartialTreeFromLinks = (matchedLinks: ILink[], allLinks: ILink[]
   // Contains duplicates
   const dirtyTreeFlatItems = matchedLinks.reduce((p, c) => {
     const parents = getAllParentIds(c.path)
+      .filter((par) => par !== undefined)
       .map((par) => allLinks.find((l) => l.path === par))
+      .filter((l) => l !== undefined)
       .map((l) => ({
         id: l.path,
         nodeid: l.nodeid,
         icon: l.icon,
         stub: l.path !== c.path
       }))
-      .filter((par) => {
-        return par !== undefined
-      })
     return [...p, ...parents]
   }, [])
 
