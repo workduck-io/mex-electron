@@ -1,6 +1,7 @@
 import { getNameFromPath, SEPARATOR } from '@components/mex/Sidebar/treeUtils'
 import { HASH_SEPARATOR } from '@data/Defaults/idPrefixes'
 import { uniq } from 'lodash'
+
 import { defaultContent } from '../data/Defaults/baseData'
 import { ELEMENT_INLINE_BLOCK } from '../editor/Components/InlineBlock/types'
 import { TodoStatus } from '../editor/Components/Todo/types'
@@ -8,8 +9,8 @@ import { useContentStore } from '../store/useContentStore'
 import useDataStore from '../store/useDataStore'
 import { useSnippetStore } from '../store/useSnippetStore'
 import useTodoStore from '../store/useTodoStore'
-import { NodeLink } from '../types/relations'
 import { CachedILink, ILink } from '../types/Types'
+import { NodeLink } from '../types/relations'
 import { mog } from '../utils/lib/helper'
 import { hasLink } from '../utils/lib/links'
 import { convertContentToRawText } from '../utils/search/parseData'
@@ -195,10 +196,16 @@ export const useLinks = () => {
     }
   }
 
-  const getILinkFromNodeid = (nodeid: string) => {
+  const getILinkFromNodeid = (nodeid: string, shared?: boolean) => {
     const links = useDataStore.getState().ilinks
     const link = links.find((l) => l.nodeid === nodeid)
     if (link) return link
+
+    if (shared) {
+      const sharedLinks = useDataStore.getState().sharedNodes
+      const sharedLink = sharedLinks?.find((l) => l.nodeid === nodeid)
+      if (sharedLink) return sharedLink
+    }
   }
 
   const getNodeidFromPath = (path: string) => {

@@ -1,6 +1,6 @@
 import React, { useEffect, useMemo, useRef } from 'react'
 
-import { NestedFloating } from '@components/FloatingElements'
+import { Floating, NestedFloating } from '@components/FloatingElements'
 import { useBufferStore, useEditorBuffer } from '@hooks/useEditorBuffer'
 import closeCircleLine from '@iconify/icons-ri/close-circle-line'
 import fileList2Line from '@iconify/icons-ri/file-list-2-line'
@@ -9,9 +9,9 @@ import useMultipleEditors from '@store/useEditorsStore'
 import { getPlateEditorRef, selectEditor } from '@udecode/plate'
 import { useMatch } from 'react-router-dom'
 
-import { Button } from '@workduck-io/mex-components'
+import { Button, MexIcon } from '@workduck-io/mex-components'
 import { tinykeys } from '@workduck-io/tinykeys'
-
+import { Tooltip } from '@components/FloatingElements/Tooltip'
 import { getNameFromPath } from '../../../components/mex/Sidebar/treeUtils'
 import { TagsRelatedTiny } from '../../../components/mex/Tags/TagsRelated'
 import { useLinks } from '../../../hooks/useLinks'
@@ -28,6 +28,7 @@ import {
   EditorPreviewWrapper,
   PreviewActionHeader
 } from './EditorPreview.styles'
+import { useTheme } from 'styled-components'
 
 export interface EditorPreviewProps {
   nodeid: string
@@ -37,9 +38,12 @@ export interface EditorPreviewProps {
   preview?: boolean
   previewRef?: any
   hover?: boolean
+  editable?: boolean
   label?: string
   content?: NodeEditorContent
   allowClosePreview?: boolean
+  icon?: string
+  iconTooltip?: string
   setPreview?: (open: boolean) => void
 }
 
@@ -50,7 +54,10 @@ const EditorPreview = ({
   content,
   hover,
   label,
+  editable = true,
   setPreview,
+  icon,
+  iconTooltip,
   preview
 }: EditorPreviewProps) => {
   const { getILinkFromNodeid } = useLinks()
@@ -68,7 +75,7 @@ const EditorPreview = ({
     return ccx
   }, [nodeid, editorContentFromStore])
 
-  const ilink = getILinkFromNodeid(nodeid)
+  const ilink = getILinkFromNodeid(nodeid, true)
 
   const editorId = `${nodeid}_Preview`
 
@@ -87,6 +94,7 @@ const EditorPreview = ({
     return isPresent || isEditorNote
   }
 
+  const theme = useTheme()
   const showPreview = !checkIfAlreadyPresent(nodeid)
 
   if (cc) {
@@ -103,10 +111,17 @@ const EditorPreview = ({
               {(allowClosePreview || hasTags(nodeid) || ilink?.path) && (
                 <EditorPreviewControls hasTags={hasTags(nodeid)}>
                   {ilink?.path && (
-                    <EditorPreviewNoteName onClick={onClickNavigate}>
-                      <Icon icon={ilink?.icon ?? fileList2Line} />
-                      {getNameFromPath(ilink.path)}
-                    </EditorPreviewNoteName>
+                    <PreviewActionHeader>
+                      <EditorPreviewNoteName onClick={onClickNavigate}>
+                        <Icon icon={ilink?.icon ?? fileList2Line} />
+                        {getNameFromPath(ilink.path)}
+                      </EditorPreviewNoteName>
+                      {
+                        icon && iconTooltip && <Tooltip key={labelId} content={iconTooltip}>
+                          <MexIcon color={theme.colors.gray[5]} noHover icon={icon} height="14" width="14" />
+                        </Tooltip>
+                      }
+                    </PreviewActionHeader>
                   )}
                   <PreviewActionHeader>
                     <TagsRelatedTiny nodeid={nodeid} />
@@ -123,7 +138,14 @@ const EditorPreview = ({
                   </PreviewActionHeader>
                 </EditorPreviewControls>
               )}
-              <EditablePreview onClose={close} id={nodeid} hover={hover} editorId={editorId} content={cc} />
+              <EditablePreview
+                editable={editable}
+                onClose={close}
+                id={nodeid}
+                hover={hover}
+                editorId={editorId}
+                content={cc}
+              />
             </EditorPreviewWrapper>
           )
         }
@@ -134,7 +156,7 @@ const EditorPreview = ({
   } else return children
 }
 
-const EditablePreview = ({ content, editorId, id: nodeId, onClose, hover }: any) => {
+const EditablePreview = ({ content, editable, editorId, id: nodeId, onClose, hover }: any) => {
   const addToBuffer = useBufferStore((store) => store.add)
   const removeEditor = useMultipleEditors((store) => store.removeEditor)
   const presentEditor = useMultipleEditors((store) => store.editors)?.[nodeId]
@@ -148,7 +170,7 @@ const EditablePreview = ({ content, editorId, id: nodeId, onClose, hover }: any)
     e.preventDefault()
     e.stopPropagation()
 
-    changeEditorState(nodeId, { editing: true })
+    if (editable) changeEditorState(nodeId, { editing: true })
   }
 
   useEffect(() => {
@@ -164,7 +186,7 @@ const EditablePreview = ({ content, editorId, id: nodeId, onClose, hover }: any)
     const unsubscribe = tinykeys(window, {
       KeyE: (e) => {
         const lastOpened = lastOpenedEditorId()
-        if ((nodeId === lastOpened?.nodeId || hover) && !lastOpened?.editorState?.editing) {
+        if (editable && (nodeId === lastOpened?.nodeId || hover) && !lastOpened?.editorState?.editing) {
           onEditorClick(e)
           const editor = getPlateEditorRef(editorId)
           if (editor) selectEditor(editor, { edge: 'start', focus: true })
@@ -197,7 +219,7 @@ const EditablePreview = ({ content, editorId, id: nodeId, onClose, hover }: any)
       <EditorPreviewRenderer
         onChange={onChange}
         content={content}
-        readOnly={!presentEditor?.editing}
+        readOnly={!editable || !presentEditor?.editing}
         editorId={editorId}
       />
     </EditorPreviewEditorWrapper>

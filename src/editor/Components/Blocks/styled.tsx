@@ -44,6 +44,7 @@ export const SourceInfoWrapper = styled.div`
 export const StyledSource = styled.div<{ isVisible?: boolean }>`
   cursor: pointer;
   display: flex;
+  pointer-event: auto;
 
   ${({ isVisible }) => FadeInOut(isVisible)}
 
