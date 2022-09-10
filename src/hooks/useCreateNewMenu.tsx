@@ -1,5 +1,5 @@
 import { ELEMENT_PARAGRAPH } from '@udecode/plate'
-import { getRandomQAContent } from '@data/Defaults/baseData'
+import { defaultContent, getRandomQAContent } from '@data/Defaults/baseData'
 import { generateSnippetId } from '@data/Defaults/idPrefixes'
 import { IconifyIcon } from '@iconify/react'
 import generateName from 'project-name-generator'
@@ -19,28 +19,22 @@ interface CreateNewMenuItem {
   onSelect: () => void
 }
 
-// TODO: Add ordering and filtering based on Path
-interface CreateNewMenuConfig {
-  // If passed, and the path matches/starts with this path
-  // The menu item is moved above
-  path?: string
-}
-
 export const useCreateNewMenu = () => {
   const { goTo } = useRouting()
   const { createNewNote } = useCreateNewNote()
   const loadSnippet = useSnippetStore((store) => store.loadSnippet)
   const { addSnippet } = useSnippets()
   const { updater } = useUpdater()
-  const { addDefaultNewNamespace } = useNamespaces()
+  const { addDefaultNewNamespace, getDefaultNamespaceId } = useNamespaces()
+  const currentSpace = useLayoutStore((store) => store.sidebar.spaceId)
   const changeSpace = useLayoutStore((store) => store.changeSidebarSpace)
 
-  const createNoteWithQABlock = () => {
-    const qaContent = getRandomQAContent()
-    const note = createNewNote({ noteContent: qaContent })
+  // const createNoteWithQABlock = () => {
+  //   const qaContent = getRandomQAContent()
+  //   const note = createNewNote({ noteContent: qaContent })
 
-    goTo(ROUTE_PATHS.node, NavigationType.push, note?.nodeid)
-  }
+  //   goTo(ROUTE_PATHS.node, NavigationType.push, note?.nodeid)
+  // }
 
   const createNewNamespace = () => {
     addDefaultNewNamespace().then((ns) => {
@@ -48,6 +42,15 @@ export const useCreateNewMenu = () => {
       // Change the space in the sidebar to the newly created space
       changeSpace(ns?.id)
     })
+  }
+
+  const createNewNoteInNamespace = (namespaceId: string) => {
+    const qaContent = getRandomQAContent()
+    const note = createNewNote({ namespace: namespaceId, noteContent: qaContent })
+    mog('After creating note in namespace', { note })
+    if (note) {
+      goTo(ROUTE_PATHS.node, NavigationType.push, note?.nodeid)
+    }
   }
 
   const onCreateNewSnippet = () => {
@@ -74,9 +77,16 @@ export const useCreateNewMenu = () => {
         id: 'new-note',
         label: 'New Note',
         onSelect: () => {
-          createNoteWithQABlock()
+          createNewNoteInNamespace(currentSpace || getDefaultNamespaceId())
         }
       },
+      // {
+      //   id: 'new-note-in-ns',
+      //   label: 'New Note in Default Space',
+      //   onSelect: () => {
+      //     createNoteWithQABlock()
+      //   }
+      // },
       {
         id: 'new-space',
         label: 'New Space',

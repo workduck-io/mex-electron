@@ -1,14 +1,18 @@
 import { SidebarListFilter } from '@components/mex/Sidebar/SidebarList.style'
 import Tree from '@components/mex/Sidebar/Tree'
+import { getRandomQAContent } from '@data/Defaults/baseData'
+import { useCreateNewNote } from '@hooks/useCreateNewNote'
 import { getTitleFromPath } from '@hooks/useLinks'
 import { getPartialTreeFromLinks, getTreeFromLinks } from '@hooks/useTreeFromLinks'
 import searchLine from '@iconify/icons-ri/search-line'
 import { Icon } from '@iconify/react'
 import { useEditorStore } from '@store/useEditorStore'
 import { Input } from '@style/Form'
+import Centered from '@style/Layouts'
 import { fuzzySearch } from '@utils/lib/fuzzySearch'
 import { mog } from '@utils/lib/helper'
 import { NavigationType, ROUTE_PATHS, useRouting } from '@views/routes/urls'
+import { Button } from '@workduck-io/mex-components'
 import { tinykeys } from '@workduck-io/tinykeys'
 import { debounce } from 'lodash'
 import React, { useEffect, useMemo, useState } from 'react'
@@ -16,6 +20,7 @@ import { ILink } from '../../types/Types'
 import { MexTreeWrapper, SpaceList } from './Sidebar.style'
 
 interface SpaceTreeProps {
+  spaceId: string
   items: ILink[]
   filterText?: string
 }
@@ -26,7 +31,7 @@ interface SpaceTreeProps {
  * - Displayes items in a Tree
  * - Filterable
  */
-export const MexTree = ({ items, filterText }: SpaceTreeProps) => {
+export const MexTree = ({ items, filterText, spaceId }: SpaceTreeProps) => {
   /* To Add
    *
    * - MultiSelect
@@ -36,6 +41,7 @@ export const MexTree = ({ items, filterText }: SpaceTreeProps) => {
   const [search, setSearch] = useState('')
   const [selected, setSelected] = useState<number>(-1)
   const { goTo } = useRouting()
+  const { createNewNote } = useCreateNewNote()
 
   const inputRef = React.useRef<HTMLInputElement>(null)
 
@@ -76,6 +82,17 @@ export const MexTree = ({ items, filterText }: SpaceTreeProps) => {
 
   const onOpenItem = (nodeid: string) => {
     goTo(ROUTE_PATHS.node, NavigationType.push, nodeid)
+  }
+
+  const createNewNoteInNamespace = () => {
+    const qaContent = getRandomQAContent()
+    mog('New Note', { spaceId })
+    const note = createNewNote({ namespace: spaceId, noteContent: qaContent })
+    goTo(ROUTE_PATHS.node, NavigationType.push, note?.nodeid)
+    // updater({
+    //   id: note?.nodeid,
+    //   namespaceId: namespaceId,
+    // })
   }
 
   useEffect(() => {
@@ -122,18 +139,26 @@ export const MexTree = ({ items, filterText }: SpaceTreeProps) => {
 
   return (
     <MexTreeWrapper>
-      <SidebarListFilter noMargin>
-        <Icon icon={searchLine} />
-        <Input
-          placeholder={filterText ?? 'Filter items'}
-          onChange={debounce((e) => onSearchChange(e), 250)}
-          ref={inputRef}
-          // onKeyUp={debounce(onKeyUpSearch, 250)}
-        />
-      </SidebarListFilter>
-      <SpaceList>
-        <Tree initTree={filteredTree ? filteredTree : initTree} selectedItemId={selectedItem?.data?.nodeid} />
-      </SpaceList>
+      {items.length > 0 ? (
+        <>
+          <SidebarListFilter noMargin>
+            <Icon icon={searchLine} />
+            <Input
+              placeholder={filterText ?? 'Filter items'}
+              onChange={debounce((e) => onSearchChange(e), 250)}
+              ref={inputRef}
+              // onKeyUp={debounce(onKeyUpSearch, 250)}
+            />
+          </SidebarListFilter>
+          <SpaceList>
+            <Tree initTree={filteredTree ? filteredTree : initTree} selectedItemId={selectedItem?.data?.nodeid} />
+          </SpaceList>
+        </>
+      ) : (
+        <Centered>
+          <Button onClick={createNewNoteInNamespace}>Create a new note</Button>
+        </Centered>
+      )}
     </MexTreeWrapper>
   )
 }
