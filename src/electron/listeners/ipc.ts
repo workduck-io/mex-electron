@@ -26,10 +26,7 @@ import { clearLocalStorage } from '@utils/dataTransform'
 import { getAppleNotes } from '@utils/importers/appleNotes'
 import { mog } from '@utils/lib/helper'
 import { app, globalShortcut, ipcMain } from 'electron'
-import { autoUpdater } from 'electron-updater'
 import fs from 'fs'
-
-import { useAuthStore } from '@workduck-io/dwindle'
 
 import { AuthTokenData } from '../../types/auth'
 import { FileData } from '../../types/data'
@@ -37,6 +34,7 @@ import { MentionData } from '../../types/mentions'
 import { Reminder, ReminderActions } from '../../types/reminders'
 import { idxKey } from '../../types/search'
 import { ToastStatus, ToastType } from '../../types/toast'
+import { checkForUpdatesAndNotifyWrapper } from '../update'
 
 export let SPOTLIGHT_SHORTCUT = 'CommandOrCOntrol+Shift+X'
 
@@ -170,9 +168,7 @@ const handleIPCListener = () => {
       windows.toast?.setParent(windows.spotlight)
       windows.toast?.send(IpcAction.TOAST_MESSAGE, { status: ToastStatus.LOADING, title: 'Checking for updates..' })
       windows.toast?.open(false, false, true)
-      const token = useAuthStore.getState().userCred.token
-      autoUpdater.addAuthHeader(token)
-      autoUpdater.checkForUpdatesAndNotify()
+      checkForUpdatesAndNotifyWrapper()
     }
   })
 
