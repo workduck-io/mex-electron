@@ -8,6 +8,7 @@ export interface NodeProperties {
   id: string
   nodeid: string
   path: string
+  namespace: string
 }
 
 export type EditorContextType = {

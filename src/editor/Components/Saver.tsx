@@ -48,6 +48,7 @@ export const useDataSaverFromContent = () => {
   // By default saves to API use false to not save
   const saveEditorValueAndUpdateStores = async (
     nodeId: string,
+    namespace: string,
     editorValue: any[],
     options?: SaveEditorValueOptions
   ) => {
@@ -55,7 +56,7 @@ export const useDataSaverFromContent = () => {
       setContent(nodeId, editorValue)
       mog('saveEditorValueAndUpdateStores', { nodeId, editorValue, options })
 
-      if (options?.saveApi !== false) saveDataAPI(nodeId, editorValue, options?.isShared ?? false)
+      if (options?.saveApi !== false) saveDataAPI(nodeId, namespace, editorValue, options?.isShared ?? false)
 
       updateLinksFromContent(nodeId, editorValue)
       updateTagsFromContent(nodeId, editorValue)
@@ -68,10 +69,10 @@ export const useDataSaverFromContent = () => {
     }
   }
 
-  const saveNodeAPIandFs = (nodeId: string) => {
+  const saveNodeAPIandFs = (nodeId: string, namespace: string) => {
     const content = getContent(nodeId)
     mog('saving to api for nodeId: ', { nodeId, content })
-    saveDataAPI(nodeId, content.content)
+    saveDataAPI(nodeId, namespace, content.content)
     // saveData()
   }
 
@@ -116,7 +117,7 @@ export const useSaver = () => {
 
     if (hasState || content) {
       const editorState = content ?? state[editorId].get.value()
-      saveEditorValueAndUpdateStores(cnode.nodeid, editorState, { isShared })
+      saveEditorValueAndUpdateStores(cnode.nodeid, cnode.namespace, editorState, { isShared })
     }
 
     if (writeToFile !== false) {

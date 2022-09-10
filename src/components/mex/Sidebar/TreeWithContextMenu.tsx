@@ -103,7 +103,7 @@ export const TreeContextMenu = ({ item }: TreeContextMenuProps) => {
 
   const handleTemplate = (item: TreeItem) => {
     if (item.data.path !== 'Drafts') {
-      toggleModal(ModalsType.template, item.data.nodeid)
+      toggleModal(ModalsType.template, item.data)
     } else {
       toast.error('Template cannot be set for Drafts hierarchy')
     }

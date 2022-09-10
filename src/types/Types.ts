@@ -136,6 +136,7 @@ export interface DataStoreState {
   // Namespaces
   namespaces: SingleNamespace[]
   setNamespaces: (namespaces: SingleNamespace[]) => void
+  addNamespace: (namespace: SingleNamespace) => void
 
   // adds the node
   addILink: (props: AddILinkProps) => ILink | undefined

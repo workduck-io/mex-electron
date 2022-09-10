@@ -142,12 +142,19 @@ export const useApi = () => {
    * Saves data in the backend
    * Also updates the incoming data in the store
    */
-  const saveDataAPI = async (nodeid: string, content: any[], isShared = false, title?: string, templateID?: string) => {
+  const saveDataAPI = async (
+    nodeid: string,
+    namespace: string,
+    content: any[],
+    isShared = false,
+    title?: string,
+    templateID?: string
+  ) => {
     const reqData = {
       id: nodeid,
       type: 'NodeRequest',
       title: title || getTitleFromNoteId(nodeid),
-      namespaceIdentifier: DEFAULT_NAMESPACE,
+      namespaceIdentifier: namespace,
       tags: getTagsFromContent(content),
       data: serializeContent(content ?? defaultContent.content, nodeid),
       // Because we have to send templateID with every node save call so that it doesn't get unset
@@ -534,20 +541,22 @@ export const useApi = () => {
 
   const createNewNamespace = async (name: string) => {
     try {
-      const res = await client.post(
-        apiURLs.namespaces.create,
-        {
-          type: 'NamespaceRequest',
-          name
-        },
-        {
-          headers: workspaceHeaders()
-        }
-      )
+      const res = await client
+        .post(
+          apiURLs.namespaces.create,
+          {
+            type: 'NamespaceRequest',
+            name
+          },
+          {
+            headers: workspaceHeaders()
+          }
+        )
+        .then((d) => ({ id: d?.data?.id, name: d?.data?.name }))
 
       mog('We created a namespace', { res })
 
-      return { status: true }
+      return res
     } catch (err) {
       toast('Unable to create Snippet')
     }

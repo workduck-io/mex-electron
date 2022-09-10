@@ -21,7 +21,9 @@ import { useLinks, getTitleFromPath } from '@hooks/useLinks'
 
 const TemplateModal = () => {
   const { getILinkFromNodeid } = useLinks()
-  const { toggleOpen, open, data: nodeid } = useModalStore()
+  const { toggleOpen, open, data } = useModalStore()
+
+  const { nodeid, namespace } = data ?? {}
 
   const node = getILinkFromNodeid(nodeid)
   const templates = useSnippetStore((state) => state.snippets).filter((item) => item?.template)
@@ -63,7 +65,7 @@ const TemplateModal = () => {
     const content = getContent(nodeid)
 
     if (nodeid) {
-      saveDataAPI(nodeid, content.content, undefined, undefined, selectedTemplate?.id)
+      saveDataAPI(nodeid, namespace, content.content, undefined, undefined, selectedTemplate?.id)
       toast('Template Set!')
     }
 
@@ -75,7 +77,7 @@ const TemplateModal = () => {
 
     if (nodeid) {
       // For why '__null__' see useSaveApi.tsx line 151
-      saveDataAPI(nodeid, content.content, undefined, undefined, '__null__')
+      saveDataAPI(nodeid, namespace, content.content, undefined, undefined, '__null__')
       toast('Template Removed!')
     }
 

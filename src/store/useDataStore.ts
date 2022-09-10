@@ -46,6 +46,17 @@ const useDataStore = create<DataStoreState>(
         })
       },
 
+      addNamespace: (namespace) => {
+        set({ namespaces: [...get().namespaces, namespace] })
+      },
+
+      setNamespaces: (namespaces) => set({ namespaces }),
+      // removeNamespace: (id) => {
+      //   const ns = get().namespaces
+      //   delete ns[id]
+      //   set({namespaces: ns})
+      // },
+
       // Add a new tag to the store
       addTag: (tag) => {
         const Tags = Settify([...get().tags.map((t) => t.value), tag])

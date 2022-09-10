@@ -117,7 +117,7 @@ export const useHierarchy = () => {
             content
           })
 
-      saveEditorValueAndUpdateStores(noteId, content, { saveApi: false })
+      saveEditorValueAndUpdateStores(noteId, node.namespace, content, { saveApi: false })
 
       return node
     } catch (error) {
