@@ -11,7 +11,6 @@ import { useNavigation } from '../../../hooks/useNavigation'
 import { useRefactor } from '../../../hooks/useRefactor'
 import { useSaveData } from '../../../hooks/useSaveData'
 import { useEditorStore } from '../../../store/useEditorStore'
-import { useQStore } from '../../../store/useQStore'
 import { useRenameStore } from '../../../store/useRenameStore'
 import { isMatch, isReserved } from '../../../utils/lib/paths'
 import { QuickLink, WrappedNodeSelect } from '../NodeSelect/NodeSelect'
@@ -35,7 +34,6 @@ const Rename = () => {
   const { updateILinks } = useLinks()
 
   const { getNodeidFromPath } = useLinks()
-  const q = useQStore((s) => s.q)
 
   const handleFromChange = (quickLink: QuickLink) => {
     const newValue = quickLink.value
@@ -65,7 +63,7 @@ const Rename = () => {
       // mog('To, from in rename', { to, from })
       setMockRefactored(getMockRefactor(from, to))
     }
-  }, [to, from, q])
+  }, [to, from])
 
   useEffect(() => {
     const unsubscribe = tinykeys(window, {

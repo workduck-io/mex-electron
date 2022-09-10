@@ -29,6 +29,10 @@ export const RESERVED_NAMESPACES = {
   shared: 'Shared'
 }
 
+export const getNewNamespaceName = (num: number): string => {
+  return `Space ${num}`
+}
+
 export const getPathNum = (path: string) => {
   const numMatch = path.match(/\d+$/)
   // mog('getPathNum', { path, numMatch })
