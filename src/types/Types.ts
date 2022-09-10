@@ -46,6 +46,8 @@ export interface ILink {
    * Uses separator for heirarchy */
   path: string
 
+  namespace: string
+
   /** Iconify Icon string */
   icon?: string
 
@@ -105,10 +107,16 @@ interface SlashCommands {
 
 export interface AddILinkProps {
   ilink: string
+  namespace: string
   nodeid?: string
   openedNotePath?: string
   archived?: boolean
   showAlert?: boolean
+}
+
+export interface SingleNamespace {
+  id: string
+  name: string
 }
 
 export interface DataStoreState {
@@ -124,6 +132,10 @@ export interface DataStoreState {
   initialized: boolean
 
   initializeDataStore: (initData: InitData) => void
+
+  // Namespaces
+  namespaces: SingleNamespace[]
+  setNamespaces: (namespaces: SingleNamespace[]) => void
 
   // adds the node
   addILink: (props: AddILinkProps) => ILink | undefined

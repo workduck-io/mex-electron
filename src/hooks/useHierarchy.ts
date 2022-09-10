@@ -10,6 +10,7 @@ import { getNodeidFromPathAndLinks } from './useLinks'
 
 export const hierarchyParser = (
   linkData: string[],
+  namespace: string,
   options?: { withParentNodeId: boolean; allowDuplicates?: boolean }
 ): ILink[] => {
   const ilinks: ILink[] = []
@@ -32,8 +33,8 @@ export const hierarchyParser = (
 
       /*
           Drafts.A and Drafts.B exist, we need to check if the Drafts parent node is the same by checking
-          the parent nodeUID. This handles the case in which a nodeID might have two different node paths. 
- 
+          the parent nodeUID. This handles the case in which a nodeID might have two different node paths.
+
           We still do not handle the case where there are 2 nodes with the same path but different Node IDs,
           we handle that on the frontend for now
         */
@@ -48,12 +49,12 @@ export const hierarchyParser = (
         }
       } else if (pathIdMapping[nodePath] && !options?.allowDuplicates) {
         // mog(`Found existing notePath: ${nodePath} with ${nodeID} at index: ${pathIdMapping[nodePath].index}`)
-        ilinks[pathIdMapping[nodePath].index] = { nodeid: nodeID, path: nodePath }
+        ilinks[pathIdMapping[nodePath].index] = { nodeid: nodeID, path: nodePath, namespace }
       } else {
         // mog(`Inserting: ${nodePath} with ${nodeID} at index: ${ilinks.length}`)
         idPathMapping[nodeID] = nodePath
         pathIdMapping[nodePath] = { nodeid: nodeID, index: ilinks.length }
-        const ilink: ILink = { nodeid: nodeID, path: nodePath }
+        const ilink: ILink = { nodeid: nodeID, path: nodePath, namespace }
         ilinks.push(options?.withParentNodeId ? { ...ilink, parentNodeId } : ilink)
       }
 
@@ -95,6 +96,7 @@ export const useHierarchy = () => {
     noteId: string
     notePath: string
     parentNoteId: string
+    namespace: string
     noteContent?: NodeEditorContent
   }) => {
     try {
@@ -105,12 +107,12 @@ export const useHierarchy = () => {
       const bulkNotePath = !parentNoteId ? createNoteHierarchyString(notePath) : notePath
 
       const node = parentNoteId
-        ? await saveNewNodeAPI(noteId, {
+        ? await saveNewNodeAPI(noteId, options.namespace, {
             path: notePath,
             parentNoteId,
             content
           })
-        : await bulkSaveNodes(noteId, {
+        : await bulkSaveNodes(noteId, options.namespace, {
             path: bulkNotePath,
             content
           })

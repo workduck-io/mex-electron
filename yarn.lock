@@ -2630,6 +2630,19 @@
     polished "^4.1.4"
     react-spring "^9.5.2"
 
+"@workduck-io/mex-utils@^0.0.4":
+  version "0.0.4"
+  resolved "https://npm.pkg.github.com/download/@workduck-io/mex-utils/0.0.4/fed3dc2edc555e37f1c81b1e34f46c2542b70f8b#fed3dc2edc555e37f1c81b1e34f46c2542b70f8b"
+  integrity sha512-uXIx4y8sV8XR2guoFwKRUTzkeN4XwAUcx5fp7MoXTPWMm5cEEw/6splHGG/r9GF4As6UPXzFwtKUNNP1yvwcCA==
+  dependencies:
+    "@workduck-io/flexsearch" "^0.7.22"
+    chrono-node "^2.3.9"
+    date-fns "^2.29.1"
+    fast-fuzzy "^1.11.2"
+    fuse.js "^6.5.3"
+    lodash "^4.17.21"
+    nanoid "^4.0.0"
+
 "@workduck-io/tinykeys@1.5.0":
   version "1.5.0"
   resolved "https://npm.pkg.github.com/download/@workduck-io/tinykeys/1.5.0/612c3fcc3301ccd3b89f33cf0330c887ac92758e#612c3fcc3301ccd3b89f33cf0330c887ac92758e"
@@ -3344,7 +3357,7 @@ chromium-pickle-js@^0.2.0:
   resolved "https://registry.yarnpkg.com/chromium-pickle-js/-/chromium-pickle-js-0.2.0.tgz#04a106672c18b085ab774d983dfa3ea138f22205"
   integrity sha512-1R5Fho+jBq0DDydt+/vHWj5KJNJCKdARKOCwZUen84I5BreWoLqRLANH1U87eJy1tiASPtMnGqJJq0ZsLoRPOw==
 
-chrono-node@^2.3.8:
+chrono-node@^2.3.8, chrono-node@^2.3.9:
   version "2.4.1"
   resolved "https://registry.yarnpkg.com/chrono-node/-/chrono-node-2.4.1.tgz#ba86142a543cc27c0c531f2acbc1c23e3358bafe"
   integrity sha512-23lqpMF2i0lr6dAVpVyYmvVGgX/EtkHBEIgFUd6LQiP7CHLzYeROYvl5X59ZBK73KAV+FGPo4rQv0Fym8CIktw==
@@ -3767,7 +3780,7 @@ csv@^5.5.0:
     csv-stringify "^5.6.5"
     stream-transform "^2.1.3"
 
-date-fns@^2.0.1, date-fns@^2.24.0, date-fns@^2.28.0:
+date-fns@^2.0.1, date-fns@^2.24.0, date-fns@^2.28.0, date-fns@^2.29.1:
   version "2.29.2"
   resolved "https://registry.yarnpkg.com/date-fns/-/date-fns-2.29.2.tgz#0d4b3d0f3dff0f920820a070920f0d9662c51931"
   integrity sha512-0VNbwmWJDS/G3ySwFSJA3ayhbURMTJLtwM2DTxf9CWondCnh6DTNlO9JgRSq6ibf4eD0lfMJNBxUdEAHHix+bA==
@@ -4806,7 +4819,7 @@ fast-diff@^1.1.2:
   resolved "https://registry.yarnpkg.com/fast-diff/-/fast-diff-1.2.0.tgz#73ee11982d86caaf7959828d519cfe927fac5f03"
   integrity sha512-xJuoT5+L99XlZ8twedaRf6Ax2TgQVxvgZOYoPKqZufmJib0tL2tegPBOZb1pVNgIhlqDlA0eO0c3wBvQcmzx4w==
 
-fast-fuzzy@^1.10.10:
+fast-fuzzy@^1.10.10, fast-fuzzy@^1.11.2:
   version "1.11.2"
   resolved "https://registry.yarnpkg.com/fast-fuzzy/-/fast-fuzzy-1.11.2.tgz#25e6f81f10636237da48071e64eb9fa95e1e2574"
   integrity sha512-H1ct10Pzx+pSO4h7F1uBXET91ay2hy67J1aQZFKL23EXsOoanpwjPNQQoc+NhClKJMmlGGN+0bXhIdFJX70BJw==
@@ -5049,6 +5062,11 @@ functions-have-names@^1.2.2:
   version "1.2.3"
   resolved "https://registry.yarnpkg.com/functions-have-names/-/functions-have-names-1.2.3.tgz#0404fe4ee2ba2f607f0e0ec3c80bae994133b834"
   integrity sha512-xckBUXyTIqT97tq2x2AMb+g163b5JFysYk0x4qxNFwbfQkmNZoiRHb6sPzI9/QV33WeuvVYBUIiD4NzNIyqaRQ==
+
+fuse.js@^6.5.3:
+  version "6.6.2"
+  resolved "https://registry.yarnpkg.com/fuse.js/-/fuse.js-6.6.2.tgz#fe463fed4b98c0226ac3da2856a415576dc9a111"
+  integrity sha512-cJaJkxCCxC8qIIcPBF9yGxY0W/tVZS3uEISDxhYIdtk8OL93pe+6Zj7LjCqVV4dzbqcriOZ+kQ/NE4RXZHsIGA==
 
 gauge@~2.7.3:
   version "2.7.4"
