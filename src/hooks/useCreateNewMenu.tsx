@@ -62,6 +62,14 @@ export const useCreateNewMenu = () => {
     }
   }
 
+  const createNewNamespace = () => {
+    addDefaultNewNamespace().then((ns) => {
+      // mog('After creating ns in contenxtmenu', { ns })
+      // Change the space in the sidebar to the newly created space
+      changeSpace(ns?.id)
+    })
+  }
+
   const onCreateNewSnippet = () => {
     // Create a better way.
     const snippetId = generateSnippetId()
@@ -87,6 +95,13 @@ export const useCreateNewMenu = () => {
         label: 'New Note',
         onSelect: () => {
           createNewNoteInNamespace(currentSpace || getDefaultNamespaceId())
+        }
+      },
+      {
+        id: 'new-space',
+        label: 'New Space',
+        onSelect: () => {
+          createNewNamespace()
         }
       },
       {

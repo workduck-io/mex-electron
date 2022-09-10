@@ -1,20 +1,20 @@
-import { SharedNodeIconify } from '@components/icons/Icons'
-import StarredNotes from '@components/mex/Sidebar/StarredNotes'
-import SharedNotes from '@components/mex/Sidebar/SharedNotes'
-import useDataStore from '@store/useDataStore'
 import React, { useEffect, useMemo, useRef, useState } from 'react'
-import { SidebarSpaceComponent } from './space'
+
+import { usePolling } from '@apis/usePolling'
+import SharedNotes from '@components/mex/Sidebar/SharedNotes'
+import StarredNotes from '@components/mex/Sidebar/StarredNotes'
+import { useNamespaces } from '@hooks/useNamespaces'
+import { useTags } from '@hooks/useTags'
+import { useTransition, useSpringRef } from '@react-spring/web'
+import { PollActions, useApiStore } from '@store/useApiStore'
+import useDataStore from '@store/useDataStore'
+import { useUserPreferenceStore } from '@store/userPreferenceStore'
+import { RESERVED_NAMESPACES } from '@utils/lib/paths'
+
 import { SidebarSpaceSwitcher } from './Sidebar.spaceSwitcher'
 import { SpaceContentWrapper, SpaceWrapper } from './Sidebar.style'
 import { SidebarSpace } from './Sidebar.types'
-import { useTransition, useSpringRef } from '@react-spring/web'
-import { useTags } from '@hooks/useTags'
-import { PollActions, useApiStore } from '@store/useApiStore'
-import { usePolling } from '@apis/usePolling'
-import { useNamespaces } from '@hooks/useNamespaces'
-import { RESERVED_NAMESPACES } from '@utils/lib/paths'
-import { useUserPreferenceStore } from '@store/userPreferenceStore'
-import { mog } from '@workduck-io/mex-utils'
+import { SidebarSpaceComponent } from './space'
 
 export const NoteSidebar = () => {
   const ilinks = useDataStore((store) => store.ilinks)
@@ -143,6 +143,13 @@ export const NoteSidebar = () => {
   }, [])
 
   usePolling()
+
+  useEffect(() => {
+    // setIndex((s) => ({ current: newIndex, prev: s.current }))
+    const newIndex = spaces.findIndex((s) => s.id === spaceId)
+    if (newIndex === -1) return
+    setIndex((s) => ({ current: newIndex, prev: s.current }))
+  }, [spaceId, spaces])
 
   useEffect(() => {
     transRef.start()
