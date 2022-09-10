@@ -1,19 +1,21 @@
 import { getUntitledDraftKey, getUntitledKey } from '@editor/Components/SyncBlock/getNewBlockData'
+import { useSpotlightContext } from '@store/Context/context.spotlight'
+import { useContentStore } from '@store/useContentStore'
 import useDataStore from '@store/useDataStore'
 import { useEditorStore } from '@store/useEditorStore'
-import { NodeEditorContent } from '../types/Types'
+import { NavigationType, ROUTE_PATHS, useRouting } from '@views/routes/urls'
 import toast from 'react-hot-toast'
+
+import { DRAFT_NODE } from '@workduck-io/mex-utils'
+
+import { NodeEditorContent } from '../types/Types'
 import { useHierarchy } from './useHierarchy'
+import { useLastOpened } from './useLastOpened'
 import { useLinks } from './useLinks'
 import useLoad from './useLoad'
-import { useNavigation } from './useNavigation'
-import { useLastOpened } from './useLastOpened'
-import { useContentStore } from '@store/useContentStore'
-import { useSnippets } from './useSnippets'
 import { useNamespaces } from './useNamespaces'
-import { DRAFT_NODE, mog } from '@workduck-io/mex-utils'
-import { NavigationType, ROUTE_PATHS, useRouting } from '@views/routes/urls'
-import { useSpotlightContext } from '@store/Context/context.spotlight'
+import { useNavigation } from './useNavigation'
+import { useSnippets } from './useSnippets'
 
 export type NewNoteOptions = {
   path?: string
