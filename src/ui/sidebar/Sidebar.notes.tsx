@@ -43,19 +43,19 @@ export const NoteSidebar = () => {
     const nodesByNamespaces = getNodesByNamespaces()
     const nspaces = nodesByNamespaces.map(
       (ns) =>
-        ({
-          id: ns.id,
-          label: ns.name,
-          icon: ns.name === RESERVED_NAMESPACES.default ? 'ri:user-line' : undefined,
-          tooltip: 'All Notes',
-          list: {
-            type: 'hierarchy',
-            items: ns.nodes
-          },
-          popularTags: mostUsedTags,
-          pinnedItems: () => <StarredNotes />,
-          pollAction: PollActions.hierarchy
-        } as SidebarSpace)
+      ({
+        id: ns.id,
+        label: ns.name,
+        icon: ns.name === RESERVED_NAMESPACES.default ? 'ri:user-line' : 'heroicons-outline:view-grid',
+        tooltip: ns.name,
+        list: {
+          type: 'hierarchy',
+          items: ns.nodes
+        },
+        popularTags: mostUsedTags,
+        pinnedItems: () => <StarredNotes />,
+        pollAction: PollActions.hierarchy
+      } as SidebarSpace)
     )
     // Add shared notes namespace
     nspaces.push({
