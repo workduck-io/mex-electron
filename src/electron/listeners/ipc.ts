@@ -200,16 +200,16 @@ const handleIPCListener = () => {
   ipcMain.on(IpcAction.OPEN_MODAL_IN_MEX, (_event, arg) => {
     windowManager.sendToWindow(AppType.MEX, IpcAction.OPEN_MODAL, { type: arg.type, data: arg.data })
     windowManager.getWindow(AppType.SPOTLIGHT)?.hide()
-    windowManager.getWindow(AppType.MEX).focus()
-    windowManager.getWindow(AppType.SPOTLIGHT).show()
+    windowManager.getWindow(AppType.MEX)?.focus()
+    windowManager.getWindow(AppType.MEX)?.show()
   })
 
   ipcMain.on(IpcAction.OPEN_NODE_IN_MEX, (_event, arg) => {
     windowManager.sendToWindow(AppType.MEX, IpcAction.OPEN_NODE, { nodeid: arg.nodeid })
 
     windowManager.getWindow(AppType.SPOTLIGHT)?.hide()
-    windowManager.getWindow(AppType.MEX).focus()
-    windowManager.getWindow(AppType.SPOTLIGHT).show()
+    windowManager.getWindow(AppType.MEX)?.focus()
+    windowManager.getWindow(AppType.MEX)?.show()
   })
 
   ipcMain.on(IpcAction.REDIRECT_TO, (_event, arg) => {

@@ -1,35 +1,38 @@
-import magicLine from '@iconify/icons-ri/magic-line'
+import React, { useMemo } from 'react'
+
 import { TreeItem } from '@atlaskit/tree'
+import { IpcAction } from '@data/IpcAction'
+import { appNotifierWindow } from '@electron/utils/notifiers'
 import { useCreateNewNote } from '@hooks/useCreateNewNote'
+import { AppType } from '@hooks/useInitialize'
 import { useLastOpened } from '@hooks/useLastOpened'
 import addCircleLine from '@iconify/icons-ri/add-circle-line'
 import archiveLine from '@iconify/icons-ri/archive-line'
 import editLine from '@iconify/icons-ri/edit-line'
+import magicLine from '@iconify/icons-ri/magic-line'
+import PinIcon from '@iconify/icons-ri/pushpin-2-line'
+import shareLine from '@iconify/icons-ri/share-line'
+import volumeDownLine from '@iconify/icons-ri/volume-down-line'
 // import refreshFill from '@iconify/icons-ri/refresh-fill'
 import volumeMuteLine from '@iconify/icons-ri/volume-mute-line'
-import shareLine from '@iconify/icons-ri/share-line'
 import { Icon } from '@iconify/react'
+import { useContentStore } from '@store/useContentStore'
+import useMultipleEditors from '@store/useEditorsStore'
+import useModalStore, { ModalsType } from '@store/useModalStore'
+import { useSnippetStore } from '@store/useSnippetStore'
 // import * as ContextMenu from '@radix-ui/react-context-menu'
 //
 import { ContextMenuContent, ContextMenuItem, ContextMenuSeparator } from '@ui/components/menus/contextMenu'
-import React, { useMemo } from 'react'
+import { mog } from '@utils/lib/helper'
+import { NavigationType, ROUTE_PATHS, useRouting } from '@views/routes/urls'
+import toast from 'react-hot-toast'
+
+import { LastOpenedState } from '../../../types/userPreference'
 import { useShareModalStore } from '../Mention/ShareModalStore'
 import { useDeleteStore } from '../Refactor/DeleteModal'
 import { useRefactorStore } from '../Refactor/Refactor'
-import { LastOpenedState } from '../../../types/userPreference'
-import volumeDownLine from '@iconify/icons-ri/volume-down-line'
-import { mog } from '@utils/lib/helper'
-import toast from 'react-hot-toast'
-import useModalStore, { ModalsType } from '@store/useModalStore'
-import { NavigationType, ROUTE_PATHS, useRouting } from '@views/routes/urls'
-import { useContentStore } from '@store/useContentStore'
-import { useSnippetStore } from '@store/useSnippetStore'
-import { appNotifierWindow } from '@electron/utils/notifiers'
-import { IpcAction } from '@data/IpcAction'
-import { AppType } from '@hooks/useInitialize'
+
 export const MENU_ID = 'Tree-Menu'
-import PinIcon from '@iconify/icons-ri/pushpin-2-line'
-import useMultipleEditors from '@store/useEditorsStore'
 
 interface MuteMenuItemProps {
   nodeid: string
@@ -78,7 +81,8 @@ export const TreeContextMenu = ({ item }: TreeContextMenuProps) => {
   const openShareModal = useShareModalStore((store) => store.openModal)
   const toggleModal = useModalStore((store) => store.toggleOpen)
   const { goTo } = useRouting()
-  const pinNote = useMultipleEditors(store => store.pinNote)
+  const pinNote = useMultipleEditors((store) => store.pinNote)
+  const pinnedNotes = useMultipleEditors((store) => store.pinned)
   const contents = useContentStore((store) => store.contents)
 
   const hasTemplate = useMemo(() => {
@@ -107,9 +111,12 @@ export const TreeContextMenu = ({ item }: TreeContextMenuProps) => {
 
   const handlePinNote = (item: TreeItem) => {
     const noteId = item?.data?.nodeid
-
-    pinNote(noteId)
-    appNotifierWindow(IpcAction.PIN_NOTE_WINDOW, AppType.MEX, { noteId })
+    if (pinnedNotes.has(noteId)) {
+      appNotifierWindow(IpcAction.SHOW_PINNED_NOTE_WINDOW, AppType.MEX, { noteId })
+    } else {
+      pinNote(noteId)
+      appNotifierWindow(IpcAction.PIN_NOTE_WINDOW, AppType.MEX, { noteId })
+    }
   }
 
   const handleTemplate = (item: TreeItem) => {
