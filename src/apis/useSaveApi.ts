@@ -25,6 +25,7 @@ import { mog } from '../utils/lib/helper'
 import { extractMetadata } from '../utils/lib/metadata'
 import { deserializeContent, serializeContent } from '../utils/lib/serialize'
 import { apiURLs } from './routes'
+import { allNamespacesHierarchyParser } from '@workduck-io/mex-utils'
 
 const API_CACHE_LOG = `\nAPI has been requested before, cancelling.\n`
 
@@ -38,6 +39,7 @@ export const useApi = () => {
   const { getSharedNode } = useNodes()
   const { addLastOpened } = useLastOpened()
   const setILinks = useDataStore((store) => store.setIlinks)
+  const setNamespaces = useDataStore((s) => s.setNamespaces)
   const initSnippets = useSnippetStore((store) => store.initSnippets)
 
   const { updateFromContent } = useUpdater()
@@ -54,6 +56,7 @@ export const useApi = () => {
 
   const saveNewNodeAPI = async (
     noteId: string,
+    namespace: string,
     options?: {
       path: string
       parentNoteId: string
@@ -64,7 +67,7 @@ export const useApi = () => {
       id: noteId,
       title: getTitleFromNoteId(noteId),
       referenceID: options?.parentNoteId,
-      namespaceIdentifier: DEFAULT_NAMESPACE,
+      namespaceIdentifier: namespace,
       type: 'NodeRequest',
       tags: getTagsFromContent(options.content),
       data: serializeContent(options.content, noteId)
@@ -95,6 +98,7 @@ export const useApi = () => {
 
   const bulkSaveNodes = async (
     noteId: string,
+    namespace: string,
     options: {
       path: string
       content: NodeEditorContent
@@ -119,8 +123,8 @@ export const useApi = () => {
       })
       .then((d: any) => {
         const { addedPaths, removedPaths, node } = d.data
-        const addedILinks = hierarchyParser(addedPaths)
-        const removedILinks = hierarchyParser(removedPaths)
+        const addedILinks = hierarchyParser(addedPaths, namespace)
+        const removedILinks = hierarchyParser(removedPaths, namespace)
         setMetadata(noteId, extractMetadata(node))
 
         mog('create new request', { d })
@@ -310,29 +314,53 @@ export const useApi = () => {
 
   const getNodesByWorkspace = async (): Promise<ILink[]> => {
     const data = await client
-      .get(apiURLs.getHierarchy(), {
+      .get(apiURLs.namespaces.getHierarchy, {
         headers: workspaceHeaders()
       })
       .then((d) => {
         if (d.data) {
           const hierarchy = d.data.hierarchy || []
           const nodesMetadata = d.data.nodesMetadata || {}
-          const nodes = hierarchyParser(hierarchy).map((ilink) => ({
-            ...ilink,
-            createdAt: nodesMetadata[ilink.nodeid]?.createdAt || Infinity,
-            updatedAt: nodesMetadata[ilink.nodeid]?.updatedAt || Infinity
-          }))
+          const parsedHierarchies = allNamespacesHierarchyParser(hierarchy)
+
+          // We create the list of nodes with their respective namespaces
+          // And the details of the namespaces from parsed data
+          const { nodes, namespaces } = Object.entries(parsedHierarchies).reduce(
+            (p, [namespaceid, namespaceData]) => {
+              return {
+                namespaces: [
+                  ...p.namespaces,
+                  {
+                    id: namespaceid,
+                    name: namespaceData.name
+                  }
+                ],
+                nodes: [
+                  ...p.nodes,
+                  ...namespaceData.hierarchy.map((ilink) => ({
+                    ...ilink,
+                    namespace: namespaceid,
+                    createdAt: nodesMetadata[ilink.nodeid]?.createdAt || Infinity,
+                    updatedAt: nodesMetadata[ilink.nodeid]?.updatedAt || Infinity
+                  }))
+                ]
+              }
+            },
+            { nodes: [], namespaces: [] }
+          )
 
           if (nodes && nodes.length > 0) {
             const localILinks = useDataStore.getState().ilinks
             const { toUpdateLocal } = iLinksToUpdate(localILinks, nodes)
 
             runBatch(toUpdateLocal.map((ilink) => getDataAPI(ilink.nodeid)))
-
             // ipcRenderer.send(IpcAction.UPDATE_ILINKS, { ilinks: nodes }) // * Synced
           }
 
+          setNamespaces(namespaces)
           setILinks(nodes)
+
+          mog('Name the spaces', { namespaces, nodes })
 
           return nodes
         }
@@ -504,6 +532,27 @@ export const useApi = () => {
     return resp
   }
 
+  const createNewNamespace = async (name: string) => {
+    try {
+      const res = await client.post(
+        apiURLs.namespaces.create,
+        {
+          type: 'NamespaceRequest',
+          name
+        },
+        {
+          headers: workspaceHeaders()
+        }
+      )
+
+      mog('We created a namespace', { res })
+
+      return { status: true }
+    } catch (err) {
+      toast('Unable to create Snippet')
+    }
+  }
+
   return {
     saveDataAPI,
     getDataAPI,
@@ -522,7 +571,8 @@ export const useApi = () => {
     getGoogleAuthUrl,
     saveView,
     deleteView,
-    getAllViews
+    getAllViews,
+    createNewNamespace
   }
 }
 

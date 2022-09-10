@@ -24,6 +24,11 @@ const RESERVED_PATHS: string[] = [
   'root'
 ]
 
+export const RESERVED_NAMESPACES = {
+  default: 'Personal',
+  shared: 'Shared'
+}
+
 export const getPathNum = (path: string) => {
   const numMatch = path.match(/\d+$/)
   // mog('getPathNum', { path, numMatch })

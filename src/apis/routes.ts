@@ -86,6 +86,15 @@ export const apiURLs = {
   getHierarchy: () => `${API_URL}/workspace/hierarchy?getMetadata=true`,
   refactor: `${API_URL}/node/refactor`,
 
+  namespaces: {
+    getHierarchy: `${API_URL}/namespace/all/hierarchy?getMetadata=true`,
+    create: `${API_URL}/namespace`, // POST
+    update: `${API_URL}/namespace`, // PATCH
+    makePublic: (id: string) => `${API_URL}/namespace/makePublic/${id}`,
+    makePrivate: (id: string) => `${API_URL}/namespace/makePrivate/${id}`,
+    getPublic: (id: string) => `${API_URL}/namespace/public/${id}`
+  },
+
   // Share options
   makeNotePublic: (uid: string) => `${API_URL}/node/makePublic/${uid}`,
   makeNotePrivate: (uid: string) => `${API_URL}/node/makePrivate/${uid}`,
