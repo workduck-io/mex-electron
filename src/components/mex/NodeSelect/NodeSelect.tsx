@@ -503,6 +503,7 @@ function NodeSelect({
                 }
                 const icon = item.icon ? item.icon : fileList2Line
                 if (nodeSelectState.clash && disallowClash && item.status === QuickLinkStatus.new) return null
+
                 return (
                   <Suggestion
                     highlight={highlightedIndex === index}
