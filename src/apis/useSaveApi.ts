@@ -67,7 +67,7 @@ export const useApi = () => {
       id: noteId,
       title: getTitleFromNoteId(noteId),
       referenceID: options?.parentNoteId,
-      namespaceIdentifier: namespace,
+      namespaceID: namespace,
       type: 'NodeRequest',
       tags: getTagsFromContent(options.content),
       data: serializeContent(options.content, noteId)
@@ -93,7 +93,7 @@ export const useApi = () => {
         console.error(e)
       })
 
-    return data
+    // return data
   }
 
   const bulkSaveNodes = async (
@@ -109,7 +109,7 @@ export const useApi = () => {
         path: options.path
       },
       title: getTitleFromNoteId(noteId),
-      namespaceIdentifier: DEFAULT_NAMESPACE,
+      namespaceID: namespace,
       type: 'NodeBulkRequest',
       tags: getTagsFromContent(options.content),
       data: serializeContent(options.content, noteId)
@@ -154,7 +154,7 @@ export const useApi = () => {
       id: nodeid,
       type: 'NodeRequest',
       title: title || getTitleFromNoteId(nodeid),
-      namespaceIdentifier: namespace,
+      namespaceID: namespace,
       tags: getTagsFromContent(content),
       data: serializeContent(content ?? defaultContent.content, nodeid),
       // Because we have to send templateID with every node save call so that it doesn't get unset
