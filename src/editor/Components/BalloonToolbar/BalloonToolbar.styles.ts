@@ -2,6 +2,7 @@ import { BalloonToolbarProps, getToolbarStyles, ToolbarBase } from '@udecode/pla
 import { createStyles } from '@udecode/plate-styled-components'
 import { transparentize } from 'polished'
 import styled, { css, CSSProp } from 'styled-components'
+
 // import tw from 'twin.macro'
 // import { getToolbarStyles } from '../Toolbar/Toolbar.styles';
 import { BalloonToolbarStyleProps } from './BalloonToolbar.types'
@@ -130,7 +131,7 @@ export const BalloonToolbarBase = styled(ToolbarBase)<BalloonToolbarProps>`
 
   .slate-ToolbarButton-active,
   .slate-ToolbarButton:hover {
-    padding: ${({ theme: { spacing } }) => `${spacing.tiny}`};
+    /* padding: ${({ theme: { spacing } }) => `${spacing.tiny}`}; */
     color: ${({ theme }) => theme.colors.primary};
     background-color: ${({ theme }) => transparentize(0.5, theme.colors.gray[9])};
     border-radius: ${({ theme }) => theme.borderRadius.tiny};
