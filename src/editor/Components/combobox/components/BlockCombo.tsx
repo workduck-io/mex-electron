@@ -51,6 +51,8 @@ const BlockCombo = ({ nodeId, onSelect, shortcuts }: BlockComboProps) => {
     const trimmedSearch = textAfterBlockTrigger?.trim()
     const trimmedNodeText = textAfterTrigger?.trim()
 
+    // Only reset blocks when block combo is un-triggered
+    // Checking like this removes the case when trimmedSearch is empty string
     if (trimmedSearch !== undefined) {
       if (nodeId) {
         queryIndexByNodeId(['node'], nodeId, trimmedSearch).then((res) => {
