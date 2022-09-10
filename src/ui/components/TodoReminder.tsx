@@ -1,15 +1,15 @@
+import addCircleLine from '@iconify/icons-ri/add-circle-line'
+import Tippy from '@tippyjs/react'
 import React from 'react'
 import { useCreateReminderModal } from '../../components/mex/Reminders/CreateReminderModal'
-import { TodoActionButton, TodoActionWrapper } from './Todo.style'
-import Tippy from '@tippyjs/react'
+import { reminderStateIcons } from '../../components/mex/Reminders/Reminder'
 import { useReminders } from '../../hooks/useReminders'
 import { getReminderState } from '../../services/reminders/reminders'
-import { reminderStateIcons } from '../../components/mex/Reminders/Reminder'
-import addCircleLine from '@iconify/icons-ri/add-circle-line'
-import { MexIcon } from '../../style/Layouts'
 import { useLayoutStore } from '../../store/useLayoutStore'
+import { MexIcon } from '../../style/Layouts'
+import { NodeEditorContent } from '../../types/Types'
 import { getRelativeTime } from '../../utils/time'
-import { NodeEditorContent } from '../../types/types'
+import { TodoActionButton, TodoActionWrapper } from './Todo.style'
 
 interface TodoReminderProps {
   oid: string

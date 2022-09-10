@@ -1,5 +1,5 @@
 import { Shortcut } from '../../../components/mex/Help/Help.types'
-import { NodeEditorContent } from '../../../types/types'
+import { NodeEditorContent } from '../../../types/Types'
 
 export enum PriorityType {
   low = 'low',

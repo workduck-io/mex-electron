@@ -1,6 +1,6 @@
 /* eslint-disable import/no-unresolved */
 import { serializeAsJSON } from '@excalidraw/excalidraw-next'
-import { AppState, ExcalidrawImperativeAPI } from '@excalidraw/excalidraw-next/types/types'
+import { AppState, ExcalidrawImperativeAPI } from '@excalidraw/excalidraw-next/types/Types'
 import fullscreenExitLine from '@iconify/icons-ri/fullscreen-exit-line'
 import fullscreenLine from '@iconify/icons-ri/fullscreen-line'
 import markupLine from '@iconify/icons-ri/markup-line'
@@ -12,9 +12,9 @@ import { getRootProps } from '@udecode/plate-styled-components'
 import { debounce } from 'lodash'
 import React, { useEffect, useRef, useState } from 'react'
 import {
-  InputPrompt,
-  InputWrapper,
-  RootElement
+    InputPrompt,
+    InputWrapper,
+    RootElement
 } from '../../../media-embed-ui/src/MediaEmbedElement/MediaEmbedElement.styles'
 import { TExcalidrawProps } from '../../types'
 import { CanvasText, getExcalidrawElementStyles } from './ExcalidrawElement.styles'

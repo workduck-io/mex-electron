@@ -1,6 +1,6 @@
-import { useContentStore } from '../../store/useContentStore'
 import { isEqual } from 'lodash'
-import { NodeEditorContent } from '../../types/types'
+import { useContentStore } from '../../store/useContentStore'
+import { NodeEditorContent } from '../../types/Types'
 
 export const measureTimeAsync = async (func: () => Promise<any>): Promise<number> => {
   const start = performance.now()

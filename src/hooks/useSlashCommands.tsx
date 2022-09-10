@@ -3,7 +3,7 @@ import { QuickLinkType } from '../components/mex/NodeSelect/NodeSelect'
 import { defaultCommands } from '../data/Defaults/slashCommands'
 import { SyncBlockTemplate } from '../editor/Components/SyncBlock'
 import { Snippet } from '../store/useSnippetStore'
-import { SlashCommand } from '../types/types'
+import { SlashCommand } from '../types/Types'
 import { addIconToSlashCommand, generatorCombo } from '../utils/generateComboItem'
 import { extractSnippetCommands } from './useSnippets'
 

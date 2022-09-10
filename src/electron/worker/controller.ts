@@ -1,8 +1,8 @@
 import { spawn, Worker } from 'threads'
 
-import { NodeEditorContent } from '../../types/types'
 import { FileData } from '../../types/data'
 import { idxKey, SearchOptions, SearchRepExtra } from '../../types/search'
+import { NodeEditorContent } from '../../types/Types'
 import { mog } from '../../utils/lib/helper'
 
 export let worker = null

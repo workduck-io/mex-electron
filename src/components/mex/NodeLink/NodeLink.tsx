@@ -9,7 +9,7 @@ import { tinykeys } from '@workduck-io/tinykeys'
 import EditorPreview from '../../../editor/Components/EditorPreview/EditorPreview'
 import { useLinks } from '../../../hooks/useLinks'
 import { useNavigation } from '../../../hooks/useNavigation'
-import { NodeType } from '../../../types/types'
+import { NodeType } from '../../../types/Types'
 import { NavigationType, ROUTE_PATHS, useRouting } from '../../../views/routes/urls'
 import { NodeLinkStyled, NodeLinkWrapper } from '../Backlinks/Backlinks.style'
 

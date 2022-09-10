@@ -1,5 +1,5 @@
 import { generateNodeUID } from '../data/Defaults/idPrefixes'
-import { ILink, SlashCommand, Tag } from '../types/types'
+import { ILink, SlashCommand, Tag } from '../types/Types'
 
 export const generateTag = (item: string): Tag => ({
   value: item

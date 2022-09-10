@@ -2,6 +2,7 @@ import { ExcalidrawProps, LibraryItems } from '@excalidraw/excalidraw-next/types
 import { Value } from '@udecode/plate-core'
 import { StyledElementProps } from '@udecode/plate-styled-components'
 import { CSSProp } from 'styled-components'
+
 import { TExcalidrawElement } from '../../types'
 
 export interface ExcalidrawElementStyles {

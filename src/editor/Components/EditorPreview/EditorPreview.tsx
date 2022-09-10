@@ -9,16 +9,17 @@ import useMultipleEditors from '@store/useEditorsStore'
 import { getPlateEditorRef, selectEditor } from '@udecode/plate'
 import { useMatch } from 'react-router-dom'
 
+import { Tooltip } from '@components/FloatingElements/Tooltip'
 import { Button, MexIcon } from '@workduck-io/mex-components'
 import { tinykeys } from '@workduck-io/tinykeys'
-import { Tooltip } from '@components/FloatingElements/Tooltip'
+import { useTheme } from 'styled-components'
 import { getNameFromPath } from '../../../components/mex/Sidebar/treeUtils'
 import { TagsRelatedTiny } from '../../../components/mex/Tags/TagsRelated'
 import { useLinks } from '../../../hooks/useLinks'
 import useLoad from '../../../hooks/useLoad'
 import { useTags } from '../../../hooks/useTags'
 import { useContentStore } from '../../../store/useContentStore'
-import { NodeEditorContent } from '../../../types/types'
+import { NodeEditorContent } from '../../../types/Types'
 import { NavigationType, ROUTE_PATHS, useRouting } from '../../../views/routes/urls'
 import EditorPreviewRenderer from '../../EditorPreviewRenderer'
 import {
@@ -28,7 +29,6 @@ import {
   EditorPreviewWrapper,
   PreviewActionHeader
 } from './EditorPreview.styles'
-import { useTheme } from 'styled-components'
 
 export interface EditorPreviewProps {
   nodeid: string

@@ -1,12 +1,11 @@
 import { SEPARATOR } from '@components/mex/Sidebar/treeUtils'
 import { BASE_TASKS_PATH, defaultContent } from '@data/Defaults/baseData'
+import { generateTempId } from '@data/Defaults/idPrefixes'
 import { useContentStore } from '@store/useContentStore'
 import useDataStore from '@store/useDataStore'
-import { NodeEditorContent } from '../types/types'
 import { format } from 'date-fns'
-import { generateTempId } from '@data/Defaults/idPrefixes'
+import { NodeEditorContent } from '../types/Types'
 import { useCreateNewNote } from './useCreateNewNote'
-import { mog } from '@utils/lib/helper'
 
 export const getTodayTaskNodePath = () => {
   return `${BASE_TASKS_PATH}${SEPARATOR}${format(Date.now(), 'do MMM yyyy')}`

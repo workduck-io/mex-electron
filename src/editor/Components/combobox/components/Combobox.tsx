@@ -2,7 +2,7 @@ import React, { useCallback, useEffect, useState } from 'react'
 
 import { DEFAULT_LIST_ITEM_ICON } from '@components/spotlight/ActionStage/ActionMenu/ListSelector'
 import { getIconType, ProjectIconMex } from '@components/spotlight/ActionStage/Project/ProjectIcon'
-import { shift, offset, flip } from '@floating-ui/react-dom-interactions'
+import { flip, offset, shift } from '@floating-ui/react-dom-interactions'
 import usePointerMovedSinceMount from '@hooks/listeners/usePointerMovedSinceMount'
 import { Icon } from '@iconify/react'
 import { getRangeBoundingClientRect, PortalBody, useEditorState, useVirtualFloating } from '@udecode/plate'
@@ -18,8 +18,8 @@ import { ElementTypeBasedShortcut } from '../../../../components/spotlight/Short
 import { useSnippets } from '../../../../hooks/useSnippets'
 import { useContentStore } from '../../../../store/useContentStore'
 import { PrimaryText } from '../../../../style/Integration'
-import { NodeEditorContent } from '../../../../types/types'
-import EditorPreviewRenderer from '../../../type'
+import { NodeEditorContent } from '../../../../types/Types'
+import EditorPreviewRenderer from '../../../EditorPreviewRenderer'
 import {
   ComboboxItem,
   ComboboxRoot,

@@ -3,8 +3,8 @@ import { getLevel } from '@store/useDataStore'
 import { useTreeStore } from '@store/useTreeStore'
 import { mog } from '@utils/lib/helper'
 import { FlatItem, generateTree } from '@utils/lib/tree'
-import { ILink } from '../types/Types'
 import { uniqBy } from 'lodash'
+import { ILink } from '../types/Types'
 
 /** Link sanatization
  *

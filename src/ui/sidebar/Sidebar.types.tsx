@@ -1,8 +1,8 @@
-import { DesignItem } from '../../types/design'
-import { LastOpenedState } from '../../types/userPreference'
-import { ILink, Tag } from '../../types/Types'
 import { IconifyIcon } from '@iconify/react'
 import { PollActions } from '@store/useApiStore'
+import { DesignItem } from '../../types/design'
+import { ILink, Tag } from '../../types/Types'
+import { LastOpenedState } from '../../types/userPreference'
 
 /**
  * A generic item to be shown in sidebar

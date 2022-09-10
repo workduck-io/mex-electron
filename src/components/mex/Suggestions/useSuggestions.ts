@@ -3,11 +3,11 @@ import { useSearch } from '@hooks/useSearch'
 import { useEditorStore } from '@store/useEditorStore'
 import { useLayoutStore } from '@store/useLayoutStore'
 import useSuggestionStore from '@store/useSuggestionStore'
-import { NodeType } from '../../../types/types'
 import { getPlateEditorRef } from '@udecode/plate'
 import { convertContentToRawText } from '@utils/search/parseData'
 import { removeStopwords } from '@utils/stopwords'
 import { useCallback } from 'react'
+import { NodeType } from '../../../types/Types'
 
 export const useSuggestions = () => {
   const { getNodeType } = useNodes()

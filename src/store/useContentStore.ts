@@ -1,7 +1,7 @@
 import create from 'zustand'
 import { devtools } from 'zustand/middleware'
 import { NodeContent, NodeMetadata } from '../types/data'
-import { NodeEditorContent } from '../types/types'
+import { NodeEditorContent } from '../types/Types'
 
 export interface Contents {
   // Mapped with nodeid

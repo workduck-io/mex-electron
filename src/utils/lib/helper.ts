@@ -1,12 +1,12 @@
 import { FAKE_APP_URI, IS_DEV } from '../../data/Defaults/dev_'
 
 import { ELEMENT_PARAGRAPH } from '@udecode/plate'
-import { NodeEditorContent } from '../../types/types'
-import { NodeProperties } from '../../store/useEditorStore'
-import { SEPARATOR } from '../../components/mex/Sidebar/treeUtils'
-import WebStorageCookieStore from 'tough-cookie-web-storage-store'
-import { generateNodeUID } from '../../data/Defaults/idPrefixes'
 import tough from 'tough-cookie'
+import WebStorageCookieStore from 'tough-cookie-web-storage-store'
+import { SEPARATOR } from '../../components/mex/Sidebar/treeUtils'
+import { generateNodeUID } from '../../data/Defaults/idPrefixes'
+import { NodeProperties } from '../../store/useEditorStore'
+import { NodeEditorContent } from '../../types/Types'
 
 type MogOptions = {
   pretty: boolean

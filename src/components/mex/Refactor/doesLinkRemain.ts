@@ -1,5 +1,5 @@
-import { ILink } from '../../../types/types'
 import { NodeLink } from '../../../types/relations'
+import { ILink } from '../../../types/Types'
 
 export const doesLinkRemain = (id: string, refactored: ILink[]): boolean => {
   return refactored.map((r) => r.path).indexOf(id) === -1

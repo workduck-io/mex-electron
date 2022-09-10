@@ -3,14 +3,8 @@ import { useSnippets } from '@hooks/useSnippets'
 import { useToast } from '@hooks/useToast'
 import { useUpdater } from '@hooks/useUpdater'
 import {
-  getSelectionText,
-  insertNodes,
-  TEditor,
-  getNodeEntries,
-  removeNodes,
-  deleteText,
-  getPath,
-  withoutNormalizing
+    deleteText, getNodeEntries, getPath, getSelectionText,
+    insertNodes, removeNodes, TEditor, withoutNormalizing
 } from '@udecode/plate'
 import { convertValueToTasks } from '@utils/lib/contentConvertTask'
 import genereateName from 'project-name-generator'
@@ -19,7 +13,7 @@ import { defaultContent } from '../../../../data/Defaults/baseData'
 import { generateSnippetId, generateTempId } from '../../../../data/Defaults/idPrefixes'
 import { useEditorStore } from '../../../../store/useEditorStore'
 import { useSnippetStore } from '../../../../store/useSnippetStore'
-import { NodeEditorContent } from '../../../../types/types'
+import { NodeEditorContent } from '../../../../types/Types'
 import { getSlug, NODE_PATH_CHAR_LENGTH, NODE_PATH_SPACER } from '../../../../utils/lib/strings'
 import { convertContentToRawText } from '../../../../utils/search/parseData'
 import { ELEMENT_ILINK } from '../../ilink/defaults'

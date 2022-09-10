@@ -1,5 +1,4 @@
 import { SharedNodeIcon, SharedNodeIconify } from '@components/icons/Icons'
-import { SharedNode } from '../../../types/Types'
 import { useEditorStore } from '@store/useEditorStore'
 import { ContextMenuContent } from '@ui/components/menus/contextMenu'
 import { NavigationType, ROUTE_PATHS, useRouting } from '@views/routes/urls'
@@ -7,9 +6,10 @@ import React from 'react'
 import { useTheme } from 'styled-components'
 import { useNavigation } from '../../../hooks/useNavigation'
 import useDataStore from '../../../store/useDataStore'
-import { Centered } from './StarredNotes'
+import { SharedNode } from '../../../types/Types'
 import SidebarList from './SidebarList'
 import { SidebarListItem } from './SidebarList.types'
+import { Centered } from './StarredNotes'
 import { MuteMenuItem } from './TreeWithContextMenu'
 
 interface SharedNoteContextMenuProps {

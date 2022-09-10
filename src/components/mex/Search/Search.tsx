@@ -26,23 +26,23 @@ import { useEditorStore } from '../../../store/useEditorStore'
 import { useRecentsStore } from '../../../store/useRecentsStore'
 import { MainHeader } from '../../../style/Layouts'
 import {
-  ItemTag,
-  Result,
-  ResultCardFooter,
-  ResultDesc,
-  ResultHeader,
-  ResultMain,
-  ResultMetaData,
-  ResultPreviewMetaData,
-  ResultRow,
-  ResultTitle,
-  SearchContainer,
-  SearchPreviewWrapper,
-  SplitSearchPreviewWrapper
+    ItemTag,
+    Result,
+    ResultCardFooter,
+    ResultDesc,
+    ResultHeader,
+    ResultMain,
+    ResultMetaData,
+    ResultPreviewMetaData,
+    ResultRow,
+    ResultTitle,
+    SearchContainer,
+    SearchPreviewWrapper,
+    SplitSearchPreviewWrapper
 } from '../../../style/Search'
 import { Title, TitleText } from '../../../style/Typography'
 import { GenericSearchResult, idxKey } from '../../../types/search'
-import { NodeType } from '../../../types/types'
+import { NodeType } from '../../../types/Types'
 import { SplitType } from '../../../ui/layout/splitView'
 import { getInitialNode } from '../../../utils/helpers'
 import { NavigationType, ROUTE_PATHS, useRouting } from '../../../views/routes/urls'

@@ -1,9 +1,9 @@
-import { NodeAnalysis, OutlineItem } from '../../store/useAnalysis'
-import { NodeEditorContent } from '../../types/types'
-import { convertContentToRawText, getTitleFromContent } from '../../utils/search/parseData'
 import { expose } from 'threads/worker'
-import { getTagsFromContent, getTodosFromContent } from '../../utils/lib/content'
 import { ELEMENTS_IN_OUTLINE, HIGHLIGHTED_ELEMENTS, LIST_ELEMENTS } from '../../data/outline'
+import { NodeAnalysis, OutlineItem } from '../../store/useAnalysis'
+import { NodeEditorContent } from '../../types/Types'
+import { getTagsFromContent, getTodosFromContent } from '../../utils/lib/content'
+import { convertContentToRawText, getTitleFromContent } from '../../utils/search/parseData'
 import { AnalyseContentProps, AnalysisOptions } from './controller'
 // import { parentPort, workerData } from 'worker_threads'
 // parentPort.postMessage(analyseData(workerData.content))

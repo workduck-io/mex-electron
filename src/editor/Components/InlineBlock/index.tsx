@@ -17,13 +17,13 @@ import { getBlock } from '../../../utils/search/parseData'
 import EditorPreviewRenderer from '../../EditorPreviewRenderer'
 import { RootElement } from '../SyncBlock'
 import {
-  Chip,
-  FlexBetween,
-  InlineBlockHeading,
-  InlineBlockText,
-  InlineFlex,
-  StyledInlineBlock,
-  StyledInlineBlockPreview
+    Chip,
+    FlexBetween,
+    InlineBlockHeading,
+    InlineBlockText,
+    InlineFlex,
+    StyledInlineBlock,
+    StyledInlineBlockPreview
 } from './styled'
 import { ROUTE_PATHS, useRouting, NavigationType } from '@views/routes/urls'
 

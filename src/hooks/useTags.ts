@@ -1,7 +1,7 @@
 import { generateTag } from '@utils/generateComboItem'
 import { useAnalysisStore } from '../store/useAnalysis'
 import useDataStore from '../store/useDataStore'
-import { TagsCache } from '../types/types'
+import { TagsCache } from '../types/Types'
 import { Settify } from '../utils/helpers'
 import { getTagsFromContent } from '../utils/lib/content'
 import { useLinks } from './useLinks'

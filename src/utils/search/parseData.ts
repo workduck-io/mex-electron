@@ -2,16 +2,15 @@
 
 import { ELEMENT_ACTION_BLOCK } from '@editor/Components/Actions/types'
 import {
-  ELEMENT_CODE_BLOCK,
-  ELEMENT_IMAGE,
-  ELEMENT_LINK,
-  ELEMENT_MEDIA_EMBED,
-  ELEMENT_TABLE,
-  ELEMENT_TODO_LI
+    ELEMENT_CODE_BLOCK,
+    ELEMENT_IMAGE,
+    ELEMENT_LINK,
+    ELEMENT_MEDIA_EMBED,
+    ELEMENT_TABLE,
+    ELEMENT_TODO_LI
 } from '@udecode/plate'
 import { ELEMENT_EXCALIDRAW } from '@udecode/plate-excalidraw'
 import { insertId } from '@utils/lib/content'
-import { mog } from '@utils/lib/helper'
 import { textChildren } from '@utils/lib/smallContent'
 import { diskIndex, indexNames } from '../../data/search'
 import { ELEMENT_INLINE_BLOCK } from '../../editor/Components/InlineBlock/types'
@@ -19,7 +18,7 @@ import { ELEMENT_QA_BLOCK } from '../../editor/Components/QABlock/createQAPlugin
 import { BlockType } from '../../store/useBlockStore'
 import { useContentStore } from '../../store/useContentStore'
 import { FileData } from '../../types/data'
-import { NodeEditorContent } from '../../types/types'
+import { NodeEditorContent } from '../../types/Types'
 import { getBlocks } from '../helpers'
 import { camelCase, getSlug } from '../lib/strings'
 import { GenericSearchData, SearchRepExtra } from './../../types/search'

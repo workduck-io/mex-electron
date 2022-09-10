@@ -1,10 +1,9 @@
 import { getMentionsFromContent, getTagsFromContent } from '@utils/lib/content'
 import create from 'zustand'
 import { defaultContent } from '../data/Defaults/baseData'
-import { TodoType, TodoStatus, PriorityType, TodosType } from '../editor/Components/Todo/types'
-import { useReminders, useReminderStore } from '../hooks/useReminders'
-import { NodeEditorContent } from '../types/types'
-import { mog } from '../utils/lib/helper'
+import { PriorityType, TodoStatus, TodosType, TodoType } from '../editor/Components/Todo/types'
+import { useReminderStore } from '../hooks/useReminders'
+import { NodeEditorContent } from '../types/Types'
 import { convertContentToRawText } from '../utils/search/parseData'
 
 const createTodo = (

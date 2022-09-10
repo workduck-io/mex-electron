@@ -1,22 +1,20 @@
-import { PlateEditor } from '@udecode/plate'
-import { findIndex, groupBy } from 'lodash'
-import { insertText, KeyboardHandler, select } from '@udecode/plate-core'
-import { mog } from '../../../../utils/lib/helper'
-import { useEditorStore } from '../../../../store/useEditorStore'
-import { ComboConfigData } from '../../multi-combobox/types'
-import { useElementOnChange as getElementOnChange } from '../../multi-combobox/types'
-import { useSlashCommandOnChange } from '../../SlashCommands/useSlashCommandOnChange'
-import { IComboboxItem } from '../components/Combobox.types'
-import { ComboboxKey, useComboboxStore } from '../useComboboxStore'
-import { getNextWrappingIndex } from '../utils/getNextWrappingIndex'
-import { isElder } from '../../../../components/mex/Sidebar/treeUtils'
-import { FlowCommandPrefix } from '../../SlashCommands/useSyncConfig'
-import { SnippetCommandPrefix } from '../../../../hooks/useSnippets'
-import { CreateNewPrefix } from '../../multi-combobox/types'
-import { Editor } from 'slate'
-import { ComboSearchType } from '../../multi-combobox/types'
 import { cleanEditorId } from '@editor/Components/Todo'
 import useDataStore from '@store/useDataStore'
+import { PlateEditor } from '@udecode/plate'
+import { insertText, KeyboardHandler, select } from '@udecode/plate-core'
+import { findIndex, groupBy } from 'lodash'
+
+import { isElder } from '../../../../components/mex/Sidebar/treeUtils'
+import { SnippetCommandPrefix } from '../../../../hooks/useSnippets'
+import { useSlashCommandOnChange } from '../../SlashCommands/useSlashCommandOnChange'
+import { FlowCommandPrefix } from '../../SlashCommands/useSyncConfig'
+import { ComboConfigData, ComboSearchType } from '../../multi-combobox/types'
+import { CreateNewPrefix } from '../../multi-combobox/useMultiComboboxChange'
+import { useElementOnChange } from '../../multi-combobox/useMultiComboboxOnKeyDown'
+import { IComboboxItem } from '../components/Combobox.types'
+import { ComboboxKey } from '../type'
+import { useComboboxStore } from '../useComboboxStore'
+import { getNextWrappingIndex } from '../utils/getNextWrappingIndex'
 
 const pure = (id: string) => {
   let newId = id
@@ -48,7 +46,7 @@ export const getCreateableOnSelect = (onSelectItem: OnSelectItem, onNewItem: OnN
   const creatableOnSelect = (editor: any, selectVal: IComboboxItem | string, elementType?: string, tab?: boolean) => {
     const items = useComboboxStore.getState().items
     const editorNoteId = cleanEditorId(editor?.id)
-    const currentNodeKey = useDataStore.getState().ilinks.find(l => l.nodeid === editorNoteId)?.path
+    const currentNodeKey = useDataStore.getState().ilinks.find((l) => l.nodeid === editorNoteId)?.path
     const itemIndex = useComboboxStore.getState().itemIndex
 
     const item = items[itemIndex]
@@ -98,7 +96,7 @@ export const useComboboxOnKeyDown = (config: ComboConfigData): KeyboardHandler =
   const slashCommandOnChange = useSlashCommandOnChange({ ...slashCommands, ...internal.commands })
   const comboboxKey: string = useComboboxStore.getState().key
 
-  const elementOnChange = getElementOnChange(keys[comboboxKey], keys)
+  const elementOnChange = useElementOnChange(keys[comboboxKey], keys)
 
   // * Replace textBeforeTrigger with provided text value in editor
 

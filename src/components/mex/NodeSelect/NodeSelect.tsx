@@ -18,21 +18,21 @@ import useDataStore from '../../../store/useDataStore'
 import { useRecentsStore } from '../../../store/useRecentsStore'
 import { useSnippetStore } from '../../../store/useSnippetStore'
 import { Input } from '../../../style/Form'
-import { ILink } from '../../../types/types'
+import { ILink } from '../../../types/Types'
 import { fuzzySearch } from '../../../utils/lib/fuzzySearch'
 import { mog, withoutContinuousDelimiter } from '../../../utils/lib/helper'
-import { isClash, isMatch, isReserved } from '../../../utils/lib/paths'
+import { isClash, isReserved } from '../../../utils/lib/paths'
 import { convertContentToRawText } from '../../../utils/search/parseData'
 import { SEPARATOR } from '../Sidebar/treeUtils'
 import {
-  StyledCombobox,
-  StyledInputWrapper,
-  StyledMenu,
-  Suggestion,
-  SuggestionContentWrapper,
-  SuggestionDesc,
-  SuggestionError,
-  SuggestionText
+    StyledCombobox,
+    StyledInputWrapper,
+    StyledMenu,
+    Suggestion,
+    SuggestionContentWrapper,
+    SuggestionDesc,
+    SuggestionError,
+    SuggestionText
 } from './NodeSelect.styles'
 
 export type QuickLink = {

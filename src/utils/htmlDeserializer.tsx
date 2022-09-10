@@ -1,19 +1,17 @@
 import {
-  deserializeHtml,
-  ELEMENT_DEFAULT,
-  getPlateEditorRef,
-  htmlBodyToFragment,
-  htmlStringToDOMNode
+    deserializeHtml,
+    ELEMENT_DEFAULT,
+    getPlateEditorRef, htmlStringToDOMNode
 } from '@udecode/plate-core'
 
-import { BlockType } from '../store/useBlockStore'
-import { NodeEditorContent } from '../types/types'
-import components from '../editor/Components/components'
 import { createPlateUIEditor } from '@udecode/plate'
-import getPlugins from '../editor/Plugins/plugins'
-import { updateIds } from './dataTransform'
 import { Descendant, Editor, Text } from 'slate'
 import { generateTempId } from '../data/Defaults/idPrefixes'
+import components from '../editor/Components/components'
+import getPlugins from '../editor/Plugins/plugins'
+import { BlockType } from '../store/useBlockStore'
+import { NodeEditorContent } from '../types/Types'
+import { updateIds } from './dataTransform'
 
 export const plateEditor = () => {
   const plugins = getPlugins(components, { exclude: { dnd: true } })

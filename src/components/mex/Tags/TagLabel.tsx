@@ -1,8 +1,8 @@
-import { Tag } from '../../../types/Types'
-import React from 'react'
-import { TagFlex, TagsFlex } from './TagsRelated.styles'
-import { NavigationType, ROUTE_PATHS, useRouting } from '../../../views/routes/urls'
 import { useSpotlightContext } from '@store/Context/context.spotlight'
+import React from 'react'
+import { Tag } from '../../../types/Types'
+import { NavigationType, ROUTE_PATHS, useRouting } from '../../../views/routes/urls'
+import { TagFlex, TagsFlex } from './TagsRelated.styles'
 
 const TagLabel = ({ tag }: { tag: Tag }) => {
   const { goTo } = useRouting()

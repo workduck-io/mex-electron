@@ -1,7 +1,7 @@
 /* eslint-disable import/no-unresolved */
 import { ImportedDataState } from '@excalidraw/excalidraw-next/types/data/types'
 import { ExcalidrawElement } from '@excalidraw/excalidraw-next/types/element/types'
-import { ExcalidrawProps } from '@excalidraw/excalidraw-next/types/types'
+import { ExcalidrawProps } from '@excalidraw/excalidraw-next/types/Types'
 import { TElement } from '@udecode/plate-core'
 
 export interface TExcalidrawElement extends TElement {

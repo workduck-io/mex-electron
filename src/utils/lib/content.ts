@@ -3,8 +3,7 @@ import { ELEMENT_TODO_LI } from '@udecode/plate'
 import { uniq } from 'lodash'
 import { generateTempId } from '../../data/Defaults/idPrefixes'
 import { ELEMENT_TAG } from '../../editor/Components/tag/defaults'
-import { NodeEditorContent } from '../../types/types'
-import { mog } from './helper'
+import { NodeEditorContent } from '../../types/Types'
 
 export const getTagsFromContent = (content: any[]): string[] => {
   let tags: string[] = []

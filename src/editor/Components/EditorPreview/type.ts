@@ -1,4 +1,4 @@
-import { NodeEditorContent } from "@types/types"
+import { NodeEditorContent } from "@types/Types";
 import React from 'react';
 
 export interface EditorPreviewProps {

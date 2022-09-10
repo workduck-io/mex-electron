@@ -1,12 +1,12 @@
-import { INIT_PREVIEW } from '../components/spotlight/Content'
-import { ListItemType } from '../components/spotlight/SearchResults/types'
-import { NodeEditorContent } from '../types/types'
-import { NodeProperties, useEditorStore } from '../store/useEditorStore'
-import { PreviewType } from '../components/spotlight/Preview'
 import create from 'zustand'
-import { createNodeWithUid } from '../utils/lib/helper'
+import { INIT_PREVIEW } from '../components/spotlight/Content'
+import { PreviewType } from '../components/spotlight/Preview'
+import { ListItemType } from '../components/spotlight/SearchResults/types'
 import { defaultContent } from '../data/Defaults/baseData'
 import { getNewDraftKey } from '../editor/Components/SyncBlock/getNewBlockData'
+import { NodeProperties, useEditorStore } from '../store/useEditorStore'
+import { NodeEditorContent } from '../types/Types'
+import { createNodeWithUid } from '../utils/lib/helper'
 
 export type SelectionType = { text: string; metadata: string } | undefined
 

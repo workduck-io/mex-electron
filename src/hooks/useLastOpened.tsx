@@ -1,13 +1,11 @@
 import { useUserPreferenceStore } from '@store/userPreferenceStore'
-import { LastOpenedNote, LastOpenedState } from '../types/userPreference'
 import { getInitialNode } from '@utils/helpers'
-import { mog } from '@utils/lib/helper'
 import { debounce } from 'lodash'
 import { useCallback } from 'react'
-import { useContentStore } from '@store/useContentStore'
+import { NodeType } from '../types/Types'
+import { LastOpenedNote, LastOpenedState } from '../types/userPreference'
 import { useLinks } from './useLinks'
 import { useNodes } from './useNodes'
-import { NodeType } from '../types/types'
 
 const DEBOUNCE_TIME = 1000
 

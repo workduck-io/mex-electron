@@ -1,5 +1,6 @@
-import { NodeEditorContent } from "@types/types";
-import React from 'react';
+import React from 'react'
+
+import { NodeEditorContent } from '../types/Types'
 
 export interface EditorPreviewRendererProps {
   content: any[] // eslint-disable-line @typescript-eslint/no-explicit-any
@@ -13,5 +14,3 @@ export interface EditorPreviewRendererProps {
   onClick?: (ev: React.MouseEvent<HTMLDivElement, MouseEvent>) => void
   onDoubleClick?: (ev: React.MouseEvent<HTMLDivElement, MouseEvent>) => void
 }
-
-

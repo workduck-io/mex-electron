@@ -1,14 +1,16 @@
+import React, { useEffect, useState } from 'react'
+
 import editIcon from '@iconify/icons-bx/bx-edit-alt'
 import timeIcon from '@iconify/icons-bx/bx-time-five'
 import { Icon } from '@iconify/react'
 import { useUserService } from '@services/auth/useUserService'
 import { transparentize } from 'polished'
-import React, { useEffect, useState } from 'react'
 import styled from 'styled-components'
+
 import EditorPreviewRenderer from '../../../editor/EditorPreviewRenderer'
 import { useLinks } from '../../../hooks/useLinks'
 import { useContentStore } from '../../../store/useContentStore'
-import { ILink } from '../../../types/types'
+import { ILink } from '../../../types/Types'
 import { getRelativeTime } from '../../../utils/time'
 
 export const Container = styled.section`
@@ -79,7 +81,7 @@ const NodePreview = ({ node }: { node: ILink }) => {
   const [alias, setAlias] = useState<string | undefined>()
 
   useEffect(() => {
-    (async () => {
+    ;(async () => {
       if (content?.metadata?.lastEditedBy) {
         const user = await getUserDetailsUserId(content?.metadata?.lastEditedBy)
         if (user.alias) setAlias(user.alias)

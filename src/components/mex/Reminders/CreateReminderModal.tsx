@@ -1,20 +1,23 @@
+import React, { useEffect } from 'react'
+
 import { IpcAction } from '@data/IpcAction'
 import { appNotifierWindow } from '@electron/utils/notifiers'
 import { AppType } from '@hooks/useInitialize'
 import useToggleElements from '@hooks/useToggleElements'
 import { useSpotlightContext } from '@store/Context/context.spotlight'
-import { TextFieldHeight } from '@workduck-io/action-request-helper'
-import { Button, LoadingButton } from '@workduck-io/mex-components'
 import { startOfToday } from 'date-fns'
-import React, { useEffect } from 'react'
 import ReactDatePicker from 'react-datepicker'
 import 'react-datepicker/dist/react-datepicker.css'
 import { useForm } from 'react-hook-form'
 import toast from 'react-hot-toast'
 import Modal from 'react-modal'
 import create from 'zustand'
+
+import { TextFieldHeight } from '@workduck-io/action-request-helper'
+import { Button, LoadingButton } from '@workduck-io/mex-components'
+
 import { generateReminderId } from '../../../data/Defaults/idPrefixes'
-import EditorPreviewRenderer from '../../../editor/type'
+import EditorPreviewRenderer from '../../../editor/EditorPreviewRenderer'
 import { useEditorBuffer } from '../../../hooks/useEditorBuffer'
 import { useLinks } from '../../../hooks/useLinks'
 import { useReminders, useReminderStore } from '../../../hooks/useReminders'
@@ -23,7 +26,6 @@ import { ActionType } from '../../../services/analytics/events'
 import { useEditorStore } from '../../../store/useEditorStore'
 import { DatePickerStyles, Label, TextAreaBlock } from '../../../style/Form'
 import { Reminder } from '../../../types/reminders'
-import { NodeEditorContent } from '../../../types/types'
 import Todo from '../../../ui/components/Todo'
 import { mog } from '../../../utils/lib/helper'
 import { getEventNameFromElement } from '../../../utils/lib/strings'
@@ -33,8 +35,6 @@ import { ModalControls, ModalHeader } from '../Refactor/styles'
 import { getNameFromPath } from '../Sidebar/treeUtils'
 import { SelectedDate } from './Reminders.style'
 import { CreateReminderModalState } from './Type'
-
-
 
 export const initModal = {
   todoid: undefined,
