@@ -12,6 +12,7 @@ import { useContentStore } from '@store/useContentStore'
 import { useSnippets } from './useSnippets'
 import { RESERVED_NAMESPACES } from '@utils/lib/paths'
 import { useNamespaces } from './useNamespaces'
+import { DRAFT_NODE } from '@workduck-io/mex-utils'
 
 export type NewNoteOptions = {
   path?: string
@@ -41,7 +42,8 @@ export const useCreateNewNote = () => {
   const createNewNote = (options?: NewNoteOptions) => {
     const childNodepath = options?.parent !== undefined ? getUntitledKey(options?.parent) : getUntitledDraftKey()
 
-    const newNotePath = options?.path || childNodepath
+    const normalPath = options?.path || childNodepath
+    const newNotePath = options?.namespace ? DRAFT_NODE : normalPath
 
     const uniquePath = checkValidILink({
       notePath: newNotePath,
@@ -85,15 +87,15 @@ export const useCreateNewNote = () => {
       parentNoteId,
       noteContent,
       namespace: node.namespace
+    }).then(() => {
+      saveNodeName(useEditorStore.getState().node.nodeid)
+
+      addLastOpened(node.nodeid)
+
+      if (!options?.noRedirect) {
+        push(node.nodeid, { withLoading: false, fetch: false })
+      }
     })
-    saveNodeName(useEditorStore.getState().node.nodeid)
-
-    addLastOpened(node.nodeid)
-
-    if (!options?.noRedirect) {
-      push(node.nodeid, { withLoading: false, fetch: false })
-    }
-
     return node
   }
 
