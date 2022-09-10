@@ -114,9 +114,6 @@ export const Combobox = ({ onSelectItem, onRenderItem }: ComboboxProps) => {
       }
 
       if (!activeBlock) setPreview(content)
-      if (isBlockTriggered && !textAfterBlockTrigger) {
-        setPreview(undefined)
-      }
     }
   }, [itemIndex, items, activeBlock, isOpen, search])
 
@@ -221,8 +218,7 @@ export const Combobox = ({ onSelectItem, onRenderItem }: ComboboxProps) => {
                 nodeId={items[itemIndex]?.key}
                 isNew={items[itemIndex]?.data}
               />
-              {((preview && listItem?.type && !isBlockTriggered) ||
-                (isBlockTriggered && textAfterBlockTrigger && preview)) && (
+              {((preview && listItem?.type && !isBlockTriggered) || (isBlockTriggered && preview)) && (
                 <ComboSeperator>
                   <section>
                     <EditorPreviewRenderer

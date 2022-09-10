@@ -1,20 +1,24 @@
 import React, { useEffect, useState } from 'react'
+
 import arrowLeftLine from '@iconify/icons-ri/arrow-left-line'
-import { MexIcon } from '../../../../style/Layouts'
-import { useTheme } from 'styled-components'
-import { ComboboxItem, ItemCenterWrapper, ItemDesc, ItemTitle } from '../../tag/components/TagCombobox.styles'
-import { useComboboxStore } from '../useComboboxStore'
-import { PrimaryText } from '../../../../style/Integration'
-import { useSearch } from '../../../../hooks/useSearch'
-import { KEYBOARD_KEYS } from '../../../../components/spotlight/Home/components/List'
-import { ComboboxShortcuts, ComboSeperator, StyledComboHeader } from './styled'
-import { replaceFragment } from '../hooks/useComboboxOnKeyDown'
 import { getPlateEditorRef } from '@udecode/plate'
-import { getPathFromNodeIdHookless } from '../../../../hooks/useLinks'
-import { ActionTitle } from '../../../../components/spotlight/Actions/styled'
-import { BlockIcons } from '../../Blocks/BlockIcons'
-import { ShortcutText } from '../../../../components/spotlight/Home/components/Item'
+import { mog } from '@utils/lib/helper'
+import { useTheme } from 'styled-components'
+
 import { DisplayShortcut, IconButton } from '@workduck-io/mex-components'
+
+import { ActionTitle } from '../../../../components/spotlight/Actions/styled'
+import { ShortcutText } from '../../../../components/spotlight/Home/components/Item'
+import { KEYBOARD_KEYS } from '../../../../components/spotlight/Home/components/List'
+import { getPathFromNodeIdHookless } from '../../../../hooks/useLinks'
+import { useSearch } from '../../../../hooks/useSearch'
+import { PrimaryText } from '../../../../style/Integration'
+import { MexIcon } from '../../../../style/Layouts'
+import { BlockIcons } from '../../Blocks/BlockIcons'
+import { ComboboxItem, ItemCenterWrapper, ItemDesc, ItemTitle } from '../../tag/components/TagCombobox.styles'
+import { replaceFragment } from '../hooks/useComboboxOnKeyDown'
+import { useComboboxStore } from '../useComboboxStore'
+import { ComboboxShortcuts, ComboSeperator, StyledComboHeader } from './styled'
 
 type BlockComboProps = {
   onSelect
@@ -47,8 +51,8 @@ const BlockCombo = ({ nodeId, onSelect, shortcuts }: BlockComboProps) => {
     const trimmedSearch = textAfterBlockTrigger?.trim()
     const trimmedNodeText = textAfterTrigger?.trim()
 
-    if (trimmedSearch) {
-      if (nodeId && trimmedNodeText) {
+    if (trimmedSearch !== undefined) {
+      if (nodeId) {
         queryIndexByNodeId(['node'], nodeId, trimmedSearch).then((res) => {
           const topFiveBlocks = res
             ?.filter((block) => block.blockId !== 'undefined')
