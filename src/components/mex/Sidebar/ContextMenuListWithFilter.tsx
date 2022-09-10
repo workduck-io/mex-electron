@@ -1,7 +1,11 @@
 import React, { useEffect, useState } from 'react'
-import * as ContextMenuPrimitive from '@radix-ui/react-context-menu'
-import { DesignItem } from '../../../types/design'
+
 import arrowRightSLine from '@iconify/icons-ri/arrow-right-s-line'
+import searchLine from '@iconify/icons-ri/search-line'
+import { Icon } from '@iconify/react'
+import * as ContextMenuPrimitive from '@radix-ui/react-context-menu'
+import { Input } from '@style/Form'
+import IconDisplay from '@ui/components/IconPicker/IconDisplay'
 import {
   ContextMenuItem,
   ContextMenuSubContent,
@@ -9,15 +13,13 @@ import {
   RightSlot
 } from '@ui/components/menus/contextMenu'
 import { fuzzySearch } from '@utils/lib/fuzzySearch'
-import { tinykeys } from '@workduck-io/tinykeys'
-import { SidebarListFilter } from './SidebarList.style'
-import { Icon } from '@iconify/react'
-import searchLine from '@iconify/icons-ri/search-line'
 import { debounce } from 'lodash'
-import { Input } from '@style/Form'
+
 import { mog } from '@workduck-io/mex-utils'
+import { tinykeys } from '@workduck-io/tinykeys'
+
 import { MIcon } from '../../../types/Types'
-import IconDisplay from '@ui/components/IconPicker/IconDisplay'
+import { SidebarListFilter } from './SidebarList.style'
 
 interface ContextMenuItem {
   id: string
