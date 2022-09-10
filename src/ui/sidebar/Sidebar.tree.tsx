@@ -1,10 +1,12 @@
-import addCircleLine from '@iconify/icons-ri/add-circle-line'
+import React, { useEffect, useMemo, useState } from 'react'
+
 import { SidebarListFilter } from '@components/mex/Sidebar/SidebarList.style'
 import Tree from '@components/mex/Sidebar/Tree'
-import { defaultContent, getRandomQAContent } from '@data/Defaults/baseData'
+import { defaultContent } from '@data/Defaults/baseData'
 import { useCreateNewNote } from '@hooks/useCreateNewNote'
 import { getTitleFromPath } from '@hooks/useLinks'
 import { getPartialTreeFromLinks, getTreeFromLinks } from '@hooks/useTreeFromLinks'
+import addCircleLine from '@iconify/icons-ri/add-circle-line'
 import searchLine from '@iconify/icons-ri/search-line'
 import { Icon } from '@iconify/react'
 import { useEditorStore } from '@store/useEditorStore'
@@ -13,10 +15,11 @@ import Centered from '@style/Layouts'
 import { fuzzySearch } from '@utils/lib/fuzzySearch'
 import { mog } from '@utils/lib/helper'
 import { NavigationType, ROUTE_PATHS, useRouting } from '@views/routes/urls'
+import { debounce } from 'lodash'
+
 import { Button } from '@workduck-io/mex-components'
 import { tinykeys } from '@workduck-io/tinykeys'
-import { debounce } from 'lodash'
-import React, { useEffect, useMemo, useState } from 'react'
+
 import { ILink } from '../../types/Types'
 import { CreateNewNoteSidebarButton, MexTreeWrapper, SpaceList } from './Sidebar.style'
 

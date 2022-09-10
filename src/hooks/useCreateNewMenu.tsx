@@ -1,19 +1,21 @@
-import { ELEMENT_PARAGRAPH } from '@udecode/plate'
+import React from 'react'
+
 import { defaultContent } from '@data/Defaults/baseData'
 import { generateSnippetId } from '@data/Defaults/idPrefixes'
 import { IconifyIcon } from '@iconify/react'
-import generateName from 'project-name-generator'
-import { NavigationType, ROUTE_PATHS, useRouting } from '@views/routes/urls'
-import { useCreateNewNote } from './useCreateNewNote'
-import { useUpdater } from './useUpdater'
-import { useSnippetStore } from '@store/useSnippetStore'
-import { useSnippets } from './useSnippets'
-import { useNamespaces } from './useNamespaces'
-import { useUserPreferenceStore } from '@store/userPreferenceStore'
 import { useLayoutStore } from '@store/useLayoutStore'
-import toast from 'react-hot-toast'
+import { useSnippetStore } from '@store/useSnippetStore'
+import { useUserPreferenceStore } from '@store/userPreferenceStore'
+import { ELEMENT_PARAGRAPH } from '@udecode/plate'
 import InteractiveToast from '@ui/components/InteractiveToast'
-import React from 'react'
+import { NavigationType, ROUTE_PATHS, useRouting } from '@views/routes/urls'
+import generateName from 'project-name-generator'
+import toast from 'react-hot-toast'
+
+import { useCreateNewNote } from './useCreateNewNote'
+import { useNamespaces } from './useNamespaces'
+import { useSnippets } from './useSnippets'
+import { useUpdater } from './useUpdater'
 
 interface CreateNewMenuItem {
   id: string
@@ -62,14 +64,6 @@ export const useCreateNewMenu = () => {
     }
   }
 
-  const createNewNamespace = () => {
-    addDefaultNewNamespace().then((ns) => {
-      // mog('After creating ns in contenxtmenu', { ns })
-      // Change the space in the sidebar to the newly created space
-      changeSpace(ns?.id)
-    })
-  }
-
   const onCreateNewSnippet = () => {
     // Create a better way.
     const snippetId = generateSnippetId()
@@ -104,6 +98,13 @@ export const useCreateNewMenu = () => {
           createNewNamespace()
         }
       },
+      // {
+      //   id: 'new-note-in-ns',
+      //   label: 'New Note in Default Space',
+      //   onSelect: () => {
+      //     createNoteWithQABlock()
+      //   }
+      // },
       {
         id: 'new-space',
         label: 'New Space',
