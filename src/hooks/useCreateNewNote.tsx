@@ -10,6 +10,7 @@ import { useNavigation } from './useNavigation'
 import { useLastOpened } from './useLastOpened'
 import { useContentStore } from '@store/useContentStore'
 import { useSnippets } from './useSnippets'
+import { RESERVED_NAMESPACES } from '@utils/lib/paths'
 
 export type NewNoteOptions = {
   path?: string
@@ -18,6 +19,9 @@ export type NewNoteOptions = {
   noteContent?: NodeEditorContent
   openedNotePath?: string
   noRedirect?: boolean
+  // If provided added to that namespace
+  // Otherwise default namespace
+  namespace?: string
 }
 
 export const useCreateNewNote = () => {
@@ -52,11 +56,15 @@ export const useCreateNewNote = () => {
       options?.noteContent ||
       (nodeMetadata?.templateID && parentNote?.path !== 'Drafts' && getSnippet(nodeMetadata.templateID)?.content)
 
+    // TODO: Get default namespace name here
+    const namespace = options?.namespace ?? RESERVED_NAMESPACES.default
+
     const node = addILink({
       ilink: newNotePath,
       nodeid: options?.noteId,
       openedNotePath: options?.openedNotePath,
-      showAlert: false
+      showAlert: false,
+      namespace
     })
 
     if (node === undefined) {
@@ -71,7 +79,8 @@ export const useCreateNewNote = () => {
       noteId: node.nodeid,
       notePath: node.path,
       parentNoteId,
-      noteContent
+      noteContent,
+      namespace: node.namespace
     })
     saveNodeName(useEditorStore.getState().node.nodeid)
 

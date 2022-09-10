@@ -34,6 +34,8 @@ const useDataStore = create<DataStoreState>(
 
       archive: [],
 
+      namespaces: [],
+
       initialized: true,
       // Load initial data in the store
       initializeDataStore: (initData) => {
@@ -64,7 +66,7 @@ const useDataStore = create<DataStoreState>(
         - not allowed with reserved keywords
    */
 
-      addILink: ({ ilink, nodeid, openedNotePath, archived, showAlert }) => {
+      addILink: ({ ilink, namespace, nodeid, openedNotePath, archived, showAlert }) => {
         const uniquePath = get().checkValidILink({ notePath: ilink, openedNotePath, showAlert })
 
         const ilinks = get().ilinks
@@ -75,6 +77,7 @@ const useDataStore = create<DataStoreState>(
 
         const newILinks = newLinks.map((l) => ({
           nodeid: nodeid && l === uniquePath ? nodeid : generateNodeUID(),
+          namespace,
           path: l,
           icon: getNodeIcon(l)
         }))
