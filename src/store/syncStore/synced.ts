@@ -37,6 +37,7 @@ const syncStores = () => {
       sync: [
         { field: 'ilinks' },
         { field: 'linkCache' },
+        { field: 'tagsCache' },
         { field: 'archive' },
         { field: 'sharedNodes' },
         { field: 'slashCommands' },

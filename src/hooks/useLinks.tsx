@@ -227,6 +227,8 @@ export const useLinks = () => {
 
     const intersection = removedILinks.filter((l) => addedILinks.find((rem) => l.nodeid === rem.nodeid))
 
+
+    mog("INTERSECTION", { intersection, links })
     intersection.forEach((ilink) => {
       links.splice(
         links.findIndex((item) => item.nodeid === ilink.nodeid),
@@ -234,6 +236,7 @@ export const useLinks = () => {
       )
     })
 
+    mog("After intersection", { links, intersection })
     addedILinks.forEach((p) => {
       const idx = links.find((link) => link.nodeid === p.nodeid)
 
@@ -244,6 +247,7 @@ export const useLinks = () => {
 
     const newILinks = [...links]
 
+    mog('NEW LINKS AFTER MERGING', { links, intersection, newILinks })
     setILinks(newILinks)
 
     return newILinks

@@ -4,6 +4,7 @@ import { DRAFT_NODE, DRAFT_PREFIX } from '@data/Defaults/idPrefixes'
 import { getLatestContent } from '@hooks/useEditorBuffer'
 import { useSearchExtra } from '@hooks/useSearch'
 import { getTodayTaskNodePath, useTaskFromSelection } from '@hooks/useTaskFromSelection'
+import useMultipleEditors from '@store/useEditorsStore'
 import React, { useEffect } from 'react'
 import 'react-contexify/dist/ReactContexify.css'
 import { ErrorBoundary } from 'react-error-boundary'
@@ -39,6 +40,7 @@ export const INIT_PREVIEW: PreviewType = {
 }
 
 const Content = () => {
+
   // * Store
   const ilinks = useDataStore((s) => s.ilinks)
   const lastOpenedNodes = useRecentsStore((store) => store.lastOpened)
@@ -66,6 +68,47 @@ const Content = () => {
   const { search, selection, activeItem, activeIndex, searchResults, setSearchResults } = useSpotlightContext()
   const events = useCalendarStore((store) => store.events)
   const actions = useActionsCache((store) => store.actions)
+  const pinned = useMultipleEditors(store => store.pinned)
+
+  const getRecentList = (noteIds: Array<string>, limit = MAX_RECENT_ITEMS) => {
+    const recentList: Array<ListItemType> = []
+
+    const extra = getSearchExtra()
+    const pinned = useMultipleEditors.getState().pinned
+    const ilinks = useDataStore.getState().ilinks
+
+    noteIds.forEach(noteId => {
+      if (!pinned.has(noteId)) {
+        const noteLink = ilinks.find(noteLink => noteLink.nodeid === noteId)
+
+        if (noteLink && !isParent(noteLink.path, BASE_TASKS_PATH)) {
+          const item = getListItemFromNode(noteLink, { searchRepExtra: extra })
+          recentList.push(item)
+        }
+      }
+    });
+
+    if (recentList.length > limit) {
+      return recentList.slice(0, limit)
+    }
+
+    return recentList
+  }
+
+  const getPinnedItems = () => {
+    const pinnedItems: Array<ListItemType> = []
+
+    const pinned = useMultipleEditors.getState().pinned
+    const ilinks = useDataStore.getState().ilinks
+
+    pinned.forEach(pinnedNoteId => {
+      const noteLink = ilinks.find(noteLink => noteLink.nodeid === pinnedNoteId)
+      const item = getListItemFromNode(noteLink, { categoryType: CategoryType.pinned });
+      pinnedItems.push(item)
+    })
+
+    return pinnedItems
+  }
 
   // * For setting the results
   useEffect(() => {
@@ -75,49 +118,26 @@ const Content = () => {
           const listWithNew = await searchInList()
           setSearchResults(listWithNew)
         } else {
-          // * Get those recent node links which exists locally
-
           if (!normalMode) return
-          const extra = getSearchExtra()
 
-          const recentEvents = selection ? [] : getUpcomingEvents()
-          mog('EVENTS', { recentEvents })
+          const upcomingGoogleEvent = selection ? [] : getUpcomingEvents()
+          const notesOpened = selection ? recentResearchNodes : lastOpenedNodes
 
-          const recents = selection ? recentResearchNodes : lastOpenedNodes
-          const items = recents.filter((recent: string) => ilinks.find((ilink) => ilink.nodeid === recent))
+          const pinned = getPinnedItems()
+          const recents = getRecentList(notesOpened).reverse()
 
-          const recentList = items
-            .map((nodeid: string) => {
-              const item = ilinks.find((link) => link?.nodeid === nodeid)
+          const listWithNew = insertItemInArray(recents, CREATE_NEW_ITEM, 1)
+          const listItems = selection ? [...listWithNew.slice(0, 2), CREATE_NEW_TASK_ITEM()] : listWithNew
 
-              const listItem: ListItemType = getListItemFromNode(item, undefined, undefined, extra)
-              return listItem
-            })
-            .filter((item) => {
-              const cond = !isParent(item.extras.path, BASE_TASKS_PATH)
-              return cond
-            })
-            .reverse()
-
-          const recentLimit = recentList.length < MAX_RECENT_ITEMS ? recentList.length : MAX_RECENT_ITEMS
-          const limitedList = recentList.slice(0, recentLimit)
-          const listWithNew = insertItemInArray(limitedList, CREATE_NEW_ITEM, 1)
-          const listWithAllNew = selection ? insertItemInArray(listWithNew, CREATE_NEW_TASK_ITEM(), 2) : listWithNew
-          const defItems = selection ? [CREATE_NEW_ITEM, CREATE_NEW_TASK_ITEM()] : [CREATE_NEW_ITEM]
-
-          const list = !recentLimit ? defItems : listWithAllNew
-
-          const data = [...recentEvents, ...list, ...actions]
-
-          // mog('Recents in spotty', [{ recentList }, { listWithNew }, { listWithAllNew }])
-
-          setSearchResults(data)
+          const results = [...upcomingGoogleEvent, ...pinned, ...listItems, ...actions]
+          setSearchResults(results)
         }
       }
     }
 
     if (normalMode) getSearchItems()
-  }, [search.value, actions, selection, activeItem.item, normalMode, ilinks, events])
+
+  }, [search.value, actions, selection, activeItem.item, normalMode, pinned, ilinks, events])
 
   // * For setting the preview
   useEffect(() => {
@@ -125,7 +145,7 @@ const Content = () => {
     const isNode = resultNode?.type === QuickLinkType.backlink
     const isMeeting = resultNode?.category === CategoryType.meeting
     const isNewTask = resultNode?.category === CategoryType.task
-    let nodeid
+    let nodeid: string;
 
     if (isNode && !activeItem.active) {
       const isNew = resultNode?.extras?.new

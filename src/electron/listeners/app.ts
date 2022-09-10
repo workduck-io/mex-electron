@@ -11,6 +11,7 @@ import { dumpIndexDisk } from '@electron/worker/controller'
 import { app, globalShortcut } from 'electron'
 import { windowManager } from '@electron/WindowManager'
 import { AppType } from '@hooks/useInitialize'
+import { mog } from '@utils/lib/helper'
 
 export type WindowsType = { toast?: Toast }
 
@@ -34,8 +35,17 @@ const appEventListeners = () => {
     .catch(console.error)
 
   app.on('activate', () => {
-    if (windowManager.getWindow(AppType.MEX) === null) createMexWindow()
-    if (windowManager.getWindow(AppType.SPOTLIGHT) === null) createSpotLighWindow()
+    const mexRef = windowManager.getWindow(AppType.MEX)
+    const spotlightRef = windowManager.getWindow(AppType.SPOTLIGHT)
+
+    mog("LOGGIN REF --------------- ", { mexRef })
+
+    if (mexRef === null) createMexWindow()
+    if (spotlightRef === null) createSpotLighWindow()
+
+    app?.show()
+    mexRef?.show()
+    mexRef?.focus()
   })
 
   app.on('window-all-closed', () => {

@@ -1,19 +1,33 @@
-import React, { useCallback } from 'react'
+import React, { useMemo, useCallback, useEffect } from 'react'
 
-import { useContentStore } from '@store/useContentStore'
-import Editor from '@editor/Editor'
 import { getDefaultContent } from '@components/spotlight/Preview'
-import { useBufferStore, useEditorBuffer } from '@hooks/useEditorBuffer'
+import { IpcAction } from '@data/IpcAction'
+import { Editor } from '@editor/Editor'
+import { useEditorBuffer } from '@hooks/useEditorBuffer'
+import { NoteProvider } from '@store/Context/context.note'
+import { useContentStore } from '@store/useContentStore'
+import useDataStore from '@store/useDataStore'
+import { ipcRenderer } from 'electron'
+
+import { tinykeys } from '@workduck-io/tinykeys'
+
+import { NodeEditorContent } from '../../types/Types'
+import InfoBar from './InfoBar'
+import { EditorContainer, NoteBodyContainer } from './styled'
 
 const Note: React.FC<{ noteId: string }> = ({ noteId }) => {
-  const getContent = useContentStore((store) => store.getContent)
-  const noteContent = getContent(noteId)
+  const noteContentInfo = useContentStore((store) => store.contents?.[noteId])
+  const archive = useDataStore((store) => store.archive)
 
-  const addOrUpdateValBuffer = useBufferStore(store => store.add)
-  const { saveAndClearBuffer } = useEditorBuffer()
+  const archived = useMemo(() => {
+    const res = archive.find((a) => a.nodeid === noteId)
+    return !!res
+  }, [noteId, archive])
+
+  const { saveAndClearBuffer, addOrUpdateValBuffer } = useEditorBuffer()
 
   const onChangeSave = useCallback(
-    async (val: any[]) => {
+    async (val: NodeEditorContent) => {
       if (val && noteId !== '__null__') {
         addOrUpdateValBuffer(noteId, val)
       }
@@ -21,20 +35,50 @@ const Note: React.FC<{ noteId: string }> = ({ noteId }) => {
     [noteId]
   )
 
-  const onAutoSave = useCallback((val) => {
+  const onAutoSave = useCallback((val: NodeEditorContent) => {
     saveAndClearBuffer(false)
   }, [])
 
-  if (noteContent?.content) {
-    return <Editor
-      showBalloonToolbar
-      onAutoSave={onAutoSave}
-      onChange={onChangeSave}
-      content={noteContent.content.length ? noteContent?.content : getDefaultContent()}
-      editorId={`${noteId}-Pinned-Note`}
-    />
+  const noteContent = useMemo(() => {
+    const content = noteContentInfo?.content?.length ? noteContentInfo?.content : [getDefaultContent()]
+    return content
+  }, [noteContentInfo])
 
-  }
+  useEffect(() => {
+    ipcRenderer.on(IpcAction.WINDOW_BLUR, () => {
+      saveAndClearBuffer()
+    })
+
+    const unsubscribe = tinykeys(window, {
+      '$mod+S': (event) => {
+        event.preventDefault()
+        saveAndClearBuffer(false)
+      }
+    })
+
+    return () => unsubscribe()
+  }, [])
+
+  return (
+    <NoteBodyContainer>
+      <EditorContainer>
+        <InfoBar archived={archived} />
+        <NoteProvider>
+          <Editor
+            showBalloonToolbar
+            onAutoSave={onAutoSave}
+            comboboxOptions={{ showPreview: false }}
+            onChange={onChangeSave}
+            content={noteContent}
+            options={{ exclude: { dnd: true } }}
+            padding="0.25rem"
+            readOnly={archived}
+            editorId={`${noteId}-Pinned-Note`}
+          />
+        </NoteProvider>
+      </EditorContainer>
+    </NoteBodyContainer>
+  )
 }
 
 export default Note

@@ -1,13 +1,13 @@
-import { mog } from '../utils/lib/helper'
+import { useRecentsStore } from '@store/useRecentsStore'
+import { getParentBreadcurmbs } from '@utils/lib/paths'
+import toast from 'react-hot-toast'
+
+import { BreadcrumbItem } from '@workduck-io/mex-components'
+
 import useDataStore from '../store/useDataStore'
 import { AddILinkProps, ILink, NodeType, SharedNode } from '../types/Types'
-import toast from 'react-hot-toast'
 import { AccessLevel } from '../types/mentions'
-import { useRecentsStore } from '@store/useRecentsStore'
-import { getAllParentIds, getNameFromPath } from '@components/mex/Sidebar/treeUtils'
-import { BreadcrumbItem } from '@workduck-io/mex-components'
-import { getParentBreadcurmbs } from '@utils/lib/paths'
-import { SharedNodeIconify } from '@components/icons/Icons'
+import { mog } from '../utils/lib/helper'
 
 // Used to ensure no path clashes while adding ILink.
 // path functions to check wether clash is happening can be also used

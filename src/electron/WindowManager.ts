@@ -47,6 +47,7 @@ class WindowManager {
     })
 
     window.on('close', () => {
+      if (options?.onClose) options.onClose(window)
       this.deleteWindow(windowId)
     })
 

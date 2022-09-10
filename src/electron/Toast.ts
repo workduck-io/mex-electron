@@ -1,8 +1,9 @@
+import { BrowserWindow, screen, BrowserWindowConstructorOptions } from 'electron'
+
 import { IpcAction } from '../data/IpcAction'
 import { REMINDERS_DIMENSIONS } from '../services/reminders/reminders'
 import { TOAST_DIMENSIONS } from '../types/toast'
 import { SPOTLIGHT_WINDOW_OPTIONS } from './utils/helper'
-import { BrowserWindow, screen, BrowserWindowConstructorOptions } from 'electron'
 
 const isDevelopment = import.meta.env.MODE === 'development'
 
@@ -98,6 +99,7 @@ class Toast {
       }, timeout)
     }
   }
+
   public open(independent?: boolean, center?: boolean, noHide?: boolean) {
     if (center) this.window?.center()
     if (independent) this.window?.setParentWindow(null)

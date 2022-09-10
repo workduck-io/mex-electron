@@ -1,19 +1,13 @@
-import { getSaveLocation } from '@data/Defaults/data'
 import { IpcAction } from '@data/IpcAction'
 import Toast from '@electron/Toast'
 import { windows } from '@electron/main'
 import MenuBuilder from '@electron/menu'
 import { mog } from '@utils/lib/helper'
 import { sanitizeHtml } from '@utils/sanitizeHtml'
-import chokidar from 'chokidar'
 import { session, app, BrowserWindow, screen } from 'electron'
-import fs from 'fs'
 
-import { FileData } from '../../types/data'
-import { SAVE_LOCATION } from './fileLocations'
-import { getFileData } from './filedata'
-import { SelectionType, getSelectedTextSync, getSelectedText } from './getSelectedText'
 import { windowManager } from '../WindowManager'
+import { SelectionType, getSelectedTextSync, getSelectedText } from './getSelectedText'
 
 export enum AppType {
   SPOTLIGHT = 'SPOTLIGHT',
@@ -36,7 +30,9 @@ const MEX_WINDOW_OPTIONS = {
 
 const PINNED_NOTES_WINDOW_OPTIONS = {
   width: 400,
-  height: 400,
+  height: 500,
+  minWidth: 400,
+  minHeight: 400,
   vibrancy: 'popover' as any,
   maximizable: false,
   titleBarStyle: 'hidden' as const,
@@ -81,11 +77,10 @@ export const createSpotLighWindow = (show?: boolean) => {
   return windowManager.createWindow('SPOTLIGHT', {
     windowConstructorOptions: SPOTLIGHT_WINDOW_OPTIONS,
     loadURL: { url: spotlightURL },
-    onBlurHide: true,
+    onBlurHide: true, // This should be set as true
     alwaysOnTop: true,
     onLoadShow: show
   })
-
 }
 
 export const notifyOtherWindow = (action: IpcAction, from: AppType, data?: any) => {
@@ -116,9 +111,13 @@ export const createNoteWindow = (dataForPreviewWindow: { from: AppType; data: an
       ? import.meta.env.VITE_NOTE_WINDOW_DEV_SERVER_URL
       : new URL('dist/note.html', 'file://' + __dirname).toString()
 
+  app.dock.show()
   windowManager.createWindow(dataForPreviewWindow?.data?.noteId, {
     windowConstructorOptions: PINNED_NOTES_WINDOW_OPTIONS,
     loadURL: { url: noteWindow },
+    onClose: () => {
+      windowManager.sendToWindow(AppType.MEX, IpcAction.UNPIN_NOTE, { noteId: dataForPreviewWindow?.data?.noteId })
+    },
     alwaysOnTop: true,
     onLoad: (window) => {
       if (dataForPreviewWindow) {
@@ -127,7 +126,6 @@ export const createNoteWindow = (dataForPreviewWindow: { from: AppType; data: an
       }
     }
   })
-
 }
 
 export const createMexWindow = (tempData?: any) => {
@@ -234,7 +232,7 @@ export const spotlightCenter = () => {
   } else if (offWidth) {
     windowRef.setPosition(width - windowBounds.width, windowBounds.y, true)
   } else if (offHeight) {
-    windowRef.setPosition(windowBounds.x, height - windowBounds.height, true)
+    // windowRef.setPosition(windowBounds.x, height - windowBounds.height, true)
   } else {
     windowRef.setContentSize(700, 400)
   }

@@ -1,9 +1,8 @@
 import { useBufferStore } from '@hooks/useEditorBuffer'
-import { produce } from 'immer'
 import create from 'zustand'
 import { devtools } from 'zustand/middleware'
 
-import { enableMapSet } from 'immer'
+import { produce, enableMapSet } from 'immer'
 
 enableMapSet()
 
@@ -40,7 +39,8 @@ const useMultipleEditors = create<MultipleEditors>(
       unPinNote: (noteToUnpin) => {
         set(
           produce((draft) => {
-            if (draft.pinned.has(noteToUnpin))
+            const isNotePinned = get().pinned.has(noteToUnpin)
+            if (isNotePinned)
               draft.pinned.delete(noteToUnpin)
           })
         )

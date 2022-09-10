@@ -102,13 +102,20 @@ export const useSearch = () => {
 
           searchList = isNew ? [CREATE_NEW_ITEM, ...results] : results
         }
+        else {
+          searchList = quickLinks
+        }
         break
 
       // * Search actions using "/"
       case CategoryType.action:
         const val = search.value.substring(1)
-        const actionList = getSearchResults(val, actions, { keySelector: (obj) => obj.title })
-        searchList = actionList
+        if (val) {
+          const actionList = getSearchResults(val, actions, { keySelector: (obj) => obj.title })
+          searchList = actionList
+        } else {
+          searchList = actions
+        }
         break
 
       case CategoryType.search:
@@ -122,7 +129,11 @@ export const useSearch = () => {
           const localNode = isLocalNode(item.id)
 
           if (localNode.isLocal) {
-            const listItem = getListItemFromNode(localNode.ilink, item.text, item.blockId, extra)
+            const listItem = getListItemFromNode(localNode.ilink, {
+              description: item.text,
+              blockId: item.blockId,
+              searchRepExtra: extra
+            })
             localNodes.push(listItem)
           }
         })
@@ -140,7 +151,6 @@ export const useSearch = () => {
 
         const mainItems = [...localNodes, ...actionItems]
         searchList = isNew ? [CREATE_NEW_ITEM, ...mainItems] : mainItems
-        // mog('searchList', { searchList })
         if (mainItems.length === 0) searchList.push(searchGoogle(sQuery))
 
         break

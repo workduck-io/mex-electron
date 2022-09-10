@@ -69,10 +69,16 @@ export interface ComboboxItemProps {
   item: IComboboxItem
 }
 
+export type ComboboxOptions = {
+  showPreview?: boolean
+}
+
+
 export interface ComboboxProps {
   isSlash?: boolean
   onSelectItem: (editor: PlateEditor<Value>, item: string) => void
   onRenderItem?: RenderFunction<ComboboxItemProps>
+  options?: ComboboxOptions
 }
 
 export interface InsertableElement extends TElement {

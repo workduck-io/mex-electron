@@ -18,8 +18,8 @@ import generatePlugins from './Plugins/plugins'
 import useEditorPluginConfig from './Plugins/useEditorPluginConfig'
 
 interface EditorPreviewRendererProps {
-  content: any[] // eslint-disable-line @typescript-eslint/no-explicit-any
-  editorId: string
+  content?: any[] // eslint-disable-line @typescript-eslint/no-explicit-any
+  editorId?: string
   noStyle?: boolean
   placeholder?: string
   blockId?: string

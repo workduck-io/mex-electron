@@ -3,6 +3,7 @@ import { NodeEditorContent } from '../types/Types'
 /* eslint-disable import/prefer-default-export */
 import { ipcRenderer } from 'electron'
 import { isFromSameSource } from './helpers'
+import { ROUTE_PATHS } from '@views/routes/urls'
 
 export const combineSources = (
   oldSourceContent: NodeEditorContent,
@@ -32,14 +33,14 @@ export const combineSources = (
 
   const removedContent = areSameSource
     ? oldSourceContent.map((content, index) => {
-        if (index === oldSourceIndex) {
-          const sliceToIndex = isParagraphSource ? oldSourceChildrenIndex : oldSourceChildrenIndex - 2
-          return {
-            children: content.children.slice(0, sliceToIndex)
-          }
+      if (index === oldSourceIndex) {
+        const sliceToIndex = isParagraphSource ? oldSourceChildrenIndex : oldSourceChildrenIndex - 2
+        return {
+          children: content.children.slice(0, sliceToIndex)
         }
-        return content
-      })
+      }
+      return content
+    })
     : oldSourceContent
 
   return removedContent
@@ -48,4 +49,8 @@ export const combineSources = (
 export const openNodeInMex = (nodeid: string) => {
   // * Open saved node in Mex
   ipcRenderer.send(IpcAction.OPEN_NODE_IN_MEX, { nodeid })
+}
+
+export const openTagInMex = (tag: string) => {
+  ipcRenderer.send(IpcAction.REDIRECT_TO, { page: `${ROUTE_PATHS.tag}/${tag}` })
 }

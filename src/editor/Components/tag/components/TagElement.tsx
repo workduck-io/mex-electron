@@ -1,5 +1,7 @@
+import { useNoteContext } from '@store/Context/context.note'
 import { useSpotlightContext } from '@store/Context/context.spotlight'
 import { moveSelection, useEditorRef } from '@udecode/plate'
+import { openTagInMex } from '@utils/combineSources'
 import * as React from 'react'
 import { useFocused, useSelected } from 'slate-react'
 import { NavigationType, ROUTE_PATHS, useRouting } from '../../../../views/routes/urls'
@@ -14,6 +16,7 @@ import { TagElementProps } from './TagElement.types'
  */
 export const TagElement = ({ attributes, children, element }: TagElementProps) => {
   const spotlightCtx = useSpotlightContext()
+  const noteCtx = useNoteContext()
   const editor = useEditorRef()
   const selected = useSelected()
   const focused = useFocused()
@@ -45,7 +48,10 @@ export const TagElement = ({ attributes, children, element }: TagElementProps) =
   )
 
   const openTag = (tag: string) => {
-    if (!spotlightCtx) {
+    if (noteCtx) {
+      openTagInMex(tag)
+    }
+    else if (!spotlightCtx) {
       goTo(ROUTE_PATHS.tag, NavigationType.push, tag)
     }
   }

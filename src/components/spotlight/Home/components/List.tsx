@@ -1,21 +1,31 @@
-import { ActiveItem, CategoryType, useSpotlightContext } from '../../../../store/Context/context.spotlight'
-import { ItemActionType, ListItemType } from '../../SearchResults/types'
-import { ActionItem, StyledList } from '../styled'
 import React, { useEffect, useMemo, useRef, useState } from 'react'
+
+import { isParent } from '@components/mex/Sidebar/treeUtils'
+import { BASE_TASKS_PATH } from '@data/Defaults/baseData'
+import { useCreateNewNote } from '@hooks/useCreateNewNote'
+import { useLastOpened } from '@hooks/useLastOpened'
+import { useSaveData } from '@hooks/useSaveData'
+import { useTaskFromSelection } from '@hooks/useTaskFromSelection'
+import { useSpotlightSettingsStore } from '@store/settings.spotlight'
+import { useRecentsStore } from '@store/useRecentsStore'
+import { serializeHtml, createPlateEditor, createPlateUI, getPlateSelectors } from '@udecode/plate'
 import { findIndex, groupBy } from 'lodash'
+import { useSpring } from 'react-spring'
 import { Virtuoso } from 'react-virtuoso'
 
-import { ActionTitle } from '../../Actions/styled'
-import Item from './Item'
-import useItemExecutor from '../actionExecutor'
-import { useSaveChanges } from '../../Search/useSearchProps'
+import { tinykeys } from '@workduck-io/tinykeys'
+
+import { IpcAction } from '../../../../data/IpcAction'
+import { CopyTag } from '../../../../editor/Components/tag/components/CopyTag'
+import { ELEMENT_TAG } from '../../../../editor/Components/tag/defaults'
+import getPlugins from '../../../../editor/Plugins/plugins'
+import { appNotifierWindow } from '../../../../electron/utils/notifiers'
+import { AppType } from '../../../../hooks/useInitialize'
+import { useSnippets } from '../../../../hooks/useSnippets'
+import { ActiveItem, CategoryType, useSpotlightContext } from '../../../../store/Context/context.spotlight'
 import { useSpotlightAppStore } from '../../../../store/app.spotlight'
 import { useSpotlightEditorStore } from '../../../../store/editor.spotlight'
-import { useSpring } from 'react-spring'
-import { QuickLinkType } from '../../../mex/NodeSelect/NodeSelect'
-import { appNotifierWindow } from '../../../../electron/utils/notifiers'
-import { IpcAction } from '../../../../data/IpcAction'
-import { AppType } from '../../../../hooks/useInitialize'
+import { mog } from '../../../../utils/lib/helper'
 import {
   convertContentToRawText,
   convertToCopySnippet,
@@ -23,21 +33,13 @@ import {
   defaultCopyFilter,
   getTitleFromContent
 } from '../../../../utils/search/parseData'
-import { useSnippets } from '../../../../hooks/useSnippets'
-import { mog } from '../../../../utils/lib/helper'
-import { serializeHtml, createPlateEditor, createPlateUI, getPlateSelectors } from '@udecode/plate'
-import getPlugins from '../../../../editor/Plugins/plugins'
-import { ELEMENT_TAG } from '../../../../editor/Components/tag/defaults'
-import { CopyTag } from '../../../../editor/Components/tag/components/CopyTag'
-import { useTaskFromSelection } from '@hooks/useTaskFromSelection'
-import { isParent } from '@components/mex/Sidebar/treeUtils'
-import { BASE_TASKS_PATH } from '@data/Defaults/baseData'
-import { useSpotlightSettingsStore } from '@store/settings.spotlight'
-import { useCreateNewNote } from '@hooks/useCreateNewNote'
-import { useSaveData } from '@hooks/useSaveData'
-import { useRecentsStore } from '@store/useRecentsStore'
-import { useLastOpened } from '@hooks/useLastOpened'
-import { getDeserializeSelectionToNodes } from '@utils/htmlDeserializer'
+import { QuickLinkType } from '../../../mex/NodeSelect/NodeSelect'
+import { ActionTitle } from '../../Actions/styled'
+import { useSaveChanges } from '../../Search/useSearchProps'
+import { ItemActionType, ListItemType } from '../../SearchResults/types'
+import useItemExecutor from '../actionExecutor'
+import { ActionItem, StyledList } from '../styled'
+import Item from './Item'
 
 export const MAX_RECENT_ITEMS = 3
 
@@ -100,20 +102,18 @@ const List = ({
       style.marginRight = '0'
     }
 
+    const itemCategory = searchResults?.[activeIndex]?.category
+
     if (
-      searchResults[activeIndex] &&
-      searchResults[activeIndex]?.category !== CategoryType.backlink &&
-      searchResults[activeIndex]?.category !== CategoryType.task
+      itemCategory !== CategoryType.backlink &&
+      itemCategory !== CategoryType.pinned &&
+      itemCategory !== CategoryType.task
     ) {
       style.width = '100%'
       style.marginRight = '0'
     }
 
-    if (
-      searchResults[activeIndex] &&
-      (searchResults[activeIndex]?.category === CategoryType.meeting ||
-        searchResults[activeIndex]?.category === CategoryType.task)
-    ) {
+    if (itemCategory === CategoryType.meeting || itemCategory === CategoryType.task) {
       if (normalMode) {
         style.width = '55%'
         style.marginRight = '0.5rem'
@@ -148,17 +148,16 @@ const List = ({
   }
 
   useEffect(() => {
-    const handler = (event) => {
-      setShowHover(false)
-
-      if (event.key === KEYBOARD_KEYS.ArrowUp) {
+    const unsubscribe = tinykeys(window, {
+      [KEYBOARD_KEYS.ArrowUp]: (event) => {
         event.preventDefault()
+        setShowHover(false)
 
-        // * check if CMD + ARROW_UP is pressed
         if (event.metaKey) {
           for (let i = indexes[indexes.length - 1]; i > -1; i--) {
             const categoryIndex = indexes[i]
-            if (categoryIndex < activeIndex && data[categoryIndex].category !== data[activeIndex].category) {
+            const isDifferentCategory = data[categoryIndex].category !== data[activeIndex].category
+            if (categoryIndex < activeIndex && isDifferentCategory) {
               setActiveIndex(categoryIndex)
               break
             }
@@ -175,8 +174,10 @@ const List = ({
 
             return nextIndex
           })
-      } else if (event.key === KEYBOARD_KEYS.ArrowDown) {
+      },
+      [KEYBOARD_KEYS.ArrowDown]: (event) => {
         event.preventDefault()
+        setShowHover(false)
 
         // * check if CMD + ARROW_DOWN is pressed
         if (event.metaKey) {
@@ -199,13 +200,22 @@ const List = ({
 
             return nextIndex
           })
-      } else if (event.key === KEYBOARD_KEYS.Enter && normalMode) {
+      }
+    })
+
+    return () => unsubscribe()
+  }, [activeIndex, data])
+
+  useEffect(() => {
+    const handler = (event) => {
+      if (event.key === KEYBOARD_KEYS.Enter && normalMode) {
         event.preventDefault()
         const currentActiveItem = data[activeIndex]
 
-        mog('Enter key pressed', { currentActiveItem })
+        const isNoteCategory =
+          currentActiveItem?.category === CategoryType.backlink || currentActiveItem.category === CategoryType.pinned
         // * If current item is ILINK
-        if (currentActiveItem?.category === CategoryType.backlink && !activeItem.active) {
+        if (isNoteCategory && !activeItem.active) {
           // mog('Matched with node')
           if (event.metaKey) {
             if (currentActiveItem?.type === QuickLinkType.backlink) {
@@ -214,9 +224,6 @@ const List = ({
               if (currentActiveItem?.extras.new && !activeItem.active) {
                 const text = getInputText(search)
                 nodePath = search.value ? text : node.path
-
-                // TODO: Create new note with specified 'nodeid' and 'path'.
-                // mog('NODE PATH IS', { nodePath, search })
 
                 saveIt({
                   path: nodePath,
@@ -230,15 +237,14 @@ const List = ({
                   isNewTask
                 })
               } else {
-                saveIt({
-                  path: nodePath,
-                  saveAndClose: true,
-                  saveToFile: true,
-                  removeHighlight: true,
-                  isNewTask
-                })
-
-                if (selection) setSelection(undefined)
+                if (selection) {
+                  saveIt({
+                    path: nodePath,
+                    removeHighlight: true,
+                    isNewTask
+                  })
+                  setSelection(undefined)
+                }
               }
 
               setSearch({ value: '', type: CategoryType.search })
@@ -253,8 +259,25 @@ const List = ({
               setInput('')
             } else {
               let nodePath = node.path
-              setNormalMode(false)
+
+              if (currentActiveItem?.category === CategoryType.pinned) {
+                if (selection) {
+                  const isNewTask = isParent(nodePath, BASE_TASKS_PATH)
+                  saveIt({
+                    path: nodePath,
+                    saveAndClose: true,
+                    saveToFile: false,
+                    removeHighlight: true,
+                    isNewTask
+                  })
+
+                  appNotifierWindow(IpcAction.SHOW_PINNED_NOTE_WINDOW, AppType.SPOTLIGHT, { noteId: node.nodeid })
+                }
+                return
+              }
+
               addInRecents(node.nodeid)
+              setNormalMode(false)
               debouncedAddLastOpened(node.nodeid)
 
               if (currentActiveItem?.extras.new && !activeItem.active) {
@@ -269,8 +292,6 @@ const List = ({
             }
           }
         } else if (currentActiveItem.category === CategoryType.task) {
-          // mog('Matched with task')
-          // const content = getDeserializeSelectionToNodes(selection, false)
           if (event.metaKey) {
             const node = getNewTaskNode(false)
             if (!node) {
@@ -293,12 +314,12 @@ const List = ({
                 isNewTask: true
               })
             }
+
             setSelection(undefined)
             setSearch({ value: '', type: CategoryType.search })
             setActiveItem({ item: null, active: false })
           } else {
             const node = getNewTaskNode(true)
-            // mog('Taskify', { node, selection })
             setPreviewEditorNode({
               ...node,
               title: node.path ?? 'Today Tasks',
@@ -344,7 +365,24 @@ const List = ({
   // * handles double click on a list item
   function handleDoubleClick(id: number) {
     const currentActiveItem = data[id]
-    if (currentActiveItem?.type === QuickLinkType.backlink && !activeItem.active) {
+    const isNote = currentActiveItem?.type === QuickLinkType.backlink
+
+    if (isNote && !activeItem.active) {
+      if (currentActiveItem?.category === CategoryType.pinned && selection) {
+        const notePath = node.path
+        const isNewTask = isParent(notePath, BASE_TASKS_PATH)
+        saveIt({
+          path: notePath,
+          saveAndClose: true,
+          saveToFile: false,
+          removeHighlight: true,
+          isNewTask
+        })
+        appNotifierWindow(IpcAction.SHOW_PINNED_NOTE_WINDOW, AppType.SPOTLIGHT, { noteId: node.nodeid })
+
+        return
+      }
+
       setNormalMode(false)
       if (currentActiveItem?.extras.new && !activeItem.active) {
         const node = useSpotlightEditorStore.getState().node

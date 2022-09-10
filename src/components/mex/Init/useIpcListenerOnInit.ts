@@ -6,6 +6,7 @@ import { useRecieveMentions, useRecieveTokens, useSyncData } from '@hooks/useSyn
 import { useAuthentication } from '@services/auth/useAuth'
 import syncStores from '@store/syncStore/synced'
 import { useAnalysisIPC } from '@store/useAnalysis'
+import useMultipleEditors from '@store/useEditorsStore'
 import { useEditorStore } from '@store/useEditorStore'
 import { useHistoryStore } from '@store/useHistoryStore'
 import useModalStore, { ModalsType } from '@store/useModalStore'
@@ -91,6 +92,15 @@ export const useIpcListenerOnInit = () => {
 
     ipcRenderer.on(IpcAction.OPEN_PREFERENCES, () => {
       goTo(`${ROUTE_PATHS.settings}/themes`, NavigationType.push)
+    })
+
+    // * Pinned Note IPC Listener 
+    ipcRenderer.on(IpcAction.UNPIN_NOTE, (_event, { noteId }) => {
+      mog("NOTE TO DELTE", { noteId })
+
+      if (noteId) {
+        useMultipleEditors.getState().unPinNote(noteId)
+      }
     })
   }, [isOnboarding])
 

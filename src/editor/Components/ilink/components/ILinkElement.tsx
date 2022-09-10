@@ -5,13 +5,14 @@ import useLoad from '@hooks/useLoad'
 import archivedIcon from '@iconify/icons-ri/archive-line'
 import eyeOffLine from '@iconify/icons-ri/eye-off-line'
 import shareLine from '@iconify/icons-ri/share-line'
+import { useNoteContext } from '@store/Context/context.note'
 import { useSpotlightContext } from '@store/Context/context.spotlight'
 import { useSpotlightEditorStore } from '@store/editor.spotlight'
 import useMultipleEditors from '@store/useEditorsStore'
-import { AccessLevel } from '../../../../types/mentions'
-import { useEditorRef, moveSelection, useFloatingTree } from '@udecode/plate'
+import { useEditorRef, moveSelection } from '@udecode/plate'
+import { openNodeInMex } from '@utils/combineSources'
 import { useMatch } from 'react-router-dom'
-import { useReadOnly, useFocused, useSelected } from 'slate-react'
+import { useFocused, useSelected } from 'slate-react'
 
 import { useLinks } from '../../../../hooks/useLinks'
 import { useNavigation } from '../../../../hooks/useNavigation'
@@ -76,12 +77,10 @@ export const ILinkElement = ({ attributes, children, element }: ILinkElementProp
   const { getPathFromNodeid } = useLinks()
   const { getArchiveNode, getSharedNode, getNodeType } = useNodes()
   const spotlightCtx = useSpotlightContext()
+  const noteCtx = useNoteContext()
   const { getNode } = useLoad()
   const timer = React.useRef(undefined)
-  // mog('We reached here', { selected, focused })
 
-  // const nodeid = getNodeidFromPath(element.value)
-  const readOnly = useReadOnly()
   const path = getPathFromNodeid(element.value)
   const { goTo } = useRouting()
   const isSpotlightCtx = useSpotlightContext()
@@ -99,6 +98,8 @@ export const ILinkElement = ({ attributes, children, element }: ILinkElementProp
       const node = getNode(nodeid)
       nodeid = node.nodeid
       setPreviewEditorNode(node)
+    } else if (noteCtx) {
+      openNodeInMex(nodeid)
     } else {
       push(nodeid)
       goTo(ROUTE_PATHS.node, NavigationType.push, nodeid)
@@ -228,7 +229,9 @@ export const ILinkElement = ({ attributes, children, element }: ILinkElementProp
               preview={preview}
               nodeid={element.value}
               allowClosePreview
-              iconTooltip={sharedNode?.currentUserAccess && `You have ${sharedNode?.currentUserAccess?.toLowerCase()} access`}
+              iconTooltip={
+                sharedNode?.currentUserAccess && `You have ${sharedNode?.currentUserAccess?.toLowerCase()} access`
+              }
               icon={sharedAccessIcon[sharedNode?.currentUserAccess]}
               editable={sharedNode?.currentUserAccess !== 'READ'}
               content={content}

@@ -1,4 +1,3 @@
-import { init } from '@sentry/browser'
 import { mog } from '@utils/lib/helper'
 import { isEqual, isEmpty } from 'lodash'
 import { StoreApi, State } from 'zustand'
@@ -22,7 +21,10 @@ export const syncStoreState = <T extends State, K extends keyof T>(
   const broadCastChannelName = options.name
   const channels = getExistingSyncedChannels()
 
-  if (channels?.has(broadCastChannelName)) throw new Error(`${broadCastChannelName} Channel Already Exists!`)
+  if (channels?.has(broadCastChannelName)) {
+    return
+    // throw new Error(`${broadCastChannelName} Channel Already Exists!`)
+  }
   channels.add(broadCastChannelName)
 
   const newBroadCastSyncChannel = new BroadcastChannel(options.name)

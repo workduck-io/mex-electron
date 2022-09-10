@@ -7,6 +7,7 @@ export type WindowOptions = {
   loadURL: LoadURLType
   alwaysOnTop?: boolean
   onLoad?: (window?: BrowserWindow) => void
+  onClose?: (window?: BrowserWindow) => void
   onBlurHide?: boolean
   onLoadShow?: boolean
 }

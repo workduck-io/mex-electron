@@ -1,26 +1,28 @@
-import { getPlateEditorRef, Plate, selectEditor, usePlateEditorRef } from '@udecode/plate'
-import React, { memo, useEffect, useMemo } from 'react'
-import generatePlugins, { PluginOptionType } from './Plugins/plugins'
+import React, { useEffect, useMemo } from 'react'
 
-import BallonMarkToolbarButtons from './Components/EditorBalloonToolbar'
-import { DndProvider } from 'react-dnd'
-import { EditorStyles } from '../style/Editor'
-import { HTML5Backend } from 'react-dnd-html5-backend'
-import { MENU_ID } from './Components/EditorContextMenu'
-import { MultiComboboxContainer } from './Components/multi-combobox/multiComboboxContainer'
-import components from './Components/components'
-import { debounce } from 'lodash'
-import { useContextMenu } from 'react-contexify'
-import { useEditorChange } from '../hooks/useEditorActions'
-import useEditorPluginConfig from './Plugins/useEditorPluginConfig'
-import { useGraphStore } from '../store/useGraphStore'
-import { useBlockHighlightStore, useFocusBlock } from './Actions/useFocusBlock'
-import { mog } from '../utils/lib/helper'
-import { useDebouncedCallback } from 'use-debounce'
-import useSuggestionStore from '@store/useSuggestionStore'
-import { NodeEditorContent } from '../types/Types'
 import { useGlobalListener } from '@hooks/useGlobalListener'
 import useMultipleEditors from '@store/useEditorsStore'
+import useSuggestionStore from '@store/useSuggestionStore'
+import { getPlateEditorRef, Plate, selectEditor, usePlateEditorRef } from '@udecode/plate'
+import { debounce } from 'lodash'
+import { useContextMenu } from 'react-contexify'
+import { DndProvider } from 'react-dnd'
+import { HTML5Backend } from 'react-dnd-html5-backend'
+import { useDebouncedCallback } from 'use-debounce'
+
+import { useEditorChange } from '../hooks/useEditorActions'
+import { useGraphStore } from '../store/useGraphStore'
+import { EditorStyles } from '../style/Editor'
+import { NodeEditorContent } from '../types/Types'
+import { mog } from '../utils/lib/helper'
+import { useBlockHighlightStore, useFocusBlock } from './Actions/useFocusBlock'
+import BallonMarkToolbarButtons from './Components/EditorBalloonToolbar'
+import { MENU_ID } from './Components/EditorContextMenu'
+import { ComboboxOptions } from './Components/combobox/components/Combobox.types'
+import components from './Components/components'
+import { MultiComboboxContainer } from './Components/multi-combobox/multiComboboxContainer'
+import generatePlugins, { PluginOptionType } from './Plugins/plugins'
+import useEditorPluginConfig from './Plugins/useEditorPluginConfig'
 
 interface EditorProps {
   content: any[] // eslint-disable-line @typescript-eslint/no-explicit-any
@@ -28,6 +30,7 @@ interface EditorProps {
   readOnly?: boolean
   onChange?: any
   autoFocus?: boolean
+  comboboxOptions?: ComboboxOptions
   focusAtBeginning?: boolean
   showBalloonToolbar?: boolean
   onAutoSave?: (content: NodeEditorContent) => void
@@ -47,6 +50,9 @@ export const Editor = ({
   onAutoSave,
   padding = '32px',
   focusAtBeginning = true,
+  comboboxOptions = {
+    showPreview: true
+  },
   showBalloonToolbar = false,
   getSuggestions
 }: EditorProps) => {
@@ -63,7 +69,6 @@ export const Editor = ({
   const headingQASearch = useSuggestionStore((store) => store.headingQASearch)
   const isEmpty = useMultipleEditors((store) => store.isEmpty)
 
-  // const generateEditorId = () => `${editorId}`
   const editorRef = usePlateEditorRef()
   const { show } = useContextMenu({ id: MENU_ID })
   const { focusBlock } = useFocusBlock()
@@ -73,11 +78,10 @@ export const Editor = ({
   useEffect(() => {
     const hightlightedBlockIds = useBlockHighlightStore.getState().hightlighted.editor
     if (editorRef && hightlightedBlockIds.length > 0) {
-      // mog('editor highlighted with start', { hightlightedBlockIds, editorId })
       focusBlock(hightlightedBlockIds[hightlightedBlockIds.length - 1], editorId)
-      // editorRef.current.focus()
       return
     }
+
     if (editorRef && focusAtBeginning) {
       selectEditor(editorRef, { edge: 'start', focus: true })
     }
@@ -87,7 +91,6 @@ export const Editor = ({
     const tempRef = editorRef || getPlateEditorRef(editorId)
 
     if (tempRef && hightlightedBlockIds.length > 0) {
-      mog('editor highlighted', { hightlightedBlockIds, editorId })
       focusBlock(hightlightedBlockIds[hightlightedBlockIds.length - 1], editorId)
       const clearHighlightTimeoutId = setTimeout(() => {
         if (!readOnly) clearHighlights()
@@ -97,8 +100,6 @@ export const Editor = ({
   }, [hightlightedBlockIds, editorId, editorRef])
 
   const { pluginConfigs, comboConfigData } = useEditorPluginConfig(editorId, options)
-
-  // function to add two numbers
 
   const prePlugins = useMemo(() => generatePlugins(components, options), [])
   const plugins = [
@@ -165,8 +166,7 @@ export const Editor = ({
           onChange={onChangeContent}
         >
           {showBalloonToolbar && <BallonMarkToolbarButtons />}
-          {isEmpty && <MultiComboboxContainer config={comboConfigData} />}
-          {/* {showCursorOverlay && <CursorOverlayContainer />} */}
+          {isEmpty && <MultiComboboxContainer options={comboboxOptions} config={comboConfigData} />}
           <GlobalEditorListener />
         </Plate>
       </EditorStyles>

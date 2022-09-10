@@ -81,7 +81,7 @@ export const getParentFromPath = (id: string) => {
 }
 
 export const getNameFromPath = (id: string) => {
-  const split = id.split(SEPARATOR)
+  const split = id?.split(SEPARATOR)
   if (split.length > 1) return split[split.length - 1]
   return id
 }

@@ -1,4 +1,5 @@
 import { IpcAction } from '@data/IpcAction'
+import { windowManager } from '@electron/WindowManager'
 import { windows } from '@electron/main'
 import {
   MENTION_LOCATION,
@@ -24,6 +25,7 @@ import {
 import { getReminderDimensions, REMINDERS_DIMENSIONS } from '@services/reminders/reminders'
 import { clearLocalStorage } from '@utils/dataTransform'
 import { getAppleNotes } from '@utils/importers/appleNotes'
+import { mog } from '@utils/lib/helper'
 import { app, globalShortcut, ipcMain } from 'electron'
 import { autoUpdater } from 'electron-updater'
 import fs from 'fs'
@@ -36,7 +38,6 @@ import { MentionData } from '../../types/mentions'
 import { Reminder, ReminderActions } from '../../types/reminders'
 import { idxKey } from '../../types/search'
 import { ToastStatus, ToastType } from '../../types/toast'
-import { windowManager } from '@electron/WindowManager'
 
 export let SPOTLIGHT_SHORTCUT = 'CommandOrCOntrol+Shift+X'
 
@@ -45,7 +46,6 @@ enum AppType {
   MEX = 'MEX',
   TOAST = 'TOAST'
 }
-
 
 const handleIPCListener = () => {
   ipcMain.on('close', closeWindow)
@@ -173,7 +173,7 @@ const handleIPCListener = () => {
   })
 
   ipcMain.on(IpcAction.PIN_NOTE_WINDOW, (_event, data) => {
-    const window = createNoteWindow(data)
+    createNoteWindow(data)
   })
 
   ipcMain.on(IpcAction.SHOW_RELEASE_NOTES, (_event, arg) => {
@@ -262,6 +262,18 @@ const handleIPCListener = () => {
 
   ipcMain.on(IpcAction.HIDE_TOAST, () => {
     windows.toast?.hide()
+  })
+
+  // * Pinned Window IPC Liteners
+  ipcMain.on(IpcAction.SHOW_PINNED_NOTE_WINDOW, (_event, arg) => {
+    const { data, from } = arg
+    if (data?.noteId) {
+      const ref = windowManager.getWindow(data?.noteId)
+      ref?.flashFrame(true)
+
+      ref?.show()
+      ref?.focus()
+    }
   })
 
   ipcMain.on(IpcAction.CLOSE_SPOTLIGHT, (_event, arg) => {

@@ -12,6 +12,7 @@ import Collapse from '../../../ui/layout/Collapse/Collapse'
 import NodeLink from '../NodeLink/NodeLink'
 import { TagsLabel } from './TagLabel'
 import { InfoSubHeading } from './TagsRelated.styles'
+import { mog } from '@utils/lib/helper'
 
 interface TagsRelated {
   nodeid: string
@@ -71,10 +72,9 @@ export const TagsRelatedTiny = ({ nodeid }: TagsRelated) => {
   const [tags, setTags] = useState<string[]>([])
 
   useEffect(() => {
+    mog('TAGS ARE', { tagsCache, tags, t: getTags(nodeid) })
     setTags(getTags(nodeid))
   }, [nodeid, tagsCache])
-
-  // mog('TagsRelated', { nodeid, tags })
 
   return tags.length > 0 ? <TagsLabel tags={tags.map((tag) => ({ value: tag }))} /> : null
 }
