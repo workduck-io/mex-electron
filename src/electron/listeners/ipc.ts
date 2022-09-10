@@ -10,7 +10,13 @@ import {
 } from '@electron/utils/fileLocations'
 import { getDataOfLocation, getFileData, setDataAtLocation, setFileData } from '@electron/utils/filedata'
 import { copyToClipboard, getGlobalShortcut, useSnippetFromClipboard } from '@electron/utils/getSelectedText'
-import { closeWindow, createMexWindow, createNoteWindow, handleToggleMainWindow, notifyOtherWindow } from '@electron/utils/helper'
+import {
+  closeWindow,
+  createMexWindow,
+  createNoteWindow,
+  handleToggleMainWindow,
+  notifyOtherWindow
+} from '@electron/utils/helper'
 import { getIndexData } from '@electron/utils/indexData'
 import {
   addDoc,
@@ -28,15 +34,14 @@ import { getAppleNotes } from '@utils/importers/appleNotes'
 import { app, globalShortcut, ipcMain } from 'electron'
 import fs from 'fs'
 
-
 import { AuthTokenData } from '../../types/auth'
 import { FileData } from '../../types/data'
 import { MentionData } from '../../types/mentions'
 import { Reminder, ReminderActions } from '../../types/reminders'
 import { idxKey } from '../../types/search'
 import { ToastStatus, ToastType } from '../../types/toast'
-import { checkForUpdatesAndNotifyWrapper } from '@electron/update'
 import handlePinnedWindowsIPCListener from './pinned-windows'
+import { checkForUpdatesAndNotifyWrapper } from '../update'
 
 export let SPOTLIGHT_SHORTCUT = 'CommandOrCOntrol+Shift+X'
 
@@ -160,7 +165,6 @@ const handleIPCListener = () => {
       windows.toast?.setParent(windowManager.getWindow(AppType.SPOTLIGHT))
       windows.toast?.send(IpcAction.TOAST_MESSAGE, { status: ToastStatus.LOADING, title: 'Checking for updates..' })
       windows.toast?.open(false, false, true)
-
       checkForUpdatesAndNotifyWrapper()
     }
   })
@@ -199,9 +203,9 @@ const handleIPCListener = () => {
   })
 
   ipcMain.on(IpcAction.OPEN_NODE_IN_MEX, (_event, arg) => {
-    const windowRef = windowManager.getWindow(AppType.MEX);
+    const windowRef = windowManager.getWindow(AppType.MEX)
     if (!windowRef) {
-      createMexWindow(window => {
+      createMexWindow((window) => {
         window.webContents.send(IpcAction.OPEN_NODE, { nodeid: arg.nodeid })
       })
     } else {
@@ -216,14 +220,14 @@ const handleIPCListener = () => {
   ipcMain.on(IpcAction.REDIRECT_TO, (_event, arg) => {
     const mexWindowRef = windowManager.getWindow(AppType.MEX)
 
-    if (!mexWindowRef) createMexWindow((window) => {
-      window.webContents.send(IpcAction.REDIRECT_TO, { page: arg.page })
-    })
+    if (!mexWindowRef)
+      createMexWindow((window) => {
+        window.webContents.send(IpcAction.REDIRECT_TO, { page: arg.page })
+      })
     else {
       mexWindowRef?.focus()
       mexWindowRef?.show()
     }
-
   })
 
   ipcMain.on(
@@ -237,14 +241,13 @@ const handleIPCListener = () => {
     const mexWindowRef = windowManager.getWindow(AppType.MEX)
 
     if (!mexWindowRef) {
-      createMexWindow(window => {
+      createMexWindow((window) => {
         window.webContents.send(IpcAction.OPEN_REMINDER, { reminder: data.reminder })
       })
     } else {
       mexWindowRef.focus()
       mexWindowRef.show()
     }
-
   })
 
   ipcMain.on(IpcAction.RESIZE_REMINDER, (ev, { from, data }: { from: AppType; data: { height: number } }) => {
