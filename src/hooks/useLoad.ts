@@ -103,12 +103,14 @@ const useLoad = () => {
 
     const UID = respectiveLink?.nodeid ?? archiveLink?.nodeid ?? sharedLink?.nodeid ?? nodeid
     const text = respectiveLink?.path ?? archiveLink?.path ?? sharedLink?.path
+    const namespace = respectiveLink?.namespace ?? archiveLink?.namespace ?? sharedLink?.namespace
 
     const node = {
       title: text,
       id: text,
       nodeid: UID,
-      path: text
+      path: text,
+      namespace
     }
 
     return node
@@ -144,7 +146,7 @@ const useLoad = () => {
     const sharedNodes = useDataStore.getState().sharedNodes
     const isShared = !!sharedNodes.find((i) => i.nodeid === node.nodeid)
     setFetchingContent(true)
-    saveDataAPI(node.nodeid, content, isShared)
+    saveDataAPI(node.nodeid, node.namespace, content, isShared)
       .then((data) => {
         if (data) {
           // const { data, metadata, version } = res

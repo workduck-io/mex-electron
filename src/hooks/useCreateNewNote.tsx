@@ -11,6 +11,7 @@ import { useLastOpened } from './useLastOpened'
 import { useContentStore } from '@store/useContentStore'
 import { useSnippets } from './useSnippets'
 import { RESERVED_NAMESPACES } from '@utils/lib/paths'
+import { useNamespaces } from './useNamespaces'
 
 export type NewNoteOptions = {
   path?: string
@@ -35,6 +36,7 @@ export const useCreateNewNote = () => {
   const { getParentILink } = useLinks()
   const { addInHierarchy } = useHierarchy()
   const { addLastOpened } = useLastOpened()
+  const { getDefaultNamespace } = useNamespaces()
 
   const createNewNote = (options?: NewNoteOptions) => {
     const childNodepath = options?.parent !== undefined ? getUntitledKey(options?.parent) : getUntitledDraftKey()
@@ -56,8 +58,10 @@ export const useCreateNewNote = () => {
       options?.noteContent ||
       (nodeMetadata?.templateID && parentNote?.path !== 'Drafts' && getSnippet(nodeMetadata.templateID)?.content)
 
+    const defaultNamespace = getDefaultNamespace()
+
     // TODO: Get default namespace name here
-    const namespace = options?.namespace ?? RESERVED_NAMESPACES.default
+    const namespace = options?.namespace ?? defaultNamespace?.id
 
     const node = addILink({
       ilink: newNotePath,

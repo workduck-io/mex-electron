@@ -37,7 +37,7 @@ export const SpaceHeader = styled.div`
   gap: ${({ theme }) => theme.spacing.medium};
 
   ${TagsFlex} {
-    min-width: 276px;
+    min-width: 266px;
   }
 `
 

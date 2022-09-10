@@ -8,6 +8,9 @@ import { useCreateNewNote } from './useCreateNewNote'
 import { useUpdater } from './useUpdater'
 import { useSnippetStore } from '@store/useSnippetStore'
 import { useSnippets } from './useSnippets'
+import { useNamespaces } from './useNamespaces'
+import { mog } from '@workduck-io/mex-utils'
+import { useLayoutStore } from '@store/useLayoutStore'
 
 interface CreateNewMenuItem {
   id: string
@@ -29,12 +32,22 @@ export const useCreateNewMenu = () => {
   const loadSnippet = useSnippetStore((store) => store.loadSnippet)
   const { addSnippet } = useSnippets()
   const { updater } = useUpdater()
+  const { addDefaultNewNamespace } = useNamespaces()
+  const changeSpace = useLayoutStore((store) => store.changeSidebarSpace)
 
   const createNoteWithQABlock = () => {
     const qaContent = getRandomQAContent()
     const note = createNewNote({ noteContent: qaContent })
 
     goTo(ROUTE_PATHS.node, NavigationType.push, note?.nodeid)
+  }
+
+  const createNewNamespace = () => {
+    addDefaultNewNamespace().then((ns) => {
+      // mog('After creating ns in contenxtmenu', { ns })
+      // Change the space in the sidebar to the newly created space
+      changeSpace(ns?.id)
+    })
   }
 
   const onCreateNewSnippet = () => {
@@ -54,13 +67,21 @@ export const useCreateNewMenu = () => {
 
     goTo(ROUTE_PATHS.snippet, NavigationType.push, snippetId, { title: snippetName })
   }
-  const getCreateNewMenuItems = (path: string): CreateNewMenuItem[] => {
+
+  const getCreateNewMenuItems = (_path: string): CreateNewMenuItem[] => {
     return [
       {
         id: 'new-note',
         label: 'New Note',
         onSelect: () => {
           createNoteWithQABlock()
+        }
+      },
+      {
+        id: 'new-space',
+        label: 'New Space',
+        onSelect: () => {
+          createNewNamespace()
         }
       },
       {

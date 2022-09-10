@@ -50,6 +50,7 @@ export type QuickLink = {
   // Unique identifier
   // Not present if the node is not yet created i.e. QuickLinkStatus.new
   nodeid?: string
+  namespace?: string
 
   icon?: string
 }
