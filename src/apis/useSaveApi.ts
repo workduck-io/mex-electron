@@ -11,6 +11,7 @@ import { getTagsFromContent } from '@utils/lib/content'
 import toast from 'react-hot-toast'
 
 import { client } from '@workduck-io/dwindle'
+import { allNamespacesHierarchyParser } from '@workduck-io/mex-utils'
 
 import { defaultContent } from '../data/Defaults/baseData'
 import { DEFAULT_NAMESPACE, WORKSPACE_HEADER } from '../data/Defaults/defaults'
@@ -25,7 +26,6 @@ import { mog } from '../utils/lib/helper'
 import { extractMetadata } from '../utils/lib/metadata'
 import { deserializeContent, serializeContent } from '../utils/lib/serialize'
 import { apiURLs } from './routes'
-import { allNamespacesHierarchyParser } from '@workduck-io/mex-utils'
 
 const API_CACHE_LOG = `\nAPI has been requested before, cancelling.\n`
 
@@ -106,7 +106,8 @@ export const useApi = () => {
   ) => {
     const reqData = {
       nodePath: {
-        path: options.path
+        path: options.path,
+        namespaceID: namespace
       },
       title: getTitleFromNoteId(noteId),
       namespaceID: namespace,
