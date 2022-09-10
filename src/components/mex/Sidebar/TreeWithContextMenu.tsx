@@ -1,6 +1,7 @@
 import magicLine from '@iconify/icons-ri/magic-line'
 import { TreeItem } from '@atlaskit/tree'
 import { useCreateNewNote } from '@hooks/useCreateNewNote'
+import fileTransferLine from '@iconify/icons-ri/file-transfer-line'
 import { useLastOpened } from '@hooks/useLastOpened'
 import addCircleLine from '@iconify/icons-ri/add-circle-line'
 import archiveLine from '@iconify/icons-ri/archive-line'
@@ -9,7 +10,7 @@ import editLine from '@iconify/icons-ri/edit-line'
 import volumeMuteLine from '@iconify/icons-ri/volume-mute-line'
 import shareLine from '@iconify/icons-ri/share-line'
 import { Icon } from '@iconify/react'
-// import * as ContextMenu from '@radix-ui/react-context-menu'
+import * as ContextMenuPrimitive from '@radix-ui/react-context-menu'
 //
 import { ContextMenuContent, ContextMenuItem, ContextMenuSeparator } from '@ui/components/menus/contextMenu'
 import React, { useMemo } from 'react'
@@ -24,6 +25,9 @@ import useModalStore, { ModalsType } from '@store/useModalStore'
 import { NavigationType, ROUTE_PATHS, useRouting } from '@views/routes/urls'
 import { useContentStore } from '@store/useContentStore'
 import { useSnippetStore } from '@store/useSnippetStore'
+import ContextMenuListWithFilter from './ContextMenuListWithFilter'
+import useDataStore from '@store/useDataStore'
+import { RESERVED_NAMESPACES } from '@utils/lib/paths'
 
 export const MENU_ID = 'Tree-Menu'
 
@@ -74,6 +78,7 @@ export const TreeContextMenu = ({ item }: TreeContextMenuProps) => {
   const openShareModal = useShareModalStore((store) => store.openModal)
   const toggleModal = useModalStore((store) => store.toggleOpen)
   const { goTo } = useRouting()
+  const namespaces = useDataStore((store) => store.namespaces)
 
   const contents = useContentStore((store) => store.contents)
 
@@ -115,57 +120,71 @@ export const TreeContextMenu = ({ item }: TreeContextMenuProps) => {
 
   return (
     <>
-      <ContextMenuContent>
-        <ContextMenuItem
-          onSelect={(args) => {
-            handleRefactor(item)
-          }}
-        >
-          <Icon icon={editLine} />
-          Refactor
-        </ContextMenuItem>
-        <ContextMenuItem
-          onSelect={(args) => {
-            handleCreateChild(item)
-          }}
-        >
-          <Icon icon={addCircleLine} />
-          New Note
-        </ContextMenuItem>
-        <ContextMenuItem
-          onSelect={(args) => {
-            handleTemplate(item)
-          }}
-        >
-          <Icon icon={magicLine} />
-          {hasTemplate ? 'Change Template' : 'Set Template'}
-        </ContextMenuItem>
-        <ContextMenuItem
-          onSelect={(args) => {
-            handleShare(item)
-          }}
-        >
-          <Icon icon={shareLine} />
-          Share
-        </ContextMenuItem>
-        <ContextMenuSeparator />
-        <MuteMenuItem nodeid={item.data.nodeid} lastOpenedState={item.data.lastOpenedState} />
-        {/* <ContextMenuItem>
-          <Icon icon={refreshFill} />
-          Sync
-        </ContextMenuItem>
-         */}
+      <ContextMenuPrimitive.Portal>
+        <ContextMenuContent>
+          <ContextMenuItem
+            onSelect={(args) => {
+              handleRefactor(item)
+            }}
+          >
+            <Icon icon={editLine} />
+            Refactor
+          </ContextMenuItem>
+          <ContextMenuItem
+            onSelect={(args) => {
+              handleCreateChild(item)
+            }}
+          >
+            <Icon icon={addCircleLine} />
+            New Note
+          </ContextMenuItem>
+          <ContextMenuItem
+            onSelect={(args) => {
+              handleTemplate(item)
+            }}
+          >
+            <Icon icon={magicLine} />
+            {hasTemplate ? 'Change Template' : 'Set Template'}
+          </ContextMenuItem>
+          <ContextMenuItem
+            onSelect={(args) => {
+              handleShare(item)
+            }}
+          >
+            <Icon icon={shareLine} />
+            Share
+          </ContextMenuItem>
+          <ContextMenuListWithFilter
+            item={{
+              id: 'menu_for_namespace',
+              label: 'Move to Space',
+              icon: fileTransferLine
+            }}
+            items={namespaces.map((ns) => ({
+              id: ns.id,
+              icon: ns.name === RESERVED_NAMESPACES.default ? 'ri:user-line' : 'heroicons-outline:view-grid',
+              label: ns.name
+            }))}
+            onSelectItem={(args) => {
+              // Args will be itemid in this case, namespace id
+              mog('onSelect', { args })
+            }}
+            filter={false}
+          />
+          <ContextMenuSeparator />
+          <MuteMenuItem nodeid={item.data.nodeid} lastOpenedState={item.data.lastOpenedState} />
 
-        <ContextMenuItem
-          color="#df7777"
-          onSelect={(args) => {
-            handleArchive(item)
-          }}
-        >
-          <Icon icon={archiveLine} />
-          Archive
-        </ContextMenuItem>
-      </ContextMenuContent>
+          <ContextMenuItem
+            color="#df7777"
+            onSelect={(args) => {
+              handleArchive(item)
+            }}
+          >
+            <Icon icon={archiveLine} />
+            Archive
+          </ContextMenuItem>
+        </ContextMenuContent>
+      </ContextMenuPrimitive.Portal>
     </>
   )
 }

@@ -71,6 +71,8 @@ export const NoteSidebar = () => {
       pollAction: PollActions.shared
     })
 
+    mog('Spaces', { spaces: nspaces, nodesByNamespaces })
+
     return nspaces
   }, [ilinks, namespaces])
 
@@ -119,6 +121,8 @@ export const NoteSidebar = () => {
       replaceAndAddActionToPoll(currentSpace.pollAction)
     }
   }, [currentSpace])
+
+  mog('Space', { ilinks, spaces, currentSpace, index })
 
   return (
     <SpaceWrapper>
