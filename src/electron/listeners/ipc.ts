@@ -35,15 +35,16 @@ import { getAppleNotes } from '@utils/importers/appleNotes'
 import { app, globalShortcut, ipcMain } from 'electron'
 import fs from 'fs'
 
+import { mog } from '@workduck-io/mex-utils'
+
 import { AuthTokenData } from '../../types/auth'
 import { FileData } from '../../types/data'
 import { MentionData } from '../../types/mentions'
 import { Reminder, ReminderActions } from '../../types/reminders'
 import { idxKey } from '../../types/search'
 import { ToastStatus, ToastType } from '../../types/toast'
-import handlePinnedWindowsIPCListener from './pinned-windows'
 import { checkForUpdatesAndNotifyWrapper } from '../update'
-import { mog } from '@workduck-io/mex-utils'
+import handlePinnedWindowsIPCListener from './pinned-windows'
 
 export let SPOTLIGHT_SHORTCUT = 'CommandOrCOntrol+Shift+X'
 
@@ -186,7 +187,6 @@ const handleIPCListener = () => {
 
       windows.toast?.send(IpcAction.TOAST_MESSAGE, { status: ToastStatus.LOADING, title: 'Checking for updates..' })
       windows.toast?.open(false, false, true)
-
       checkForUpdatesAndNotifyWrapper()
     }
   })
