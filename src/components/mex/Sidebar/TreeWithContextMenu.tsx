@@ -19,6 +19,7 @@ import useModalStore, { ModalsType } from '@store/useModalStore'
 import { useSnippetStore } from '@store/useSnippetStore'
 // import * as ContextMenu from '@radix-ui/react-context-menu'
 import * as ContextMenuPrimitive from '@radix-ui/react-context-menu'
+import useDataStore from '@store/useDataStore'
 //
 import { ContextMenuContent, ContextMenuItem, ContextMenuSeparator } from '@ui/components/menus/contextMenu'
 import { mog } from '@utils/lib/helper'
@@ -26,8 +27,8 @@ import { NavigationType, ROUTE_PATHS, useRouting } from '@views/routes/urls'
 import toast from 'react-hot-toast'
 
 import usePinnedWindows from '@hooks/usePinnedWindow'
-import useDataStore from '@store/useDataStore'
 import { RESERVED_NAMESPACES } from '@utils/lib/paths'
+
 import { LastOpenedState } from '../../../types/userPreference'
 import { useShareModalStore } from '../Mention/ShareModalStore'
 import { useDeleteStore } from '../Refactor/DeleteModal'
@@ -98,7 +99,7 @@ export const TreeContextMenu = ({ item }: TreeContextMenuProps) => {
   }, [item.data.nodeid, contents])
 
   const handleRefactor = (item: TreeItem) => {
-    prefillRefactorModal(item?.data?.path)
+    prefillRefactorModal({ path: item?.data?.path, namespaceID: item.data?.namespace })
     // openRefactorModal()
   }
 
@@ -131,6 +132,10 @@ export const TreeContextMenu = ({ item }: TreeContextMenuProps) => {
 
   const handleShare = (item: TreeItem) => {
     openShareModal('permission', item.data.nodeid)
+  }
+
+  const handleMoveNamespaces = (newNamespaceID: string) => {
+    mog('newNamespaceID', { newNamespaceID })
   }
 
   return (
@@ -183,11 +188,13 @@ export const TreeContextMenu = ({ item }: TreeContextMenuProps) => {
               label: 'Move to Space',
               icon: fileTransferLine
             }}
-            items={namespaces.map((ns) => ({
-              id: ns.id,
-              icon: ns.name === RESERVED_NAMESPACES.default ? 'ri:user-line' : 'heroicons-outline:view-grid',
-              label: ns.name
-            }))}
+            items={namespaces
+              .filter((ns) => ns.id !== item.data.namespace)
+              .map((ns) => ({
+                id: ns.id,
+                icon: ns.name === RESERVED_NAMESPACES.default ? 'ri:user-line' : 'heroicons-outline:view-grid',
+                label: ns.name
+              }))}
             onSelectItem={(args) => {
               // Args will be itemid in this case, namespace id
               mog('onSelect', { args })

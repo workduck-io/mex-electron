@@ -2632,10 +2632,10 @@
     polished "^4.1.4"
     react-spring "^9.5.2"
 
-"@workduck-io/mex-utils@^0.0.4":
-  version "0.0.4"
-  resolved "https://npm.pkg.github.com/download/@workduck-io/mex-utils/0.0.4/fed3dc2edc555e37f1c81b1e34f46c2542b70f8b#fed3dc2edc555e37f1c81b1e34f46c2542b70f8b"
-  integrity sha512-uXIx4y8sV8XR2guoFwKRUTzkeN4XwAUcx5fp7MoXTPWMm5cEEw/6splHGG/r9GF4As6UPXzFwtKUNNP1yvwcCA==
+"@workduck-io/mex-utils@^0.0.5":
+  version "0.0.5"
+  resolved "https://npm.pkg.github.com/download/@workduck-io/mex-utils/0.0.5/9a1779ecf897482dc829cddfd0014e2f02c91a50#9a1779ecf897482dc829cddfd0014e2f02c91a50"
+  integrity sha512-e9CbSkL5xtSNLU+lQ51pdfNbNbSdE/Wq5zv2F3OWn3x1mwQuGON0I+/RZhRUinfJwHGZhYnvFL4tsZgXsMA2SA==
   dependencies:
     "@workduck-io/flexsearch" "^0.7.22"
     chrono-node "^2.3.9"

@@ -230,8 +230,8 @@ export const useApi = () => {
   }
 
   const refactorNotes = async (
-    existingNodePath: { path: string; namespaceId?: string },
-    newNodePath: { path: string; namespaceId?: string },
+    existingNodePath: { path: string; namespaceID?: string },
+    newNodePath: { path: string; namespaceID?: string },
     nodeId: string
   ) => {
     const reqData = {
@@ -345,7 +345,7 @@ export const useApi = () => {
                 ],
                 nodes: [
                   ...p.nodes,
-                  ...namespaceData.hierarchy.map((ilink) => ({
+                  ...namespaceData.nodeHierarchy.map((ilink) => ({
                     ...ilink,
                     namespace: namespaceid,
                     createdAt: nodesMetadata[ilink.nodeid]?.createdAt || Infinity,
