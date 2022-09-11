@@ -29,10 +29,13 @@ import toast from 'react-hot-toast'
 import usePinnedWindows from '@hooks/usePinnedWindow'
 import { RESERVED_NAMESPACES } from '@utils/lib/paths'
 
+import { useNavigation } from '../../../hooks/useNavigation'
+import { useRefactor } from '../../../hooks/useRefactor'
 import { LastOpenedState } from '../../../types/userPreference'
 import { useShareModalStore } from '../Mention/ShareModalStore'
 import { useDeleteStore } from '../Refactor/DeleteModal'
 import { useRefactorStore } from '../Refactor/Refactor'
+import { doesLinkRemain } from '../Refactor/doesLinkRemain'
 import ContextMenuListWithFilter from './ContextMenuListWithFilter'
 
 export const MENU_ID = 'Tree-Menu'
@@ -88,6 +91,8 @@ export const TreeContextMenu = ({ item }: TreeContextMenuProps) => {
   const namespaces = useDataStore((store) => store.namespaces)
 
   const contents = useContentStore((store) => store.contents)
+  const { execRefactorAsync } = useRefactor()
+  const { push } = useNavigation()
 
   const hasTemplate = useMemo(() => {
     const metadata = contents[item.data.nodeid]?.metadata
@@ -134,8 +139,15 @@ export const TreeContextMenu = ({ item }: TreeContextMenuProps) => {
     openShareModal('permission', item.data.nodeid)
   }
 
-  const handleMoveNamespaces = (newNamespaceID: string) => {
-    mog('newNamespaceID', { newNamespaceID })
+  const handleMoveNamespaces = async (newNamespaceID: string) => {
+    const refactored = await execRefactorAsync(
+      { path: item.data?.path, namespaceID: item.data?.namespace },
+      { path: item.data?.path, namespaceID: newNamespaceID }
+    )
+
+    if (doesLinkRemain(item.data?.path, refactored)) {
+      push(item.data?.nodeid, { savePrev: false })
+    }
   }
 
   return (
@@ -182,25 +194,24 @@ export const TreeContextMenu = ({ item }: TreeContextMenuProps) => {
             <Icon icon={shareLine} />
             Share
           </ContextMenuItem>
-          <ContextMenuListWithFilter
-            item={{
-              id: 'menu_for_namespace',
-              label: 'Move to Space',
-              icon: fileTransferLine
-            }}
-            items={namespaces
-              .filter((ns) => ns.id !== item.data.namespace)
-              .map((ns) => ({
-                id: ns.id,
-                icon: ns.name === RESERVED_NAMESPACES.default ? 'ri:user-line' : 'heroicons-outline:view-grid',
-                label: ns.name
-              }))}
-            onSelectItem={(args) => {
-              // Args will be itemid in this case, namespace id
-              mog('onSelect', { args })
-            }}
-            filter={false}
-          />
+          {/* <ContextMenuListWithFilter */}
+          {/*   item={{ */}
+          {/*     id: 'menu_for_namespace', */}
+          {/*     label: 'Move to Space', */}
+          {/*     icon: fileTransferLine */}
+          {/*   }} */}
+          {/*   items={namespaces */}
+          {/*     .filter((ns) => ns.id !== item.data.namespace) */}
+          {/*     .map((ns) => ({ */}
+          {/*       id: ns.id, */}
+          {/*       icon: ns.name === RESERVED_NAMESPACES.default ? 'ri:user-line' : 'heroicons-outline:view-grid', */}
+          {/*       label: ns.name */}
+          {/*     }))} */}
+          {/*   onSelectItem={(args) => { */}
+          {/*     handleMoveNamespaces(args) */}
+          {/*   }} */}
+          {/*   filter={false} */}
+          {/* /> */}
           <ContextMenuSeparator />
           <MuteMenuItem nodeid={item.data.nodeid} lastOpenedState={item.data.lastOpenedState} />
 

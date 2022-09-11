@@ -129,7 +129,7 @@ export const useRefactor = () => {
           removedILinks.push(...nsRemovedILinks)
         })
       })
-
+      mog('AfterRefactor', { addedILinks, removedILinks })
       const refactored = updateILinks(addedILinks, removedILinks)
       return refactored
     })

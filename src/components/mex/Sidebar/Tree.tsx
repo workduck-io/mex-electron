@@ -145,7 +145,10 @@ const Tree = ({ initTree, selectedItemId }: TreeProps) => {
 
     draggedRef.current = null
 
-    prefillModal({ path: from, namespaceID: nsID }, { path: to, namespaceID: nsID })
+    prefillModal(
+      { path: from, namespaceID: nsID },
+      { path: to, namespaceID: nsID }
+    )
     // changeTree(newTree)
   }
 
