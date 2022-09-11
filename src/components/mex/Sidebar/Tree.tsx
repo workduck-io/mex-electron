@@ -10,6 +10,7 @@ import {
   TreeItem,
   TreeSourcePosition
 } from '@atlaskit/tree'
+import { useRefactor } from '@hooks/useRefactor'
 import { getTreeFromLinks } from '@hooks/useTreeFromLinks'
 import useDataStore from '@store/useDataStore'
 import { useEditorStore } from '@store/useEditorStore'
@@ -22,7 +23,6 @@ import { useLocation, useMatch } from 'react-router-dom'
 import { useRefactorStore } from '../Refactor/Refactor'
 import { RenderTreeItem } from './TreeItem'
 import { getNameFromPath, SEPARATOR } from './treeUtils'
-import { useRefactor } from '@hooks/useRefactor'
 
 // import { complexTree } from '../mockdata/complexTree'
 
