@@ -1,4 +1,5 @@
 import { IpcAction } from '@data/IpcAction'
+import { windowManager } from '@electron/WindowManager'
 import { windows } from '@electron/main'
 import {
   MENTION_LOCATION,
@@ -9,7 +10,7 @@ import {
 } from '@electron/utils/fileLocations'
 import { getDataOfLocation, getFileData, setDataAtLocation, setFileData } from '@electron/utils/filedata'
 import { copyToClipboard, getGlobalShortcut, useSnippetFromClipboard } from '@electron/utils/getSelectedText'
-import { closeWindow, handleToggleMainWindow, notifyOtherWindow } from '@electron/utils/helper'
+import { closeWindow, createNoteWindow, handleToggleMainWindow, notifyOtherWindow } from '@electron/utils/helper'
 import { getIndexData } from '@electron/utils/indexData'
 import {
   addDoc,
@@ -42,20 +43,19 @@ export let SPOTLIGHT_SHORTCUT = 'CommandOrCOntrol+Shift+X'
 
 enum AppType {
   SPOTLIGHT = 'SPOTLIGHT',
-  MEX = 'MEX'
+  MEX = 'MEX',
+  TOAST = 'TOAST'
 }
 
 const handleIPCListener = () => {
   ipcMain.on('close', closeWindow)
 
   ipcMain.on(IpcAction.UPDATE_ILINKS, (event, data) => {
-    mog('Getting ilinks from store', { data })
-    windows?.spotlight.webContents.send(IpcAction.UPDATE_ILINKS, data)
+    windowManager.sendToWindow(AppType.SPOTLIGHT, IpcAction.UPDATE_ILINKS, data)
   })
 
   ipcMain.on(IpcAction.UPDATE_ACTIONS, (event, data) => {
-    // mog('DATA', { data })
-    windows?.spotlight.webContents.send(IpcAction.UPDATE_ACTIONS, data)
+    windowManager.sendToWindow(AppType.SPOTLIGHT, IpcAction.UPDATE_ACTIONS, data)
   })
 
   ipcMain.on(IpcAction.SET_SPOTLIGHT_SHORTCUT, (event, arg) => {
@@ -68,28 +68,26 @@ const handleIPCListener = () => {
   })
 
   ipcMain.on(IpcAction.GO_FORWARD, (event, arg) => {
-    console.log('Go Forward', { event, arg })
     event.sender.goForward()
   })
 
   ipcMain.on(IpcAction.GO_BACK, (event, arg) => {
-    console.log('Go back', { event, arg })
     event.sender.goBack()
   })
 
   ipcMain.on(IpcAction.USE_SNIPPET, (event, arg) => {
-    const { data } = arg
-    windows?.spotlight?.hide()
+    const { data, from } = arg
+    windowManager.getWindow(from).hide()
     app.hide()
     useSnippetFromClipboard(data.text, data.html)
   })
 
   ipcMain.on(IpcAction.COPY_TO_CLIPBOARD, (event, arg) => {
-    const { data } = arg
+    const { data, from } = arg
     copyToClipboard(data.text, data.html)
 
     if (!data?.hideToast) {
-      windows?.toast?.setParent(windows?.spotlight)
+      windows?.toast?.setParent(from)
       windows?.toast?.send(IpcAction.TOAST_MESSAGE, { status: ToastStatus.SUCCESS, title: data.title })
       windows?.toast?.open()
     }
@@ -107,12 +105,11 @@ const handleIPCListener = () => {
   })
 
   ipcMain.on(IpcAction.SET_TOKEN_DATA, (_event, arg) => {
-    // mog('SETTING TOKEN DATA', { arg })
     setDataAtLocation(arg, TOKEN_LOCATION)
     const tokenData: AuthTokenData = arg || getDataOfLocation(TOKEN_LOCATION)
 
-    windows?.mex?.webContents.send(IpcAction.RECIEVE_TOKEN_DATA, tokenData)
-    windows?.spotlight?.webContents.send(IpcAction.RECIEVE_TOKEN_DATA, tokenData)
+    windowManager.sendToWindow(AppType.MEX, IpcAction.RECIEVE_TOKEN_DATA, tokenData)
+    windowManager.sendToWindow(AppType.SPOTLIGHT, IpcAction.RECIEVE_TOKEN_DATA, tokenData)
   })
 
   // Mentions Data
@@ -122,12 +119,11 @@ const handleIPCListener = () => {
   })
 
   ipcMain.on(IpcAction.SET_MENTION_DATA, (_event, arg) => {
-    mog('SETTING MENTION DATA', { arg })
     setDataAtLocation(arg, MENTION_LOCATION)
     const mentionData: MentionData = arg || getDataOfLocation(MENTION_LOCATION)
 
-    windows?.mex?.webContents.send(IpcAction.RECIEVE_MENTION_DATA, mentionData)
-    windows?.spotlight?.webContents.send(IpcAction.RECIEVE_MENTION_DATA, mentionData)
+    windowManager.sendToWindow(AppType.MEX, IpcAction.RECIEVE_MENTION_DATA, mentionData)
+    windowManager.sendToWindow(AppType.SPOTLIGHT, IpcAction.RECIEVE_MENTION_DATA, mentionData)
   })
 
   ipcMain.on(IpcAction.GET_LOCAL_DATA, async (event) => {
@@ -136,10 +132,7 @@ const handleIPCListener = () => {
 
     // Needed for this upgrade, because of dwindle changes
     if (isUpdate && clearLocalStorage(fileData.version, app.getVersion())) {
-      windows?.mex?.webContents.send(IpcAction.FORCE_SIGNOUT)
-
-      // * handled by Synced store
-      // windows?.spotlight?.webContents.send(IpcAction.FORCE_SIGNOUT)
+      windowManager.sendToWindow(AppType.MEX, IpcAction.FORCE_SIGNOUT)
     }
 
     const indexData: Record<idxKey, any> = getIndexData(SEARCH_INDEX_LOCATION)
@@ -154,20 +147,18 @@ const handleIPCListener = () => {
 
   ipcMain.on(IpcAction.SET_LOCAL_DATA, (_event, arg) => {
     setFileData(arg, SAVE_LOCATION)
-    // syncFileData(arg)
   })
 
   ipcMain.on(IpcAction.ANALYSE_CONTENT, async (event, arg) => {
     if (!arg) return
     await analyseContent(arg, (analysis) => {
-      console.log('Analysis', { analysis })
       event.sender.send(IpcAction.RECEIVE_ANALYSIS, analysis)
     })
   })
 
   ipcMain.on(IpcAction.CHECK_FOR_UPDATES, (_event, arg) => {
     if (arg.from === AppType.SPOTLIGHT) {
-      windows.toast?.setParent(windows.spotlight)
+      windows.toast?.setParent(windowManager.getWindow(AppType.SPOTLIGHT))
       windows.toast?.send(IpcAction.TOAST_MESSAGE, { status: ToastStatus.LOADING, title: 'Checking for updates..' })
       windows.toast?.open(false, false, true)
       const token = useAuthStore.getState().userCred.token
@@ -179,6 +170,10 @@ const handleIPCListener = () => {
   ipcMain.on(IpcAction.CLEAR_RECENTS, (_event, arg) => {
     const { from } = arg
     notifyOtherWindow(IpcAction.CLEAR_RECENTS, from)
+  })
+
+  ipcMain.on(IpcAction.PIN_NOTE_WINDOW, (_event, data) => {
+    createNoteWindow(data)
   })
 
   ipcMain.on(IpcAction.SHOW_RELEASE_NOTES, (_event, arg) => {
@@ -203,54 +198,47 @@ const handleIPCListener = () => {
   })
 
   ipcMain.on(IpcAction.OPEN_MODAL_IN_MEX, (_event, arg) => {
-    windows.mex?.webContents.send(IpcAction.OPEN_MODAL, { type: arg.type, data: arg.data })
-    windows.spotlight?.hide()
-    windows.mex?.focus()
-    windows.mex?.show()
+    windowManager.sendToWindow(AppType.MEX, IpcAction.OPEN_MODAL, { type: arg.type, data: arg.data })
+    windowManager.getWindow(AppType.SPOTLIGHT)?.hide()
+    windowManager.getWindow(AppType.MEX)?.focus()
+    windowManager.getWindow(AppType.MEX)?.show()
   })
 
   ipcMain.on(IpcAction.OPEN_NODE_IN_MEX, (_event, arg) => {
-    windows.mex?.webContents.send(IpcAction.OPEN_NODE, { nodeid: arg.nodeid })
-    windows.spotlight?.hide()
-    windows.mex?.focus()
-    windows.mex?.show()
+    windowManager.sendToWindow(AppType.MEX, IpcAction.OPEN_NODE, { nodeid: arg.nodeid })
+
+    windowManager.getWindow(AppType.SPOTLIGHT)?.hide()
+    windowManager.getWindow(AppType.MEX)?.focus()
+    windowManager.getWindow(AppType.MEX)?.show()
   })
 
-  // * Uncomment, if not using syncStore for recents
-  // ipcMain.on(IpcAction.LOGGED_IN, (_event, arg) => {
-  //   spotlight?.webContents.send(IpcAction.LOGGED_IN, arg)
-  // })
-
   ipcMain.on(IpcAction.REDIRECT_TO, (_event, arg) => {
-    windows.mex?.focus()
-    windows.mex?.show()
-    windows.mex?.webContents.send(IpcAction.REDIRECT_TO, { page: arg.page })
+    const mexWindowRef = windowManager.getWindow(AppType.MEX)
+    mexWindowRef.focus()
+    mexWindowRef.show()
+    windowManager.sendToWindow(AppType.MEX, IpcAction.REDIRECT_TO, { page: arg.page })
   })
 
   ipcMain.on(
     IpcAction.ACTION_REMINDER,
     (ev, { from, data }: { from: AppType; data: { action: ReminderActions; reminder: Reminder; time?: number } }) => {
-      const { action, reminder } = data
-      // mog('Action reminder', { from, data })
-      windows.spotlight?.webContents.send(IpcAction.ACTION_REMINDER, data)
+      windowManager.sendToWindow(AppType.SPOTLIGHT, IpcAction.ACTION_REMINDER, data)
     }
   )
 
   ipcMain.on(IpcAction.OPEN_REMINDER_IN_MEX, (ev, { from, data }: { from: AppType; data: { reminder: Reminder } }) => {
-    // mog('Open reminder in mex', { from, data })
-    windows.mex?.webContents.send(IpcAction.OPEN_REMINDER, { reminder: data.reminder })
-    windows.mex.focus()
-    windows.mex.show()
+    const mexWindowRef = windowManager.getWindow(AppType.MEX)
+    windowManager.sendToWindow(AppType.MEX, IpcAction.OPEN_REMINDER, { reminder: data.reminder })
+    mexWindowRef.focus()
+    mexWindowRef.show()
   })
 
   ipcMain.on(IpcAction.RESIZE_REMINDER, (ev, { from, data }: { from: AppType; data: { height: number } }) => {
     const { height } = data
-    // console.log('Resized Reminder: ', { from, data, height })
     windows.toast?.updateReminderSize({ height, width: REMINDERS_DIMENSIONS.width }, true)
   })
 
   ipcMain.on(IpcAction.SHOW_REMINDER, (ev, { from, data }: { from: AppType; data: ToastType }) => {
-    console.log('Show Reminder', { from, data })
     if (data.attachment) {
       const size = getReminderDimensions(data.attachment)
       windows.toast?.send(IpcAction.TOAST_MESSAGE, data)
@@ -260,20 +248,15 @@ const handleIPCListener = () => {
     }
   })
 
-  // ipcMain.on(IpcAction.HIDE_REMINDER, () => {})
   ipcMain.on(IpcAction.HIDE_REMINDER, () => {
     windows.toast?.hide()
   })
 
   ipcMain.on(IpcAction.SHOW_TOAST, (ev, { from, data }: { from: AppType; data: ToastType }) => {
-    if (from === AppType.SPOTLIGHT) {
-      windows.toast?.setParent(windows.spotlight)
-    } else if (from === AppType.MEX) {
-      windows.toast?.setParent(windows.mex)
-    }
+    const parentWindow = windowManager.getWindow(from)
+    windows.toast?.setParent(parentWindow)
 
     windows.toast?.send(IpcAction.TOAST_MESSAGE, data)
-
     windows.toast?.open(data.independent)
   })
 
@@ -281,29 +264,31 @@ const handleIPCListener = () => {
     windows.toast?.hide()
   })
 
-  ipcMain.on(IpcAction.ERROR_OCCURED, (_event, arg) => {
-    // showDialog(arg.message, arg.propertes)
+  // * Pinned Window IPC Liteners
+  ipcMain.on(IpcAction.SHOW_PINNED_NOTE_WINDOW, (_event, arg) => {
+    const { data, from } = arg
+    if (data?.noteId) {
+      const ref = windowManager.getWindow(data?.noteId)
+      ref?.flashFrame(true)
+
+      ref?.show()
+      ref?.focus()
+    }
   })
 
   ipcMain.on(IpcAction.CLOSE_SPOTLIGHT, (_event, arg) => {
-    const { data } = arg
+    const { data, from } = arg
     if (data?.hide) {
-      windows.spotlight?.hide()
+      windowManager.getWindow(from).hide()
     }
   })
 
   ipcMain.on(IpcAction.REFRESH_NODE, (_event, arg) => {
-    const { data } = arg
+    const { data, from } = arg
     if (data?.nodeid) {
-      windows.mex?.webContents.send(IpcAction.REFRESH_NODE, data)
+      windowManager.sendToWindow(from, IpcAction.REFRESH_NODE, data)
     }
   })
-
-  // ipcMain.on(IpcAction.IMPORT_APPLE_NOTES, async () => {
-  //   const selectedAppleNotes = await getAppleNotes()
-
-  //   if (selectedAppleNotes) mex?.webContents.send(IpcAction.SET_APPLE_NOTES_DATA, selectedAppleNotes)
-  // })
 
   ipcMain.handle(IpcAction.IMPORT_APPLE_NOTES, async () => {
     const selectedAppleNotes = await getAppleNotes()

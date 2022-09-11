@@ -7,6 +7,7 @@ export type InlineBlockType = {
 }
 
 export const StyledInlineBlockPreview = styled.div`
+  height: 25vh;
   max-height: 25vh;
   overflow-y: auto;
   overflow-x: hidden;
@@ -40,7 +41,6 @@ export const StyledInlineBlock = styled.section<InlineBlockType>`
         `}
 
   box-shadow: 0 0 0 1px ${({ theme }) => theme.colors.gray[8]};
-  /* background: ${({ theme }) => theme.colors.background.card}; */
   border-radius: ${({ theme: { borderRadius } }) => `${borderRadius.small}`};
 
   svg {

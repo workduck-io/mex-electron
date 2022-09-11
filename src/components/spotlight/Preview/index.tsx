@@ -2,7 +2,7 @@ import { isParent } from '@components/mex/Sidebar/treeUtils'
 import downIcon from '@iconify/icons-ph/arrow-down-bold'
 import { Icon } from '@iconify/react'
 import { useSpotlightSettingsStore } from '@store/settings.spotlight'
-import React, { useMemo, useRef } from 'react'
+import React, { useLayoutEffect, useMemo, useRef } from 'react'
 import { useSpring } from 'react-spring'
 import { BASE_TASKS_PATH, defaultContent } from '../../../data/Defaults/baseData'
 import { generateTempId } from '../../../data/Defaults/idPrefixes'
@@ -10,7 +10,6 @@ import EditorPreviewRenderer from '../../../editor/EditorPreviewRenderer'
 import { useSpotlightAppStore } from '../../../store/app.spotlight'
 import { CategoryType, useSpotlightContext } from '../../../store/Context/context.spotlight'
 import { useSnippetStore } from '../../../store/useSnippetStore'
-import { mog } from '../../../utils/lib/helper'
 import PreviewContainer from './PreviewContainer'
 import { SeePreview, StyledPreview } from './styled'
 
@@ -25,7 +24,7 @@ export type PreviewProps = {
   nodeId: string
 }
 
-export const getDefaultContent = () => ({ ...defaultContent.content, id: generateTempId() })
+export const getDefaultContent = () => ({ ...defaultContent.content[0], id: generateTempId() })
 
 const Preview: React.FC<PreviewProps> = ({ preview, nodeId }) => {
   const normalMode = useSpotlightAppStore((s) => s.normalMode)
@@ -45,12 +44,6 @@ const Preview: React.FC<PreviewProps> = ({ preview, nodeId }) => {
     const isTaskNote = curPath ? isParent(curPath, BASE_TASKS_PATH) : false
 
     const isNewTask = (currentItem && currentItem.extras && currentItem.extras.newTask) || isTaskNote
-    // mog('currentItem', {
-    //   currentItem,
-    //   blockid,
-    //   isNewTask
-    // })
-
     setShowSource(!isNewTask)
 
     return {
@@ -68,30 +61,39 @@ const Preview: React.FC<PreviewProps> = ({ preview, nodeId }) => {
       style.width = '100%'
     }
 
+    const itemCategory = searchResults?.[activeIndex]?.category
+
     if (
-      searchResults[activeIndex] &&
-      searchResults[activeIndex]?.category !== CategoryType.backlink &&
-      searchResults[activeIndex]?.category !== CategoryType.task
+      itemCategory !== CategoryType.backlink &&
+      itemCategory !== CategoryType.task
+      && itemCategory !== CategoryType.pinned
     ) {
       style.width = '0%'
     }
 
     if (
-      searchResults[activeIndex] &&
-      (searchResults[activeIndex]?.category === CategoryType.meeting ||
-        searchResults[activeIndex]?.category === CategoryType.task)
+      (itemCategory === CategoryType.meeting ||
+        itemCategory === CategoryType.task)
     ) {
       if (normalMode) style.width = '45%'
       else style.width = '100%'
     }
+
     return style
   }, [normalMode, activeIndex, searchResults])
 
   const animationProps = useSpring(springProps)
 
   const handleScrollToBottom = () => {
-    ref.current.scrollTop = ref.current.scrollHeight
+    ref.current.scrollTop = ref.current.scrollHeight + 2000
   }
+
+  useLayoutEffect(() => {
+    if (selection) {
+      handleScrollToBottom()
+    }
+
+  }, [selection])
 
   return (
     <StyledPreview

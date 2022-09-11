@@ -1,6 +1,7 @@
 import { mog } from '@utils/lib/helper'
-import { StoreApi, State } from 'zustand'
 import { isEqual, isEmpty } from 'lodash'
+import { StoreApi, State } from 'zustand'
+
 import { BroadcastSyncedChannel, PartialSyncStateType, SyncField, SyncMessageType } from './types'
 
 if (!globalThis.__MEX_SYNCED_CHANNELS_) globalThis.__MEX_SYNCED_CHANNELS_ = new Set()
@@ -20,7 +21,10 @@ export const syncStoreState = <T extends State, K extends keyof T>(
   const broadCastChannelName = options.name
   const channels = getExistingSyncedChannels()
 
-  if (channels?.has(broadCastChannelName)) throw new Error(`${broadCastChannelName} Channel Already Exists!`)
+  if (channels?.has(broadCastChannelName)) {
+    return
+    // throw new Error(`${broadCastChannelName} Channel Already Exists!`)
+  }
   channels.add(broadCastChannelName)
 
   const newBroadCastSyncChannel = new BroadcastChannel(options.name)
@@ -59,26 +63,43 @@ export const syncStoreState = <T extends State, K extends keyof T>(
   })
 
   newBroadCastSyncChannel.onmessage = (ev: MessageEvent<SyncMessageType>) => {
-    const incomingEventState = ev.data.state
-    const incomingEventUpdatedAt = ev.data.updatedAt
+    const incomingEventState = ev.data?.state
+    const incomingEventUpdatedAt = ev.data?.updatedAt
 
-    if (incomingEventUpdatedAt > lastSyncedStateTimestamp) {
+    if (ev.data?.init) {
+      const state = options.sync.reduce((prev, current) => {
+        const field = current.field
+        const currentState = store.getState()?.[field]
+
+        const canUpdateAtomicField = typeof currentState === 'object' && current.atomicField
+
+        return {
+          ...prev,
+          [field]: canUpdateAtomicField
+            ? { state: currentState[current.atomicField], atomicField: current.atomicField }
+            : { state: currentState }
+        }
+      }, {})
+
+      newBroadCastSyncChannel.postMessage({ updatedAt: +new Date(), state })
+    } else if (incomingEventUpdatedAt > lastSyncedStateTimestamp) {
       // * Update Store
       if (incomingEventState) {
         isIncomingMessage = true
         lastSyncedStateTimestamp = incomingEventUpdatedAt
 
-        Object.entries(incomingEventState).map(([key, { state, atomicField }]) => {
-          store.setState((prev) => ({
-            ...prev,
-            [key]: atomicField ? { ...prev[key], [atomicField]: state } : state
-          }))
+        Object.entries(incomingEventState)?.map(([key, value]) => {
+          if (value?.state)
+            store.setState((prev) => ({
+              ...prev,
+              [key]: value?.atomicField ? { ...prev[key], [value.atomicField]: value.state } : value.state
+            }))
         })
       }
     }
   }
 
   if (options.init) {
-    // * TODO
+    newBroadCastSyncChannel.postMessage({ init: true })
   }
 }

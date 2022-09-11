@@ -46,6 +46,7 @@ const useItemExecutor = () => {
         break
       case ItemActionType.customAction:
         if (item.extras.customAction) item.extras.customAction()
+
         closeSpotlight()
         break
       case ItemActionType.twinOpen:

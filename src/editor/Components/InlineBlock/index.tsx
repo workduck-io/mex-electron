@@ -22,6 +22,10 @@ import {
   StyledInlineBlockPreview
 } from './styled'
 import { SharedNodeIcon } from '@components/icons/Icons'
+import { generateTempId } from '@data/Defaults/idPrefixes'
+import { useSpotlightContext } from '@store/Context/context.spotlight'
+import { useNoteContext } from '@store/Context/context.note'
+import { openNodeInMex } from '@utils/combineSources'
 
 const StyledArchiveText = styled.text`
   border-radius: ${({ theme }) => theme.borderRadius.small};
@@ -39,57 +43,61 @@ const InlineBlock = (props: any) => {
   const blockId = props.element.blockId
   const nodeType = getNodeType(nodeid)
 
+  const spotlightCtx = useSpotlightContext()
+  const noteCtx = useNoteContext();
+
   const content = useMemo(() => {
     if (blockId) {
       const data = getBlock(nodeid, blockId)
+      mog("Logging Block Data", { data })
       return data ? [data] : undefined
     }
+
     const data = getContent(nodeid)?.content
 
+    mog("LOGGING CONTENT DATA", { data, nodeid, blockId })
     return data
   }, [nodeid, blockId])
 
   const { onSave } = useSaver()
-  const { archived } = useArchive()
 
   const openNode = (ev: any) => {
     ev.preventDefault()
+    if (noteCtx || spotlightCtx) openNodeInMex(nodeid) 
     onSave()
     push(nodeid)
   }
 
   const selected = useSelected()
 
-  // mog('InlineBlock', { nodeid, selected, content, nodeType, path })
+  mog('InlineBlock', { nodeid, selected, content, nodeType, path })
 
   return (
     <RootElement {...props.attributes}>
-      <div contentEditable={false}>
-        <StyledInlineBlock selected={selected} data-tour="mex-onboarding-inline-block">
-          <FlexBetween>
-            {nodeType !== NodeType.MISSING && (
-              <InlineFlex>
-                <InlineBlockHeading>{blockId ? 'Within:' : 'From:'}</InlineBlockHeading>
-                {nodeType === NodeType.SHARED && <SharedNodeIcon />}
-                <InlineBlockText>{path}</InlineBlockText>
-              </InlineFlex>
-            )}
-            {
-              {
-                [NodeType.ARCHIVED]: <StyledArchiveText>Archived</StyledArchiveText>,
-                [NodeType.MISSING]: <StyledArchiveText>Private/Missing</StyledArchiveText>,
-                [NodeType.SHARED]: <Chip onClick={openNode}>Open</Chip>,
-                [NodeType.DEFAULT]: <Chip onClick={openNode}>Open</Chip>
-              }[nodeType]
-            }
-          </FlexBetween>
-          {(nodeType === NodeType.SHARED || nodeType === NodeType.DEFAULT) && (
-            <StyledInlineBlockPreview>
-              <EditorPreviewRenderer content={content} editorId={`__preview__${blockId ?? nodeid}`} />
-            </StyledInlineBlockPreview>
+      <StyledInlineBlock contentEditable={false} selected={selected} data-tour="mex-onboarding-inline-block">
+        <FlexBetween>
+          {nodeType !== NodeType.MISSING && (
+            <InlineFlex>
+              <InlineBlockHeading>{blockId ? 'Within:' : 'From:'}</InlineBlockHeading>
+              {nodeType === NodeType.SHARED && <SharedNodeIcon />}
+              <InlineBlockText>{path}</InlineBlockText>
+            </InlineFlex>
           )}
-        </StyledInlineBlock>
-      </div>
+          {
+            {
+              [NodeType.ARCHIVED]: <StyledArchiveText>Archived</StyledArchiveText>,
+              [NodeType.MISSING]: <StyledArchiveText>Private/Missing</StyledArchiveText>,
+              [NodeType.SHARED]: <Chip onClick={openNode}>Open</Chip>,
+              [NodeType.DEFAULT]: <Chip onClick={openNode}>Open</Chip>
+            }[nodeType]
+          }
+        </FlexBetween>
+        {(nodeType === NodeType.SHARED || nodeType === NodeType.DEFAULT) && (
+          <StyledInlineBlockPreview>
+            <EditorPreviewRenderer content={content} editorId={`${nodeid}_Inline_Block`} />
+          </StyledInlineBlockPreview>
+        )}
+      </StyledInlineBlock>
       {props.children}
     </RootElement>
   )

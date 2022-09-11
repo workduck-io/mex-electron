@@ -2,7 +2,7 @@ import React from 'react'
 
 import { SlashCommandConfig } from '../SlashCommands/Types'
 import { Combobox } from '../combobox/components/Combobox'
-import { ComboboxItemProps, RenderFunction } from '../combobox/components/Combobox.types'
+import { ComboboxItemProps, ComboboxOptions, RenderFunction } from '../combobox/components/Combobox.types'
 import { useComboboxControls } from '../combobox/hooks/useComboboxControls'
 import { getCreateableOnSelect } from '../combobox/hooks/useComboboxOnKeyDown'
 import { useComboboxStore } from '../combobox/useComboboxStore'
@@ -15,6 +15,7 @@ export interface ComboConfigData {
     ilink: SingleComboboxConfig
     commands: ConfigDataSlashCommands
   }
+  options?: ComboboxOptions
 }
 
 export interface ConfigDataKeys {
@@ -32,7 +33,7 @@ export interface SingleComboboxConfig {
   renderElement: RenderFunction<ComboboxItemProps>
 }
 
-export const ElementComboboxComponent = ({ keys, slashCommands, internal }: ComboConfigData) => {
+export const ElementComboboxComponent = ({ keys, slashCommands, internal, options }: ComboConfigData) => {
   const comboboxKey: string = useComboboxStore.getState().key
   const comboRenderType = keys[comboboxKey]
 
@@ -42,7 +43,7 @@ export const ElementComboboxComponent = ({ keys, slashCommands, internal }: Comb
     comboRenderType,
     internal.commands
   )
-  // mog('ElementComboboxComponent ', { slashCommands, comboRenderType, comboboxKey, keys, internal })
+
   const onNewItem = (newItem, parentId?) => {
     return comboRenderType.newItemHandler(newItem, parentId)
   }
@@ -51,6 +52,7 @@ export const ElementComboboxComponent = ({ keys, slashCommands, internal }: Comb
 
   return (
     <Combobox
+      options={options}
       isSlash={isSlash}
       onSelectItem={isSlash ? (onSelectItem as any) : creatableOnSelectItem}
       onRenderItem={comboRenderType?.renderElement}
@@ -59,8 +61,8 @@ export const ElementComboboxComponent = ({ keys, slashCommands, internal }: Comb
 }
 
 // Handle multiple combobox
-export const MultiComboboxContainer = ({ config }: { config: ComboConfigData }) => {
+export const MultiComboboxContainer = ({ config, options }: { config: ComboConfigData, options?: ComboboxOptions }) => {
   useComboboxControls(true)
 
-  return <ElementComboboxComponent {...config} />
+  return <ElementComboboxComponent {...config} options={options} />
 }

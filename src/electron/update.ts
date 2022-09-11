@@ -1,8 +1,10 @@
-import { BrowserWindow, app, dialog, ipcMain } from 'electron'
+import { AppType } from '@hooks/useInitialize'
+import { app, dialog, ipcMain } from 'electron'
 import { autoUpdater } from 'electron-updater'
 
 import { IpcAction } from '../data/IpcAction'
 import { ToastStatus } from '../types/toast'
+import { windowManager } from './WindowManager'
 import { backupMexJSON } from './backup'
 import { windows } from './main'
 import { TEMP_DATA_BEFORE_UPDATE, SEARCH_INDEX_LOCATION } from './utils/fileLocations'
@@ -16,7 +18,7 @@ autoUpdater.logger = logger
 
 export const checkForUpdatesAndNotifyWrapper = async () => {
   const authAWSStore = JSON.parse(
-    await windows.mex?.webContents.executeJavaScript('localStorage.getItem("auth-aws");', true)
+    await windowManager.getWindow(AppType.MEX)?.webContents.executeJavaScript('localStorage.getItem("auth-aws");', true)
   )
   const token = authAWSStore.state.token ?? authAWSStore.state.userCred.token
   autoUpdater.addAuthHeader(token)
@@ -73,7 +75,7 @@ export const setupAutoUpdates = (version: string, isAlpha: boolean, beforeQuit: 
   })
 }
 
-export const setupUpdateService = (mex: BrowserWindow) => {
+export const setupUpdateService = () => {
   if (app.isPackaged || process.env.FORCE_PRODUCTION) {
     const updateCheckingFrequency = 3 * 60 * 60 * 1000
     let updateSetInterval: ReturnType<typeof setInterval> | undefined
@@ -87,7 +89,7 @@ export const setupUpdateService = (mex: BrowserWindow) => {
       () => {
         backupMexJSON()
         setDataAtLocation({ update: true }, TEMP_DATA_BEFORE_UPDATE)
-        mex?.webContents.send(IpcAction.SAVE_AND_EXIT)
+        windowManager.getWindow(AppType.MEX)?.webContents.send(IpcAction.SAVE_AND_EXIT)
         deleteSearchIndexDisk(SEARCH_INDEX_LOCATION)
       }
     )
@@ -108,7 +110,6 @@ export const setupUpdateService = (mex: BrowserWindow) => {
       updateSetInterval = setInterval(() => {
         checkForUpdatesAndNotifyWrapper()
       }, updateFreq * 60 * 60 * 1000)
-      console.log(`Changed Update Freq to ${updateFreq} hours`)
     })
   }
 }

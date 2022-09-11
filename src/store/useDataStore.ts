@@ -9,6 +9,7 @@ import { mog, withoutContinuousDelimiter } from '../utils/lib/helper'
 import { getNodeIcon } from '../utils/lib/icons'
 import { removeLink } from '../utils/lib/links'
 import { getUniquePath } from '../utils/lib/paths'
+import { produce } from 'immer'
 
 const useDataStore = create<DataStoreState>(
   persist(
@@ -116,10 +117,11 @@ const useDataStore = create<DataStoreState>(
       },
 
       setIlinks: (ilinks) => {
-        mog('Setting ILinks', { ilinks })
-        set({
-          ilinks
-        })
+        set(
+          produce(draft => {
+            draft.ilinks = ilinks
+          })
+        )
       },
 
       setSlashCommands: (slashCommands) => set({ slashCommands }),

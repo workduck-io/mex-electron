@@ -17,7 +17,6 @@ import { openNodeInMex } from '../../../utils/combineSources'
 import { getDeserializeSelectionToNodes } from '../../../utils/htmlDeserializer'
 import { useSaveChanges } from '../Search/useSearchProps'
 import { spotlightShortcuts } from '../Shortcuts/list'
-import { mog } from '@utils/lib/helper'
 import { getLatestContent } from '@hooks/useEditorBuffer'
 import { defaultContent } from '@data/Defaults/baseData'
 

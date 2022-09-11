@@ -15,6 +15,8 @@ import { SnippetCommandPrefix } from '../../../../hooks/useSnippets'
 import { CreateNewPrefix } from '../../multi-combobox/useMultiComboboxChange'
 import { Editor } from 'slate'
 import { ComboSearchType } from '../../multi-combobox/types'
+import { cleanEditorId } from '@editor/Components/Todo'
+import useDataStore from '@store/useDataStore'
 
 const pure = (id: string) => {
   let newId = id
@@ -45,7 +47,8 @@ export type OnNewItem = (name: string, parentId?) => string | undefined
 export const getCreateableOnSelect = (onSelectItem: OnSelectItem, onNewItem: OnNewItem, creatable?: boolean) => {
   const creatableOnSelect = (editor: any, selectVal: IComboboxItem | string, elementType?: string, tab?: boolean) => {
     const items = useComboboxStore.getState().items
-    const currentNodeKey = useEditorStore.getState().node.path
+    const editorNoteId = cleanEditorId(editor?.id)
+    const currentNodeKey = useDataStore.getState().ilinks.find(l => l.nodeid === editorNoteId)?.path
     const itemIndex = useComboboxStore.getState().itemIndex
 
     const item = items[itemIndex]

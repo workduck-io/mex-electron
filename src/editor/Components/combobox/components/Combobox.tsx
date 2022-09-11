@@ -37,7 +37,7 @@ import { ComboboxProps } from './Combobox.types'
 import PreviewMeta from './PreviewMeta'
 import { ComboboxShortcuts, ComboSeperator } from './styled'
 
-export const Combobox = ({ onSelectItem, onRenderItem }: ComboboxProps) => {
+export const Combobox = ({ onSelectItem, onRenderItem, options }: ComboboxProps) => {
   // TODO clear the error-esque warnings for 'type inference'
 
   const items = useComboboxStore((state) => state.items)
@@ -218,21 +218,25 @@ export const Combobox = ({ onSelectItem, onRenderItem }: ComboboxProps) => {
                 nodeId={items[itemIndex]?.key}
                 isNew={items[itemIndex]?.data}
               />
-              {((preview && listItem?.type && !isBlockTriggered) || (isBlockTriggered && preview)) && (
-                <ComboSeperator>
-                  <section>
-                    <EditorPreviewRenderer
-                      noMouseEvents
-                      content={preview?.content || preview}
-                      readOnly
-                      editorId={
-                        isBlockTriggered && activeBlock ? activeBlock.blockId : `${items[itemIndex]?.key}_Preview_Block`
-                      }
-                    />
-                  </section>
-                  {preview && <PreviewMeta meta={metaData} />}
-                </ComboSeperator>
-              )}
+              {((preview && listItem?.type && !isBlockTriggered) ||
+                (isBlockTriggered && textAfterBlockTrigger && preview)) &&
+                options?.showPreview && (
+                  <ComboSeperator>
+                    <section>
+                      <EditorPreviewRenderer
+                        noMouseEvents
+                        content={preview?.content || preview}
+                        readOnly
+                        editorId={
+                          isBlockTriggered && activeBlock
+                            ? activeBlock.blockId
+                            : `${items[itemIndex]?.key}_Preview_Block`
+                        }
+                      />
+                    </section>
+                    {preview && <PreviewMeta meta={metaData} />}
+                  </ComboSeperator>
+                )}
             </>
           </ComboboxRoot>
         </RemoveScroll>

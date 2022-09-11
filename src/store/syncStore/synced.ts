@@ -15,6 +15,7 @@ import { useAuthStore as useDwindleAuthStore } from '@workduck-io/dwindle'
 
 import { syncStoreState } from '.'
 import { BroadcastSyncedChannel } from './types'
+import useMultipleEditors from '@store/useEditorsStore'
 
 const syncStores = () => {
   if ('BroadcastChannel' in globalThis) {
@@ -36,6 +37,7 @@ const syncStores = () => {
       sync: [
         { field: 'ilinks' },
         { field: 'linkCache' },
+        { field: 'tagsCache' },
         { field: 'archive' },
         { field: 'sharedNodes' },
         { field: 'slashCommands' },
@@ -79,6 +81,10 @@ const syncStores = () => {
     syncStoreState(useTodoStore, {
       name: BroadcastSyncedChannel.TASKS,
       sync: [{ field: 'todos' }]
+    })
+    syncStoreState(useMultipleEditors, {
+      name: BroadcastSyncedChannel.MULTIPLE_EDITORS,
+      sync: [{ field: 'pinned' }]
     })
   }
 }

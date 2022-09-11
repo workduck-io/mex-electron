@@ -9,7 +9,6 @@ import { SpaceContentWrapper, SpaceWrapper } from './Sidebar.style'
 import { SidebarSpace } from './Sidebar.types'
 import { useTransition, useSpringRef } from '@react-spring/web'
 import { useTags } from '@hooks/useTags'
-import { mog } from '@utils/lib/helper'
 import { PollActions, useApiStore } from '@store/useApiStore'
 import { usePolling } from '@apis/usePolling'
 

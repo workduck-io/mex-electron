@@ -29,9 +29,7 @@ import { areEqual } from '@utils/lib/hash'
 import toast from 'react-hot-toast'
 import { useLastOpened } from '@hooks/useLastOpened'
 import NavBreadCrumbs from '@components/mex/NavBreadcrumbs'
-import { mog } from '@utils/lib/helper'
 import { useContentStore } from '@store/useContentStore'
-import useMultipleEditors from '@store/useEditorsStore'
 
 const ContentEditor = () => {
   const fetchingContent = useEditorStore((state) => state.fetchingContent)

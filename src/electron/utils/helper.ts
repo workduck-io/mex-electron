@@ -1,18 +1,13 @@
-import { getSaveLocation } from '@data/Defaults/data'
 import { IpcAction } from '@data/IpcAction'
 import Toast from '@electron/Toast'
 import { windows } from '@electron/main'
 import MenuBuilder from '@electron/menu'
+import { mog } from '@utils/lib/helper'
 import { sanitizeHtml } from '@utils/sanitizeHtml'
-import chokidar from 'chokidar'
 import { session, app, BrowserWindow, screen } from 'electron'
-import fs from 'fs'
 
-import { FileData } from '../../types/data'
-import { SAVE_LOCATION } from './fileLocations'
-import { getFileData } from './filedata'
+import { windowManager } from '../WindowManager'
 import { SelectionType, getSelectedTextSync, getSelectedText } from './getSelectedText'
-import { createWindow } from './window'
 
 export enum AppType {
   SPOTLIGHT = 'SPOTLIGHT',
@@ -26,6 +21,22 @@ const MEX_WINDOW_OPTIONS = {
   maximizable: true,
   titleBarStyle: 'hidden' as const,
   trafficLightPosition: { x: 16, y: 8 },
+  webPreferences: {
+    nodeIntegration: true,
+    contextIsolation: false,
+    enableRemoteModule: true
+  }
+}
+
+const PINNED_NOTES_WINDOW_OPTIONS = {
+  width: 400,
+  height: 500,
+  minWidth: 400,
+  minHeight: 400,
+  vibrancy: 'popover' as any,
+  maximizable: false,
+  titleBarStyle: 'hidden' as const,
+  trafficLightPosition: { x: 20, y: 20 },
   webPreferences: {
     nodeIntegration: true,
     contextIsolation: false,
@@ -63,41 +74,58 @@ export const createSpotLighWindow = (show?: boolean) => {
       ? import.meta.env.VITE_SPOTLIGHT_DEV_SERVER_URL
       : new URL('dist/spotlight.html', 'file://' + __dirname).toString()
 
-  windows.spotlight = createWindow({
+  return windowManager.createWindow('SPOTLIGHT', {
     windowConstructorOptions: SPOTLIGHT_WINDOW_OPTIONS,
     loadURL: { url: spotlightURL },
-    onBlurHide: true,
+    onBlurHide: true, // This should be set as true
+    alwaysOnTop: true,
     onLoadShow: show
   })
-
-  const spotlight = windows.spotlight
-
-  spotlight.on('closed', () => {
-    windows.spotlight = null
-  })
-
-  spotlight.setAlwaysOnTop(true, 'modal-panel', 100)
-  spotlight.setVisibleOnAllWorkspaces(true, { visibleOnFullScreen: true })
 }
 
-// eslint-disable-next-line @typescript-eslint/no-explicit-any
 export const notifyOtherWindow = (action: IpcAction, from: AppType, data?: any) => {
-  if (from === AppType.MEX) windows.spotlight?.webContents.send(action, { data })
-  else windows.mex?.webContents.send(action, { data })
+  if (from === AppType.MEX) windowManager.sendToWindow(AppType.SPOTLIGHT, action, { data })
+  else windowManager.sendToWindow(AppType.MEX, action, { data })
 }
 
-// eslint-disable-next-line @typescript-eslint/no-explicit-any
 export const sendToRenderer = (selection: any) => {
+  const ref = windowManager.getWindow(AppType.SPOTLIGHT)
+
   if (!selection) {
-    windows.spotlight?.webContents.send(IpcAction.SELECTED_TEXT, selection)
+    ref.webContents.send(IpcAction.SELECTED_TEXT, selection)
     return
   }
+
   const text = sanitizeHtml(selection.text)
   const metaSelection = {
     ...selection,
     text
   }
-  windows.spotlight?.webContents.send(IpcAction.SELECTED_TEXT, metaSelection)
+
+  ref?.webContents.send(IpcAction.SELECTED_TEXT, metaSelection)
+}
+
+export const createNoteWindow = (dataForPreviewWindow: { from: AppType; data: any }) => {
+  const noteWindow =
+    isDevelopment && import.meta.env.VITE_NOTE_WINDOW_DEV_SERVER_URL !== undefined
+      ? import.meta.env.VITE_NOTE_WINDOW_DEV_SERVER_URL
+      : new URL('dist/note.html', 'file://' + __dirname).toString()
+
+  app.dock.show()
+  windowManager.createWindow(dataForPreviewWindow?.data?.noteId, {
+    windowConstructorOptions: PINNED_NOTES_WINDOW_OPTIONS,
+    loadURL: { url: noteWindow },
+    onClose: () => {
+      windowManager.sendToWindow(AppType.MEX, IpcAction.UNPIN_NOTE, { noteId: dataForPreviewWindow?.data?.noteId })
+    },
+    alwaysOnTop: true,
+    onLoad: (window) => {
+      if (dataForPreviewWindow) {
+        const { from, data } = dataForPreviewWindow
+        window?.webContents?.send(IpcAction.PIN_NOTE_WINDOW, data)
+      }
+    }
+  })
 }
 
 export const createMexWindow = (tempData?: any) => {
@@ -107,29 +135,25 @@ export const createMexWindow = (tempData?: any) => {
       : new URL('dist/index.html', 'file://' + __dirname).toString()
 
   // MEX here
-  windows.mex = createWindow({
+  const ref = windowManager.createWindow('MEX', {
     windowConstructorOptions: MEX_WINDOW_OPTIONS,
     loadURL: { url: mexURL },
-    onLoad: () => {
+    onLoad: (window) => {
       if (tempData?.update) {
-        windows.mex?.webContents.send(IpcAction.SHOW_RELEASE_NOTES, { update: tempData?.update })
+        window.webContents.send(IpcAction.SHOW_RELEASE_NOTES, { update: tempData?.update })
       }
     }
   })
 
-  const mex = windows.mex
-
-  const menuBuilder = new MenuBuilder(mex)
+  const menuBuilder = new MenuBuilder(ref)
   menuBuilder.buildMenu()
 
-  mex.on('close', () => {
-    windows.mex = null
-  })
+  ref.on('enter-full-screen', () => {
+    const spotlightWindowRef = windowManager.getWindow(AppType.SPOTLIGHT)
 
-  mex.on('enter-full-screen', () => {
-    windows.spotlight.setFullScreenable(false)
-    windows.spotlight.setFullScreen(false)
-    windows.spotlight.setMaximizable(false)
+    spotlightWindowRef.setFullScreen(false)
+    spotlightWindowRef.setFullScreenable(false)
+    spotlightWindowRef.setMaximizable(false)
 
     windows.toast?.setOnFullScreen()
   })
@@ -143,40 +167,11 @@ export const createMexWindow = (tempData?: any) => {
     }
     callback(callbackOptions)
   })
-
-  try {
-    // Send data back if modified externally
-
-    chokidar
-      .watch(getSaveLocation(app), {
-        alwaysStat: true,
-        useFsEvents: false,
-        awaitWriteFinish: {
-          stabilityThreshold: 2000
-        }
-      })
-      .on('change', () => {
-        let fileData: FileData
-        if (fs.existsSync(getSaveLocation(app))) {
-          const stringData = fs.readFileSync(getSaveLocation(app), 'utf-8')
-          fileData = JSON.parse(stringData)
-        } else {
-          return
-        }
-
-        if (fileData.remoteUpdate) {
-          // spotlight?.webContents.send(IpcAction.SYNC_DATA, fileData)
-          mex?.webContents.send(IpcAction.SYNC_DATA, fileData)
-        }
-      })
-  } catch (e) {
-    console.error(e)
-  }
 }
 
 const spotlightInBubbleMode = (show?: boolean) => {
   if (show) {
-    windows.spotlight.setContentSize(48, 48, false)
+    windowManager.getWindow(AppType.SPOTLIGHT).setContentSize(48, 48, false)
     spotlightBubble = true
   } else {
     spotlightCenter()
@@ -186,25 +181,16 @@ const spotlightInBubbleMode = (show?: boolean) => {
 
 export const createAllWindows = (d: any) => {
   createMexWindow(d)
-  createSpotLighWindow()
+  const spotlightWindowRef = createSpotLighWindow()
 
-  windows.toast = new Toast(windows.spotlight)
+  windows.toast = new Toast(spotlightWindowRef)
   if (process.platform === 'darwin') {
     app.dock.show()
   }
 }
 
-export const syncFileData = (data?: FileData) => {
-  const fileData = data || getFileData(SAVE_LOCATION)
-  windows.mex?.webContents.send(IpcAction.SYNC_DATA, fileData)
-  // spotlight?.webContents.send(IpcAction.SYNC_DATA, fileData)
-}
-
 export const closeWindow = () => {
-  windows.spotlight?.hide()
-  console.log({ isMexVISIBLE: windows.mex.isVisible() })
-  // if (!mex) console.log('Mex window not available')
-  // mex?.webContents.send(IpcAction.GET_LOCAL_INDEX)
+  windowManager.getWindow(AppType.SPOTLIGHT)?.hide()
 }
 
 export const handleToggleMainWindow = async () => {
@@ -217,7 +203,7 @@ export const handleToggleMainWindow = async () => {
     }
     const anyContentPresent = Boolean(selection?.text)
     isSelection = anyContentPresent
-    toggleMainWindow(windows.spotlight)
+    toggleMainWindow(windowManager.getWindow(AppType.SPOTLIGHT))
 
     if (anyContentPresent) {
       sendToRenderer(selection)
@@ -230,25 +216,25 @@ export const handleToggleMainWindow = async () => {
 }
 
 export const spotlightCenter = () => {
-  const spotlight = windows.spotlight
-  if (!spotlight) return
+  const windowRef = windowManager.getWindow('SPOTLIGHT')
+  if (!windowRef) return
 
   const primaryDisplay = screen.getPrimaryDisplay()
   const { width, height } = primaryDisplay.workAreaSize
 
-  const windowBounds = spotlight.getBounds()
+  const windowBounds = windowRef.getBounds()
 
   const offWidth = windowBounds.x + windowBounds.width > width
   const offHeight = windowBounds.y + windowBounds.height > height
 
   if (offWidth && offHeight) {
-    spotlight.setPosition(width - windowBounds.width, height - windowBounds.height, true)
+    windowRef.setPosition(width - windowBounds.width, height - windowBounds.height, true)
   } else if (offWidth) {
-    spotlight.setPosition(width - windowBounds.width, windowBounds.y, true)
+    windowRef.setPosition(width - windowBounds.width, windowBounds.y, true)
   } else if (offHeight) {
-    spotlight.setPosition(windowBounds.x, height - windowBounds.height, true)
+    // windowRef.setPosition(windowBounds.x, height - windowBounds.height, true)
   } else {
-    spotlight.setContentSize(700, 400)
+    windowRef.setContentSize(700, 400)
   }
 }
 

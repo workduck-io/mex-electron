@@ -1,20 +1,20 @@
-import { CategoryType, useSpotlightContext } from '../../../store/Context/context.spotlight'
-import { ListItemType } from '../SearchResults/types'
-
-import { getListItemFromNode, getListItemFromSnippet } from './helper'
+import { getTodayTaskNodePath } from '@hooks/useTaskFromSelection'
 import { search as getSearchResults } from 'fast-fuzzy'
+
 import { searchGoogle } from '../../../data/Actions'
-import { isReservedOrClash } from '../../../utils/lib/paths'
-import { mog } from '../../../utils/lib/helper'
 
 /* eslint-disable no-case-declarations */
 import useLoad from '../../../hooks/useLoad'
 import { useQuickLinks } from '../../../hooks/useQuickLinks'
-import { QuickLinkType } from '../../mex/NodeSelect/NodeSelect'
-import { useSnippets } from '../../../hooks/useSnippets'
 import { useSearch as useSearchHook, useSearchExtra } from '../../../hooks/useSearch'
-import { getTodayTaskNodePath } from '@hooks/useTaskFromSelection'
+import { useSnippets } from '../../../hooks/useSnippets'
+import { CategoryType, useSpotlightContext } from '../../../store/Context/context.spotlight'
+import { mog } from '../../../utils/lib/helper'
+import { isReservedOrClash } from '../../../utils/lib/paths'
+import { QuickLinkType } from '../../mex/NodeSelect/NodeSelect'
 import { useActionsCache } from '../Actions/useActionsCache'
+import { ListItemType } from '../SearchResults/types'
+import { getListItemFromNode, getListItemFromSnippet } from './helper'
 
 export const CREATE_NEW_ITEM: ListItemType = {
   title: 'Create new ',
@@ -102,13 +102,20 @@ export const useSearch = () => {
 
           searchList = isNew ? [CREATE_NEW_ITEM, ...results] : results
         }
+        else {
+          searchList = quickLinks
+        }
         break
 
       // * Search actions using "/"
       case CategoryType.action:
         const val = search.value.substring(1)
-        const actionList = getSearchResults(val, actions, { keySelector: (obj) => obj.title })
-        searchList = actionList
+        if (val) {
+          const actionList = getSearchResults(val, actions, { keySelector: (obj) => obj.title })
+          searchList = actionList
+        } else {
+          searchList = actions
+        }
         break
 
       case CategoryType.search:
@@ -122,8 +129,11 @@ export const useSearch = () => {
           const localNode = isLocalNode(item.id)
 
           if (localNode.isLocal) {
-            mog('Local node', { localNode, item, extra })
-            const listItem = getListItemFromNode(localNode.ilink, item.text, item.blockId, extra)
+            const listItem = getListItemFromNode(localNode.ilink, {
+              description: item.text,
+              blockId: item.blockId,
+              searchRepExtra: extra
+            })
             localNodes.push(listItem)
           }
         })
@@ -141,7 +151,6 @@ export const useSearch = () => {
 
         const mainItems = [...localNodes, ...actionItems]
         searchList = isNew ? [CREATE_NEW_ITEM, ...mainItems] : mainItems
-        // mog('searchList', { searchList })
         if (mainItems.length === 0) searchList.push(searchGoogle(sQuery))
 
         break

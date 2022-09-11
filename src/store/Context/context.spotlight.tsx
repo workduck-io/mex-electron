@@ -4,6 +4,7 @@ import { ListItemType } from '../../components/spotlight/SearchResults/types'
 
 export enum CategoryType {
   backlink = 'Backlinks',
+  pinned = 'Pinned',
   action = 'Quick Actions',
   search = 'Search Results',
   performed = 'Performed Actions',

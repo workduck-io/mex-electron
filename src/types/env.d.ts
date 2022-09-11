@@ -16,4 +16,6 @@ interface ImportMetaEnv {
   VITE_MEX_DEV_SERVER_URL: undefined | string
   VITE_SPOTLIGHT_DEV_SERVER_URL: undefined | string
   VITE_TOAST_DEV_SERVER_URL: undefined | string
+  VITE_NOTE_WINDOW_DEV_SERVER_URL: undefined | string
 }
+

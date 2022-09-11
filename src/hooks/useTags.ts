@@ -18,31 +18,10 @@ export interface RelatedNodes {
 }
 
 export const useTags = () => {
-  // const contents = useContentStore((state) => state.contents)
   const updateTagsCache = useDataStore((state) => state.updateTagsCache)
   const setTags = useDataStore((state) => state.setTags)
   const { getPathFromNodeid } = useLinks()
   const { isInArchive } = useNodes()
-
-  // const getAllLinks = () => {
-  //   // We assume that all links exist
-  //   const allLinks: NodeLink[] = []
-  //   Object.keys(contents).forEach((key) => {
-  //     const { content } = contents[key]
-  //     const tags = getTagsFromContent(content)
-  //     if (links.length > 0) {
-  //       links.forEach((to) => {
-  //         allLinks.push({
-  //           from: key,
-  //           to
-  //         })
-  //       })
-  //     }
-  //   })
-
-  //   return allLinks
-  // }
-  //
 
   const _getTags = (nodeid: string, tagsCache: TagsCache): string[] =>
     Object.keys(tagsCache).filter((t) => tagsCache[t].nodes.includes(nodeid))
@@ -53,9 +32,6 @@ export const useTags = () => {
       return _getTags(nodeid, tagsCache)
     }
     const analTags = useAnalysisStore.getState().analysis.tags
-
-    // mog('getTags', { analTags })
-
     return analTags
   }
 

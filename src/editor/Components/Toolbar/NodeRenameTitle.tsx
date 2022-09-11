@@ -134,6 +134,7 @@ const NodeRenameTitle = () => {
       const path = useEditorStore.getState().node.id
       const nodeid = useEditorStore.getState().node.nodeid
       setEditable(false)
+
       if (doesLinkRemain(path, refactored)) {
         push(nodeid)
       } else if (res.length > 0) {

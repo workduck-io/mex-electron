@@ -1,7 +1,10 @@
 import { useBufferStore } from '@hooks/useEditorBuffer'
-import { produce } from 'immer'
 import create from 'zustand'
 import { devtools } from 'zustand/middleware'
+
+import { produce, enableMapSet } from 'immer'
+
+enableMapSet()
 
 type EditorState = {
   blink?: boolean
@@ -12,10 +15,10 @@ type NoteIdType = string
 
 type MultipleEditors = {
   editors: Record<NoteIdType, EditorState> //* NoteId, isEditing
-  pinned: Record<NoteIdType, Array<NoteIdType>>
-  setPinned: (pinned: Record<NoteIdType, Array<NoteIdType>>) => void
-  pinNote: (pinAt: string, noteToPin: string) => void
-  unPinNote: (pinnedAt: string, noteToUnpin: string) => void
+  pinned: Set<NoteIdType>
+  setPinned: (pinned: Set<NoteIdType>) => void
+  pinNote: (noteToPin: string) => void
+  unPinNote: (noteToUnpin: string) => void
   addEditor: (noteId: string) => void
   isEmpty: boolean
   isEditingAnyPreview: () => boolean
@@ -30,26 +33,25 @@ const useMultipleEditors = create<MultipleEditors>(
   devtools(
     (set, get) => ({
       editors: {},
-      pinned: {},
+      pinned: new Set(),
       isEmpty: true,
       setPinned: (pinned) => set({ pinned }),
-      unPinNote: (pinnedAt, noteToUnpin) => {
-        if (!get().pinned[pinnedAt]) throw new Error('No pinned Note found')
-
+      unPinNote: (noteToUnpin) => {
         set(
           produce((draft) => {
-            const existing = draft.pinned[pinnedAt].filter((noteId: NoteIdType) => noteId !== noteToUnpin)
-            draft.pinned[pinnedAt] = existing
+            const isNotePinned = get().pinned.has(noteToUnpin)
+            if (isNotePinned)
+              draft.pinned.delete(noteToUnpin)
           })
         )
       },
       setIsEmpty: (status) => set({ isEmpty: status }),
-      pinNote: (pinAt, noteToPin) => {
+      pinNote: (noteToPin) => {
         set(
           produce((draft) => {
-            const isNotePinned = draft.pinned[pinAt]?.find((noteId: NoteIdType) => noteId === noteToPin)
+            const isNotePinned = get().pinned.has(noteToPin)
             if (isNotePinned) return
-            draft.pinned[pinAt] = [...draft.pinned[pinAt], noteToPin]
+            draft.pinned.add(noteToPin)
           })
         )
       },
@@ -105,7 +107,7 @@ const useMultipleEditors = create<MultipleEditors>(
         set({
           editors: {},
           isEmpty: true,
-          pinned: {}
+          pinned: new Set()
         })
       }
     }),

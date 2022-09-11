@@ -1,13 +1,17 @@
+import React, { useMemo } from 'react'
+
 import { ItemId, RenderItemParams, TreeItem } from '@atlaskit/tree'
-import { useAnalysisStore } from '@store/useAnalysis'
 import { IS_DEV } from '@data/Defaults/dev_'
-import fileList2Line from '@iconify/icons-ri/file-list-2-line'
-import checkboxBlankCircleFill from '@iconify/icons-ri/checkbox-blank-circle-fill'
-import { Icon } from '@iconify/react'
-import { useUserPreferenceStore } from '@store/userPreferenceStore'
-import { LastOpenedState } from '../../../types/userPreference'
 import { useLastOpened } from '@hooks/useLastOpened'
+import checkboxBlankCircleFill from '@iconify/icons-ri/checkbox-blank-circle-fill'
+import fileList2Line from '@iconify/icons-ri/file-list-2-line'
+// import { complexTree } from '../mockdata/complexTree'
+import PinIcon from '@iconify/icons-ri/pushpin-2-fill'
+import { Icon } from '@iconify/react'
 import * as ContextMenu from '@radix-ui/react-context-menu'
+import { useAnalysisStore } from '@store/useAnalysis'
+import useMultipleEditors from '@store/useEditorsStore'
+import { useUserPreferenceStore } from '@store/userPreferenceStore'
 import {
   ItemContent,
   ItemCount,
@@ -21,8 +25,11 @@ import {
   UnreadIndicator
 } from '@style/Sidebar'
 import Tippy from '@tippyjs/react'
-import React, { useMemo } from 'react'
 import { PathMatch } from 'react-router-dom'
+
+import { MexIcon } from '@workduck-io/mex-components'
+
+import { LastOpenedState } from '../../../types/userPreference'
 import { TreeContextMenu } from './TreeWithContextMenu'
 
 const defaultSnap = {
@@ -120,6 +127,7 @@ export const RenderTreeItem = ({
   onClick
 }: TreeItemProps) => {
   const isTrue = JSON.stringify(snapshot) !== JSON.stringify(defaultSnap)
+
   const lastOpenedNote = useUserPreferenceStore((state) => state.lastOpenedNotes[item?.data?.nodeid])
   const { getLastOpened } = useLastOpened()
 
@@ -159,27 +167,34 @@ export const RenderTreeItem = ({
               {...provided.dragHandleProps}
             >
               <GetIcon item={item} onExpand={onExpand} onCollapse={onCollapse} />
-
               <ItemContent onMouseDown={(e) => onClick(e, item)}>
                 <ItemTitleWithAnalysis item={item} />
               </ItemContent>
 
-              {isUnread ? (
-                <ItemCount>
-                  <UnreadIndicator>
-                    <Icon icon={checkboxBlankCircleFill} />
-                  </UnreadIndicator>
-                </ItemCount>
-              ) : (
-                item.hasChildren &&
-                item.children &&
-                item.children.length > 0 && <ItemCount>{item.children.length}</ItemCount>
-              )}
+              <TreeItemMetaInfo item={item} unRead={isUnread} />
             </StyledTreeItem>
           </ContextMenu.Trigger>
           <TreeContextMenu item={{ ...item, data: { ...item.data, lastOpenedState } }} />
         </ContextMenu.Root>
       </span>
     </Tippy>
+  )
+}
+
+const TreeItemMetaInfo = ({ item, unRead }: { item: any; unRead: boolean }) => {
+  const pinned = useMultipleEditors((store) => store.pinned.has(item?.data?.nodeid))
+
+  if (pinned) {
+    return <MexIcon icon={PinIcon} width={16} height={16} color="white" />
+  }
+
+  return unRead ? (
+    <ItemCount>
+      <UnreadIndicator>
+        <Icon icon={checkboxBlankCircleFill} />
+      </UnreadIndicator>
+    </ItemCount>
+  ) : (
+    item.hasChildren && item.children && item.children.length > 0 && <ItemCount>{item.children.length}</ItemCount>
   )
 }

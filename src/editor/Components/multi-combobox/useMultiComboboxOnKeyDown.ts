@@ -77,10 +77,9 @@ export const useElementOnChange = (elementComboType: SingleComboboxConfig, keys?
           // mog('Replacing itemValue', { comboType, type, itemValue, item })
 
           const nodeId = getNodeidFromPath(itemValue)
+          mog('Value of Item', { itemValue })
           itemValue = nodeId
         }
-
-        // if (key)
 
         // select the ilink text and insert the ilink element
         select(editor, targetRange)

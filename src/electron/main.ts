@@ -17,7 +17,7 @@ if (process.platform === 'win32') {
   app.disableHardwareAcceleration()
 }
 
-export const windows: WindowsType = { mex: null, spotlight: null, toast: null }
+export const windows: WindowsType = { toast: null }
 
 if (process.env.MODE === 'production' || process.env.FORCE_PRODUCTION) {
   const sourceMapSupport = require('source-map-support')

@@ -9,14 +9,19 @@ import { convertContentToRawText } from '../../../utils/search/parseData'
 import { SearchRepExtra } from '../../../types/search'
 import { getLatestContent } from '@hooks/useEditorBuffer'
 
+type ListItemNodeOptions = {
+  description: string
+  blockId: string
+  categoryType: CategoryType
+  searchRepExtra: SearchRepExtra
+}
+
 export const getListItemFromNode = (
   node: ILink,
-  description?: string,
-  blockid?: string,
-  searchRepExtra?: SearchRepExtra
+  options: Partial<ListItemNodeOptions> = {}
 ) => {
   const rawText =
-    description ?? convertContentToRawText(getLatestContent(node?.nodeid) ?? [], ' ', { extra: searchRepExtra })
+    options.description ?? convertContentToRawText(getLatestContent(node?.nodeid) ?? [], ' ', { extra: options.searchRepExtra })
 
   const listItem: ListItemType = {
     icon: node?.icon ?? 'gg:file-document',
@@ -24,10 +29,10 @@ export const getListItemFromNode = (
     id: node?.nodeid,
     description: rawText,
     type: QuickLinkType.backlink,
-    category: CategoryType.backlink,
+    category: options.categoryType ?? CategoryType.backlink,
     extras: {
       nodeid: node?.nodeid,
-      blockid,
+      blockid: options.blockId,
       path: node?.path,
       new: false
     },
