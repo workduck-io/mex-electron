@@ -1,21 +1,23 @@
-import { QuickLink, WrappedNodeSelect } from '../../../components/mex/NodeSelect/NodeSelect'
 import React, { useEffect, useState } from 'react'
 
-import { Input } from '../../../style/Form'
-import { StyledInputWrapper } from '../../../components/mex/NodeSelect/NodeSelect.styles'
+import { hierarchyParser } from '@hooks/useHierarchy'
 import Tippy from '@tippyjs/react'
-import { doesLinkRemain } from '../../../components/mex/Refactor/doesLinkRemain'
-import { isMatch, isReserved } from '../../../utils/lib/paths'
-import { mog } from '../../../utils/lib/helper'
 import styled from 'styled-components'
-import { useEditorStore } from '../../../store/useEditorStore'
+
+import { Button } from '@workduck-io/mex-components'
+
+import { QuickLink, WrappedNodeSelect } from '../../../components/mex/NodeSelect/NodeSelect'
+import { StyledInputWrapper } from '../../../components/mex/NodeSelect/NodeSelect.styles'
+import { doesLinkRemain } from '../../../components/mex/Refactor/doesLinkRemain'
 import { useLinks } from '../../../hooks/useLinks'
 import { useNavigation } from '../../../hooks/useNavigation'
 import { useRefactor } from '../../../hooks/useRefactor'
-import { useRenameStore } from '../../../store/useRenameStore'
 import { useAnalysisStore } from '../../../store/useAnalysis'
-import { hierarchyParser } from '@hooks/useHierarchy'
-import { Button } from '@workduck-io/mex-components'
+import { useEditorStore } from '../../../store/useEditorStore'
+import { useRenameStore } from '../../../store/useRenameStore'
+import { Input } from '../../../style/Form'
+import { mog } from '../../../utils/lib/helper'
+import { isMatch, isReserved } from '../../../utils/lib/paths'
 
 const Wrapper = styled.div`
   position: relative;
@@ -83,6 +85,7 @@ const NodeRenameTitle = () => {
   const modalReset = useRenameStore((store) => store.closeModal)
   const setTo = useRenameStore((store) => store.setTo)
   const nodeFrom = useEditorStore((store) => store.node.id ?? '')
+  const { namespace: nodeFromNS } = useEditorStore((store) => store.node)
   const setFrom = useRenameStore((store) => store.setFrom)
   const [editable, setEditable] = useState(false)
   // const inpRef = useRef<HTMLInputElement>()
@@ -120,16 +123,10 @@ const NodeRenameTitle = () => {
       return
     }
     if (to && nodeFrom) {
-      const res = await execRefactorAsync(nodeFrom, to)
-
-      const { addedPaths, removedPaths } = res
-      const addedILinks = hierarchyParser(addedPaths)
-      const removedILinks = hierarchyParser(removedPaths)
-
-      mog('RESULT OF Renaming', { addedILinks, removedILinks })
-
-      // // * set the new hierarchy in the tree
-      const refactored = updateILinks(addedILinks, removedILinks)
+      const refactored = await execRefactorAsync(
+        { path: nodeFrom, namespaceID: nodeFromNS },
+        { path: to, namespaceID: nodeFromNS }
+      )
 
       const path = useEditorStore.getState().node.id
       const nodeid = useEditorStore.getState().node.nodeid

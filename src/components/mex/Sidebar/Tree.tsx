@@ -1,3 +1,5 @@
+import React, { useEffect, useMemo, useRef, useState } from 'react'
+
 import {
   default as AtlaskitTree,
   ItemId,
@@ -15,11 +17,12 @@ import { useTreeStore } from '@store/useTreeStore'
 import Tippy, { useSingleton } from '@tippyjs/react'
 import { mog } from '@utils/lib/helper'
 import { NavigationType, ROUTE_PATHS, useRouting } from '@views/routes/urls'
-import React, { useEffect, useMemo, useRef, useState } from 'react'
 import { useLocation, useMatch } from 'react-router-dom'
+
 import { useRefactorStore } from '../Refactor/Refactor'
 import { RenderTreeItem } from './TreeItem'
 import { getNameFromPath, SEPARATOR } from './treeUtils'
+
 // import { complexTree } from '../mockdata/complexTree'
 
 interface TreeProps {
@@ -125,7 +128,9 @@ const Tree = ({ initTree, selectedItemId }: TreeProps) => {
     }
 
     const from = draggedRef.current.data.path
+    const fromItem = tree.items[source.parentId]
     const toItem = tree.items[destination.parentId]
+    const nsID = fromItem.data?.namespace ?? toItem.data?.namespace
     let to: string | null = null
     if (toItem) {
       if (toItem.id === '1') {
@@ -140,7 +145,7 @@ const Tree = ({ initTree, selectedItemId }: TreeProps) => {
 
     draggedRef.current = null
 
-    prefillModal(from, to)
+    prefillModal({ path: from, namespaceID: nsID }, { path: to, namespaceID: nsID })
     // changeTree(newTree)
   }
 

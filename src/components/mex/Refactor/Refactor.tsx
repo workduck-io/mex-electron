@@ -1,18 +1,22 @@
+import React, { useEffect } from 'react'
+
 import { hierarchyParser } from '@hooks/useHierarchy'
 import arrowRightLine from '@iconify/icons-ri/arrow-right-line'
 import { Icon } from '@iconify/react'
 import useDataStore from '@store/useDataStore'
-import { Button, DisplayShortcut } from '@workduck-io/mex-components'
-import React, { useEffect } from 'react'
 import Modal from 'react-modal'
-import { tinykeys } from '@workduck-io/tinykeys'
 import create from 'zustand'
+
+import { Button, DisplayShortcut } from '@workduck-io/mex-components'
+import { tinykeys } from '@workduck-io/tinykeys'
+
 import { useLinks } from '../../../hooks/useLinks'
 import { useNavigation } from '../../../hooks/useNavigation'
 import { useRefactor } from '../../../hooks/useRefactor'
 import { useKeyListener } from '../../../hooks/useShortcutListener'
 import { useEditorStore } from '../../../store/useEditorStore'
 import { useHelpStore } from '../../../store/useHelpStore'
+import { useLayoutStore } from '../../../store/useLayoutStore'
 import { NodeLink } from '../../../types/relations'
 import { mog } from '../../../utils/lib/helper'
 import { isMatch, isReserved } from '../../../utils/lib/paths'
@@ -20,21 +24,27 @@ import { QuickLink, WrappedNodeSelect } from '../NodeSelect/NodeSelect'
 import { doesLinkRemain } from './doesLinkRemain'
 import { ArrowIcon, MockRefactorMap, ModalControls, ModalHeader, MRMHead, MRMRow } from './styles'
 
-// Prefill modal has been added to the Tree via withRefactor from useRefactor
+interface RefactorPath {
+  path: string
+  namespaceID?: string
+}
 
+// Prefill modal has been added to the Tree via withRefactor from useRefactor
 interface RefactorState {
   open: boolean
   focus: boolean
   mockRefactored: NodeLink[]
   from: string | undefined
   to: string | undefined
+  fromNS: string | undefined
+  toNS: string | undefined
   openModal: () => void
   closeModal: () => void
   setMockRefactored: (mR: NodeLink[]) => void
   setFocus: (focus: boolean) => void
-  setFrom: (from: string) => void
-  setTo: (from: string) => void
-  prefillModal: (from: string, to?: string) => void
+  setFrom: (from: RefactorPath) => void
+  setTo: (from: RefactorPath) => void
+  prefillModal: (from: RefactorPath, to?: RefactorPath) => void
 }
 
 export const useRefactorStore = create<RefactorState>((set) => ({
@@ -42,6 +52,8 @@ export const useRefactorStore = create<RefactorState>((set) => ({
   mockRefactored: [],
   from: undefined,
   to: undefined,
+  fromNS: undefined,
+  toNS: undefined,
   focus: true,
   openModal: () =>
     set({
@@ -59,12 +71,14 @@ export const useRefactorStore = create<RefactorState>((set) => ({
   setMockRefactored: (mockRefactored: NodeLink[]) => {
     set({ mockRefactored })
   },
-  setFrom: (from: string) => set({ from }),
-  setTo: (to: string) => set({ to }),
-  prefillModal: (from: string, to?: string) =>
+  setFrom: (from: RefactorPath) => set({ from: from.path, fromNS: from.namespaceID }),
+  setTo: (to: RefactorPath) => set({ to: to.path, toNS: to.namespaceID }),
+  prefillModal: (from: RefactorPath, to?: RefactorPath) =>
     set({
-      from,
-      to,
+      from: from.path,
+      fromNS: from.namespaceID,
+      to: to?.path,
+      toNS: to?.namespaceID,
       open: true,
       focus: false
     })
@@ -82,6 +96,8 @@ const Refactor = () => {
   const focus = useRefactorStore((store) => store.focus)
   const to = useRefactorStore((store) => store.to)
   const from = useRefactorStore((store) => store.from)
+  const fromNS = useRefactorStore((store) => store.fromNS)
+  const toNS = useRefactorStore((store) => store.toNS)
   const mockRefactored = useRefactorStore((store) => store.mockRefactored)
   const shortcuts = useHelpStore((store) => store.shortcuts)
 
@@ -91,10 +107,13 @@ const Refactor = () => {
   const setTo = useRefactorStore((store) => store.setTo)
   const setFrom = useRefactorStore((store) => store.setFrom)
   const setBaseNodeId = useDataStore((store) => store.setBaseNodeId)
-
+  const currentSpace = useLayoutStore((store) => store.sidebar.spaceId)
+  const layoutStore = useLayoutStore((store) => store.sidebar)
+  mog('LayoutStore', { layoutStore })
   const { push } = useNavigation()
   const { updateILinks } = useLinks()
   const { shortcutDisabled, shortcutHandler } = useKeyListener()
+  const namespaces = useDataStore((store) => store.namespaces)
 
   useEffect(() => {
     const unsubscribe = tinykeys(window, {
@@ -119,27 +138,29 @@ const Refactor = () => {
 
   const handleFromChange = (quickLink: QuickLink) => {
     const newValue = quickLink.value
-    if (newValue) {
-      setFrom(newValue)
+    const newNS = quickLink.namespace ?? namespaces[0].id
+    if (newValue && newNS) {
+      setFrom({ path: newValue, namespaceID: newNS })
     }
   }
 
   const handleToChange = (quickLink: QuickLink) => {
     const newValue = quickLink.value
-    if (newValue) {
-      setTo(newValue)
+    const newNS = quickLink.namespace ?? currentSpace ?? namespaces[0].id
+    if (newValue && newNS) {
+      setTo({ path: newValue, namespaceID: newNS })
     }
   }
 
   const handleToCreate = (quickLink: QuickLink) => {
     const inputValue = quickLink.value
-    if (inputValue) {
-      setTo(inputValue)
+    const newNS = currentSpace ?? namespaces[0].id
+    if (inputValue && newNS) {
+      setTo({ path: inputValue, namespaceID: newNS })
     }
   }
 
   const { getMockRefactor, execRefactorAsync } = useRefactor()
-  const { getNodeidFromPath } = useLinks()
 
   useEffect(() => {
     // mog('Refactor', { open, to, from })
@@ -154,31 +175,19 @@ const Refactor = () => {
   const handleRefactor = async () => {
     mog('Refactor', { open, to, from })
     if (to && from && !isReserved(from) && !isReserved(to)) {
-      const res = await execRefactorAsync(from, to)
-
-      const { addedPaths, removedPaths } = res
-      const addedILinks = hierarchyParser(addedPaths)
-      const removedILinks = hierarchyParser(removedPaths)
-
-      mog('RESULT OF REFACTORING', { addedILinks, removedILinks })
-
-      // // * set the new hierarchy in the tree
-      const refactored = updateILinks(addedILinks, removedILinks)
-
-      // const baseId = linkInRefactor(useDataStore.getState().baseNodeId, refactored)
-      // if (baseId !== false) {
-      //   setBaseNodeId(baseId.to)
-      // }
+      const refactored = await execRefactorAsync({ path: from, namespaceID: fromNS }, { path: to, namespaceID: toNS })
 
       const path = useEditorStore.getState().node.path
       const nodeid = useEditorStore.getState().node.nodeid
 
       if (doesLinkRemain(path, refactored)) {
         push(nodeid, { savePrev: false })
-      } else if (res.length > 0) {
-        const nodeid = getNodeidFromPath(res[0].to)
-        push(nodeid, { savePrev: false })
       }
+      // What is this code? Isn't res an object, what does res[0] refer to?
+      // else if (res.length > 0) {
+      //   const nodeid = getNodeidFromPath(res[0].to)
+      //   push(nodeid, { savePrev: false })
+      // }
     }
 
     closeModal()
@@ -186,6 +195,8 @@ const Refactor = () => {
 
   // mog('Refactor', { open, focus, to, from, mockRefactored })
   return (
+    // eslint-disable-next-line
+    // @ts-ignore
     <Modal className="ModalContent" overlayClassName="ModalOverlay" onRequestClose={closeModal} isOpen={open}>
       <ModalHeader>Refactor</ModalHeader>
 
