@@ -210,6 +210,7 @@ export const Combobox = ({ onSelectItem, onRenderItem, options }: ComboboxProps)
               <BlockCombo
                 onSelect={() => {
                   const item = items[itemIndex]
+
                   if (item?.type === QuickLinkType.backlink) {
                     editor && onSelectItem(editor, items[itemIndex])
                   }
@@ -234,7 +235,7 @@ export const Combobox = ({ onSelectItem, onRenderItem, options }: ComboboxProps)
                         }
                       />
                     </section>
-                    {preview && <PreviewMeta meta={metaData} />}
+                    {preview && <PreviewMeta meta={metaData} namespace={listItem?.namespace} />}
                   </ComboSeperator>
                 )}
             </>

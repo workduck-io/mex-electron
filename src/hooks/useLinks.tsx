@@ -266,12 +266,12 @@ export const useLinks = () => {
     if (link) return link.path
   }
 
-  const getParentILink = (path: string) => {
+  const getParentILink = (path: string, namespace?: string) => {
     const links = useDataStore.getState().ilinks
     const parentPath = path.split(SEPARATOR).slice(0, -1).join(SEPARATOR)
-    const note = links.find((ilink) => ilink.path === parentPath)
 
-    mog('FOUND PARENT', { parentPath, links, note })
+    const namespaceILinks = !namespace ? links : links.filter(l => l.namespace === namespace)
+    const note = namespaceILinks.find((ilink) => ilink.path === parentPath)
 
     return note
   }

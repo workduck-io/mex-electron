@@ -7,6 +7,7 @@ export const StyledInputWrapper = styled.div`
   width: 100%;
   position: relative;
   margin: ${({ theme }) => theme.spacing.small} 0;
+  
   ${Input} {
     width: 100%;
   }
@@ -44,11 +45,17 @@ export const FilterComboboxToggle = styled.div`
   }
 `
 
-export const SuggestionContentWrapper = styled.div`
-  width: 90%;
+export const SuggestionContentWrapper = styled.div` 
+  width: 60%;
+  flex-grow: 1;
 `
-export const SuggestionText = styled.div``
+export const SuggestionText = styled.div`
+  display: flex;
+  align-items: center;
+`
 export const SuggestionDesc = styled.div`
+  display: flex;
+  align-items: center;
   margin-top: ${({ theme }) => theme.spacing.tiny};
   color: ${({ theme }) => theme.colors.text.fade};
   font-size: 0.8rem;

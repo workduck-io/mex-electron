@@ -30,4 +30,5 @@ export interface UserPreferences {
   lastOpenedNotes: LastOpenedNotes
   /** Current mex Theme */
   theme?: string
+  activeNamespace?: string // * Namespace Id
 }
