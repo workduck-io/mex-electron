@@ -1,5 +1,5 @@
 import { SingleNamespace } from '../../../types/Types'
-import React from 'React'
+import React from 'react'
 import { RESERVED_NAMESPACES } from '@utils/lib/paths'
 import { MexIcon } from '@workduck-io/mex-components'
 import { useTheme } from 'styled-components'
