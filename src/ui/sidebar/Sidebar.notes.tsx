@@ -42,22 +42,24 @@ export const NoteSidebar = () => {
 
   const spaces: Array<SidebarSpace> = useMemo(() => {
     const nodesByNamespaces = getNodesByNamespaces()
-    const nspaces = nodesByNamespaces.map(
-      (ns) =>
-      ({
-        id: ns.id,
-        label: ns.name,
-        icon: ns.name === RESERVED_NAMESPACES.default ? 'ri:user-line' : 'heroicons-outline:view-grid',
-        tooltip: ns.name,
-        list: {
-          type: 'hierarchy',
-          items: ns.nodes
-        },
-        popularTags: mostUsedTags,
-        pinnedItems: () => <StarredNotes />,
-        pollAction: PollActions.hierarchy
-      } as SidebarSpace)
-    )
+    const nspaces = nodesByNamespaces
+      .map(
+        (ns) =>
+          ({
+            id: ns.id,
+            label: ns.name,
+            icon: ns.name === RESERVED_NAMESPACES.default ? 'ri:user-line' : 'heroicons-outline:view-grid',
+            tooltip: ns.name,
+            list: {
+              type: 'hierarchy',
+              items: ns.nodes
+            },
+            popularTags: mostUsedTags,
+            pinnedItems: () => <StarredNotes />,
+            pollAction: PollActions.hierarchy
+          } as SidebarSpace)
+      )
+      .slice(0, 3)
     // Add shared notes namespace
     nspaces.push({
       id: 'shared',
@@ -71,7 +73,7 @@ export const NoteSidebar = () => {
       pollAction: PollActions.shared
     })
 
-    mog('Spaces', { spaces: nspaces, nodesByNamespaces })
+    // mog('Spaces', { spaces: nspaces, nodesByNamespaces })
 
     return nspaces
   }, [ilinks, namespaces])
@@ -80,8 +82,9 @@ export const NoteSidebar = () => {
     if (newIndex === index.current) return
     const nextSpaceId = spaces[newIndex]?.id
     if (nextSpaceId) {
-      changeSidebarSpace(nextSpaceId)
       useUserPreferenceStore.getState().setActiveNamespace(nextSpaceId)
+      changeSidebarSpace(nextSpaceId)
+      setIndex({ current: newIndex, prev: index.current })
     }
   }
 
@@ -91,35 +94,40 @@ export const NoteSidebar = () => {
   const transitions = useTransition(index, {
     ref: transRef,
     keys: null,
-    from: (item) => {
-      // console.log({ item })
-      const direction = item.prev > -1 ? Math.sign(item.current - item.prev) : 1
+    from: () => {
+      const direction = index.prev > -1 ? Math.sign(index.current - index.prev) : 1
+      // mog('from', { item, index, direction, i })
       return { opacity: 0, transform: `translate3d(${direction * 100}%,0,0)` }
     },
     enter: { opacity: 1, transform: 'translate3d(0%,0,0)' },
-    leave: (item) => {
-      // console.log({ item })
-      const direction = item.prev > -1 ? Math.sign(item.current - item.prev) : -1
+    leave: () => {
+      const direction = index.prev > -1 ? -Math.sign(index.current - index.prev) : -1
+      // mog('leave', { item, index, direction, i })
       return { opacity: 0, transform: `translate3d(${direction * 100}%,0,0)` }
     }
   })
 
+  /**
+   * Set initial namespace when not in preference
+   */
   useEffect(() => {
     const currentNamespace = useUserPreferenceStore.getState().activeNamespace
     const selectedSpace = spaces?.[index.current]?.id
 
     if (!currentNamespace) {
+      changeSidebarSpace(selectedSpace)
       useUserPreferenceStore.getState().setActiveNamespace(selectedSpace)
     }
   }, [])
 
   usePolling()
 
-  useEffect(() => {
-    const newIndex = spaces.findIndex((s) => s.id === spaceId)
-    if (newIndex === -1) return
-    setIndex((s) => ({ current: newIndex, prev: s.current }))
-  }, [spaceId, spaces])
+  // useEffect(() => {
+  //   const newIndex = spaces.findIndex((s) => s.id === spaceId)
+  //   if (newIndex === -1) return
+  //   // if (newIndex === index.current) return
+  //   changeIndex(newIndex)
+  // }, [spaceId, spaces])
 
   useEffect(() => {
     transRef.start()
@@ -131,7 +139,7 @@ export const NoteSidebar = () => {
     }
   }, [currentSpace])
 
-  mog('Space', { ilinks, spaces, currentSpace, index })
+  // mog('Space', { ilinks, spaces, currentSpace, index })
 
   return (
     <SpaceWrapper>

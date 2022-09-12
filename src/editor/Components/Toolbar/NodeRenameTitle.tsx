@@ -1,6 +1,5 @@
 import React, { useEffect, useState } from 'react'
 
-import { hierarchyParser } from '@hooks/useHierarchy'
 import Tippy from '@tippyjs/react'
 import styled from 'styled-components'
 

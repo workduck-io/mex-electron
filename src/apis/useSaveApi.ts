@@ -297,7 +297,6 @@ export const useApi = () => {
       return
     }
 
-    // console.warn('\n\n\n\nAPI has not been requested before, requesting\n\n\n\n')
     const res = await client
       .get(url, {
         headers: workspaceHeaders()
@@ -327,8 +326,9 @@ export const useApi = () => {
       })
       .then((d) => {
         if (d.data) {
-          const hierarchy = d.data.hierarchy || []
+          const hierarchy = d.data.hierarchy || {}
           const nodesMetadata = d.data.nodesMetadata || {}
+
           const parsedHierarchies = allNamespacesHierarchyParser(hierarchy)
 
           // We create the list of nodes with their respective namespaces
@@ -368,10 +368,14 @@ export const useApi = () => {
           setNamespaces(namespaces)
           setILinks(nodes)
 
-          mog('Name the spaces', { namespaces, nodes })
+          // mog('Name the spaces', { namespaces, nodes })
 
           return nodes
         }
+      })
+      .catch((e) => {
+        mog('Error fetching namespaces', { e })
+        return []
       })
 
     return data
