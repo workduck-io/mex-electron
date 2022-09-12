@@ -118,20 +118,12 @@ const useDataStore = create<DataStoreState>(
           notePath = isChild && openedNotePath ? `${openedNotePath}${key}` : key
         }
 
-<<<<<<< HEAD
         const iLinksOfNamespace = namespace ? get().ilinks.filter((link) => link.namespace === namespace) : get().ilinks
         // mog('ILINKS OF NOTE ARE', { iLinksOfNamespace, notePath, namespace })
-=======
-        const ilinks = namespace ? get().ilinks.filter(link => link.namespace === namespace) : get().ilinks
->>>>>>> 672ed844 (activeNamespace in useUserPreferences, and lookup namespace tags)
 
         const linksStrings = iLinksOfNamespace.map((l) => l.path)
         const reservedOrUnique = getUniquePath(notePath, linksStrings, showAlert)
 
-<<<<<<< HEAD
-=======
-
->>>>>>> 672ed844 (activeNamespace in useUserPreferences, and lookup namespace tags)
         if (!reservedOrUnique) {
           throw Error(`ERROR-RESERVED: PATH (${notePath}) IS RESERVED. YOU DUMB`)
         }

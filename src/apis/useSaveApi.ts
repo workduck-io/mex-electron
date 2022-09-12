@@ -351,6 +351,7 @@ export const useApi = () => {
         if (d.data) {
           const hierarchy = d.data.hierarchy || {}
           const nodesMetadata = d.data.nodesMetadata || {}
+
           const parsedHierarchies = allNamespacesHierarchyParser(hierarchy)
 
           // We create the list of nodes with their respective namespaces
