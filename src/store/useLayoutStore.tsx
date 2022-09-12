@@ -8,12 +8,11 @@ export interface FocusMode {
 export type InfobarMode = 'default' | 'flow' | 'graph' | 'reminders' | 'suggestions'
 
 interface LayoutState {
-  sidebar: { expanded: boolean; show: boolean; spaceId?: string }
+  sidebar: { expanded: boolean; show: boolean }
   rhSidebar: { expanded: boolean; show: boolean }
   infobar: { mode: InfobarMode }
   focusMode: FocusMode
   toggleSidebar: () => void
-  changeSidebarSpace: (spaceId: string) => void
   showSidebar: () => void
   hideSidebar: () => void
 
@@ -51,21 +50,11 @@ export const useLayoutStore = create<LayoutState>((set, get) => ({
   // Sidebar
   sidebar: {
     expanded: true,
-    show: false,
-    spaceId: undefined
+    show: false
   },
   toggleSidebar: () => set((state) => ({ sidebar: { ...state.sidebar, expanded: !state.sidebar.expanded } })),
   showSidebar: () => set((state) => ({ sidebar: { ...state.sidebar, show: true } })),
   hideSidebar: () => set((state) => ({ sidebar: { ...state.sidebar, show: false } })),
-  changeSidebarSpace: (spaceId) => {
-    // console.log('Changing sidebar here', spaceId, nindex)
-    set((state) => ({
-      sidebar: {
-        ...state.sidebar,
-        spaceId
-      }
-    }))
-  },
 
   // RHSidebar
   rhSidebar: {

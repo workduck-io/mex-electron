@@ -9,6 +9,7 @@ const ModalContent = (multi = false) => css`
   outline: none;
   min-width: 400px;
   border-radius: ${({ theme }) => theme.borderRadius.large};
+  transition: width 0.2s ease, height 0.2s ease;
   ${({ theme }) =>
     !multi
       ? css`

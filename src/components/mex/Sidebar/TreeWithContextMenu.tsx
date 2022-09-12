@@ -139,6 +139,7 @@ export const TreeContextMenu = ({ item }: TreeContextMenuProps) => {
     openShareModal('permission', item.data.nodeid)
   }
 
+  // BUG: The backend doesn't return the new added path in the selected namespace
   const handleMoveNamespaces = async (newNamespaceID: string) => {
     const refactored = await execRefactorAsync(
       { path: item.data?.path, namespaceID: item.data?.namespace },
@@ -194,24 +195,25 @@ export const TreeContextMenu = ({ item }: TreeContextMenuProps) => {
             <Icon icon={shareLine} />
             Share
           </ContextMenuItem>
-          {/* <ContextMenuListWithFilter */}
-          {/*   item={{ */}
-          {/*     id: 'menu_for_namespace', */}
-          {/*     label: 'Move to Space', */}
-          {/*     icon: fileTransferLine */}
-          {/*   }} */}
-          {/*   items={namespaces */}
-          {/*     .filter((ns) => ns.id !== item.data.namespace) */}
-          {/*     .map((ns) => ({ */}
-          {/*       id: ns.id, */}
-          {/*       icon: ns.name === RESERVED_NAMESPACES.default ? 'ri:user-line' : 'heroicons-outline:view-grid', */}
-          {/*       label: ns.name */}
-          {/*     }))} */}
-          {/*   onSelectItem={(args) => { */}
-          {/*     handleMoveNamespaces(args) */}
-          {/*   }} */}
-          {/*   filter={false} */}
-          {/* /> */}
+          <ContextMenuListWithFilter
+            item={{
+              id: 'menu_for_namespace',
+              label: 'Move to Space',
+              icon: fileTransferLine
+            }}
+            items={namespaces
+              // Don't move in same namespace
+              .filter((ns) => ns.id !== item.data.namespace)
+              .map((ns) => ({
+                id: ns.id,
+                icon: ns.name === RESERVED_NAMESPACES.default ? 'ri:user-line' : 'heroicons-outline:view-grid',
+                label: ns.name
+              }))}
+            onSelectItem={(args) => {
+              handleMoveNamespaces(args)
+            }}
+            filter={false}
+          />
           <ContextMenuSeparator />
           <MuteMenuItem nodeid={item.data.nodeid} lastOpenedState={item.data.lastOpenedState} />
 

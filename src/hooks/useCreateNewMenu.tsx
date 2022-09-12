@@ -11,6 +11,7 @@ import { useSnippets } from './useSnippets'
 import { useNamespaces } from './useNamespaces'
 import { mog } from '@workduck-io/mex-utils'
 import { useLayoutStore } from '@store/useLayoutStore'
+import { useUserPreferenceStore } from '@store/userPreferenceStore'
 
 interface CreateNewMenuItem {
   id: string
@@ -26,8 +27,8 @@ export const useCreateNewMenu = () => {
   const { addSnippet } = useSnippets()
   const { updater } = useUpdater()
   const { addDefaultNewNamespace, getDefaultNamespaceId } = useNamespaces()
-  const currentSpace = useLayoutStore((store) => store.sidebar.spaceId)
-  const changeSpace = useLayoutStore((store) => store.changeSidebarSpace)
+  const currentSpace = useUserPreferenceStore((store) => store.activeNamespace)
+  const changeSpace = useUserPreferenceStore((store) => store.setActiveNamespace)
 
   // const createNoteWithQABlock = () => {
   //   const qaContent = getRandomQAContent()
@@ -80,7 +81,8 @@ export const useCreateNewMenu = () => {
           createNewNoteInNamespace(currentSpace || getDefaultNamespaceId())
         }
       },
-      // {
+      // Preserved to create a note in default namespace if needed
+      //{
       //   id: 'new-note-in-ns',
       //   label: 'New Note in Default Space',
       //   onSelect: () => {

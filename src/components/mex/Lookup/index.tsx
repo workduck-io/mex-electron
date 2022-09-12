@@ -18,7 +18,7 @@ import { mog } from '@workduck-io/mex-utils'
 
 const StyledModal = styled(Modal)`
   z-index: 10010000;
-  min-width: 40rem; 
+  width: 40rem;
 `
 
 export const Brackets = styled.span`
@@ -32,10 +32,18 @@ export const Brackets = styled.span`
 
 const InputWrapper = styled.div`
   display: flex;
-  align-items: center;
-  margin-bottom: 1rem;
+  align-items: flex-start;
+  margin: ${({ theme }) => theme.spacing.large} 0;
+  transition: all 0.2s ease-in-out;
+  width: 440px;
 
   ${StyledCombobox} {
+    ${Input}, ${StyledInputWrapper} {
+      width: auto;
+      flex-shrink: 1;
+      flex-grow: 1;
+      border: 1px solid ${({ theme }) => theme.colors.form.input.bg};
+    }
     ${Input} {
       border-radius: 0;
       padding: ${(props) => props.theme.spacing.medium} 8px;
@@ -120,28 +128,26 @@ const Lookup = () => {
 
   const handleCreateItem = (inputValue: QuickLink) => {
     if (tempClose) return
-    mog("VALUE IS", { inputValue })
+    mog('VALUE IS', { inputValue })
     createNewNote({ path: inputValue.value, namespace: inputValue?.namespace })
     closeModal()
   }
 
   return (
     <StyledModal className="ModalContent" overlayClassName="ModalOverlay" onRequestClose={closeModal} isOpen={open}>
-      <h1 style={{ textAlign: 'center' }}>Lookup</h1>
       <InputWrapper>
         <Brackets>[[</Brackets>
-        <StyledInputWrapper>
-          <NodeSelect
-            id="lookup"
-            name="lookup"
-            menuOpen
-            showAll
-            autoFocus
-            prefillRecent
-            handleSelectItem={handleSelectItem}
-            handleCreateItem={handleCreateItem}
-          />
-        </StyledInputWrapper>
+        <NodeSelect
+          id="lookup"
+          name="lookup"
+          menuOpen
+          showAll
+          autoFocus
+          prefillRecent
+          menuOverlay={false}
+          handleSelectItem={handleSelectItem}
+          handleCreateItem={handleCreateItem}
+        />
         <Brackets>]]</Brackets>
       </InputWrapper>
       {/* <LookupInput autoFocus menuOpen handleChange={handleChange} handleCreate={handleCreate} /> */}

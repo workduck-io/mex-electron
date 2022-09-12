@@ -25,6 +25,7 @@ import { useTreeStore } from '@store/useTreeStore'
 import { useFetchShareData } from './useFetchShareData'
 import { useAuthStore } from '@services/auth/useAuth'
 import { useLastOpened } from './useLastOpened'
+import { useUserPreferenceStore } from '@store/userPreferenceStore'
 
 export interface LoadNodeOptions {
   savePrev?: boolean
@@ -56,6 +57,7 @@ const useLoad = () => {
   const setHighlights = useBlockHighlightStore((store) => store.setHighlightedBlockIds)
   const { fetchSharedNodeUsers } = useFetchShareData()
   const { debouncedAddLastOpened } = useLastOpened()
+  const changeSpace = useUserPreferenceStore((store) => store.setActiveNamespace)
 
   const setLoadingNodeid = useEditorStore((store) => store.setLoadingNodeid)
   // const { push } = useNavigation()
@@ -268,6 +270,8 @@ const useLoad = () => {
 
     debouncedAddLastOpened(nodeid)
 
+    mog('Loading that here', { node })
+    changeSpace(node.namespace)
     loadNodeEditor(node)
   }
 
