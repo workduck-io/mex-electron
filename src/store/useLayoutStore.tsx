@@ -22,7 +22,6 @@ interface LayoutState {
   infobar: { mode: InfobarMode }
   focusMode: FocusMode
   toggleSidebar: () => void
-  changeSidebarSpace: (spaceId: string) => void
   showSidebar: () => void
   hideSidebar: () => void
 
@@ -73,15 +72,6 @@ export const useLayoutStore = create<LayoutState>((set, get) => ({
     })),
   showSidebar: () => set((state) => ({ sidebar: { ...state.sidebar, show: true } })),
   hideSidebar: () => set((state) => ({ sidebar: { ...state.sidebar, show: false } })),
-  changeSidebarSpace: (spaceId) => {
-    // console.log('Changing sidebar here', spaceId, nindex)
-    set((state) => ({
-      sidebar: {
-        ...state.sidebar,
-        spaceId
-      }
-    }))
-  },
 
   // RHSidebar
   rhSidebar: {

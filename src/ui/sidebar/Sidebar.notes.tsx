@@ -141,12 +141,12 @@ export const NoteSidebar = () => {
 
   usePolling()
 
-  // useEffect(() => {
-  //   const newIndex = spaces.findIndex((s) => s.id === spaceId)
-  //   if (newIndex === -1) return
-  //   // if (newIndex === index.current) return
-  //   changeIndex(newIndex)
-  // }, [spaceId, spaces])
+  useEffect(() => {
+    const newIndex = spaces.findIndex((s) => s.id === spaceId)
+    if (newIndex === -1) return
+    // if (newIndex === index.current) return
+    changeIndex(newIndex, false)
+  }, [spaceId, spaces])
 
   useEffect(() => {
     transRef.start()

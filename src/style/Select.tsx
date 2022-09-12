@@ -1,7 +1,9 @@
-import { Icon } from '@iconify/react'
 import React from 'react'
+
+import { Icon } from '@iconify/react'
 import { components } from 'react-select'
 import styled, { css } from 'styled-components'
+
 import { getSyncServiceIcon } from '../editor/Components/SyncBlock/SyncIcons'
 
 /* eslint-disable @typescript-eslint/no-explicit-any */

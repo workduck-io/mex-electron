@@ -13,13 +13,6 @@ import { useHierarchy } from './useHierarchy'
 import { useLastOpened } from './useLastOpened'
 import { useLinks } from './useLinks'
 import useLoad from './useLoad'
-<<<<<<< HEAD
-=======
-import { useNavigation } from './useNavigation'
-import { useLastOpened } from './useLastOpened'
-import { useContentStore } from '@store/useContentStore'
-import { useSnippets } from './useSnippets'
->>>>>>> 672ed844 (activeNamespace in useUserPreferences, and lookup namespace tags)
 import { useNamespaces } from './useNamespaces'
 import { useNavigation } from './useNavigation'
 import { useSnippets } from './useSnippets'
@@ -58,29 +51,15 @@ export const useCreateNewNote = () => {
     const childNodepath = options?.parent !== undefined ? getUntitledKey(options?.parent.path) : getUntitledDraftKey()
     const defaultNamespace = getDefaultNamespace()
 
-<<<<<<< HEAD
     const namespacePath = options?.namespace && options?.namespace !== defaultNamespace?.id ? DRAFT_NODE : childNodepath
 
     const newNotePath = options?.path || namespacePath
-=======
-    let normalPath = options?.path || childNodepath
-
-    if (options?.namespace) {
-
-    }
-
-    const newNotePath = options?.namespace && options?.path ? normalPath : DRAFT_NODE
->>>>>>> 672ed844 (activeNamespace in useUserPreferences, and lookup namespace tags)
 
     const uniquePath = checkValidILink({
       notePath: newNotePath,
       openedNotePath: options?.openedNotePath,
       showAlert: false,
-<<<<<<< HEAD
       namespace: options?.parent?.namespace ?? options?.namespace
-=======
-      namespace: options?.namespace
->>>>>>> 672ed844 (activeNamespace in useUserPreferences, and lookup namespace tags)
     })
 
     // Use namespace of parent if namespace not provided
