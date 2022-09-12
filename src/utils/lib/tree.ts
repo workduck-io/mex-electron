@@ -267,7 +267,7 @@ export const generateTree = (
   sort?: (a: BaseTreeNode, b: BaseTreeNode) => number
 ): TreeData => {
   // tree should be sorted
-  // mog('FLAT TREE', { treeFlat })
+  // mog('GenerateTree ', { treeFlat })
   const unsortedBaseNestedTree = getBaseNestedTree(treeFlat)
   const baseNestedTree = sort ? unsortedBaseNestedTree.sort(sort) : sortTreeWithPriority(unsortedBaseNestedTree)
   const nestedTree: TreeData = {

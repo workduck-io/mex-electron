@@ -7,6 +7,7 @@ import { ILink, SingleNamespace } from '../types/Types'
 export const useNamespaces = () => {
   const { createNewNamespace } = useApi()
   const addNamespace = useDataStore((s) => s.addNamespace)
+  const { changeNamespaceName: chageNamespaceNameApi } = useApi()
 
   const getNamespace = (id: string): SingleNamespace | undefined => {
     const namespaces = useDataStore.getState().namespaces
@@ -61,6 +62,27 @@ export const useNamespaces = () => {
     }
   }
 
+  const changeNamespaceName = (id: string, name: string) => {
+    chageNamespaceNameApi(id, name)
+      .then((res) => {
+        if (res) {
+          const namespaces = useDataStore.getState().namespaces
+          const newNamespaces = namespaces.map((n) =>
+            n.id === id
+              ? {
+                  id: n.id,
+                  name
+                }
+              : n
+          )
+          useDataStore.setState({ namespaces: newNamespaces })
+        }
+      })
+      .catch((err) => {
+        console.log('Error changing namespace name', err)
+      })
+  }
+
   return {
     getNamespace,
     getNodesOfNamespace,
@@ -69,6 +91,7 @@ export const useNamespaces = () => {
     addNewNamespace,
     getNamespaceOfNodeid,
     getNodesByNamespaces,
+    changeNamespaceName,
     addDefaultNewNamespace
   }
 }
