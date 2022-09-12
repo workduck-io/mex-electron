@@ -191,6 +191,27 @@ export const useNamespaces = () => {
     })
   }
 
+  const changeNamespaceName = (id: string, name: string) => {
+    chageNamespaceNameApi(id, name)
+      .then((res) => {
+        if (res) {
+          const namespaces = useDataStore.getState().namespaces
+          const newNamespaces = namespaces.map((n) =>
+            n.id === id
+              ? {
+                  id: n.id,
+                  name
+                }
+              : n
+          )
+          useDataStore.setState({ namespaces: newNamespaces })
+        }
+      })
+      .catch((err) => {
+        console.log('Error changing namespace name', err)
+      })
+  }
+
   return {
     getNamespace,
     getNodesOfNamespace,

@@ -1,14 +1,23 @@
 import React, { useEffect, useState } from 'react'
 
-import { tinykeys } from '@workduck-io/tinykeys'
-import useDataStore from '@store/useDataStore'
+import { Tooltip } from '@components/FloatingElements/Tooltip'
 import { TagsLabel } from '@components/mex/Tags/TagLabel'
 import useLayout from '@hooks/useLayout'
+import { useNamespaces } from '@hooks/useNamespaces'
 import { Icon } from '@iconify/react'
+import useDataStore from '@store/useDataStore'
 import { useEditorStore } from '@store/useEditorStore'
 import { useLayoutStore } from '@store/useLayoutStore'
+import { Input } from '@style/Form'
 import Tippy from '@tippyjs/react'
+import IconPicker from '@ui/components/IconPicker/IconPicker'
+import { RESERVED_NAMESPACES } from '@utils/lib/paths'
+import toast from 'react-hot-toast'
+
 import { TitleWithShortcut } from '@workduck-io/mex-components'
+import { tinykeys } from '@workduck-io/tinykeys'
+
+import { MIcon } from '../../../types/Types'
 import {
   SidebarToggle,
   SpaceHeader,
@@ -18,13 +27,6 @@ import {
   SpaceTitleWrapper
 } from '../Sidebar.style'
 import { SidebarSpace } from '../Sidebar.types'
-import { Input } from '@style/Form'
-import { RESERVED_NAMESPACES } from '@utils/lib/paths'
-import toast from 'react-hot-toast'
-import { useNamespaces } from '@hooks/useNamespaces'
-import IconPicker from '@ui/components/IconPicker/IconPicker'
-import { MIcon } from '../../../types/Types'
-import { Tooltip } from '@components/FloatingElements/Tooltip'
 
 const Header = ({ space }: { space: SidebarSpace }) => {
   const sidebar = useLayoutStore((state) => state.sidebar)

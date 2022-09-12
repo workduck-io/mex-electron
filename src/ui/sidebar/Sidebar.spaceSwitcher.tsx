@@ -1,9 +1,11 @@
+import React, { useEffect } from 'react'
+
 import { Tooltip } from '@components/FloatingElements/Tooltip'
 import addCircleLine from '@iconify/icons-ri/add-circle-line'
 import { Icon } from '@iconify/react'
 import { useLayoutStore } from '@store/useLayoutStore'
 import IconDisplay from '@ui/components/IconPicker/IconDisplay'
-import React, { useEffect } from 'react'
+
 import { CreateNewMenu } from './Sidebar.createNew'
 import { CreateNewButton, SpaceItem, SpaceSwitcher, SwitcherSpaceItems } from './Sidebar.style'
 import { SidebarSpace } from './Sidebar.types'

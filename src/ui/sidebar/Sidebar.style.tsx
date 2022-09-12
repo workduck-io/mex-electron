@@ -1,12 +1,13 @@
+import { SidebarListWrapper } from '@components/mex/Sidebar/SidebarList.style'
 import { TagsFlex } from '@components/mex/Tags/TagsRelated.styles'
-import { Button, Ellipsis, LoadingButton } from '@workduck-io/mex-components'
+import { ScrollStyles } from '@style/helpers'
+import { IconWrapper } from '@ui/components/IconPicker/IconPicker.style'
+import { clamp } from 'lodash'
 import { transparentize } from 'polished'
 import { animated } from 'react-spring'
-import { clamp } from 'lodash'
 import styled, { css } from 'styled-components'
-import { IconWrapper } from '@ui/components/IconPicker/IconPicker.style'
-import { ScrollStyles } from '@style/helpers'
-import { SidebarListWrapper } from '@components/mex/Sidebar/SidebarList.style'
+
+import { Button, Ellipsis, LoadingButton } from '@workduck-io/mex-components'
 
 export const SidebarWrapper = styled.div`
   display: flex;
