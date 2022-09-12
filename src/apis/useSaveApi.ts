@@ -26,6 +26,7 @@ import { mog } from '../utils/lib/helper'
 import { extractMetadata } from '../utils/lib/metadata'
 import { deserializeContent, serializeContent } from '../utils/lib/serialize'
 import { apiURLs } from './routes'
+import { generateNamespaceId } from '@data/Defaults/idPrefixes'
 
 const API_CACHE_LOG = `\nAPI has been requested before, cancelling.\n`
 
@@ -329,11 +330,6 @@ export const useApi = () => {
   }
 
   const getNodesByWorkspace = async (): Promise<ILink[]> => {
-    // REMOVE test namespace
-    await client.get(apiURLs.namespaces.getAll, {
-      headers: workspaceHeaders()
-    })
-
     const data = await client
       .get(apiURLs.namespaces.getHierarchy, {
         headers: workspaceHeaders()
@@ -379,7 +375,7 @@ export const useApi = () => {
             // ipcRenderer.send(IpcAction.UPDATE_ILINKS, { ilinks: nodes }) // * Synced
           }
 
-          setNamespaces(namespaces)
+          // setNamespaces(namespaces)
           setILinks(nodes)
 
           // mog('Name the spaces', { namespaces, nodes })
@@ -565,8 +561,14 @@ export const useApi = () => {
       })
       .then((d) => {
         mog('namespaces all', d.data)
-        // Parse namespace with updated
-        return []
+
+        return d.data.map((item: any) => ({
+          id: item.id,
+          name: item.name,
+          icon: item.namespaceMetadata?.icon ?? undefined,
+          createdAt: item.createdAt,
+          updatedAt: item.updatedAt
+        }))
       })
       .catch((e) => {
         mog('Save error', e)
@@ -585,19 +587,29 @@ export const useApi = () => {
           apiURLs.namespaces.create,
           {
             type: 'NamespaceRequest',
-            name
+            name,
+            id: generateNamespaceId(),
+            metadata: {
+              iconUrl: 'heroicons-outline:view-grid'
+            }
           },
           {
             headers: workspaceHeaders()
           }
         )
-        .then((d) => ({ id: d?.data?.id, name: d?.data?.name }))
+        .then((d) => ({
+          id: d?.data?.id,
+          name: d?.data?.name,
+          iconUrl: d?.data?.metadata?.iconUrl,
+          createdAt: d?.data?.createdAt,
+          updatedAt: d?.data?.updatedAt
+        }))
 
       mog('We created a namespace', { res })
 
       return res
     } catch (err) {
-      toast('Unable to create Snippet')
+      toast('Unable to Create New Namespace')
     }
   }
 

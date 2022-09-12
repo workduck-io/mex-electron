@@ -41,7 +41,7 @@ export const useCreateNewMenu = () => {
     addDefaultNewNamespace().then((ns) => {
       // mog('After creating ns in contenxtmenu', { ns })
       // Change the space in the sidebar to the newly created space
-      changeSpace(ns?.id)
+      if (ns) changeSpace(ns.id)
     })
   }
 

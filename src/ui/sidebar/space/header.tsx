@@ -40,7 +40,6 @@ const Header = ({ space }: { space: SidebarSpace }) => {
 
     if (allowRename) {
       changeNamespaceName(space.id, name)
-      // changeInner
       setTitle(name)
     } else {
       toast.error('Space already exists!')
