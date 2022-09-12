@@ -1,7 +1,8 @@
-import { TagFlex, TagsFlex } from '@components/mex/Tags/TagsRelated.styles'
+import { TagsFlex } from '@components/mex/Tags/TagsRelated.styles'
 import { Ellipsis, LoadingButton } from '@workduck-io/mex-components'
 import { transparentize } from 'polished'
 import { animated } from 'react-spring'
+import { clamp } from 'lodash'
 import styled, { css } from 'styled-components'
 
 export const SidebarWrapper = styled.div`
@@ -20,6 +21,7 @@ export const SpaceContentWrapper = styled.div`
   height: calc(100% - 4rem);
   overflow: hidden;
 `
+
 export const SingleSpace = styled(animated.div)`
   position: absolute;
   display: flex;
@@ -33,6 +35,7 @@ export const SingleSpace = styled(animated.div)`
 export const SpaceHeader = styled.div`
   display: flex;
   flex-direction: column;
+  width: 100%;
 
   gap: ${({ theme }) => theme.spacing.medium};
 
@@ -49,11 +52,29 @@ export const SpaceTitleWrapper = styled.div`
   padding-left: ${({ theme }) => theme.spacing.small};
 `
 
+export const SpaceTitleFakeInput = styled.div`
+  display: inline-block;
+
+  color: ${({ theme }) => theme.colors.form.input.fg};
+  border-radius: ${({ theme }) => theme.borderRadius.tiny};
+  padding: ${({ theme: { spacing } }) => `${spacing.small} 8px`};
+  border: none;
+  width: 100%;
+  max-width: 200px;
+  flex-shrink: 1;
+  ${Ellipsis};
+
+  :hover {
+    background-color: ${({ theme }) => theme.colors.form.input.bg};
+  }
+`
+
 export const SpaceTitle = styled.div`
   font-size: 16px;
   font-weight: 500;
   display: flex;
   align-items: center;
+  flex-grow: 1;
   gap: ${({ theme }) => theme.spacing.small};
 `
 
@@ -118,29 +139,76 @@ export const SwitcherSpaceItems = styled.div`
   justify-content: center;
 `
 
-export const SpaceItem = styled.div<{ active: boolean }>`
+export const SpaceItem = styled.div<{ active: boolean; totalItems: number; sidebarWidth: number }>`
   display: flex;
   align-items: center;
   justify-content: center;
-  padding: ${({ theme }) => theme.spacing.small};
+  padding: 4px;
   border-radius: ${({ theme }) => theme.borderRadius.small};
-  transition: 0.15s transform ease-out, 0.2s color ease-in;
+  transition: 0.2s color ease-out, 0.2s background-color ease-out, 0.2s height ease-out, 0.2s width ease-out;
+  // To set icon size
+  // font-size: 24px;
+  // height:
+  // width: 100%;
+  max-height: 32px;
+  max-width: 32px;
 
-  color: ${({ theme }) => theme.colors.gray[6]};
-  ${({ theme, active }) =>
-    active &&
-    css`
-      color: ${theme.colors.text.heading};
-    `}
+  ${({ theme, sidebarWidth, totalItems, active }) => {
+    // ${({ theme, active }) =>
+    //   active
+    //     ? css`
+    //         flex-shrink: 0;
+    //         color: ${theme.colors.text.heading};
+    //       `
+    //     : css`
+    //         flex-shrink: 1;
+    //       `}
+
+    const calcSize = active ? 32 : (sidebarWidth - 150) / totalItems
+    const size = clamp(calcSize, 8, 32)
+    if (calcSize > 16) {
+      return css`
+        background-color: ${active ? theme.colors.gray[8] : 'transparent'};
+        color: ${active ? theme.colors.primary : theme.colors.text.fade};
+
+        height: ${size}px;
+        width: ${size}px;
+        :hover {
+          background-color: ${theme.colors.gray[8]};
+          height: ${size * 1.5}px;
+          width: ${size * 1.5}px;
+        }
+      `
+    }
+
+    return css`
+      background-color: ${theme.colors.gray[9]};
+      svg {
+        height: 0%;
+        width: 0%;
+      }
+      height: 6px;
+      width: 6px;
+      :hover {
+        background-color: ${theme.colors.gray[8]};
+        height: ${24}px;
+        width: ${24}px;
+
+        svg {
+          height: 100%;
+          width: 100%;
+        }
+      }
+    `
+  }}
 
   :hover {
-    transform: scale(1.25);
     background-color: ${({ theme }) => theme.colors.gray[8]};
   }
 
   svg {
-    height: 20px;
-    width: 20px;
+    height: 100%;
+    width: 100%;
   }
 `
 

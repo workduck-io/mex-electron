@@ -3,7 +3,7 @@ import StarredNotes from '@components/mex/Sidebar/StarredNotes'
 import SharedNotes from '@components/mex/Sidebar/SharedNotes'
 import useDataStore from '@store/useDataStore'
 import React, { useEffect, useMemo, useState } from 'react'
-import { SidebarSpaceComponent } from './Sidebar.space'
+import { SidebarSpaceComponent } from './space'
 import { SidebarSpaceSwitcher } from './Sidebar.spaceSwitcher'
 import { SpaceContentWrapper, SpaceWrapper } from './Sidebar.style'
 import { SidebarSpace } from './Sidebar.types'
@@ -21,14 +21,15 @@ export const NoteSidebar = () => {
   const namespaces = useDataStore((store) => store.namespaces)
   const spaceId = useUserPreferenceStore((store) => store.activeNamespace)
   const changeSidebarSpace = useUserPreferenceStore((store) => store.setActiveNamespace)
-  const [index, setIndex] = useState({ current: 0, prev: -1 })
+  const [index, setIndex] = useState({
+    current: 0,
+    // Required to find direction of the animation
+    prev: -1
+  })
   const { getMostUsedTags } = useTags()
   const tags = useDataStore((s) => s.tags)
   const replaceAndAddActionToPoll = useApiStore((store) => store.replaceAndAddActionToPoll)
   const { getNodesByNamespaces } = useNamespaces()
-  // Required to find direction of the animation
-  // const { getAllBookmarks } = useBookmarks()
-  //
 
   const mostUsedTags = useMemo(() => {
     const topUsedTags = getMostUsedTags()
@@ -42,24 +43,22 @@ export const NoteSidebar = () => {
 
   const spaces: Array<SidebarSpace> = useMemo(() => {
     const nodesByNamespaces = getNodesByNamespaces()
-    const nspaces = nodesByNamespaces
-      .map(
-        (ns) =>
-          ({
-            id: ns.id,
-            label: ns.name,
-            icon: ns.name === RESERVED_NAMESPACES.default ? 'ri:user-line' : 'heroicons-outline:view-grid',
-            tooltip: ns.name,
-            list: {
-              type: 'hierarchy',
-              items: ns.nodes
-            },
-            popularTags: mostUsedTags,
-            pinnedItems: () => <StarredNotes />,
-            pollAction: PollActions.hierarchy
-          } as SidebarSpace)
-      )
-      .slice(0, 3)
+    const nspaces = nodesByNamespaces.map(
+      (ns) =>
+        ({
+          id: ns.id,
+          label: ns.name,
+          icon: ns.name === RESERVED_NAMESPACES.default ? 'ri:user-line' : 'heroicons-outline:view-grid',
+          tooltip: ns.name,
+          list: {
+            type: 'hierarchy',
+            items: ns.nodes
+          },
+          popularTags: mostUsedTags,
+          pinnedItems: () => <StarredNotes />,
+          pollAction: PollActions.hierarchy
+        } as SidebarSpace)
+    )
     // Add shared notes namespace
     nspaces.push({
       id: 'shared',

@@ -329,6 +329,11 @@ export const useApi = () => {
   }
 
   const getNodesByWorkspace = async (): Promise<ILink[]> => {
+    // REMOVE test namespace
+    await client.get(apiURLs.namespaces.getAll, {
+      headers: workspaceHeaders()
+    })
+
     const data = await client
       .get(apiURLs.namespaces.getHierarchy, {
         headers: workspaceHeaders()
@@ -553,6 +558,26 @@ export const useApi = () => {
     return resp
   }
 
+  const getAllNamespaces = async () => {
+    const namespaces = await client
+      .get(apiURLs.namespaces.getAll, {
+        headers: workspaceHeaders()
+      })
+      .then((d) => {
+        mog('namespaces all', d.data)
+        // Parse namespace with updated
+        return []
+      })
+      .catch((e) => {
+        mog('Save error', e)
+        return undefined
+      })
+
+    if (namespaces) {
+      setNamespaces(namespaces)
+    }
+  }
+
   const createNewNamespace = async (name: string) => {
     try {
       const res = await client
@@ -576,6 +601,27 @@ export const useApi = () => {
     }
   }
 
+  const changeNamespaceName = async (id: string, name: string) => {
+    try {
+      const res = await client
+        .patch(
+          apiURLs.namespaces.update,
+          {
+            type: 'NamespaceRequest',
+            id,
+            name
+          },
+          {
+            headers: workspaceHeaders()
+          }
+        )
+        .then(() => true)
+      return res
+    } catch (err) {
+      throw new Error('Unable to update namespace')
+    }
+  }
+
   return {
     saveDataAPI,
     getDataAPI,
@@ -595,6 +641,8 @@ export const useApi = () => {
     saveView,
     deleteView,
     getAllViews,
+    getAllNamespaces,
+    changeNamespaceName,
     createNewNamespace
   }
 }

@@ -118,6 +118,8 @@ export interface AddILinkProps {
 export interface SingleNamespace {
   id: string
   name: string
+  // createdAt: number
+  // updatedAt: number
   icon?: string
 }
 
