@@ -216,7 +216,9 @@ const useEditorPluginConfig = (editorId: string, options?: PluginOptionType) => 
         slateElementType: ELEMENT_ILINK,
         newItemHandler: (path, openedNotePath?) => {
           mog('new item here is', { path, openedNotePath })
-          const note = createNewNote({ path, openedNotePath, noRedirect: true })
+          // TODO: check for path in combination with namespace
+          const openedNode = useDataStore.getState().ilinks.find((l) => l.path === openedNotePath)
+          const note = createNewNote({ path, openedNotePath, noRedirect: true, namespace: openedNode?.namespace })
           return note?.nodeid
         },
         renderElement: ILinkComboboxItem
