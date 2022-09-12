@@ -121,7 +121,7 @@ const Preview: React.FC<PreviewProps> = ({ preview, nodeId }) => {
         <PreviewContainer
           nodeId={nodeId}
           blockId={blockid}
-          showPin={!isAction}
+          showPin={!isAction && normalMode}
           isNewNote={currentItem?.extras?.new}
           isNewTask={isNewTask}
           preview={preview}
