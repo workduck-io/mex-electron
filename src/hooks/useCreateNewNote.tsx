@@ -10,7 +10,6 @@ import { useNavigation } from './useNavigation'
 import { useLastOpened } from './useLastOpened'
 import { useContentStore } from '@store/useContentStore'
 import { useSnippets } from './useSnippets'
-import { RESERVED_NAMESPACES } from '@utils/lib/paths'
 import { useNamespaces } from './useNamespaces'
 import { DRAFT_NODE } from '@workduck-io/mex-utils'
 
@@ -42,13 +41,19 @@ export const useCreateNewNote = () => {
   const createNewNote = (options?: NewNoteOptions) => {
     const childNodepath = options?.parent !== undefined ? getUntitledKey(options?.parent) : getUntitledDraftKey()
 
-    const normalPath = options?.path || childNodepath
-    const newNotePath = options?.namespace ? DRAFT_NODE : normalPath
+    let normalPath = options?.path || childNodepath
+
+    if (options?.namespace) {
+
+    }
+
+    const newNotePath = options?.namespace && options?.path ? normalPath : DRAFT_NODE
 
     const uniquePath = checkValidILink({
       notePath: newNotePath,
       openedNotePath: options?.openedNotePath,
-      showAlert: false
+      showAlert: false,
+      namespace: options?.namespace
     })
 
     const parentNote = getParentILink(uniquePath)

@@ -15,6 +15,7 @@ import { usePolling } from '@apis/usePolling'
 import { useNamespaces } from '@hooks/useNamespaces'
 import { RESERVED_NAMESPACES } from '@utils/lib/paths'
 import { useLayoutStore } from '@store/useLayoutStore'
+import { useUserPreferenceStore } from '@store/userPreferenceStore'
 
 export const NoteSidebar = () => {
   const ilinks = useDataStore((store) => store.ilinks)
@@ -81,11 +82,12 @@ export const NoteSidebar = () => {
     const nextSpaceId = spaces[newIndex]?.id
     if (nextSpaceId) {
       changeSidebarSpace(nextSpaceId)
+      useUserPreferenceStore.getState().setActiveNamespace(nextSpaceId)
     }
   }
 
   const currentSpace = spaces[index.current]
-  // const onClick = useCallback(() => set(state => (state + 1) % 3), [])
+
   const transRef = useSpringRef()
   const transitions = useTransition(index, {
     ref: transRef,
@@ -103,10 +105,18 @@ export const NoteSidebar = () => {
     }
   })
 
+  useEffect(() => {
+    const currentNamespace = useUserPreferenceStore.getState().activeNamespace
+    const selectedSpace = spaces?.[index.current]?.id
+
+    if (!currentNamespace) {
+      useUserPreferenceStore.getState().setActiveNamespace(selectedSpace)
+    }
+  }, [])
+
   usePolling()
 
   useEffect(() => {
-    // setIndex((s) => ({ current: newIndex, prev: s.current }))
     const newIndex = spaces.findIndex((s) => s.id === spaceId)
     if (newIndex === -1) return
     setIndex((s) => ({ current: newIndex, prev: s.current }))

@@ -34,6 +34,7 @@ export interface CheckValidILinkProps {
   notePath: string
   openedNotePath?: string
   showAlert?: boolean
+  namespace?: string
 }
 
 /**  ~~ILinks~~ (Node)
@@ -117,6 +118,7 @@ export interface AddILinkProps {
 export interface SingleNamespace {
   id: string
   name: string
+  icon?: string
 }
 
 export interface DataStoreState {

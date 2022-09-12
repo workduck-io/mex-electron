@@ -20,6 +20,8 @@ export interface ComboboxItem {
   /** submenu data -> Takes the data to render submenu */
   submenu?: ComboboxItem[]
 
+  extras?: any
+
   /** Extended command -> Text after the command is part of it and used as arguments */
   extended?: boolean
 

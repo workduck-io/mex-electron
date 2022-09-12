@@ -213,6 +213,7 @@ export const Combobox = ({ onSelectItem, onRenderItem }: ComboboxProps) => {
               <BlockCombo
                 onSelect={() => {
                   const item = items[itemIndex]
+
                   if (item?.type === QuickLinkType.backlink) {
                     editor && onSelectItem(editor, items[itemIndex])
                   }
@@ -223,20 +224,20 @@ export const Combobox = ({ onSelectItem, onRenderItem }: ComboboxProps) => {
               />
               {((preview && listItem?.type && !isBlockTriggered) ||
                 (isBlockTriggered && textAfterBlockTrigger && preview)) && (
-                <ComboSeperator>
-                  <section>
-                    <EditorPreviewRenderer
-                      noMouseEvents
-                      content={preview?.content || preview}
-                      readOnly
-                      editorId={
-                        isBlockTriggered && activeBlock ? activeBlock.blockId : `${items[itemIndex]?.key}_Preview_Block`
-                      }
-                    />
-                  </section>
-                  {preview && <PreviewMeta meta={metaData} />}
-                </ComboSeperator>
-              )}
+                  <ComboSeperator>
+                    <section>
+                      <EditorPreviewRenderer
+                        noMouseEvents
+                        content={preview?.content || preview}
+                        readOnly
+                        editorId={
+                          isBlockTriggered && activeBlock ? activeBlock.blockId : `${items[itemIndex]?.key}_Preview_Block`
+                        }
+                      />
+                    </section>
+                    {preview && <PreviewMeta meta={metaData} namespace={listItem?.namespace} />}
+                  </ComboSeperator>
+                )}
             </>
           </ComboboxRoot>
         </RemoveScroll>
