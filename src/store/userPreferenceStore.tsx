@@ -12,6 +12,7 @@ interface UserPreferenceStore extends UserPreferences {
   setLastOpenedNotes: (lastOpenedNotes: LastOpenedNotes) => void
   getUserPreferences: () => UserPreferences
   setUserPreferences: (userPreferences: UserPreferences) => void
+  setActiveNamespace: (namespace: string) => void
 }
 
 export const USER_PREF_STORE_KEY = 'mex-user-preference-store'
@@ -41,6 +42,9 @@ export const useUserPreferenceStore = create<UserPreferenceStore>(
         },
         setTheme: (theme) => {
           set({ theme })
+        },
+        setActiveNamespace: (namespace: string) => {
+          set({ activeNamespace: namespace })
         },
         setLastOpenedNotes: (lastOpenedNotes) => {
           set({

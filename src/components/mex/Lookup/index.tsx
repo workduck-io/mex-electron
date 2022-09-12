@@ -14,9 +14,11 @@ import { useNavigation } from '../../../hooks/useNavigation'
 import useOnboard from '../../../store/useOnboarding'
 import { useSnippetStore } from '../../../store/useSnippetStore'
 import { useCreateNewNote } from '@hooks/useCreateNewNote'
+import { mog } from '@workduck-io/mex-utils'
 
 const StyledModal = styled(Modal)`
   z-index: 10010000;
+  min-width: 40rem; 
 `
 
 export const Brackets = styled.span`
@@ -118,7 +120,8 @@ const Lookup = () => {
 
   const handleCreateItem = (inputValue: QuickLink) => {
     if (tempClose) return
-    createNewNote({ path: inputValue.value })
+    mog("VALUE IS", { inputValue })
+    createNewNote({ path: inputValue.value, namespace: inputValue?.namespace })
     closeModal()
   }
 

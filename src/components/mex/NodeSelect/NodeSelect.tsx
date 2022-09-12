@@ -21,7 +21,7 @@ import { Input } from '../../../style/Form'
 import { ILink } from '../../../types/Types'
 import { fuzzySearch } from '../../../utils/lib/fuzzySearch'
 import { mog, withoutContinuousDelimiter } from '../../../utils/lib/helper'
-import { isClash, isMatch, isReserved } from '../../../utils/lib/paths'
+import { isClash, isMatch, isReserved, RESERVED_NAMESPACES } from '../../../utils/lib/paths'
 import { convertContentToRawText } from '../../../utils/search/parseData'
 import { SEPARATOR } from '../Sidebar/treeUtils'
 import {
@@ -34,6 +34,10 @@ import {
   SuggestionError,
   SuggestionText
 } from './NodeSelect.styles'
+import NamespaceTag from '../NamespaceTag'
+import { FlexGap } from '../Archive/styled'
+import { useUserPreferenceStore } from '@store/userPreferenceStore'
+import { useNamespaces } from '@hooks/useNamespaces'
 
 export type QuickLink = {
   // Text to be shown in the combobox list
@@ -70,20 +74,22 @@ enum QuickLinkStatus {
 
 export const makeQuickLink = (
   title: string,
-  options: { nodeid: string; type?: QuickLinkType; icon?: string }
+  options: { namespace?: string, nodeid: string; type?: QuickLinkType; icon?: string }
 ): QuickLink => ({
   text: title,
   value: title,
   type: options.type ?? QuickLinkType.backlink,
   status: QuickLinkStatus.exists,
   nodeid: options.nodeid,
-  icon: options.icon
+  icon: options.icon,
+  namespace: options?.namespace
 })
 
-export const createNewQuickLink = (path: string, type: QuickLinkType = QuickLinkType.backlink): QuickLink => ({
+export const createNewQuickLink = (path: string, namespace: string, type: QuickLinkType = QuickLinkType.backlink): QuickLink => ({
   text: `Create new: ${path}`,
   value: path,
   type,
+  namespace,
   status: QuickLinkStatus.new
 })
 
@@ -173,7 +179,6 @@ function NodeSelect({
   })
 
   const { getSearchExtra } = useSearchExtra()
-
   const setInputItems = (inputItems: QuickLink[]) => setNodeSelectState((state) => ({ ...state, inputItems }))
 
   const setSelectedItem = (selectedItem: QuickLink | null) =>
@@ -192,9 +197,9 @@ function NodeSelect({
 
     const fLinks = disallowReserved ? ilinks.filter((l) => !isReserved(l.path)) : ilinks
 
-    const mLinks = fLinks.map((l) => makeQuickLink(l.path, { nodeid: l.nodeid, icon: l.icon }))
+    const mLinks = fLinks.map((l) => makeQuickLink(l.path, { namespace: l.namespace, nodeid: l.nodeid, icon: l.icon }))
 
-    const sLinks = sharedNodes.map((l) => makeQuickLink(l.path, { nodeid: l.nodeid, icon: 'ri:share-line' }))
+    const sLinks = sharedNodes.map((l) => makeQuickLink(l.path, { namespace: RESERVED_NAMESPACES.shared, nodeid: l.nodeid, icon: 'ri:share-line' }))
 
     if (!showAll) return mLinks
 
@@ -222,7 +227,8 @@ function NodeSelect({
     .reverse()
     .map((nodeid) => {
       const path = getPathFromNodeid(nodeid)
-      return makeQuickLink(path, { nodeid })
+      const namespaceId = useDataStore.getState().ilinks.find(i => i.nodeid === nodeid)?.namespace
+      return makeQuickLink(path, { nodeid, namespace: namespaceId })
     })
     .filter((i) => i.text)
 
@@ -231,19 +237,24 @@ function NodeSelect({
   const contents = useContentStore((store) => store.contents)
 
   const getNewItems = (inputValue: string) => {
-    // const newItems =  ilinks.filter((item) => item.text.toLowerCase().startsWith(inputValue.toLowerCase()))
-    // mog('Slelected', { inputValue })
 
     if (inputValue !== '') {
       const newItems = fuzzySearch(quickLinks, inputValue, (item) => item.text)
+
       if (
         !isClash(
           inputValue,
           quickLinks.map((l) => l.value)
         )
       ) {
+        
+        const activeNamespace = useUserPreferenceStore.getState().activeNamespace;
+        const personalNamespace = useDataStore.getState().namespaces?.find(l => l.name === RESERVED_NAMESPACES.default)
+        const namespace = selectedItem?.namespace || activeNamespace;
+
         if (handleCreateItem && isNew(inputValue, quickLinks) && !isReserved(inputValue)) {
-          const comboItem = createNewQuickLink(inputValue)
+          const comboItem = createNewQuickLink(inputValue, namespace === 'shared' ? personalNamespace?.id : namespace)
+
           if (createAtTop) {
             newItems.unshift(comboItem)
           } else newItems.push(comboItem)
@@ -275,6 +286,7 @@ function NodeSelect({
     onSelectedItemChange: handleSelectedItemChange,
     onHighlightedIndexChange: ({ highlightedIndex }) => {
       const highlightedItem = inputItems[highlightedIndex]
+
       if (highlightedItem && highlightedItem.value) {
         setInputValue(highlightedItem.value)
       }
@@ -373,7 +385,6 @@ function NodeSelect({
 
     const match = typeof disallowMatch === 'function' && disallowMatch(path)
 
-    mog('MATCH', { match })
 
     // Update if search is reserved/clash, or when reserved/clash is true
     if (
@@ -454,6 +465,8 @@ function NodeSelect({
     }
   }, [defaultValue])
 
+  mog("Input Items are", { inputItems })
+
   return (
     <>
       <StyledCombobox {...getComboboxProps()}>
@@ -501,7 +514,9 @@ function NodeSelect({
                   if (content) desc = convertContentToRawText(content.content, ' ', { extra: searchExtra })
                   if (desc === '') desc = undefined
                 }
+
                 const icon = item.icon ? item.icon : fileList2Line
+                const namespace = useDataStore.getState().namespaces?.find(n => n.id === item?.namespace)
                 if (nodeSelectState.clash && disallowClash && item.status === QuickLinkStatus.new) return null
 
                 return (
@@ -512,8 +527,13 @@ function NodeSelect({
                   >
                     <Icon width={24} icon={item.status === QuickLinkStatus.new ? addCircleLine : icon} />
                     <SuggestionContentWrapper>
-                      <SuggestionText>{item.text}</SuggestionText>
-                      {desc !== undefined && <SuggestionDesc>{desc}</SuggestionDesc>}
+                      <SuggestionText>
+                        {item.text}
+                        <NamespaceTag separator={!!item.text} namespace={namespace} />
+                      </SuggestionText>
+                      <SuggestionDesc>
+                        {desc !== undefined && desc}
+                      </SuggestionDesc>
                     </SuggestionContentWrapper>
                   </Suggestion>
                 )

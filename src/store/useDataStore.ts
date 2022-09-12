@@ -108,7 +108,7 @@ const useDataStore = create<DataStoreState>(
         return
       },
 
-      checkValidILink: ({ notePath, openedNotePath, showAlert }) => {
+      checkValidILink: ({ notePath, openedNotePath, showAlert, namespace }) => {
         const { key, isChild } = withoutContinuousDelimiter(notePath)
 
         // * If `notePath` starts with '.', than create note under 'opened note'.
@@ -116,12 +116,11 @@ const useDataStore = create<DataStoreState>(
           notePath = isChild && openedNotePath ? `${openedNotePath}${key}` : key
         }
 
-        const ilinks = get().ilinks
+        const ilinks = namespace ? get().ilinks.filter(link => link.namespace === namespace) : get().ilinks
 
         const linksStrings = ilinks.map((l) => l.path)
         const reservedOrUnique = getUniquePath(notePath, linksStrings, showAlert)
 
-        mog('RESERVED', { reservedOrUnique })
 
         if (!reservedOrUnique) {
           throw Error(`ERROR-RESERVED: PATH (${notePath}) IS RESERVED. YOU DUMB`)
