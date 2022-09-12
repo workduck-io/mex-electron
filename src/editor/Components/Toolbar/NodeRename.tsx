@@ -1,7 +1,6 @@
 import React, { useEffect, useMemo, useRef, useState } from 'react'
 
 import { getNameFromPath, getParentFromPath, SEPARATOR } from '@components/mex/Sidebar/treeUtils'
-import { hierarchyParser } from '@hooks/useHierarchy'
 import { useNodes } from '@hooks/useNodes'
 import { useKeyListener } from '@hooks/useShortcutListener'
 import useDataStore from '@store/useDataStore'
