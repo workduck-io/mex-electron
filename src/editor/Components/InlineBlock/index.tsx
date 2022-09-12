@@ -1,16 +1,20 @@
-import { useNodes } from '@hooks/useNodes'
-import { NodeType } from '../../../types/Types'
 import React, { useMemo } from 'react'
+
+import { SharedNodeIcon } from '@components/icons/Icons'
+import { useNodes } from '@hooks/useNodes'
+import { useNoteContext } from '@store/Context/context.note'
+import { useSpotlightContext } from '@store/Context/context.spotlight'
+import { openNodeInMex } from '@utils/combineSources'
 import { useSelected } from 'slate-react'
 import styled from 'styled-components'
-import useArchive from '../../../hooks/useArchive'
+
 import { useLinks } from '../../../hooks/useLinks'
 import { useNavigation } from '../../../hooks/useNavigation'
 import { useContentStore } from '../../../store/useContentStore'
+import { NodeType } from '../../../types/Types'
 import { mog } from '../../../utils/lib/helper'
 import { getBlock } from '../../../utils/search/parseData'
 import EditorPreviewRenderer from '../../EditorPreviewRenderer'
-import { useSaver } from '../Saver'
 import { RootElement } from '../SyncBlock'
 import {
   Chip,
@@ -21,11 +25,7 @@ import {
   StyledInlineBlock,
   StyledInlineBlockPreview
 } from './styled'
-import { SharedNodeIcon } from '@components/icons/Icons'
-import { generateTempId } from '@data/Defaults/idPrefixes'
-import { useSpotlightContext } from '@store/Context/context.spotlight'
-import { useNoteContext } from '@store/Context/context.note'
-import { openNodeInMex } from '@utils/combineSources'
+import { ROUTE_PATHS, useRouting, NavigationType } from '@views/routes/urls'
 
 const StyledArchiveText = styled.text`
   border-radius: ${({ theme }) => theme.borderRadius.small};
@@ -35,6 +35,7 @@ const StyledArchiveText = styled.text`
 
 const InlineBlock = (props: any) => {
   const { push } = useNavigation()
+  const { goTo } = useRouting()
   const { getPathFromNodeid } = useLinks()
   const { getNodeType } = useNodes()
   const getContent = useContentStore((store) => store.getContent)
@@ -44,28 +45,30 @@ const InlineBlock = (props: any) => {
   const nodeType = getNodeType(nodeid)
 
   const spotlightCtx = useSpotlightContext()
-  const noteCtx = useNoteContext();
+  const noteCtx = useNoteContext()
 
   const content = useMemo(() => {
     if (blockId) {
       const data = getBlock(nodeid, blockId)
-      mog("Logging Block Data", { data })
       return data ? [data] : undefined
     }
 
     const data = getContent(nodeid)?.content
 
-    mog("LOGGING CONTENT DATA", { data, nodeid, blockId })
     return data
   }, [nodeid, blockId])
 
-  const { onSave } = useSaver()
+  const openLinkNode = (noteId: string) => {
+    push(noteId)
+    goTo(ROUTE_PATHS.node, NavigationType.push, noteId)
+  }
 
   const openNode = (ev: any) => {
     ev.preventDefault()
-    if (noteCtx || spotlightCtx) openNodeInMex(nodeid) 
-    onSave()
-    push(nodeid)
+    if (noteCtx || spotlightCtx) openNodeInMex(nodeid)
+    else {
+      openLinkNode(nodeid)
+    }
   }
 
   const selected = useSelected()
@@ -94,7 +97,7 @@ const InlineBlock = (props: any) => {
         </FlexBetween>
         {(nodeType === NodeType.SHARED || nodeType === NodeType.DEFAULT) && (
           <StyledInlineBlockPreview>
-            <EditorPreviewRenderer content={content} editorId={`${nodeid}_Inline_Block`} />
+            <EditorPreviewRenderer content={content} editorId={`${nodeid}_${blockId}_Inline_Block`} />
           </StyledInlineBlockPreview>
         )}
       </StyledInlineBlock>

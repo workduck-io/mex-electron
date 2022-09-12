@@ -203,8 +203,10 @@ const List = ({
       }
     })
 
+    if (!normalMode) unsubscribe()
+
     return () => unsubscribe()
-  }, [activeIndex, data])
+  }, [activeIndex, data, normalMode])
 
   useEffect(() => {
     const handler = (event) => {

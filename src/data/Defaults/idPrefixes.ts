@@ -35,5 +35,8 @@ export const generateQuestionId = () => `${QUESTION_ID_PREFIX}${ID_SEPARATOR}${s
 export const generateReminderId = () => `${REMINDER_ID_PREFIX}${ID_SEPARATOR}${shortId()}`
 export const generateTaskViewId = () => `${TASK_VIEW_PREFIX}${ID_SEPARATOR}${shortId()}`
 
-export const cleanString = (str: string) =>
-  str.startsWith(`${DRAFT_PREFIX}${SEPARATOR}`) ? str.replace(`${DRAFT_PREFIX}${SEPARATOR}`, '') : str
+export const cleanString = (str: string) => {
+  if (!str) return ''
+  
+  return str.startsWith(`${DRAFT_PREFIX}${SEPARATOR}`) ? str.replace(`${DRAFT_PREFIX}${SEPARATOR}`, '') : str
+}

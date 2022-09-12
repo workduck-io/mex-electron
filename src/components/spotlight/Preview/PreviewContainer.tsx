@@ -1,7 +1,12 @@
-import { getBlockMetadata } from '@editor/Actions/useEditorBlockSelection'
-import { convertValueToTasks } from '@utils/lib/contentConvertTask'
 import React, { useEffect } from 'react'
+
+import { defaultContent } from '@data/Defaults/baseData'
+import { getBlockMetadata } from '@editor/Actions/useEditorBlockSelection'
+import { getLatestContent } from '@hooks/useEditorBuffer'
+import { convertValueToTasks } from '@utils/lib/contentConvertTask'
+
 import { tinykeys } from '@workduck-io/tinykeys'
+
 import { getDefaultContent, PreviewProps } from '.'
 import { useFocusBlock, useBlockHighlightStore } from '../../../editor/Actions/useFocusBlock'
 import { Editor } from '../../../editor/Editor'
@@ -17,15 +22,23 @@ import { openNodeInMex } from '../../../utils/combineSources'
 import { getDeserializeSelectionToNodes } from '../../../utils/htmlDeserializer'
 import { useSaveChanges } from '../Search/useSearchProps'
 import { spotlightShortcuts } from '../Shortcuts/list'
-import { getLatestContent } from '@hooks/useEditorBuffer'
-import { defaultContent } from '@data/Defaults/baseData'
+import PreviewHeader from './PreviewHeader'
 
 export interface PreviewContainerProps extends PreviewProps {
   blockId?: string
   isNewTask?: boolean
+  isNewNote?: boolean
+  showPin?: boolean
 }
 
-const PreviewContainer: React.FC<PreviewContainerProps> = ({ nodeId, preview, blockId, isNewTask }) => {
+const PreviewContainer: React.FC<PreviewContainerProps> = ({
+  nodeId,
+  isNewNote,
+  preview,
+  showPin,
+  blockId,
+  isNewTask
+}) => {
   // * Store
 
   const { saveIt } = useSaveChanges()
@@ -125,8 +138,16 @@ const PreviewContainer: React.FC<PreviewContainerProps> = ({ nodeId, preview, bl
     }
   }, [normalMode, handleSaveContent])
 
+  const onPreviewClick = (ev) => {
+    ev.preventDefault()
+    ev.stopPropagation()
+
+    setNormalMode(false)
+  }
+
   return (
-    <FadeContainer fade={blockId !== undefined} onClick={() => setNormalMode(false)}>
+    <FadeContainer fade={blockId !== undefined} onClick={onPreviewClick}>
+      {!isNewNote && !isNewTask && showPin && <PreviewHeader noteId={nodeId} />}
       <Editor
         autoFocus={!normalMode}
         padding="1rem"

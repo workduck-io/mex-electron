@@ -5,7 +5,7 @@ import { BrowserWindow, shell } from "electron";
 import { mog } from "@utils/lib/helper";
 
 class WindowManager {
-  private windowRef: Record<string, BrowserWindow>
+  private windowRef: Record<string, number>
   private static instance: WindowManager;
 
   private constructor() {
@@ -21,11 +21,11 @@ class WindowManager {
   }
 
   public createWindow = (windowId: string, options: WindowOptions): BrowserWindow => {
-    let window: BrowserWindow = this.windowRef?.[windowId];
-    if (window) return window
+    const browserWindowId = this.windowRef?.[windowId];
+    if (browserWindowId) return BrowserWindow.fromId(browserWindowId)
 
-    window = new BrowserWindow(options.windowConstructorOptions)
-    this.windowRef = { ...this.windowRef, [windowId]: window }
+    const window = new BrowserWindow(options.windowConstructorOptions)
+    this.windowRef = { ...this.windowRef, [windowId]: window.id }
     window.loadURL(options.loadURL.url, options.loadURL.options)
 
     window.webContents.on('did-finish-load', () => {
@@ -33,7 +33,7 @@ class WindowManager {
         throw new Error('Unable to initialize Browser window!')
       }
 
-      if (options.onLoad) options.onLoad(window)
+      if (options.onLoad) options?.onLoad(window)
 
       if (options.onLoadShow) {
         window.focus()
@@ -46,12 +46,13 @@ class WindowManager {
       window.webContents.send(IpcAction.WINDOW_BLUR)
     })
 
-    window.on('close', () => {
-      if (options?.onClose) options.onClose(window)
-      this.deleteWindow(windowId)
+    window.on('close', (event) => {
+      if (options?.onClose) options?.onClose(window)
+      if (options?.deleteOnClose === false) event.preventDefault()
+      this.deleteWindow(windowId, options?.deleteOnClose)
     })
 
-    if (IS_DEV) window.webContents.openDevTools({ mode: 'right' })
+    if (options?.debug && IS_DEV) window.webContents.openDevTools({ mode: 'right' })
 
     window.webContents?.on('new-window', (event, url) => {
       event.preventDefault()
@@ -67,9 +68,14 @@ class WindowManager {
   }
 
   public getWindow = (windowId: string): BrowserWindow => {
-    const window = this.windowRef?.[windowId]
+    const browserWindowId = this.windowRef?.[windowId]
 
-    return window
+    try {
+      return BrowserWindow.fromId(browserWindowId)
+    } catch (err) {
+      mog("Unable to get Window from ID")
+    }
+
   }
 
   public sendToWindow = (windowId: string, ipcType: IpcAction, data?: any) => {
@@ -78,15 +84,14 @@ class WindowManager {
     if (window) window.webContents.send(ipcType, data)
   }
 
-  public deleteWindow = (windowId: string) => {
+  public deleteWindow = (windowId: string, areYouSure = true) => {
     const window = this.getWindow(windowId);
 
-    if (window) {
-      const { [windowId]: ref, ...windows } = this.windowRef
+    if (areYouSure) {
+      const { [windowId]: refId, ...windows } = this.windowRef
       this.windowRef = windows
-
-      window.close()
-    }
+      window?.close()
+    } else window?.hide()
   }
 
 }

@@ -118,6 +118,7 @@ export const createNoteWindow = (dataForPreviewWindow: { from: AppType; data: an
     onClose: () => {
       windowManager.sendToWindow(AppType.MEX, IpcAction.UNPIN_NOTE, { noteId: dataForPreviewWindow?.data?.noteId })
     },
+    debug: false,
     alwaysOnTop: true,
     onLoad: (window) => {
       if (dataForPreviewWindow) {
@@ -128,21 +129,20 @@ export const createNoteWindow = (dataForPreviewWindow: { from: AppType; data: an
   })
 }
 
-export const createMexWindow = (tempData?: any) => {
+export const createMexWindow = (onLoad?: (window: BrowserWindow) => void) => {
   const mexURL =
     isDevelopment && import.meta.env.VITE_MEX_DEV_SERVER_URL !== undefined
       ? import.meta.env.VITE_MEX_DEV_SERVER_URL
       : new URL('dist/index.html', 'file://' + __dirname).toString()
 
   // MEX here
-  const ref = windowManager.createWindow('MEX', {
+  const ref = windowManager.createWindow(AppType.MEX, {
     windowConstructorOptions: MEX_WINDOW_OPTIONS,
     loadURL: { url: mexURL },
     onLoad: (window) => {
-      if (tempData?.update) {
-        window.webContents.send(IpcAction.SHOW_RELEASE_NOTES, { update: tempData?.update })
-      }
-    }
+      if (onLoad) onLoad(window)
+    },
+    deleteOnClose: false
   })
 
   const menuBuilder = new MenuBuilder(ref)
@@ -180,7 +180,11 @@ const spotlightInBubbleMode = (show?: boolean) => {
 }
 
 export const createAllWindows = (d: any) => {
-  createMexWindow(d)
+  createMexWindow((window) => {
+    if (d?.update) {
+      window.webContents.send(IpcAction.SHOW_RELEASE_NOTES, { update: d?.update })
+    }
+  })
   const spotlightWindowRef = createSpotLighWindow()
 
   windows.toast = new Toast(spotlightWindowRef)

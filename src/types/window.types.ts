@@ -10,4 +10,6 @@ export type WindowOptions = {
   onClose?: (window?: BrowserWindow) => void
   onBlurHide?: boolean
   onLoadShow?: boolean
+  debug?: boolean
+  deleteOnClose?: boolean
 }

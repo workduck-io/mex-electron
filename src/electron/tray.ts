@@ -3,7 +3,7 @@ import { IpcAction } from '@data/IpcAction'
 import { AppType } from '@hooks/useInitialize'
 import { nativeImage, Tray, Menu, app, shell } from 'electron'
 import { SPOTLIGHT_SHORTCUT } from './listeners/ipc'
-import { handleToggleMainWindow } from './utils/helper'
+import { createMexWindow, handleToggleMainWindow } from './utils/helper'
 import { windowManager } from './WindowManager'
 
 const createTray = () => {
@@ -23,14 +23,25 @@ const createTray = () => {
     {
       label: 'New Note',
       click: () => {
-        windowManager.sendToWindow(AppType.MEX, IpcAction.CREATE_NEW_NODE)
-        windowManager?.getWindow(AppType.MEX)?.show()
+        const mexRef = windowManager?.getWindow(AppType.MEX)
+        if (!mexRef) {
+          createMexWindow((window) => {
+            window.webContents.send(IpcAction.CREATE_NEW_NODE)
+          })
+        } else {
+          windowManager.sendToWindow(AppType.MEX, IpcAction.CREATE_NEW_NODE)
+          windowManager?.getWindow(AppType.MEX)?.show()
+        }
+
       }
     },
     { type: 'separator' },
     {
       label: 'Open Mex',
       click: () => {
+        const mexRef = windowManager.getWindow(AppType.MEX)
+        if (!mexRef) createMexWindow()
+
         windowManager.getWindow(AppType.MEX)?.show()
       }
     },
@@ -53,8 +64,15 @@ const createTray = () => {
     {
       label: 'Open Preferences',
       click: () => {
-        windowManager.sendToWindow(AppType.MEX, IpcAction.OPEN_PREFERENCES)
-        windowManager.getWindow(AppType.MEX)?.show()
+        const mexRef = windowManager.getWindow(AppType.MEX)
+        if (!mexRef) {
+          createMexWindow((window) => {
+            window.webContents.send(IpcAction.OPEN_PREFERENCES)
+          })
+        } else {
+          windowManager.sendToWindow(AppType.MEX, IpcAction.OPEN_PREFERENCES)
+          windowManager.getWindow(AppType.MEX)?.show()
+        }
       }
     },
     {

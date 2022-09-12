@@ -1,8 +1,20 @@
+import { animated } from 'react-spring'
 import styled, { css } from 'styled-components'
 
 import { Scroll } from '../../../style/spotlight/layout'
 import { StyledBackground } from '../styled'
-import { animated } from 'react-spring'
+
+export const StyledPreviewHeader = styled.div`
+  display: flex;
+  justify-content: flex-end;
+  position: fixed;
+  top: 4.5rem;
+  z-index: 3000;
+  right: 1rem;
+  align-items: center;
+  padding: ${({ theme }) => theme.spacing.small};
+  margin: ${({ theme }) => theme.spacing.tiny} 0;
+`
 
 export const StyledPreview = styled(animated.div)<{ readOnly?: boolean }>`
   ${(props) =>
@@ -10,8 +22,9 @@ export const StyledPreview = styled(animated.div)<{ readOnly?: boolean }>`
     css`
       cursor: pointer;
     `}
-  ${StyledBackground}
-  ${Scroll}
+  ${StyledBackground};
+  ${Scroll};
+
   position: relative;
   padding: 0.5rem;
   border-radius: 10px;

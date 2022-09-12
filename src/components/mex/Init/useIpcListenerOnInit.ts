@@ -1,3 +1,5 @@
+import { useEffect } from 'react'
+
 import { IpcAction } from '@data/IpcAction'
 import { useCreateNewNote } from '@hooks/useCreateNewNote'
 import { useEditorBuffer } from '@hooks/useEditorBuffer'
@@ -6,8 +8,8 @@ import { useRecieveMentions, useRecieveTokens, useSyncData } from '@hooks/useSyn
 import { useAuthentication } from '@services/auth/useAuth'
 import syncStores from '@store/syncStore/synced'
 import { useAnalysisIPC } from '@store/useAnalysis'
-import useMultipleEditors from '@store/useEditorsStore'
 import { useEditorStore } from '@store/useEditorStore'
+import useMultipleEditors from '@store/useEditorsStore'
 import { useHistoryStore } from '@store/useHistoryStore'
 import useModalStore, { ModalsType } from '@store/useModalStore'
 import useOnboard from '@store/useOnboarding'
@@ -15,7 +17,7 @@ import { useRecentsStore } from '@store/useRecentsStore'
 import { mog } from '@utils/lib/helper'
 import { NavigationType, ROUTE_PATHS, useRouting } from '@views/routes/urls'
 import { ipcRenderer } from 'electron'
-import { useEffect } from 'react'
+
 import { useRedirectAuth } from '../Auth/useRedirectAuth'
 
 export const useIpcListenerOnInit = () => {
@@ -45,6 +47,7 @@ export const useIpcListenerOnInit = () => {
       pushHs(nodeid)
       addRecent(nodeid)
       loadNode(nodeid)
+      goTo(ROUTE_PATHS.node, NavigationType.push, nodeid)
     })
     // ipcRenderer.on(IpcAction.CLEAR_RECENTS, () => {
     //   clear()
@@ -94,9 +97,9 @@ export const useIpcListenerOnInit = () => {
       goTo(`${ROUTE_PATHS.settings}/themes`, NavigationType.push)
     })
 
-    // * Pinned Note IPC Listener 
+    // * Pinned Note IPC Listener
     ipcRenderer.on(IpcAction.UNPIN_NOTE, (_event, { noteId }) => {
-      mog("NOTE TO DELTE", { noteId })
+      mog('NOTE TO DELTE', { noteId })
 
       if (noteId) {
         useMultipleEditors.getState().unPinNote(noteId)
