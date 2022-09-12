@@ -199,8 +199,9 @@ export const useNamespaces = () => {
           const newNamespaces = namespaces.map((n) =>
             n.id === id
               ? {
-                  id: n.id,
-                  name
+                  ...n,
+                  name,
+                  updatedAt: Date.now()
                 }
               : n
           )

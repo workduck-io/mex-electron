@@ -343,11 +343,6 @@ export const useApi = () => {
   }
 
   const getNodesByWorkspace = async (): Promise<ILink[]> => {
-    // REMOVE test namespace
-    await client.get(apiURLs.namespaces.getAll, {
-      headers: workspaceHeaders()
-    })
-
     const data = await client
       .get(apiURLs.namespaces.getHierarchy, {
         headers: workspaceHeaders()
@@ -738,27 +733,6 @@ export const useApi = () => {
       return res
     } catch (err) {
       throw new Error('Unable to update namespace icon')
-    }
-  }
-
-  const changeNamespaceName = async (id: string, name: string) => {
-    try {
-      const res = await client
-        .patch(
-          apiURLs.namespaces.update,
-          {
-            type: 'NamespaceRequest',
-            id,
-            name
-          },
-          {
-            headers: workspaceHeaders()
-          }
-        )
-        .then(() => true)
-      return res
-    } catch (err) {
-      throw new Error('Unable to update namespace')
     }
   }
 
