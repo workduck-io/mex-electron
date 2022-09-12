@@ -8,6 +8,7 @@ import { StyledNamespaceTag } from '../NamespaceTag/styled'
 export const StyledInputWrapper = styled.div<{ isOverlay: boolean }>`
   width: 100%;
   position: relative;
+<<<<<<< HEAD
   ${({ isOverlay, theme }) =>
     isOverlay
       ? css`
@@ -17,6 +18,10 @@ export const StyledInputWrapper = styled.div<{ isOverlay: boolean }>`
           width: calc(100% - 5rem);
         `}
 
+=======
+  margin: ${({ theme }) => theme.spacing.small} 0;
+  
+>>>>>>> 672ed844 (activeNamespace in useUserPreferences, and lookup namespace tags)
   ${Input} {
     width: 100%;
   }
@@ -62,6 +67,7 @@ export const FilterComboboxToggle = styled.div`
   }
 `
 
+<<<<<<< HEAD
 export const SuggestionContentWrapper = styled.div`
   width: 60%;
   flex-grow: 1;
@@ -78,6 +84,16 @@ export const SuggestionTextWrapper = styled.div`
   justify-content: space-between;
 `
 
+=======
+export const SuggestionContentWrapper = styled.div` 
+  width: 60%;
+  flex-grow: 1;
+`
+export const SuggestionText = styled.div`
+  display: flex;
+  align-items: center;
+`
+>>>>>>> 672ed844 (activeNamespace in useUserPreferences, and lookup namespace tags)
 export const SuggestionDesc = styled.div`
   display: flex;
   align-items: center;

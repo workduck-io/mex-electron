@@ -1,10 +1,10 @@
-import { SingleNamespace } from '../../../types/Types'
 import React from 'react'
-import { RESERVED_NAMESPACES } from '@utils/lib/paths'
-import { MexIcon } from '@workduck-io/mex-components'
-import { useTheme } from 'styled-components'
-import { NamespaceText, StyledNamespaceTag } from './styled'
+
 import IconDisplay from '@ui/components/IconPicker/IconDisplay'
+import { RESERVED_NAMESPACES } from '@utils/lib/paths'
+
+import { SingleNamespace } from '../../../types/Types'
+import { NamespaceText, StyledNamespaceTag } from './styled'
 
 type NamespaceTag = {
   namespace: SingleNamespace
@@ -12,8 +12,6 @@ type NamespaceTag = {
 }
 
 const NamespaceTag = ({ namespace, separator = false }: NamespaceTag) => {
-  const theme = useTheme()
-
   if (!namespace) return <></>
 
   const icon = namespace.icon ?? {

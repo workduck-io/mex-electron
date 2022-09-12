@@ -124,9 +124,13 @@ export interface AddILinkProps {
 export interface SingleNamespace {
   id: string
   name: string
+<<<<<<< HEAD
   createdAt: number
   updatedAt: number
   icon?: MIcon
+=======
+  icon?: string
+>>>>>>> 672ed844 (activeNamespace in useUserPreferences, and lookup namespace tags)
 }
 
 export interface DataStoreState {

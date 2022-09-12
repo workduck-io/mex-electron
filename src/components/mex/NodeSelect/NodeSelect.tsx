@@ -24,7 +24,11 @@ import { Input, StyledCreatatbleSelect } from '../../../style/Form'
 import { ILink, SingleNamespace } from '../../../types/Types'
 import { fuzzySearch } from '../../../utils/lib/fuzzySearch'
 import { mog, withoutContinuousDelimiter } from '../../../utils/lib/helper'
+<<<<<<< HEAD
 import { isClash, isMatch, isReserved, RESERVED_NAMESPACES, SHARED_NAMESPACE } from '../../../utils/lib/paths'
+=======
+import { isClash, isMatch, isReserved, RESERVED_NAMESPACES } from '../../../utils/lib/paths'
+>>>>>>> 672ed844 (activeNamespace in useUserPreferences, and lookup namespace tags)
 import { convertContentToRawText } from '../../../utils/search/parseData'
 import { FlexGap } from '../Archive/styled'
 import NamespaceTag from '../NamespaceTag'
@@ -41,6 +45,10 @@ import {
   SuggestionText,
   SuggestionTextWrapper
 } from './NodeSelect.styles'
+import NamespaceTag from '../NamespaceTag'
+import { FlexGap } from '../Archive/styled'
+import { useUserPreferenceStore } from '@store/userPreferenceStore'
+import { useNamespaces } from '@hooks/useNamespaces'
 
 export type QuickLink = {
   // Text to be shown in the combobox list
@@ -77,7 +85,11 @@ enum QuickLinkStatus {
 
 export const makeQuickLink = (
   title: string,
+<<<<<<< HEAD
   options: { namespace?: string; nodeid: string; type?: QuickLinkType; icon?: string }
+=======
+  options: { namespace?: string, nodeid: string; type?: QuickLinkType; icon?: string }
+>>>>>>> 672ed844 (activeNamespace in useUserPreferences, and lookup namespace tags)
 ): QuickLink => ({
   text: title,
   value: title,
@@ -88,10 +100,11 @@ export const makeQuickLink = (
   namespace: options?.namespace
 })
 
-export const createNewQuickLink = (path: string, type: QuickLinkType = QuickLinkType.backlink): QuickLink => ({
+export const createNewQuickLink = (path: string, namespace: string, type: QuickLinkType = QuickLinkType.backlink): QuickLink => ({
   text: `Create new: ${path}`,
   value: path,
   type,
+  namespace,
   status: QuickLinkStatus.new
 })
 
@@ -200,8 +213,11 @@ function NodeSelect({
   })
 
   const { getSearchExtra } = useSearchExtra()
+<<<<<<< HEAD
   const { getNamespaceOptions } = useNamespaces()
 
+=======
+>>>>>>> 672ed844 (activeNamespace in useUserPreferences, and lookup namespace tags)
   const setInputItems = (inputItems: QuickLink[]) => setNodeSelectState((state) => ({ ...state, inputItems }))
 
   const setSelectedItem = (selectedItem: QuickLink | null) =>
@@ -225,9 +241,13 @@ function NodeSelect({
 
     const mLinks = fLinks.map((l) => makeQuickLink(l.path, { namespace: l.namespace, nodeid: l.nodeid, icon: l.icon }))
 
+<<<<<<< HEAD
     const sLinks = sharedNodes.map((l) =>
       makeQuickLink(l.path, { namespace: SHARED_NAMESPACE.id, nodeid: l.nodeid, icon: 'mex:shared-note' })
     )
+=======
+    const sLinks = sharedNodes.map((l) => makeQuickLink(l.path, { namespace: RESERVED_NAMESPACES.shared, nodeid: l.nodeid, icon: 'ri:share-line' }))
+>>>>>>> 672ed844 (activeNamespace in useUserPreferences, and lookup namespace tags)
 
     if (!showAll) return mLinks
 
@@ -258,7 +278,11 @@ function NodeSelect({
     .reverse()
     .map((nodeid) => {
       const path = getPathFromNodeid(nodeid)
+<<<<<<< HEAD
       const namespaceId = useDataStore.getState().ilinks.find((i) => i.nodeid === nodeid)?.namespace
+=======
+      const namespaceId = useDataStore.getState().ilinks.find(i => i.nodeid === nodeid)?.namespace
+>>>>>>> 672ed844 (activeNamespace in useUserPreferences, and lookup namespace tags)
       return makeQuickLink(path, { nodeid, namespace: namespaceId })
     })
     .filter((i) => i.text)
@@ -268,8 +292,13 @@ function NodeSelect({
   const contents = useContentStore((store) => store.contents)
 
   const getNewItems = (inputValue: string) => {
+<<<<<<< HEAD
     if (inputValue !== '' && inputValue !== undefined) {
       // mog('getNewItems', { inputValue, quickLinks })
+=======
+
+    if (inputValue !== '') {
+>>>>>>> 672ed844 (activeNamespace in useUserPreferences, and lookup namespace tags)
       const newItems = fuzzySearch(quickLinks, inputValue, (item) => item.text)
 
       if (
@@ -278,10 +307,20 @@ function NodeSelect({
           quickLinks.map((l) => l.value)
         )
       ) {
+<<<<<<< HEAD
         // Change to value from namespaceselect
 
         if (handleCreateItem && isNew(inputValue, quickLinks) && !isReserved(inputValue)) {
           const comboItem = createNewQuickLink(inputValue)
+=======
+        
+        const activeNamespace = useUserPreferenceStore.getState().activeNamespace;
+        const personalNamespace = useDataStore.getState().namespaces?.find(l => l.name === RESERVED_NAMESPACES.default)
+        const namespace = selectedItem?.namespace || activeNamespace;
+
+        if (handleCreateItem && isNew(inputValue, quickLinks) && !isReserved(inputValue)) {
+          const comboItem = createNewQuickLink(inputValue, namespace === 'shared' ? personalNamespace?.id : namespace)
+>>>>>>> 672ed844 (activeNamespace in useUserPreferences, and lookup namespace tags)
 
           if (createAtTop) {
             newItems.unshift(comboItem)
@@ -444,6 +483,10 @@ function NodeSelect({
 
     const match = typeof disallowMatch === 'function' && disallowMatch(path)
 
+<<<<<<< HEAD
+=======
+
+>>>>>>> 672ed844 (activeNamespace in useUserPreferences, and lookup namespace tags)
     // Update if search is reserved/clash, or when reserved/clash is true
     if (
       ((reserved || nodeSelectState.reserved) && disallowReserved) ||
@@ -524,6 +567,7 @@ function NodeSelect({
     }
   }, [defaultValue])
 
+<<<<<<< HEAD
   const highlightedItem = inputItems[highlightedIndex]
 
   const getRelevantNamespace = () => {
@@ -545,6 +589,9 @@ function NodeSelect({
   //   namespaceSelectValue,
   //   nodeSelectState
   // })
+=======
+  mog("Input Items are", { inputItems })
+>>>>>>> 672ed844 (activeNamespace in useUserPreferences, and lookup namespace tags)
 
   return (
     <>
@@ -575,6 +622,7 @@ function NodeSelect({
                   setSelectedNamespace(selected)
                   handleSelectedItemChange({ selectedItem: { ...highlightedItem, namespace: selected.id } })
                 }
+<<<<<<< HEAD
               }}
               value={namespaceSelectValue}
               options={namespaceOptions}
@@ -638,6 +686,35 @@ function NodeSelect({
           )}
         </StyledMenu>
       </StyledInputWrapper>
+=======
+
+                const icon = item.icon ? item.icon : fileList2Line
+                const namespace = useDataStore.getState().namespaces?.find(n => n.id === item?.namespace)
+                if (nodeSelectState.clash && disallowClash && item.status === QuickLinkStatus.new) return null
+
+                return (
+                  <Suggestion
+                    highlight={highlightedIndex === index}
+                    key={`${item.value}${index}`}
+                    {...getItemProps({ item, index })}
+                  >
+                    <Icon width={24} icon={item.status === QuickLinkStatus.new ? addCircleLine : icon} />
+                    <SuggestionContentWrapper>
+                      <SuggestionText>
+                        {item.text}
+                        <NamespaceTag separator={!!item.text} namespace={namespace} />
+                      </SuggestionText>
+                      <SuggestionDesc>
+                        {desc !== undefined && desc}
+                      </SuggestionDesc>
+                    </SuggestionContentWrapper>
+                  </Suggestion>
+                )
+              })}
+          </>
+        )}
+      </StyledMenu>
+>>>>>>> 672ed844 (activeNamespace in useUserPreferences, and lookup namespace tags)
     </>
   )
 }

@@ -265,10 +265,15 @@ export const useLinks = () => {
     const links = useDataStore.getState().ilinks
     const parentPath = path.split(SEPARATOR).slice(0, -1).join(SEPARATOR)
 
+<<<<<<< HEAD
     const namespaceILinks = !namespace ? links : links.filter((l) => l.namespace === namespace)
     const note = namespaceILinks.find((ilink) => ilink.path === parentPath)
 
     // mog('getParentILink', { path, parentPath, note, namespaceILinks })
+=======
+    const namespaceILinks = !namespace ? links : links.filter(l => l.namespace === namespace)
+    const note = namespaceILinks.find((ilink) => ilink.path === parentPath)
+>>>>>>> 672ed844 (activeNamespace in useUserPreferences, and lookup namespace tags)
 
     return note
   }

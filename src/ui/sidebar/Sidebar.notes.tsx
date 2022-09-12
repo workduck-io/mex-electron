@@ -14,7 +14,18 @@ import { RESERVED_NAMESPACES } from '@utils/lib/paths'
 import { SidebarSpaceSwitcher } from './Sidebar.spaceSwitcher'
 import { SpaceContentWrapper, SpaceWrapper } from './Sidebar.style'
 import { SidebarSpace } from './Sidebar.types'
+<<<<<<< HEAD
 import { SidebarSpaceComponent } from './space'
+=======
+import { useTransition, useSpringRef } from '@react-spring/web'
+import { useTags } from '@hooks/useTags'
+import { PollActions, useApiStore } from '@store/useApiStore'
+import { usePolling } from '@apis/usePolling'
+import { useNamespaces } from '@hooks/useNamespaces'
+import { RESERVED_NAMESPACES } from '@utils/lib/paths'
+import { useLayoutStore } from '@store/useLayoutStore'
+import { useUserPreferenceStore } from '@store/userPreferenceStore'
+>>>>>>> 672ed844 (activeNamespace in useUserPreferences, and lookup namespace tags)
 
 export const NoteSidebar = () => {
   const ilinks = useDataStore((store) => store.ilinks)
@@ -83,6 +94,7 @@ export const NoteSidebar = () => {
     const nextSpaceId = spaces[newIndex]?.id
     // mog('Changing index', { newIndex, index })
     if (nextSpaceId) {
+<<<<<<< HEAD
       if (updateStores) {
         changeSidebarSpace(nextSpaceId)
         isAnimate.current = true
@@ -90,6 +102,10 @@ export const NoteSidebar = () => {
         isAnimate.current = false
       }
       setIndex({ current: newIndex, prev: index.current })
+=======
+      changeSidebarSpace(nextSpaceId)
+      useUserPreferenceStore.getState().setActiveNamespace(nextSpaceId)
+>>>>>>> 672ed844 (activeNamespace in useUserPreferences, and lookup namespace tags)
     }
   }
 
@@ -127,17 +143,23 @@ export const NoteSidebar = () => {
     }
   })
 
+<<<<<<< HEAD
   /**
    * Set initial namespace when not in preference
    */
+=======
+>>>>>>> 672ed844 (activeNamespace in useUserPreferences, and lookup namespace tags)
   useEffect(() => {
     const currentNamespace = useUserPreferenceStore.getState().activeNamespace
     const selectedSpace = spaces?.[index.current]?.id
 
     if (!currentNamespace) {
+<<<<<<< HEAD
       if (selectedSpace !== spaceId) {
         changeSidebarSpace(selectedSpace)
       }
+=======
+>>>>>>> 672ed844 (activeNamespace in useUserPreferences, and lookup namespace tags)
       useUserPreferenceStore.getState().setActiveNamespace(selectedSpace)
     }
   }, [])
@@ -145,7 +167,6 @@ export const NoteSidebar = () => {
   usePolling()
 
   useEffect(() => {
-    // setIndex((s) => ({ current: newIndex, prev: s.current }))
     const newIndex = spaces.findIndex((s) => s.id === spaceId)
     if (newIndex === -1) return
     setIndex((s) => ({ current: newIndex, prev: s.current }))
