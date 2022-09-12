@@ -1,6 +1,6 @@
 import React, { useEffect } from 'react'
 
-import { hierarchyParser } from '@hooks/useHierarchy'
+// import { hierarchyParser } from '@hooks/useHierarchy'
 import arrowRightLine from '@iconify/icons-ri/arrow-right-line'
 import { Icon } from '@iconify/react'
 import useDataStore from '@store/useDataStore'
@@ -10,7 +10,7 @@ import create from 'zustand'
 import { Button, DisplayShortcut } from '@workduck-io/mex-components'
 import { tinykeys } from '@workduck-io/tinykeys'
 
-import { useLinks } from '../../../hooks/useLinks'
+// import { useLinks } from '../../../hooks/useLinks'
 import { useNavigation } from '../../../hooks/useNavigation'
 import { useRefactor } from '../../../hooks/useRefactor'
 import { useKeyListener } from '../../../hooks/useShortcutListener'
@@ -23,6 +23,7 @@ import { isMatch, isReserved } from '../../../utils/lib/paths'
 import { QuickLink, WrappedNodeSelect } from '../NodeSelect/NodeSelect'
 import { doesLinkRemain } from './doesLinkRemain'
 import { ArrowIcon, MockRefactorMap, ModalControls, ModalHeader, MRMHead, MRMRow } from './styles'
+import { useUserPreferenceStore } from '@store/userPreferenceStore'
 
 interface RefactorPath {
   path: string
@@ -106,12 +107,11 @@ const Refactor = () => {
   const setMockRefactored = useRefactorStore((store) => store.setMockRefactored)
   const setTo = useRefactorStore((store) => store.setTo)
   const setFrom = useRefactorStore((store) => store.setFrom)
-  const setBaseNodeId = useDataStore((store) => store.setBaseNodeId)
-  const currentSpace = useLayoutStore((store) => store.sidebar.spaceId)
-  const layoutStore = useLayoutStore((store) => store.sidebar)
-  mog('LayoutStore', { layoutStore })
+  // const setBaseNodeId = useDataStore((store) => store.setBaseNodeId)
+  const currentSpace = useUserPreferenceStore((store) => store.activeNamespace)
+  // const layoutStore = useLayoutStore((store) => store.sidebar)
   const { push } = useNavigation()
-  const { updateILinks } = useLinks()
+  // const { updateILinks } = useLinks()
   const { shortcutDisabled, shortcutHandler } = useKeyListener()
   const namespaces = useDataStore((store) => store.namespaces)
 

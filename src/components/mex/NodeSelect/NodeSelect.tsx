@@ -17,8 +17,8 @@ import { useContentStore } from '../../../store/useContentStore'
 import useDataStore from '../../../store/useDataStore'
 import { useRecentsStore } from '../../../store/useRecentsStore'
 import { useSnippetStore } from '../../../store/useSnippetStore'
-import { Input } from '../../../style/Form'
-import { ILink } from '../../../types/Types'
+import { Input, StyledCreatatbleSelect } from '../../../style/Form'
+import { ILink, SingleNamespace } from '../../../types/Types'
 import { fuzzySearch } from '../../../utils/lib/fuzzySearch'
 import { mog, withoutContinuousDelimiter } from '../../../utils/lib/helper'
 import { isClash, isMatch, isReserved, RESERVED_NAMESPACES } from '../../../utils/lib/paths'
@@ -28,6 +28,7 @@ import {
   StyledCombobox,
   StyledInputWrapper,
   StyledMenu,
+  StyledNodeSelectWrapper,
   Suggestion,
   SuggestionContentWrapper,
   SuggestionDesc,
@@ -38,6 +39,7 @@ import NamespaceTag from '../NamespaceTag'
 import { FlexGap } from '../Archive/styled'
 import { useUserPreferenceStore } from '@store/userPreferenceStore'
 import { useNamespaces } from '@hooks/useNamespaces'
+import { StyledNamespaceSelectComponents } from '@style/Select'
 
 export type QuickLink = {
   // Text to be shown in the combobox list
@@ -74,7 +76,7 @@ enum QuickLinkStatus {
 
 export const makeQuickLink = (
   title: string,
-  options: { namespace?: string, nodeid: string; type?: QuickLinkType; icon?: string }
+  options: { namespace?: string; nodeid: string; type?: QuickLinkType; icon?: string }
 ): QuickLink => ({
   text: title,
   value: title,
@@ -85,11 +87,10 @@ export const makeQuickLink = (
   namespace: options?.namespace
 })
 
-export const createNewQuickLink = (path: string, namespace: string, type: QuickLinkType = QuickLinkType.backlink): QuickLink => ({
+export const createNewQuickLink = (path: string, type: QuickLinkType = QuickLinkType.backlink): QuickLink => ({
   text: `Create new: ${path}`,
   value: path,
   type,
-  namespace,
   status: QuickLinkStatus.new
 })
 
@@ -102,6 +103,12 @@ interface NodeSelectProps {
   inputRef?: any
   showAll?: boolean
   prefillRecent?: boolean
+  /**
+   * Whether to show menu as an overlay or inline
+   * @default true
+   */
+  menuOverlay?: boolean
+
   menuOpen?: boolean
   /** If true, the combobox will be autofocused */
   autoFocus?: boolean
@@ -135,7 +142,9 @@ interface NodeSelectProps {
 
 interface NodeSelectState {
   inputItems: QuickLink[]
+  namespaces: SingleNamespace[]
   selectedItem: QuickLink | null
+  selectedNamespace: SingleNamespace | null
   reserved: boolean
   clash: boolean
   isMatch: boolean
@@ -148,6 +157,11 @@ interface ReserveClashActionProps {
   onSuccess: () => void
 }
 
+/**
+ * Select nodes for for a given path
+ *
+ * @param {NodeSelectProps} props
+ */
 function NodeSelect({
   autoFocus,
   autoFocusSelectAll,
@@ -168,21 +182,29 @@ function NodeSelect({
   onFocus,
   onBlur,
   id,
-  name
+  name,
+  menuOverlay = true
 }: NodeSelectProps) {
   const [nodeSelectState, setNodeSelectState] = useState<NodeSelectState>({
     inputItems: [],
+    namespaces: [],
     selectedItem: null,
+    selectedNamespace: null,
     reserved: false,
     clash: false,
     isMatch: false
   })
 
   const { getSearchExtra } = useSearchExtra()
+  const { getDefaultNamespace } = useNamespaces()
+
   const setInputItems = (inputItems: QuickLink[]) => setNodeSelectState((state) => ({ ...state, inputItems }))
 
   const setSelectedItem = (selectedItem: QuickLink | null) =>
     setNodeSelectState((state) => ({ ...state, selectedItem }))
+
+  const setSelectedNamespace = (selectedNamespace: SingleNamespace | null) =>
+    setNodeSelectState((state) => ({ ...state, selectedNamespace }))
 
   const { getPathFromNodeid, getNodeidFromPath } = useLinks()
 
@@ -199,7 +221,9 @@ function NodeSelect({
 
     const mLinks = fLinks.map((l) => makeQuickLink(l.path, { namespace: l.namespace, nodeid: l.nodeid, icon: l.icon }))
 
-    const sLinks = sharedNodes.map((l) => makeQuickLink(l.path, { namespace: RESERVED_NAMESPACES.shared, nodeid: l.nodeid, icon: 'ri:share-line' }))
+    const sLinks = sharedNodes.map((l) =>
+      makeQuickLink(l.path, { namespace: RESERVED_NAMESPACES.shared, nodeid: l.nodeid, icon: 'ri:share-line' })
+    )
 
     if (!showAll) return mLinks
 
@@ -210,16 +234,36 @@ function NodeSelect({
     return [...mLinks, ...sLinks, ...mSnippets]
   }
 
+  const getNamespaces = () => {
+    const namespaces = useDataStore.getState().namespaces.map((n) => ({
+      ...n,
+      value: n.name,
+      label: n.name
+    }))
+    const defaultNamespace = getDefaultNamespace() ?? namespaces[0]
+    return {
+      namespaces,
+      defaultNamespace: {
+        ...defaultNamespace,
+        value: defaultNamespace.name,
+        label: defaultNamespace.name
+      }
+    }
+  }
+
   const reset = () =>
     setNodeSelectState({
       inputItems: [],
+      namespaces: [],
       selectedItem: null,
+      selectedNamespace: null,
       reserved: false,
       clash: false,
       isMatch: false
     })
 
   const quickLinks = getQuickLinks()
+  const { namespaces, defaultNamespace } = getNamespaces()
 
   const lastOpened = useRecentsStore((store) => store.lastOpened)
 
@@ -227,7 +271,7 @@ function NodeSelect({
     .reverse()
     .map((nodeid) => {
       const path = getPathFromNodeid(nodeid)
-      const namespaceId = useDataStore.getState().ilinks.find(i => i.nodeid === nodeid)?.namespace
+      const namespaceId = useDataStore.getState().ilinks.find((i) => i.nodeid === nodeid)?.namespace
       return makeQuickLink(path, { nodeid, namespace: namespaceId })
     })
     .filter((i) => i.text)
@@ -237,7 +281,6 @@ function NodeSelect({
   const contents = useContentStore((store) => store.contents)
 
   const getNewItems = (inputValue: string) => {
-
     if (inputValue !== '') {
       const newItems = fuzzySearch(quickLinks, inputValue, (item) => item.text)
 
@@ -247,13 +290,10 @@ function NodeSelect({
           quickLinks.map((l) => l.value)
         )
       ) {
-        
-        const activeNamespace = useUserPreferenceStore.getState().activeNamespace;
-        const personalNamespace = useDataStore.getState().namespaces?.find(l => l.name === RESERVED_NAMESPACES.default)
-        const namespace = selectedItem?.namespace || activeNamespace;
+        // Change to value from namespaceselect
 
         if (handleCreateItem && isNew(inputValue, quickLinks) && !isReserved(inputValue)) {
-          const comboItem = createNewQuickLink(inputValue, namespace === 'shared' ? personalNamespace?.id : namespace)
+          const comboItem = createNewQuickLink(inputValue)
 
           if (createAtTop) {
             newItems.unshift(comboItem)
@@ -265,6 +305,22 @@ function NodeSelect({
       return quickLinks
     }
   }
+
+  // Do not remove highlight index when mouse leaves the menu
+  const stateReducer = React.useCallback((state, actionAndChanges) => {
+    const { type, changes } = actionAndChanges
+    switch (type) {
+      // Do not remove highlight index when mouse leaves the menu
+      case useCombobox.stateChangeTypes.MenuMouseLeave: {
+        return {
+          ...changes,
+          highlightedIndex: state.highlightedIndex
+        }
+      }
+      default:
+        return changes // otherwise business as usual.
+    }
+  }, [])
 
   const {
     isOpen,
@@ -284,13 +340,15 @@ function NodeSelect({
       return item ? item.value : ''
     },
     onSelectedItemChange: handleSelectedItemChange,
-    onHighlightedIndexChange: ({ highlightedIndex }) => {
+    onHighlightedIndexChange: (args) => {
+      const { highlightedIndex } = args
       const highlightedItem = inputItems[highlightedIndex]
 
       if (highlightedItem && highlightedItem.value) {
         setInputValue(highlightedItem.value)
       }
-    }
+    },
+    stateReducer
   })
 
   function handleSelectedItemChange({ selectedItem }: { selectedItem?: QuickLink }) {
@@ -385,7 +443,6 @@ function NodeSelect({
 
     const match = typeof disallowMatch === 'function' && disallowMatch(path)
 
-
     // Update if search is reserved/clash, or when reserved/clash is true
     if (
       ((reserved || nodeSelectState.reserved) && disallowReserved) ||
@@ -465,82 +522,120 @@ function NodeSelect({
     }
   }, [defaultValue])
 
-  mog("Input Items are", { inputItems })
+  const highlightedItem = inputItems[highlightedIndex]
+
+  const getRelevantNamespace = () => {
+    const activeNamespaceId = useUserPreferenceStore.getState().activeNamespace
+    const activeNamespace = namespaces.find((n) => n.id === activeNamespaceId)
+
+    return activeNamespace ?? defaultNamespace
+  }
+
+  const showNamespaceSelect = highlightedItem && highlightedItem.status === QuickLinkStatus.new
+  const namespaceSelectValue = nodeSelectState.selectedNamespace ?? getRelevantNamespace()
+
+  // mog('NodeSelect Data', {
+  //   inputItems,
+  //   highlightedIndex,
+  //   highlightedItem,
+  //   selectedItem,
+  //   showNamespaceSelect,
+  //   namespaceSelectValue,
+  //   nodeSelectState
+  // })
 
   return (
     <>
-      <StyledCombobox {...getComboboxProps()}>
-        <Input
-          disabled={disabled}
-          {...getInputProps()}
-          autoFocus={autoFocus}
-          placeholder={placeholder}
-          id={id}
-          name={name}
-          onChange={(e) => {
-            getInputProps().onChange(e)
-            onInpChange(e)
-          }}
-          onKeyUp={onKeyUp}
-          onFocus={onFocusWithSelect}
-          onBlur={onBlur}
-        />
-        {highlightWhenSelected &&
-          (iconHighlight ? (
-            <Icon className="okayIcon" icon={checkboxCircleLine}></Icon>
-          ) : (
-            <Icon className="errorIcon" icon={errorWarningLine}></Icon>
-          ))}
-      </StyledCombobox>
-      <StyledMenu {...getMenuProps()} isOpen={isOpen}>
-        {disallowReserved && nodeSelectState.reserved ? (
-          <SuggestionError>
-            <Icon width={24} icon={lock2Line} />
-            {nodeSelectState.reserved && (
-              <SuggestionContentWrapper>
-                <SuggestionText>Warning: Reserved Note</SuggestionText>
-                <SuggestionDesc>Reserved Notes cannot be used!</SuggestionDesc>
-                <SuggestionDesc>However, Children inside reserved notes can be used.</SuggestionDesc>
-              </SuggestionContentWrapper>
-            )}
-          </SuggestionError>
-        ) : (
-          <>
-            {isOpen &&
-              inputItems.map((item, index) => {
-                let desc: undefined | string = undefined
-                if (item.status !== QuickLinkStatus.new) {
-                  const content = contents[item.nodeid]
-                  if (content) desc = convertContentToRawText(content.content, ' ', { extra: searchExtra })
-                  if (desc === '') desc = undefined
+      <StyledInputWrapper isOverlay={menuOverlay}>
+        <StyledCombobox {...getComboboxProps()}>
+          <Input
+            disabled={disabled}
+            {...getInputProps()}
+            autoFocus={autoFocus}
+            placeholder={placeholder}
+            id={id}
+            name={name}
+            onChange={(e) => {
+              getInputProps().onChange(e)
+              onInpChange(e)
+            }}
+            onKeyUp={onKeyUp}
+            onFocus={onFocusWithSelect}
+            onBlur={onBlur}
+          />
+          {showNamespaceSelect && (
+            <StyledCreatatbleSelect
+              // isMulti
+              // isCreatable
+              onChange={(selected) => {
+                // mog('Selected', selected)
+                if (selected && highlightedItem && highlightedItem.status === QuickLinkStatus.new) {
+                  handleSelectedItemChange({ selectedItem: { ...highlightedItem, namespace: selected.id } })
+                  setSelectedNamespace(selected)
                 }
+              }}
+              value={namespaceSelectValue}
+              options={namespaces}
+              closeMenuOnSelect={true}
+              closeMenuOnBlur={false}
+              components={StyledNamespaceSelectComponents}
+            />
+          )}
+          {highlightWhenSelected &&
+            (iconHighlight ? (
+              <Icon className="okayIcon" icon={checkboxCircleLine}></Icon>
+            ) : (
+              <Icon className="errorIcon" icon={errorWarningLine}></Icon>
+            ))}
+        </StyledCombobox>
+        <StyledMenu {...getMenuProps()} isOverlay={menuOverlay} isOpen={isOpen}>
+          {disallowReserved && nodeSelectState.reserved ? (
+            <SuggestionError>
+              <Icon width={24} icon={lock2Line} />
+              {nodeSelectState.reserved && (
+                <SuggestionContentWrapper>
+                  <SuggestionText>Warning: Reserved Note</SuggestionText>
+                  <SuggestionDesc>Reserved Notes cannot be used!</SuggestionDesc>
+                  <SuggestionDesc>However, Children inside reserved notes can be used.</SuggestionDesc>
+                </SuggestionContentWrapper>
+              )}
+            </SuggestionError>
+          ) : (
+            <>
+              {isOpen &&
+                inputItems.map((item, index) => {
+                  let desc: undefined | string = undefined
+                  if (item.status !== QuickLinkStatus.new) {
+                    const content = contents[item.nodeid]
+                    if (content) desc = convertContentToRawText(content.content, ' ', { extra: searchExtra })
+                    if (desc === '') desc = undefined
+                  }
 
-                const icon = item.icon ? item.icon : fileList2Line
-                const namespace = useDataStore.getState().namespaces?.find(n => n.id === item?.namespace)
-                if (nodeSelectState.clash && disallowClash && item.status === QuickLinkStatus.new) return null
+                  const icon = item.icon ? item.icon : fileList2Line
+                  const namespace = namespaces?.find((n) => n.id === item?.namespace)
+                  if (nodeSelectState.clash && disallowClash && item.status === QuickLinkStatus.new) return null
 
-                return (
-                  <Suggestion
-                    highlight={highlightedIndex === index}
-                    key={`${item.value}${index}`}
-                    {...getItemProps({ item, index })}
-                  >
-                    <Icon width={24} icon={item.status === QuickLinkStatus.new ? addCircleLine : icon} />
-                    <SuggestionContentWrapper>
-                      <SuggestionText>
-                        {item.text}
-                        <NamespaceTag separator={!!item.text} namespace={namespace} />
-                      </SuggestionText>
-                      <SuggestionDesc>
-                        {desc !== undefined && desc}
-                      </SuggestionDesc>
-                    </SuggestionContentWrapper>
-                  </Suggestion>
-                )
-              })}
-          </>
-        )}
-      </StyledMenu>
+                  return (
+                    <Suggestion
+                      highlight={highlightedIndex === index}
+                      key={`${item.value}${index}`}
+                      {...getItemProps({ item, index })}
+                    >
+                      <Icon width={24} icon={item.status === QuickLinkStatus.new ? addCircleLine : icon} />
+                      <SuggestionContentWrapper>
+                        <SuggestionText>
+                          {item.text}
+                          <NamespaceTag separator={!!item.text} namespace={namespace} />
+                        </SuggestionText>
+                        <SuggestionDesc>{desc !== undefined && desc}</SuggestionDesc>
+                      </SuggestionContentWrapper>
+                    </Suggestion>
+                  )
+                })}
+            </>
+          )}
+        </StyledMenu>
+      </StyledInputWrapper>
     </>
   )
 }
@@ -548,7 +643,7 @@ function NodeSelect({
 NodeSelect.defaultProps = {
   menuOpen: false,
   autoFocus: false,
-  placeholder: 'Select Node',
+  placeholder: 'Select Note',
   handleCreateItem: undefined,
   highlightWhenSelected: false,
   iconHighlight: false,
@@ -566,8 +661,4 @@ export const isNewILink = (input: string, items: Array<ILink>): boolean => {
 
 export default NodeSelect
 
-export const WrappedNodeSelect = (props: NodeSelectProps) => (
-  <StyledInputWrapper>
-    <NodeSelect {...props} />
-  </StyledInputWrapper>
-)
+export const WrappedNodeSelect = (props: NodeSelectProps) => <NodeSelect {...props} />

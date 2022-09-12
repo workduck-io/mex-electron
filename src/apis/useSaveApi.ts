@@ -93,7 +93,7 @@ export const useApi = () => {
         console.error(e)
       })
 
-    // return data
+    return data
   }
 
   const bulkSaveNodes = async (
@@ -123,14 +123,23 @@ export const useApi = () => {
         headers: workspaceHeaders()
       })
       .then((d: any) => {
-        const { addedPaths, removedPaths, node } = d.data
-        const addedILinks = hierarchyParser(addedPaths, namespace)
-        const removedILinks = hierarchyParser(removedPaths, namespace)
+        // mog('bulkSaveNodes', d)
+        const { changedPaths, node } = d.data
+        const addedILinks = []
+        const removedILinks = []
+        changedPaths.forEach((nsObject) => {
+          Object.entries(nsObject).forEach(([nsId, addedRemovedPathObj]: any) => {
+            const nsAddedILinks = hierarchyParser(addedRemovedPathObj.addedPaths, nsId)
+            const nsRemovedILinks = hierarchyParser(addedRemovedPathObj.removedPaths, nsId)
+
+            addedILinks.push(...nsAddedILinks)
+            removedILinks.push(...nsRemovedILinks)
+          })
+        })
+        updateILinks(addedILinks, removedILinks)
         setMetadata(noteId, extractMetadata(node))
 
-        mog('create new request', { d })
         // * set the new hierarchy in the tree
-        updateILinks(addedILinks, removedILinks)
         addLastOpened(noteId)
 
         return d.data

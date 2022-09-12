@@ -18,6 +18,7 @@ import { isMatch, isReserved } from '../../../utils/lib/paths'
 import { QuickLink, WrappedNodeSelect } from '../NodeSelect/NodeSelect'
 import { doesLinkRemain } from './doesLinkRemain'
 import { ArrowIcon, MockRefactorMap, ModalControls, ModalHeader, MRMHead, MRMRow } from './styles'
+import { useUserPreferenceStore } from '@store/userPreferenceStore'
 
 const Rename = () => {
   const { execRefactorAsync, getMockRefactor } = useRefactor()
@@ -36,7 +37,7 @@ const Rename = () => {
   const setMockRefactored = useRenameStore((store) => store.setMockRefactored)
   const setTo = useRenameStore((store) => store.setTo)
   const setFrom = useRenameStore((store) => store.setFrom)
-  const currentSpace = useLayoutStore((store) => store.sidebar.spaceId)
+  const currentSpace = useUserPreferenceStore((store) => store.activeNamespace)
 
   const handleFromChange = (quickLink: QuickLink) => {
     const newValue = quickLink.value

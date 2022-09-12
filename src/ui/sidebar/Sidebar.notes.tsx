@@ -19,8 +19,8 @@ import { useUserPreferenceStore } from '@store/userPreferenceStore'
 export const NoteSidebar = () => {
   const ilinks = useDataStore((store) => store.ilinks)
   const namespaces = useDataStore((store) => store.namespaces)
-  const spaceId = useLayoutStore((store) => store.sidebar.spaceId)
-  const changeSidebarSpace = useLayoutStore((store) => store.changeSidebarSpace)
+  const spaceId = useUserPreferenceStore((store) => store.activeNamespace)
+  const changeSidebarSpace = useUserPreferenceStore((store) => store.setActiveNamespace)
   const [index, setIndex] = useState({ current: 0, prev: -1 })
   const { getMostUsedTags } = useTags()
   const tags = useDataStore((s) => s.tags)
@@ -78,12 +78,13 @@ export const NoteSidebar = () => {
     return nspaces
   }, [ilinks, namespaces])
 
-  const changeIndex = (newIndex: number) => {
+  const changeIndex = (newIndex: number, updateStores = true) => {
     if (newIndex === index.current) return
     const nextSpaceId = spaces[newIndex]?.id
     if (nextSpaceId) {
-      useUserPreferenceStore.getState().setActiveNamespace(nextSpaceId)
-      changeSidebarSpace(nextSpaceId)
+      if (updateStores) {
+        changeSidebarSpace(nextSpaceId)
+      }
       setIndex({ current: newIndex, prev: index.current })
     }
   }
@@ -115,19 +116,21 @@ export const NoteSidebar = () => {
     const selectedSpace = spaces?.[index.current]?.id
 
     if (!currentNamespace) {
-      changeSidebarSpace(selectedSpace)
+      if (selectedSpace !== spaceId) {
+        changeSidebarSpace(selectedSpace)
+      }
       useUserPreferenceStore.getState().setActiveNamespace(selectedSpace)
     }
   }, [])
 
   usePolling()
 
-  // useEffect(() => {
-  //   const newIndex = spaces.findIndex((s) => s.id === spaceId)
-  //   if (newIndex === -1) return
-  //   // if (newIndex === index.current) return
-  //   changeIndex(newIndex)
-  // }, [spaceId, spaces])
+  useEffect(() => {
+    const newIndex = spaces.findIndex((s) => s.id === spaceId)
+    if (newIndex === -1) return
+    // if (newIndex === index.current) return
+    changeIndex(newIndex, false)
+  }, [spaceId, spaces])
 
   useEffect(() => {
     transRef.start()
@@ -139,7 +142,7 @@ export const NoteSidebar = () => {
     }
   }, [currentSpace])
 
-  // mog('Space', { ilinks, spaces, currentSpace, index })
+  mog('Space', { ilinks, spaces, currentSpace, index, spaceId })
 
   return (
     <SpaceWrapper>

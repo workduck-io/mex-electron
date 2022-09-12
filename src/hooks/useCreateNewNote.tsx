@@ -11,7 +11,7 @@ import { useLastOpened } from './useLastOpened'
 import { useContentStore } from '@store/useContentStore'
 import { useSnippets } from './useSnippets'
 import { useNamespaces } from './useNamespaces'
-import { DRAFT_NODE } from '@workduck-io/mex-utils'
+import { DRAFT_NODE, mog } from '@workduck-io/mex-utils'
 
 export type NewNoteOptions = {
   path?: string
@@ -41,13 +41,10 @@ export const useCreateNewNote = () => {
   const createNewNote = (options?: NewNoteOptions) => {
     const childNodepath = options?.parent !== undefined ? getUntitledKey(options?.parent) : getUntitledDraftKey()
 
-    let normalPath = options?.path || childNodepath
+    const namespacePath = options?.namespace ? DRAFT_NODE : childNodepath
 
-    if (options?.namespace) {
-
-    }
-
-    const newNotePath = options?.namespace && options?.path ? normalPath : DRAFT_NODE
+    const newNotePath = options?.path || namespacePath
+    // mog('createNewNote', { options, newNotePath })
 
     const uniquePath = checkValidILink({
       notePath: newNotePath,

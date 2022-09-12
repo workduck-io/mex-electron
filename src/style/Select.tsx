@@ -10,6 +10,13 @@ const Control = styled(components.Control)`
   margin: ${({ theme }) => theme.spacing.medium} 0;
 `
 
+const NamespaceControl = styled(components.Control)`
+  margin: 0 !important;
+  border-color: transparent !important;
+  padding: 0.25rem 0;
+  border-radius: 0;
+`
+
 const StyledLabel = styled.div`
   display: flex;
   justify-content: space-around;
@@ -101,3 +108,4 @@ const Input = (props: any) => {
 
 export const StyledServiceSelectComponents = { Control, MultiValueLabel, Option, ValueContainer, Input, Placeholder }
 export const StyledRolesSelectComponents = { Control, Input, ValueContainer, Placeholder }
+export const StyledNamespaceSelectComponents = { Control: NamespaceControl }
