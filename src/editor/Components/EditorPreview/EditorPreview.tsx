@@ -1,6 +1,6 @@
 import React, { useEffect, useMemo, useRef } from 'react'
 
-import { Floating, NestedFloating } from '@components/FloatingElements'
+import { NestedFloating } from '@components/FloatingElements'
 import { useBufferStore, useEditorBuffer } from '@hooks/useEditorBuffer'
 import closeCircleLine from '@iconify/icons-ri/close-circle-line'
 import fileList2Line from '@iconify/icons-ri/file-list-2-line'

@@ -31,6 +31,7 @@ import { LastOpenedState } from '../../../types/userPreference'
 import { useShareModalStore } from '../Mention/ShareModalStore'
 import { useDeleteStore } from '../Refactor/DeleteModal'
 import { useRefactorStore } from '../Refactor/Refactor'
+import usePinnedWindows from '@hooks/usePinnedWindow'
 
 export const MENU_ID = 'Tree-Menu'
 
@@ -79,10 +80,9 @@ export const TreeContextMenu = ({ item }: TreeContextMenuProps) => {
   const openDeleteModal = useDeleteStore((store) => store.openModal)
   const { createNewNote } = useCreateNewNote()
   const openShareModal = useShareModalStore((store) => store.openModal)
-  const toggleModal = useModalStore((store) => store.toggleOpen)
+  const { onPinNote, onUnpinNote, isPinned } = usePinnedWindows();
+  const toggleModal = useModalStore(store => store.toggleOpen)
   const { goTo } = useRouting()
-  const pinNote = useMultipleEditors((store) => store.pinNote)
-  const pinnedNotes = useMultipleEditors((store) => store.pinned)
   const contents = useContentStore((store) => store.contents)
 
   const hasTemplate = useMemo(() => {
@@ -111,11 +111,10 @@ export const TreeContextMenu = ({ item }: TreeContextMenuProps) => {
 
   const handlePinNote = (item: TreeItem) => {
     const noteId = item?.data?.nodeid
-    if (pinnedNotes.has(noteId)) {
-      appNotifierWindow(IpcAction.SHOW_PINNED_NOTE_WINDOW, AppType.MEX, { noteId })
+    if (!isPinned(noteId)) {
+      onPinNote(noteId)
     } else {
-      pinNote(noteId)
-      appNotifierWindow(IpcAction.PIN_NOTE_WINDOW, AppType.MEX, { noteId })
+      onUnpinNote(noteId)
     }
   }
 
@@ -156,7 +155,7 @@ export const TreeContextMenu = ({ item }: TreeContextMenuProps) => {
           }}
         >
           <Icon icon={PinIcon} />
-          Pin this Note
+          {`${isPinned(item?.data?.nodeid) ? 'Unpin' : 'Pin'} this Note`}
         </ContextMenuItem>
         <ContextMenuItem
           onSelect={(args) => {

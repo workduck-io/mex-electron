@@ -1,17 +1,21 @@
+import React, { useLayoutEffect, useMemo, useRef } from 'react'
+
 import { isParent } from '@components/mex/Sidebar/treeUtils'
 import downIcon from '@iconify/icons-ph/arrow-down-bold'
 import { Icon } from '@iconify/react'
 import { useSpotlightSettingsStore } from '@store/settings.spotlight'
-import React, { useLayoutEffect, useMemo, useRef } from 'react'
+import { mog } from '@utils/lib/helper'
 import { useSpring } from 'react-spring'
+
 import { BASE_TASKS_PATH, defaultContent } from '../../../data/Defaults/baseData'
 import { generateTempId } from '../../../data/Defaults/idPrefixes'
 import EditorPreviewRenderer from '../../../editor/EditorPreviewRenderer'
-import { useSpotlightAppStore } from '../../../store/app.spotlight'
 import { CategoryType, useSpotlightContext } from '../../../store/Context/context.spotlight'
+import { useSpotlightAppStore } from '../../../store/app.spotlight'
 import { useSnippetStore } from '../../../store/useSnippetStore'
 import PreviewContainer from './PreviewContainer'
-import { SeePreview, StyledPreview } from './styled'
+import PreviewHeader from './PreviewHeader'
+import { ScrollablePreview, SeePreview, StyledPreview } from './styled'
 
 export type PreviewType = {
   text: string
@@ -65,16 +69,13 @@ const Preview: React.FC<PreviewProps> = ({ preview, nodeId }) => {
 
     if (
       itemCategory !== CategoryType.backlink &&
-      itemCategory !== CategoryType.task
-      && itemCategory !== CategoryType.pinned
+      itemCategory !== CategoryType.task &&
+      itemCategory !== CategoryType.pinned
     ) {
       style.width = '0%'
     }
 
-    if (
-      (itemCategory === CategoryType.meeting ||
-        itemCategory === CategoryType.task)
-    ) {
+    if (itemCategory === CategoryType.meeting || itemCategory === CategoryType.task) {
       if (normalMode) style.width = '45%'
       else style.width = '100%'
     }
@@ -92,22 +93,24 @@ const Preview: React.FC<PreviewProps> = ({ preview, nodeId }) => {
     if (selection) {
       handleScrollToBottom()
     }
-
   }, [selection])
+
+  const isAction = currentItem?.category === CategoryType.action
 
   return (
     <StyledPreview
+      ref={ref}
       key={`PreviewSpotlightEditor${!isSnippet ? nodeId : snippet.id}`}
       style={animationProps}
-      ref={ref}
       readOnly={normalMode}
       data-tour="mex-quick-capture-preview"
     >
-      {selection && (
+      {selection && !isAction && (
         <SeePreview onClick={handleScrollToBottom}>
           <Icon icon={downIcon} />
         </SeePreview>
       )}
+
       {isSnippet ? (
         <EditorPreviewRenderer
           content={snippet.content}
@@ -115,7 +118,14 @@ const Preview: React.FC<PreviewProps> = ({ preview, nodeId }) => {
           editorId={snippet.id}
         />
       ) : (
-        <PreviewContainer nodeId={nodeId} blockId={blockid} isNewTask={isNewTask} preview={preview} />
+        <PreviewContainer
+          nodeId={nodeId}
+          blockId={blockid}
+          showPin={!isAction}
+          isNewNote={currentItem?.extras?.new}
+          isNewTask={isNewTask}
+          preview={preview}
+        />
       )}
     </StyledPreview>
   )

@@ -1,27 +1,26 @@
+import { SEPARATOR } from '@components/mex/Sidebar/treeUtils'
+import { defaultContent } from '@data/Defaults/baseData'
+import { getBlockMetadata } from '@editor/Actions/useEditorBlockSelection'
+import { getLatestContent } from '@hooks/useEditorBuffer'
 import { getPlateSelectors } from '@udecode/plate'
+import { convertValueToTasks } from '@utils/lib/contentConvertTask'
+
 import { cleanString } from '../../../data/Defaults/idPrefixes'
 import { IpcAction } from '../../../data/IpcAction'
 import { useSaver } from '../../../editor/Components/Saver'
 import { appNotifierWindow } from '../../../electron/utils/notifiers'
 import { AppType } from '../../../hooks/useInitialize'
-import { useSpotlightAppStore } from '../../../store/app.spotlight'
+import useLoad from '../../../hooks/useLoad'
+import { useSearch } from '../../../hooks/useSearch'
 import { CategoryType, useSpotlightContext } from '../../../store/Context/context.spotlight'
+import { useSpotlightAppStore } from '../../../store/app.spotlight'
 import { useSpotlightEditorStore } from '../../../store/editor.spotlight'
 import { useContentStore } from '../../../store/useContentStore'
 import { useRecentsStore } from '../../../store/useRecentsStore'
 import { getDeserializeSelectionToNodes } from '../../../utils/htmlDeserializer'
-
-import { useSearch } from '../../../hooks/useSearch'
-import useLoad from '../../../hooks/useLoad'
 import { checkIfUntitledDraftNode } from '../../../utils/lib/strings'
 import { getTitleFromContent } from '../../../utils/search/parseData'
 import { useRouting } from '../../../views/routes/urls'
-import { convertValueToTasks } from '@utils/lib/contentConvertTask'
-import { SEPARATOR } from '@components/mex/Sidebar/treeUtils'
-import { mog } from '@utils/lib/helper'
-import { getBlockMetadata } from '@editor/Actions/useEditorBlockSelection'
-import { getLatestContent } from '@hooks/useEditorBuffer'
-import { defaultContent } from '@data/Defaults/baseData'
 
 export const useSearchProps = () => {
   const currentListItem = useSpotlightEditorStore((store) => store.currentListItem)
@@ -56,6 +55,7 @@ type SaveItProps = {
   removeHighlight?: boolean
   isNewTask?: boolean
   path?: string
+  notify?: boolean
   // Will not save on blur if false
   // defaults to true if absent
   saveAfterBlur?: boolean
@@ -113,8 +113,6 @@ export const useSaveChanges = () => {
     let path = node.path
     const title = getTitleFromContent(editorContent)
 
-    mog('isNewDraftNode', { path })
-
     if (isNewDraftNode && isUntitledDraftNode) {
       if (options?.beforeSave) {
         path = path.split(SEPARATOR).slice(0, -1).join(SEPARATOR) + `${SEPARATOR}${title}`
@@ -134,11 +132,13 @@ export const useSaveChanges = () => {
 
     if (options?.saveAndClose) appNotifierWindow(IpcAction.CLOSE_SPOTLIGHT, AppType.SPOTLIGHT, { hide: true })
 
-    appNotifierWindow(IpcAction.SHOW_TOAST, AppType.SPOTLIGHT, {
-      status: 'success',
-      title: 'Saved successfully!',
-      independent: options?.saveAndClose
-    })
+    if (options?.notify !== false) {
+      appNotifierWindow(IpcAction.SHOW_TOAST, AppType.SPOTLIGHT, {
+        status: 'success',
+        title: 'Saved successfully!',
+        independent: options?.saveAndClose
+      })
+    }
 
     await updateDocument('node', node.nodeid, editorContent)
 
@@ -150,8 +150,6 @@ export const useSaveChanges = () => {
     addRecent(node.nodeid)
     addInResearchNodes(node.nodeid)
     appNotifierWindow(IpcAction.REFRESH_NODE, AppType.SPOTLIGHT, { nodeid: node.nodeid })
-
-    // appNotifierWindow(IpcAction.NEW_RECENT_ITEM, AppType.SPOTLIGHT, { nodeid: node.nodeid })
   }
 
   return {

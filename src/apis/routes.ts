@@ -20,6 +20,8 @@ export const MEXIT_BACKEND_URL_BASE = IS_DEV
   ? 'http://localhost:5000/api/v1'
   : 'https://mex-webapp-dev.workduck.io/api/v1'
 
+export const IMAGE_API_BASE = 'https://http.workduck.io'
+
 export const WORKDUCK_API_BASE =
   config.constants.STAGE === 'alpha' ? 'https://http-test.workduck.io' : 'https://http.workduck.io'
 
@@ -72,7 +74,7 @@ export const apiURLs = {
   updateParentNoteOfService: () => `${MEX_LOCH_BASE_URL}/connect`,
 
   // Image CDN
-  createImageURL: `${WORKDUCK_API_BASE}/testing/upload/s3`,
+  createImageURL: `${IMAGE_API_BASE}/testing/upload/s3`,
   getImagePublicURL: (path: string) => `${CDN_BASE}/${path}`,
 
   // Google OAuth

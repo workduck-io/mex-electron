@@ -31,6 +31,7 @@ import { MexIcon } from '@workduck-io/mex-components'
 
 import { LastOpenedState } from '../../../types/userPreference'
 import { TreeContextMenu } from './TreeWithContextMenu'
+import usePinnedWindows from '@hooks/usePinnedWindow'
 
 const defaultSnap = {
   isDragging: false,
@@ -70,8 +71,8 @@ const ItemTitleWithAnalysis = ({ item }: { item: TreeItem }) => {
     anal.nodeid && anal.nodeid === item.data.nodeid && anal.title !== undefined && anal.title !== ''
       ? anal.title
       : item.data
-      ? item.data.title
-      : 'NoTitle'
+        ? item.data.title
+        : 'NoTitle'
 
   return (
     <ItemTitle>
@@ -182,10 +183,11 @@ export const RenderTreeItem = ({
 }
 
 const TreeItemMetaInfo = ({ item, unRead }: { item: any; unRead: boolean }) => {
-  const pinned = useMultipleEditors((store) => store.pinned.has(item?.data?.nodeid))
+  const isPinned = useMultipleEditors(store => store.pinned?.has(item?.data?.nodeid))
+  const { onUnpinNote } = usePinnedWindows()
 
-  if (pinned) {
-    return <MexIcon icon={PinIcon} width={16} height={16} color="white" />
+  if (isPinned) {
+    return <MexIcon onClick={() => onUnpinNote(item?.data?.nodeid)} icon={PinIcon} width={16} height={16} color="white" />
   }
 
   return unRead ? (

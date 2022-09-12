@@ -10,7 +10,7 @@ import {
 } from '@electron/utils/fileLocations'
 import { getDataOfLocation, getFileData, setDataAtLocation, setFileData } from '@electron/utils/filedata'
 import { copyToClipboard, getGlobalShortcut, useSnippetFromClipboard } from '@electron/utils/getSelectedText'
-import { closeWindow, createNoteWindow, handleToggleMainWindow, notifyOtherWindow } from '@electron/utils/helper'
+import { closeWindow, createMexWindow, createNoteWindow, handleToggleMainWindow, notifyOtherWindow } from '@electron/utils/helper'
 import { getIndexData } from '@electron/utils/indexData'
 import {
   addDoc,
@@ -25,12 +25,9 @@ import {
 import { getReminderDimensions, REMINDERS_DIMENSIONS } from '@services/reminders/reminders'
 import { clearLocalStorage } from '@utils/dataTransform'
 import { getAppleNotes } from '@utils/importers/appleNotes'
-import { mog } from '@utils/lib/helper'
 import { app, globalShortcut, ipcMain } from 'electron'
-import { autoUpdater } from 'electron-updater'
 import fs from 'fs'
 
-import { useAuthStore } from '@workduck-io/dwindle'
 
 import { AuthTokenData } from '../../types/auth'
 import { FileData } from '../../types/data'
@@ -38,6 +35,8 @@ import { MentionData } from '../../types/mentions'
 import { Reminder, ReminderActions } from '../../types/reminders'
 import { idxKey } from '../../types/search'
 import { ToastStatus, ToastType } from '../../types/toast'
+import { checkForUpdatesAndNotifyWrapper } from '@electron/update'
+import handlePinnedWindowsIPCListener from './pinned-windows'
 
 export let SPOTLIGHT_SHORTCUT = 'CommandOrCOntrol+Shift+X'
 
@@ -161,19 +160,14 @@ const handleIPCListener = () => {
       windows.toast?.setParent(windowManager.getWindow(AppType.SPOTLIGHT))
       windows.toast?.send(IpcAction.TOAST_MESSAGE, { status: ToastStatus.LOADING, title: 'Checking for updates..' })
       windows.toast?.open(false, false, true)
-      const token = useAuthStore.getState().userCred.token
-      autoUpdater.addAuthHeader(token)
-      autoUpdater.checkForUpdatesAndNotify()
+
+      checkForUpdatesAndNotifyWrapper()
     }
   })
 
   ipcMain.on(IpcAction.CLEAR_RECENTS, (_event, arg) => {
     const { from } = arg
     notifyOtherWindow(IpcAction.CLEAR_RECENTS, from)
-  })
-
-  ipcMain.on(IpcAction.PIN_NOTE_WINDOW, (_event, data) => {
-    createNoteWindow(data)
   })
 
   ipcMain.on(IpcAction.SHOW_RELEASE_NOTES, (_event, arg) => {
@@ -205,18 +199,31 @@ const handleIPCListener = () => {
   })
 
   ipcMain.on(IpcAction.OPEN_NODE_IN_MEX, (_event, arg) => {
-    windowManager.sendToWindow(AppType.MEX, IpcAction.OPEN_NODE, { nodeid: arg.nodeid })
+    const windowRef = windowManager.getWindow(AppType.MEX);
+    if (!windowRef) {
+      createMexWindow(window => {
+        window.webContents.send(IpcAction.OPEN_NODE, { nodeid: arg.nodeid })
+      })
+    } else {
+      windowManager.sendToWindow(AppType.MEX, IpcAction.OPEN_NODE, { nodeid: arg.nodeid })
+      windowManager.getWindow(AppType.MEX)?.focus()
+      windowManager.getWindow(AppType.MEX)?.show()
+    }
 
     windowManager.getWindow(AppType.SPOTLIGHT)?.hide()
-    windowManager.getWindow(AppType.MEX)?.focus()
-    windowManager.getWindow(AppType.MEX)?.show()
   })
 
   ipcMain.on(IpcAction.REDIRECT_TO, (_event, arg) => {
     const mexWindowRef = windowManager.getWindow(AppType.MEX)
-    mexWindowRef.focus()
-    mexWindowRef.show()
-    windowManager.sendToWindow(AppType.MEX, IpcAction.REDIRECT_TO, { page: arg.page })
+
+    if (!mexWindowRef) createMexWindow((window) => {
+      window.webContents.send(IpcAction.REDIRECT_TO, { page: arg.page })
+    })
+    else {
+      mexWindowRef?.focus()
+      mexWindowRef?.show()
+    }
+
   })
 
   ipcMain.on(
@@ -228,9 +235,16 @@ const handleIPCListener = () => {
 
   ipcMain.on(IpcAction.OPEN_REMINDER_IN_MEX, (ev, { from, data }: { from: AppType; data: { reminder: Reminder } }) => {
     const mexWindowRef = windowManager.getWindow(AppType.MEX)
-    windowManager.sendToWindow(AppType.MEX, IpcAction.OPEN_REMINDER, { reminder: data.reminder })
-    mexWindowRef.focus()
-    mexWindowRef.show()
+
+    if (!mexWindowRef) {
+      createMexWindow(window => {
+        window.webContents.send(IpcAction.OPEN_REMINDER, { reminder: data.reminder })
+      })
+    } else {
+      mexWindowRef.focus()
+      mexWindowRef.show()
+    }
+
   })
 
   ipcMain.on(IpcAction.RESIZE_REMINDER, (ev, { from, data }: { from: AppType; data: { height: number } }) => {
@@ -264,22 +278,10 @@ const handleIPCListener = () => {
     windows.toast?.hide()
   })
 
-  // * Pinned Window IPC Liteners
-  ipcMain.on(IpcAction.SHOW_PINNED_NOTE_WINDOW, (_event, arg) => {
-    const { data, from } = arg
-    if (data?.noteId) {
-      const ref = windowManager.getWindow(data?.noteId)
-      ref?.flashFrame(true)
-
-      ref?.show()
-      ref?.focus()
-    }
-  })
-
   ipcMain.on(IpcAction.CLOSE_SPOTLIGHT, (_event, arg) => {
     const { data, from } = arg
     if (data?.hide) {
-      windowManager.getWindow(from).hide()
+      windowManager.getWindow(from)?.hide()
     }
   })
 
@@ -327,6 +329,9 @@ const handleIPCListener = () => {
     const version = app.getVersion()
     return version
   })
+
+  // * Pinned Window IPC listener
+  handlePinnedWindowsIPCListener()
 }
 
 export default handleIPCListener
