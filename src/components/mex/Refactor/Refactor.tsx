@@ -154,7 +154,7 @@ const Refactor = () => {
 
   const handleToCreate = (quickLink: QuickLink) => {
     const inputValue = quickLink.value
-    const newNS = currentSpace ?? namespaces[0].id
+    const newNS = quickLink.namespace ?? currentSpace ?? namespaces[0].id
     if (inputValue && newNS) {
       setTo({ path: inputValue, namespaceID: newNS })
     }

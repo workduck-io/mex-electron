@@ -9,7 +9,14 @@ import { useEditorStore } from '@store/useEditorStore'
 import { useLayoutStore } from '@store/useLayoutStore'
 import Tippy from '@tippyjs/react'
 import { TitleWithShortcut } from '@workduck-io/mex-components'
-import { SidebarToggle, SpaceHeader, SpaceTitle, SpaceTitleFakeInput, SpaceTitleWrapper } from '../Sidebar.style'
+import {
+  SidebarToggle,
+  SpaceHeader,
+  SpaceSeparator,
+  SpaceTitle,
+  SpaceTitleFakeInput,
+  SpaceTitleWrapper
+} from '../Sidebar.style'
 import { SidebarSpace } from '../Sidebar.types'
 import { Input } from '@style/Form'
 import { RESERVED_NAMESPACES } from '@utils/lib/paths'
@@ -73,39 +80,45 @@ const Header = ({ space }: { space: SidebarSpace }) => {
   const isNamespaceInputDisabled =
     space.label === RESERVED_NAMESPACES.default || space.label === RESERVED_NAMESPACES.shared
 
+  const showTags = space.popularTags && space.popularTags.length > 0
+  const showSeparator = showTags
+
   return (
-    <SpaceHeader>
-      <SpaceTitleWrapper>
-        <SpaceTitle>
-          <Icon icon={space.icon} />
-          {showInput && !isNamespaceInputDisabled ? (
-            <Input defaultValue={space.label} onBlur={(e) => onChangeName(e.target.value)} ref={inpRef} />
-          ) : (
-            <SpaceTitleFakeInput
-              ref={titleRef}
-              onClick={() => {
-                setShowInput(true)
-              }}
-            >
-              {title}
-            </SpaceTitleFakeInput>
-          )}
-        </SpaceTitle>
-        <Tippy
-          theme="mex-bright"
-          placement="right"
-          content={<TitleWithShortcut title={sidebar.expanded ? 'Collapse Sidebar' : 'Expand Sidebar'} />}
-        >
-          <SidebarToggle isVisible={!isUserEdititng} onClick={toggleSidebar} {...getFocusProps(focusMode)}>
-            <Icon
-              icon={sidebar.expanded ? 'heroicons-solid:chevron-double-left' : 'heroicons-solid:chevron-double-right'}
-            />
-          </SidebarToggle>
-        </Tippy>
-      </SpaceTitleWrapper>
-      {/*space.pinnedItems && <space.pinnedItems />*/}
-      {space.popularTags && space.popularTags.length > 0 && <TagsLabel tags={space.popularTags} />}
-    </SpaceHeader>
+    <>
+      <SpaceHeader>
+        <SpaceTitleWrapper>
+          <SpaceTitle>
+            <Icon icon={space.icon} />
+            {showInput && !isNamespaceInputDisabled ? (
+              <Input defaultValue={space.label} onBlur={(e) => onChangeName(e.target.value)} ref={inpRef} />
+            ) : (
+              <SpaceTitleFakeInput
+                ref={titleRef}
+                onClick={() => {
+                  setShowInput(true)
+                }}
+              >
+                {title}
+              </SpaceTitleFakeInput>
+            )}
+          </SpaceTitle>
+          <Tippy
+            theme="mex-bright"
+            placement="right"
+            content={<TitleWithShortcut title={sidebar.expanded ? 'Collapse Sidebar' : 'Expand Sidebar'} />}
+          >
+            <SidebarToggle isVisible={!isUserEdititng} onClick={toggleSidebar} {...getFocusProps(focusMode)}>
+              <Icon
+                icon={sidebar.expanded ? 'heroicons-solid:chevron-double-left' : 'heroicons-solid:chevron-double-right'}
+              />
+            </SidebarToggle>
+          </Tippy>
+        </SpaceTitleWrapper>
+        {/*space.pinnedItems && <space.pinnedItems />*/}
+        {showTags && <TagsLabel tags={space.popularTags} />}
+      </SpaceHeader>
+      {showSeparator && <SpaceSeparator />}
+    </>
   )
 }
 

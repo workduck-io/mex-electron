@@ -57,7 +57,7 @@ const Rename = () => {
 
   const handleToCreate = (quickLink: QuickLink) => {
     const inputValue = quickLink.value
-    const newNS = currentSpace
+    const newNS = quickLink.namespace ?? currentSpace
     if (inputValue) {
       setTo({ path: inputValue, namespaceID: newNS })
     }

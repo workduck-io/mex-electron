@@ -1,3 +1,4 @@
+import { Ellipsis } from '@workduck-io/mex-components'
 import styled, { css } from 'styled-components'
 
 export const StyledNamespaceTag = styled.div<{ separator?: boolean }>`
@@ -7,8 +8,14 @@ export const StyledNamespaceTag = styled.div<{ separator?: boolean }>`
   align-items: center;
   padding-left: 0.25rem;
   margin-left: 0.5rem;
-  ${({ theme, separator }) => separator && css`
-    border-left: 1px solid ${theme.colors.text.disabled};
-  `
-  }
-` 
+  min-width: 4rem;
+  max-width: 8rem;
+  ${Ellipsis}
+  flex-shrink: 0;
+
+  ${({ theme, separator }) =>
+    separator &&
+    css`
+      border-left: 1px solid ${theme.colors.text.disabled};
+    `}
+`

@@ -2,6 +2,7 @@ import styled, { css } from 'styled-components'
 
 import { Input } from '../../../style/Form'
 import { transparentize } from 'polished'
+import { Ellipsis } from '@workduck-io/mex-components'
 
 export const StyledInputWrapper = styled.div<{ isOverlay: boolean }>`
   width: 100%;
@@ -66,6 +67,11 @@ export const SuggestionContentWrapper = styled.div`
 `
 
 export const SuggestionText = styled.div`
+  flex-shrink: 1;
+  ${Ellipsis}
+`
+
+export const SuggestionTextWrapper = styled.div`
   display: flex;
   align-items: center;
   justify-content: space-between;
