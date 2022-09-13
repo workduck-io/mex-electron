@@ -13,8 +13,8 @@ import { PollActions, useApiStore } from '@store/useApiStore'
 import { usePolling } from '@apis/usePolling'
 import { useNamespaces } from '@hooks/useNamespaces'
 import { RESERVED_NAMESPACES } from '@utils/lib/paths'
-import { useLayoutStore } from '@store/useLayoutStore'
 import { useUserPreferenceStore } from '@store/userPreferenceStore'
+import { mog } from '@workduck-io/mex-utils'
 
 export const NoteSidebar = () => {
   const ilinks = useDataStore((store) => store.ilinks)
@@ -33,11 +33,7 @@ export const NoteSidebar = () => {
 
   const mostUsedTags = useMemo(() => {
     const topUsedTags = getMostUsedTags()
-      .sort((a, b) => a.freq - b.freq)
-      .reverse()
-      .slice(0, 5)
-      .map((t) => ({ value: t.tag }))
-    // mog('AllTag', { allTagFreq })
+    mog('AllTag', { topUsedTags })
     return topUsedTags
   }, [tags])
 
@@ -45,22 +41,22 @@ export const NoteSidebar = () => {
     const nodesByNamespaces = getNodesByNamespaces()
     const nspaces = nodesByNamespaces
       .sort((a, b) => a.createdAt - b.createdAt)
-      .map(
-        (ns) =>
-          ({
-            id: ns.id,
-            label: ns.name,
-            icon: ns.name === RESERVED_NAMESPACES.default ? 'ri:user-line' : 'heroicons-outline:view-grid',
-            tooltip: ns.name,
-            list: {
-              type: 'hierarchy',
-              items: ns.nodes
-            },
-            popularTags: mostUsedTags,
-            pinnedItems: () => <StarredNotes />,
-            pollAction: PollActions.hierarchy
-          } as SidebarSpace)
-      )
+      .map((ns) => {
+        mog('AllTag', { ns, popTags: mostUsedTags[ns.id] })
+        return {
+          id: ns.id,
+          label: ns.name,
+          icon: ns.name === RESERVED_NAMESPACES.default ? 'ri:user-line' : 'heroicons-outline:view-grid',
+          tooltip: ns.name,
+          list: {
+            type: 'hierarchy',
+            items: ns.nodes
+          },
+          popularTags: mostUsedTags[ns.id] ?? undefined,
+          pinnedItems: () => <StarredNotes />,
+          pollAction: PollActions.hierarchy
+        } as SidebarSpace
+      })
     // Add shared notes namespace
     nspaces.push({
       id: 'shared',

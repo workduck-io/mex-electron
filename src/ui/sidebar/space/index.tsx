@@ -14,7 +14,6 @@ export const SidebarSpaceComponent = ({ space, style }: AnimatedProps<SidebarSpa
   return (
     <SingleSpace style={style}>
       <Header space={space} />
-      <SpaceSeparator />
       {
         {
           hierarchy: space.list.type === 'hierarchy' && (

@@ -33,7 +33,8 @@ import {
   SuggestionContentWrapper,
   SuggestionDesc,
   SuggestionError,
-  SuggestionText
+  SuggestionText,
+  SuggestionTextWrapper
 } from './NodeSelect.styles'
 import NamespaceTag from '../NamespaceTag'
 import { FlexGap } from '../Archive/styled'
@@ -346,6 +347,10 @@ function NodeSelect({
 
       if (highlightedItem && highlightedItem.value) {
         setInputValue(highlightedItem.value)
+        if (highlightedItem.namespace) {
+          const ns = namespaces.find((n) => n.id === highlightedItem.namespace)
+          setSelectedNamespace(ns)
+        }
       }
     },
     stateReducer
@@ -364,7 +369,12 @@ function NodeSelect({
           if (selectedItem.status === QuickLinkStatus.new && key && !isChild) {
             setSelectedItem({ ...selectedItem, text: key, value: key })
             setInputValue(key)
-            handleCreateItem({ ...selectedItem, text: key, value: key })
+            handleCreateItem({
+              ...selectedItem,
+              namespace: selectedItem.namespace ?? nodeSelectState.selectedNamespace?.id,
+              text: key,
+              value: key
+            })
           } else {
             setSelectedItem(selectedItem)
             setInputValue(selectedItem.value)
@@ -411,7 +421,10 @@ function NodeSelect({
             setInputValue(quickLink.value)
             setSelectedItem(quickLink)
             if (quickLink.status === QuickLinkStatus.new) {
-              handleCreateItem(quickLink)
+              handleCreateItem({
+                ...quickLink,
+                namespace: quickLink.namespace ?? nodeSelectState.selectedNamespace?.id
+              })
             } else {
               handleSelectItem(quickLink)
             }
@@ -623,10 +636,10 @@ function NodeSelect({
                     >
                       <Icon width={24} icon={item.status === QuickLinkStatus.new ? addCircleLine : icon} />
                       <SuggestionContentWrapper>
-                        <SuggestionText>
-                          {item.text}
+                        <SuggestionTextWrapper>
+                          <SuggestionText>{item.text}</SuggestionText>
                           <NamespaceTag separator={!!item.text} namespace={namespace} />
-                        </SuggestionText>
+                        </SuggestionTextWrapper>
                         <SuggestionDesc>{desc !== undefined && desc}</SuggestionDesc>
                       </SuggestionContentWrapper>
                     </Suggestion>
