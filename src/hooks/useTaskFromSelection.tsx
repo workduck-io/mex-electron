@@ -1,13 +1,14 @@
 import { SEPARATOR } from '@components/mex/Sidebar/treeUtils'
 import { BASE_TASKS_PATH, defaultContent } from '@data/Defaults/baseData'
+import { generateTempId } from '@data/Defaults/idPrefixes'
+import { useSpotlightContext } from '@store/Context/context.spotlight'
 import { useContentStore } from '@store/useContentStore'
 import useDataStore from '@store/useDataStore'
-import { NodeEditorContent } from '../types/Types'
-import { format } from 'date-fns'
-import { generateTempId } from '@data/Defaults/idPrefixes'
-import { useCreateNewNote } from './useCreateNewNote'
 import { mog } from '@utils/lib/helper'
-import { useSpotlightContext } from '@store/Context/context.spotlight'
+import { format } from 'date-fns'
+
+import { NodeEditorContent } from '../types/Types'
+import { useCreateNewNote } from './useCreateNewNote'
 
 export const getTodayTaskNodePath = () => {
   return `${BASE_TASKS_PATH}${SEPARATOR}${format(Date.now(), 'do MMM yyyy')}`

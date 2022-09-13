@@ -198,7 +198,7 @@ function NodeSelect({
   })
 
   const { getSearchExtra } = useSearchExtra()
-  const { getDefaultNamespace } = useNamespaces()
+  const { getNamespaceOptions } = useNamespaces()
 
   const setInputItems = (inputItems: QuickLink[]) => setNodeSelectState((state) => ({ ...state, inputItems }))
 
@@ -234,23 +234,6 @@ function NodeSelect({
     )
 
     return [...mLinks, ...sLinks, ...mSnippets]
-  }
-
-  const getNamespaces = () => {
-    const namespaces = useDataStore.getState().namespaces.map((n) => ({
-      ...n,
-      value: n.name,
-      label: n.name
-    }))
-    const defaultNamespace = getDefaultNamespace() ?? namespaces[0]
-    return {
-      namespaces,
-      defaultNamespace: {
-        ...defaultNamespace,
-        value: defaultNamespace.name,
-        label: defaultNamespace.name
-      }
-    }
   }
 
   const reset = () =>

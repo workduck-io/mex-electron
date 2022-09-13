@@ -84,6 +84,25 @@ export const useNamespaces = () => {
     }
   }
 
+  const getNamespaceOptions = () => {
+    const namespaces = useDataStore.getState().namespaces.map((n) => ({
+      ...n,
+      value: n.name,
+      label: n.name
+    }))
+    const defaultNamespace = getDefaultNamespace() ?? namespaces[0]
+    return {
+      namespaces,
+      defaultNamespace: defaultNamespace
+        ? {
+            ...defaultNamespace,
+            value: defaultNamespace.name,
+            label: defaultNamespace.name
+          }
+        : undefined
+    }
+  }
+
   const getNodesOfNamespace = (id: string): ILink[] => {
     const ilinks = useDataStore.getState().ilinks
     return ilinks.filter((l) => l.namespace === id)
@@ -189,28 +208,6 @@ export const useNamespaces = () => {
       )
       useDataStore.setState({ namespaces: newNamespaces })
     })
-  }
-
-  const changeNamespaceName = (id: string, name: string) => {
-    chageNamespaceNameApi(id, name)
-      .then((res) => {
-        if (res) {
-          const namespaces = useDataStore.getState().namespaces
-          const newNamespaces = namespaces.map((n) =>
-            n.id === id
-              ? {
-                  ...n,
-                  name,
-                  updatedAt: Date.now()
-                }
-              : n
-          )
-          useDataStore.setState({ namespaces: newNamespaces })
-        }
-      })
-      .catch((err) => {
-        console.log('Error changing namespace name', err)
-      })
   }
 
   return {
