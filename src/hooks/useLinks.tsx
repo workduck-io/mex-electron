@@ -196,10 +196,16 @@ export const useLinks = () => {
     }
   }
 
-  const getILinkFromNodeid = (nodeid: string, shared?: boolean) => {
+  const getILinkFromNodeid = (nodeid: string, shared?: boolean, archived?: boolean) => {
     const links = useDataStore.getState().ilinks
     const link = links.find((l) => l.nodeid === nodeid)
     if (link) return link
+
+    if (archived) {
+      const archiveNoteLinks = useDataStore.getState().archive
+      const noteLink = archiveNoteLinks?.find(l => l.nodeid === nodeid)
+      return noteLink
+    }
 
     if (shared) {
       const sharedLinks = useDataStore.getState().sharedNodes

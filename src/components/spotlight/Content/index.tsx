@@ -2,6 +2,7 @@ import { SpotlightModals } from '@components/layouts/Modals'
 import { isParent } from '@components/mex/Sidebar/treeUtils'
 import { DRAFT_NODE, DRAFT_PREFIX } from '@data/Defaults/idPrefixes'
 import { getLatestContent } from '@hooks/useEditorBuffer'
+import { useLinks } from '@hooks/useLinks'
 import { useSearchExtra } from '@hooks/useSearch'
 import { getTodayTaskNodePath, useTaskFromSelection } from '@hooks/useTaskFromSelection'
 import useMultipleEditors from '@store/useEditorsStore'
@@ -62,6 +63,7 @@ const Content = () => {
 
   // * Custom hooks
   const { getNode } = useLoad()
+  const { getILinkFromNodeid } = useLinks()
   const { searchInList } = useSearch()
   const { resetEditor } = useEditorActions()
   const { getSearchExtra } = useSearchExtra()
@@ -75,11 +77,10 @@ const Content = () => {
 
     const extra = getSearchExtra()
     const pinned = useMultipleEditors.getState().pinned
-    const ilinks = useDataStore.getState().ilinks
 
     noteIds.forEach(noteId => {
       if (!pinned.has(noteId)) {
-        const noteLink = ilinks.find(noteLink => noteLink.nodeid === noteId)
+        const noteLink = getILinkFromNodeid(noteId);
 
         if (noteLink && !isParent(noteLink.path, BASE_TASKS_PATH)) {
           const item = getListItemFromNode(noteLink, { searchRepExtra: extra })
@@ -99,12 +100,14 @@ const Content = () => {
     const pinnedItems: Array<ListItemType> = []
 
     const pinned = useMultipleEditors.getState().pinned
-    const ilinks = useDataStore.getState().ilinks
 
     pinned.forEach(pinnedNoteId => {
-      const noteLink = ilinks.find(noteLink => noteLink.nodeid === pinnedNoteId)
-      const item = getListItemFromNode(noteLink, { categoryType: CategoryType.pinned });
-      pinnedItems.push(item)
+      const noteLink = getILinkFromNodeid(pinnedNoteId, false, true)
+
+      if (noteLink) {
+        const item = getListItemFromNode(noteLink, { categoryType: CategoryType.pinned });
+        pinnedItems.push(item)
+      }
     })
 
     return pinnedItems
