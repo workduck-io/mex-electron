@@ -1,7 +1,7 @@
 import { Icon } from '@iconify/react'
 import React from 'react'
 import { components } from 'react-select'
-import styled from 'styled-components'
+import styled, { css } from 'styled-components'
 import { getSyncServiceIcon } from '../editor/Components/SyncBlock/SyncIcons'
 
 /* eslint-disable @typescript-eslint/no-explicit-any */
@@ -15,6 +15,16 @@ const NamespaceControl = styled(components.Control)`
   border-color: transparent !important;
   padding: 0.25rem 0;
   border-radius: 0;
+  opacity: 0.5;
+  ${({ menuIsOpen, isFocused }) =>
+    (menuIsOpen || isFocused) &&
+    css`
+      opacity: 1;
+    `}
+  :hover,
+  :focus {
+    opacity: 1;
+  }
 `
 
 const StyledLabel = styled.div`
