@@ -154,18 +154,12 @@ export const SpaceItem = styled.div<{ active: boolean; totalItems: number; sideb
   max-width: 32px;
 
   ${({ theme, sidebarWidth, totalItems, active }) => {
-    // ${({ theme, active }) =>
-    //   active
-    //     ? css`
-    //         flex-shrink: 0;
-    //         color: ${theme.colors.text.heading};
-    //       `
-    //     : css`
-    //         flex-shrink: 1;
-    //       `}
-
+    // Calculate apparent size of icons
     const calcSize = active ? 32 : (sidebarWidth - 150) / totalItems
+    // Limit it
     const size = clamp(calcSize, 8, 32)
+
+    // We show size greater than 16px as icons
     if (calcSize > 16) {
       return css`
         background-color: ${active ? theme.colors.gray[8] : 'transparent'};
@@ -181,8 +175,9 @@ export const SpaceItem = styled.div<{ active: boolean; totalItems: number; sideb
       `
     }
 
+    // Otherwise hide svg and show a dot
     return css`
-      background-color: ${theme.colors.gray[9]};
+      background-color: ${theme.colors.gray[8]};
       svg {
         height: 0%;
         width: 0%;

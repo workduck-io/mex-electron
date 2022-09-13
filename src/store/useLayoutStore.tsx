@@ -8,8 +8,17 @@ export interface FocusMode {
 export type InfobarMode = 'default' | 'flow' | 'graph' | 'reminders' | 'suggestions'
 
 interface LayoutState {
-  sidebar: { expanded: boolean; show: boolean; width: number }
-  rhSidebar: { expanded: boolean; show: boolean }
+  sidebar: {
+    expanded: boolean
+    show: boolean
+    // Width of the sidebar, it does not include the nav
+    width: number
+  }
+  rhSidebar: {
+    expanded: boolean
+    show: boolean
+    // TODO: Add width
+  }
   infobar: { mode: InfobarMode }
   focusMode: FocusMode
   toggleSidebar: () => void
@@ -57,11 +66,10 @@ export const useLayoutStore = create<LayoutState>((set, get) => ({
   },
   toggleSidebar: () =>
     set((state) => ({
-      sidebar: { ...state.sidebar, expanded: !state.sidebar.expanded, width: state.sidebar.expanded ? SidebarWidth : 0 }
+      sidebar: { ...state.sidebar, expanded: !state.sidebar.expanded, width: state.sidebar.expanded ? 0 : SidebarWidth }
     })),
-  showSidebar: () =>
-    set((state) => ({ sidebar: { ...state.sidebar, show: true, width: state.sidebar.expanded ? SidebarWidth : 0 } })),
-  hideSidebar: () => set((state) => ({ sidebar: { ...state.sidebar, show: false, width: 0 } })),
+  showSidebar: () => set((state) => ({ sidebar: { ...state.sidebar, show: true } })),
+  hideSidebar: () => set((state) => ({ sidebar: { ...state.sidebar, show: false } })),
 
   // RHSidebar
   rhSidebar: {
