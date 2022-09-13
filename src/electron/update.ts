@@ -1,4 +1,3 @@
-import { AppType } from '@hooks/useInitialize'
 import { app, dialog, ipcMain } from 'electron'
 import { autoUpdater } from 'electron-updater'
 
@@ -7,8 +6,9 @@ import { ToastStatus } from '../types/toast'
 import { windowManager } from './WindowManager'
 import { backupMexJSON } from './backup'
 import { windows } from './main'
-import { TEMP_DATA_BEFORE_UPDATE, SEARCH_INDEX_LOCATION } from './utils/fileLocations'
+import { SEARCH_INDEX_LOCATION, TEMP_DATA_BEFORE_UPDATE } from './utils/fileLocations'
 import { setDataAtLocation } from './utils/filedata'
+import { AppType } from './utils/helper'
 import { deleteSearchIndexDisk } from './utils/indexData'
 import { checkIfAlpha } from './utils/version'
 

@@ -4,13 +4,15 @@ import type { BaseRange, Point, Range } from 'slate'
 import { ComboboxType, ComboSearchType } from '../multi-combobox/types'
 import { IComboboxItem } from './components/Combobox.types'
 
+
 export enum ComboboxKey {
   TAG = 'tag',
   MENTION = 'mention',
   INTERNAL = 'internal',
   INLINE_BLOCK = 'inline_block',
   SLASH_COMMAND = 'slash_command',
-  BLOCK = 'block'
+  BLOCK = 'block',
+  ILINK = "ILINK"
 }
 
 export type ComboTriggerType = ComboboxType & { at?: Point; blockAt?: Point }

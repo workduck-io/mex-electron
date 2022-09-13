@@ -1,13 +1,13 @@
+import React, { useEffect, useState } from 'react'
+
 import { useUserPreferenceStore } from '@store/userPreferenceStore'
 import { ipcRenderer } from 'electron'
-import React, { useEffect, useState } from 'react'
 import styled from 'styled-components'
+
 import { IpcAction } from '../../data/IpcAction'
 import { appNotifierWindow } from '../../electron/utils/notifiers'
-import { AppType } from '../../hooks/useInitialize'
+import { AppType } from '../../types/Types'
 import { ToastStatus, ToastType } from '../../types/toast'
-import { mog } from '../../utils/lib/helper'
-import { Description } from '../spotlight/SearchResults/styled'
 import ReminderGroupsUI from './ReminderGroup'
 import ToastUI from './ToastUI'
 

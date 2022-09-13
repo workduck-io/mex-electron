@@ -1,22 +1,20 @@
+import React from 'react'
+
+import NamespaceTag from '@components/mex/NamespaceTag'
+import { getIconType, ProjectIconMex } from '@components/spotlight/ActionStage/Project/ProjectIcon'
+import { useNamespaces } from '@hooks/useNamespaces'
+import { BodyFont } from '@style/spotlight/global'
 import styled, { css, useTheme } from 'styled-components'
+
+import { DisplayShortcut } from '@workduck-io/mex-components'
+
+import { cleanString } from '../../../../data/Defaults/idPrefixes'
 import { CategoryType, useSpotlightContext } from '../../../../store/Context/context.spotlight'
+import { PrimaryText } from '../../../../style/Integration'
+import { QuickLinkType } from '../../../mex/NodeSelect/types'
 import { Description, StyledRow } from '../../SearchResults/styled'
 import { ListItemType } from '../../SearchResults/types'
-
-import { getIconType, ProjectIconMex } from '@components/spotlight/ActionStage/Project/ProjectIcon'
-import { BodyFont } from '@style/spotlight/global'
-import { DisplayShortcut } from '@workduck-io/mex-components'
-import React from 'react'
-import { cleanString } from '../../../../data/Defaults/idPrefixes'
-import { PrimaryText } from '../../../../style/Integration'
-import { QuickLinkType } from "../../../mex/NodeSelect/types"
 import { ItemShortcutContainer, RowTitle } from './styled'
-import { BodyFont } from '@style/spotlight/global'
-import { getIconType, ProjectIconMex } from '@components/spotlight/ActionStage/Project/ProjectIcon'
-import { DisplayShortcut } from '@workduck-io/mex-components'
-import { mog } from '@workduck-io/mex-utils'
-import NamespaceTag from '@components/mex/NamespaceTag'
-import { useNamespaces } from '@hooks/useNamespaces'
 
 export const ActionIcon = styled.div`
   display: flex;

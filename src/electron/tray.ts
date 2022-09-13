@@ -1,10 +1,10 @@
 import { trayIconBase64, twitterIconBase64 } from '@data/Defaults/images'
 import { IpcAction } from '@data/IpcAction'
-import { AppType } from '@hooks/useInitialize'
-import { nativeImage, Tray, Menu, app, shell } from 'electron'
-import { SPOTLIGHT_SHORTCUT } from './listeners/ipc'
-import { createMexWindow, handleToggleMainWindow } from './utils/helper'
+import { app, Menu, nativeImage, shell, Tray } from 'electron'
+
 import { windowManager } from './WindowManager'
+import { SPOTLIGHT_SHORTCUT } from './listeners/ipc'
+import { AppType, createMexWindow, handleToggleMainWindow } from './utils/helper'
 
 const createTray = () => {
   const icon = nativeImage.createFromDataURL(trayIconBase64)
@@ -32,7 +32,6 @@ const createTray = () => {
           windowManager.sendToWindow(AppType.MEX, IpcAction.CREATE_NEW_NODE)
           windowManager?.getWindow(AppType.MEX)?.show()
         }
-
       }
     },
     { type: 'separator' },

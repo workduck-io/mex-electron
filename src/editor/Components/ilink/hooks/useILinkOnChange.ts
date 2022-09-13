@@ -1,15 +1,20 @@
-//@ts-nocheck
+import { useCallback } from 'react'
+
+// eslint-disable-next-line @typescript-eslint/ban-ts-comment
+//@ts-ignore-next-line
 import { MentionNodeData } from '@udecode/plate'
 import { TEditor } from '@udecode/plate-core'
-import { useCallback } from 'react'
 import shallow from 'zustand/shallow'
-import { ComboboxKey } from "../../combobox/types"
+
 import { IComboboxItem } from '../../combobox/components/Combobox.types'
 import { useComboboxOnChange } from '../../combobox/hooks/useComboboxOnChange'
+import { ComboboxKey } from '../../combobox/types'
 import { useComboboxStore } from '../../combobox/useComboboxStore'
 
 export const useILinkOnChange = (editor: TEditor, data: MentionNodeData[]) => {
   const comboboxOnChange = useComboboxOnChange({
+    // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+    //@ts-ignore-next-line
     editor,
     key: ComboboxKey.ILINK,
     trigger: '[['
@@ -37,7 +42,7 @@ export const useILinkOnChange = (editor: TEditor, data: MentionNodeData[]) => {
     // console.log({ data });
 
     const items: IComboboxItem[] = data
-      .filter((c) => c.text.toLowerCase().includes(search.toLowerCase()))
+      .filter((c) => c.text.toLowerCase().includes(search.textAfterTrigger.toLowerCase()))
       .slice(0, maxSuggestions)
       .map((item) => ({
         key: item.value,
