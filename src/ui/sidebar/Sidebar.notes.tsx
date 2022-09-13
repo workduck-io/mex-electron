@@ -33,7 +33,6 @@ export const NoteSidebar = () => {
 
   const mostUsedTags = useMemo(() => {
     const topUsedTags = getMostUsedTags()
-    mog('AllTag', { topUsedTags })
     return topUsedTags
   }, [tags])
 
@@ -42,7 +41,6 @@ export const NoteSidebar = () => {
     const nspaces = nodesByNamespaces
       .sort((a, b) => a.createdAt - b.createdAt)
       .map((ns) => {
-        mog('AllTag', { ns, popTags: mostUsedTags[ns.id] })
         return {
           id: ns.id,
           label: ns.name,

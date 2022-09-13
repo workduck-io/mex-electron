@@ -12,6 +12,7 @@ import { useContentStore } from '@store/useContentStore'
 import { useSnippets } from './useSnippets'
 import { useNamespaces } from './useNamespaces'
 import { DRAFT_NODE, mog } from '@workduck-io/mex-utils'
+import { NavigationType, ROUTE_PATHS, useRouting } from '@views/routes/urls'
 
 export type NewNoteOptions = {
   path?: string
@@ -27,6 +28,7 @@ export type NewNoteOptions = {
 
 export const useCreateNewNote = () => {
   const { push } = useNavigation()
+  const { goTo } = useRouting()
   const addILink = useDataStore((s) => s.addILink)
   const checkValidILink = useDataStore((s) => s.checkValidILink)
   const getMetadata = useContentStore((s) => s.getMetadata)
@@ -94,11 +96,11 @@ export const useCreateNewNote = () => {
       saveNodeName(useEditorStore.getState().node.nodeid)
 
       addLastOpened(node.nodeid)
-
-      if (!options?.noRedirect) {
-        push(node.nodeid, { withLoading: false, fetch: false })
-      }
     })
+    if (!options?.noRedirect) {
+      push(node.nodeid, { withLoading: false, fetch: false })
+      goTo(ROUTE_PATHS.node, NavigationType.push, node.nodeid)
+    }
     return node
   }
 
