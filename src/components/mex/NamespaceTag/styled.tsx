@@ -18,9 +18,11 @@ export const StyledNamespaceTag = styled.div<{ separator?: boolean }>`
   ${Ellipsis}
   flex-shrink: 0;
   gap: ${({ theme }) => theme.spacing.tiny};
+
   ${IconWrapper} {
     flex-shrink: 0;
   }
+
   ${({ theme, separator }) =>
     separator &&
     css`
