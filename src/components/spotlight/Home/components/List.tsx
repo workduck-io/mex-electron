@@ -69,7 +69,8 @@ const List = ({
     activeItem,
     setSearch,
     selection,
-    setActiveIndex
+    setActiveIndex,
+    selectedNamespace
   } = useSpotlightContext()
   const parentRef = useRef(null)
   const nodeContent = useSpotlightEditorStore((s) => s.nodeContent)
@@ -230,7 +231,8 @@ const List = ({
                 saveIt({
                   path: nodePath,
                   beforeSave: ({ path, noteId, noteContent }) => {
-                    createNewNote({ path, noteId, noteContent })
+                    // mog('Create new note save', { path, noteId, noteContent, namespace: selectedNamespace })
+                    createNewNote({ path, noteId, noteContent, namespace: selectedNamespace })
                     saveData()
                   },
                   saveAndClose: true,
@@ -289,7 +291,12 @@ const List = ({
                 nodePath = search.value ? text : title ? `Drafts.${title}` : node.path
 
                 // TODO: Create new note with specified 'nodeid' and 'path'.
-                createNewNote({ path: nodePath, noteId: node.nodeid })
+                // mog('Create new note with specified nodeid and path', {
+                //   nodeid: node.nodeid,
+                //   path: nodePath,
+                //   selectedNamespace
+                // })
+                createNewNote({ path: nodePath, noteId: node.nodeid, namespace: selectedNamespace })
               }
             }
           }
@@ -358,7 +365,7 @@ const List = ({
     }
 
     return () => window.removeEventListener('keydown', handler)
-  }, [data, activeIndex, node, nodeContent, normalMode, selection, selectedItem?.item, search])
+  }, [data, activeIndex, selectedNamespace, node, nodeContent, normalMode, selection, selectedItem?.item, search])
 
   useEffect(() => {
     setActiveIndex(0)
@@ -393,7 +400,12 @@ const List = ({
         const nodePath = search.value ? text : node.path
 
         // TODO: Create new note with specified 'nodeid' and 'path'.
-        createNewNote({ path: nodePath, noteId: node.nodeid })
+        // mog('Create new note with specified nodeid and path', {
+        //   nodeid: node.nodeid,
+        //   path: nodePath,
+        //   selectedNamespace
+        // })
+        createNewNote({ path: nodePath, noteId: node.nodeid, namespace: selectedNamespace })
       }
     } else if (currentActiveItem?.type === QuickLinkType.snippet && !activeItem.active) {
       handleCopySnippet(currentActiveItem.id, true)

@@ -27,6 +27,11 @@ const NamespaceControl = styled(components.Control)`
   }
 `
 
+const SpotlightNamespaceControl = styled(NamespaceControl)`
+  width: 14rem;
+  padding: 0 !important;
+`
+
 const StyledLabel = styled.div`
   display: flex;
   justify-content: space-around;
@@ -119,3 +124,4 @@ const Input = (props: any) => {
 export const StyledServiceSelectComponents = { Control, MultiValueLabel, Option, ValueContainer, Input, Placeholder }
 export const StyledRolesSelectComponents = { Control, Input, ValueContainer, Placeholder }
 export const StyledNamespaceSelectComponents = { Control: NamespaceControl }
+export const StyledNamespaceSpotlightSelectComponents = { Control: SpotlightNamespaceControl }

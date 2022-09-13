@@ -41,7 +41,6 @@ export const INIT_PREVIEW: PreviewType = {
 }
 
 const Content = () => {
-
   // * Store
   const ilinks = useDataStore((s) => s.ilinks)
   const lastOpenedNodes = useRecentsStore((store) => store.lastOpened)
@@ -67,10 +66,11 @@ const Content = () => {
   const { searchInList } = useSearch()
   const { resetEditor } = useEditorActions()
   const { getSearchExtra } = useSearchExtra()
-  const { search, selection, activeItem, activeIndex, searchResults, setSearchResults } = useSpotlightContext()
+  const { search, selection, selectedNamespace, activeItem, activeIndex, searchResults, setSearchResults } =
+    useSpotlightContext()
   const events = useCalendarStore((store) => store.events)
   const actions = useActionsCache((store) => store.actions)
-  const pinned = useMultipleEditors(store => store.pinned)
+  const pinned = useMultipleEditors((store) => store.pinned)
 
   const getRecentList = (noteIds: Array<string>, limit = MAX_RECENT_ITEMS) => {
     const recentList: Array<ListItemType> = []
@@ -78,16 +78,16 @@ const Content = () => {
     const extra = getSearchExtra()
     const pinned = useMultipleEditors.getState().pinned
 
-    noteIds.forEach(noteId => {
+    noteIds.forEach((noteId) => {
       if (!pinned.has(noteId)) {
-        const noteLink = getILinkFromNodeid(noteId);
+        const noteLink = getILinkFromNodeid(noteId)
 
         if (noteLink && !isParent(noteLink.path, BASE_TASKS_PATH)) {
           const item = getListItemFromNode(noteLink, { searchRepExtra: extra })
           recentList.push(item)
         }
       }
-    });
+    })
 
     if (recentList.length > limit) {
       return recentList.slice(0, limit)
@@ -101,11 +101,11 @@ const Content = () => {
 
     const pinned = useMultipleEditors.getState().pinned
 
-    pinned.forEach(pinnedNoteId => {
+    pinned.forEach((pinnedNoteId) => {
       const noteLink = getILinkFromNodeid(pinnedNoteId, false, true)
 
       if (noteLink) {
-        const item = getListItemFromNode(noteLink, { categoryType: CategoryType.pinned });
+        const item = getListItemFromNode(noteLink, { categoryType: CategoryType.pinned })
         pinnedItems.push(item)
       }
     })
@@ -139,7 +139,6 @@ const Content = () => {
     }
 
     if (normalMode) getSearchItems()
-
   }, [search.value, actions, selection, activeItem.item, normalMode, pinned, ilinks, events])
 
   // * For setting the preview
@@ -148,7 +147,7 @@ const Content = () => {
     const isNode = resultNode?.type === QuickLinkType.backlink
     const isMeeting = resultNode?.category === CategoryType.meeting
     const isNewTask = resultNode?.category === CategoryType.task
-    let nodeid: string;
+    let nodeid: string
 
     if (isNode && !activeItem.active) {
       const isNew = resultNode?.extras?.new
@@ -184,7 +183,8 @@ const Content = () => {
     if (isNewTask && !activeItem.active) {
       const node = getNewTaskNode(false) ?? {
         nodeid: undefined,
-        path: getTodayTaskNodePath()
+        path: getTodayTaskNodePath(),
+        namespace: selectedNamespace
       }
 
       nodeid = node ? node.nodeid : undefined

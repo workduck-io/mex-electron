@@ -16,6 +16,13 @@ import ViewActionHandler from '../ActionStage/Forms/ViewActionHandler'
 import { useActionStore } from '../Actions/useActionStore'
 import { useActionMenuStore } from '../ActionStage/ActionMenu/useActionMenuStore'
 import { getIconType, ProjectIconMex } from '../ActionStage/Project/ProjectIcon'
+import { StyledCreatatbleSelect } from '@style/Form'
+import useDataStore from '@store/useDataStore'
+import { useNamespaces } from '@hooks/useNamespaces'
+import { mog } from '@workduck-io/mex-utils'
+import { StyledNamespaceSpotlightSelectComponents } from '@style/Select'
+import NamespaceTag from '@components/mex/NamespaceTag'
+import { useSpotlightEditorStore } from '@store/editor.spotlight'
 
 type QueryType = {
   value: string
@@ -41,8 +48,12 @@ const Search = () => {
   const { saveIt } = useSaveChanges()
   const { location } = useRouting()
   const { icon, placeholder } = useSearchProps()
-  const { setSearch, search, activeIndex } = useSpotlightContext()
+  const { setSearch, search, activeIndex, searchResults, selectedNamespace, setSelectedNamespace } =
+    useSpotlightContext()
+  const editorNode = useSpotlightEditorStore((store) => store.node)
   const isActionSearch = location.pathname === '/action'
+
+  const { getNamespaceOptions, getNamespace } = useNamespaces()
 
   const handleSearchInput = useDebouncedCallback((value: string) => {
     // * based on value of input, set search category type
@@ -102,6 +113,22 @@ const Search = () => {
   const disabled = !normalMode || !!view || isActionMenuOpen
   const { mexIcon } = getIconType((icon as string) ?? 'codicon:circle-filled')
 
+  const { namespaces, defaultNamespace } = getNamespaceOptions()
+
+  // The current item should be create new and there should be some input value
+
+  const currentActiveItem = searchResults[activeIndex]
+  const showNamespaceSelect = currentActiveItem?.extras.new && input.length > 0
+  const selectedNsItem = selectedNamespace ? namespaces.find((ns) => ns.id === selectedNamespace) : undefined
+  const activeNamespace = selectedNsItem ?? defaultNamespace
+
+  const selectNamespace = (selected) => {
+    setSelectedNamespace(selected.id)
+    if (ref.current) {
+      ref.current.focus()
+    }
+  }
+
   return (
     <StyledSearch id="wd-mex-spotlight-search-container">
       <CenterIcon id="wd-mex-search-left-icon" pointer={!normalMode} onClick={onBackClick}>
@@ -118,6 +145,25 @@ const Search = () => {
         placeholder={placeholder}
         onChange={onChange}
       />
+      {!normalMode && editorNode.namespace && <NamespaceTag namespace={getNamespace(editorNode.namespace)} />}
+      {showNamespaceSelect && (
+        <StyledCreatatbleSelect
+          onKeyDown={(e) => {
+            // Stop the spotlight window from getting up down events
+            // Tab switches to input and back
+            e.stopPropagation()
+          }}
+          onChange={(selected) => {
+            // mog('Selected', selected)
+            selectNamespace(selected)
+          }}
+          value={activeNamespace}
+          options={namespaces}
+          closeMenuOnSelect={true}
+          closeMenuOnBlur={false}
+          components={StyledNamespaceSpotlightSelectComponents}
+        />
+      )}
       {saved && <Message text="Saved" />}
       <CenterIcon id="wd-mex-spotlight-logo">
         <ViewActionHandler />

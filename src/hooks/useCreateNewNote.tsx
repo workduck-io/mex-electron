@@ -53,6 +53,7 @@ export const useCreateNewNote = () => {
       namespace: options?.namespace
     })
 
+    // Use namespace of parent if namespace not provided
     const parentNote = getParentILink(uniquePath)
     const parentNoteId = parentNote?.nodeid
 
@@ -65,7 +66,7 @@ export const useCreateNewNote = () => {
     const defaultNamespace = getDefaultNamespace()
 
     // TODO: Get default namespace name here
-    const namespace = options?.namespace ?? defaultNamespace?.id
+    const namespace = options?.namespace ?? parentNote?.namespace ?? defaultNamespace?.id
 
     const node = addILink({
       ilink: newNotePath,
