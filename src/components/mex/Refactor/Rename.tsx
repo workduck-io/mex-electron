@@ -51,6 +51,7 @@ const Rename = () => {
     const newValue = quickLink.value
     const newNS = quickLink.namespace ?? currentSpace
     if (newValue) {
+      mog('setTo newNS', { newValue, newNS, quickLink })
       setTo({ path: newValue, namespaceID: newNS })
     }
   }
@@ -59,6 +60,7 @@ const Rename = () => {
     const inputValue = quickLink.value
     const newNS = quickLink.namespace ?? currentSpace
     if (inputValue) {
+      mog('setTo newNS', { inputValue, newNS, quickLink })
       setTo({ path: inputValue, namespaceID: newNS })
     }
   }
@@ -107,10 +109,11 @@ const Rename = () => {
       }
 
       // What is this code? Isn't res an object, what does res[0] refer to?
-      // else if (res.length > 0) {
-      //   const nodeid = getNodeidFromPath(res[0].to)
-      //   push(nodeid, { savePrev: false })
-      // }
+      // res == result == refactored
+      else if (refactored.length > 0) {
+        const nodeid = refactored[0].nodeid
+        push(nodeid, { savePrev: false })
+      }
     }
 
     closeModal()

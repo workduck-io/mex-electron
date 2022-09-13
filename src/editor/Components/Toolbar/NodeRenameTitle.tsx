@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react'
+import React, { useEffect, useMemo, useState } from 'react'
 
 import Tippy from '@tippyjs/react'
 import styled from 'styled-components'
@@ -83,15 +83,23 @@ const NodeRenameTitle = () => {
   const setMockRefactored = useRenameStore((store) => store.setMockRefactored)
   const modalReset = useRenameStore((store) => store.closeModal)
   const setTo = useRenameStore((store) => store.setTo)
-  const nodeFrom = useEditorStore((store) => store.node.id ?? '')
+  const editorNode = useEditorStore((store) => store.node)
+  // const nodeFrom = useEditorStore((store) => store.node.id ?? '')
   const { namespace: nodeFromNS } = useEditorStore((store) => store.node)
   const setFrom = useRenameStore((store) => store.setFrom)
   const [editable, setEditable] = useState(false)
   // const inpRef = useRef<HTMLInputElement>()
   //
+  const nodeFrom = useMemo(
+    () => ({
+      path: editorNode.path,
+      namespaceID: editorNode.namespace
+    }),
+    [editorNode]
+  )
 
   useEffect(() => {
-    if (nodeFrom && isReserved(nodeFrom)) {
+    if (nodeFrom && isReserved(nodeFrom.path)) {
       mog('ISRESERVED', { nodeFrom })
     }
   }, [nodeFrom])
@@ -102,13 +110,13 @@ const NodeRenameTitle = () => {
 
   const handleToChange = (newValue: QuickLink) => {
     if (newValue.value) {
-      setTo(newValue.value)
+      setTo({ path: newValue.value, namespaceID: newValue.namespace })
     }
   }
 
   const handleToCreate = (inputValue: QuickLink) => {
     if (inputValue.value) {
-      setTo(inputValue.value)
+      setTo({ path: inputValue.value, namespaceID: inputValue.namespace })
     }
   }
 
@@ -122,10 +130,7 @@ const NodeRenameTitle = () => {
       return
     }
     if (to && nodeFrom) {
-      const refactored = await execRefactorAsync(
-        { path: nodeFrom, namespaceID: nodeFromNS },
-        { path: to, namespaceID: nodeFromNS }
-      )
+      const refactored = await execRefactorAsync(nodeFrom, { path: to, namespaceID: nodeFromNS })
 
       const path = useEditorStore.getState().node.id
       const nodeid = useEditorStore.getState().node.nodeid
@@ -133,8 +138,8 @@ const NodeRenameTitle = () => {
 
       if (doesLinkRemain(path, refactored)) {
         push(nodeid)
-      } else if (res.length > 0) {
-        const nodeid = getNodeidFromPath(res[0].to)
+      } else if (refactored.length > 0) {
+        const nodeid = refactored[0].nodeid
         push(nodeid)
       }
     }
@@ -160,9 +165,9 @@ const NodeRenameTitle = () => {
 
   return (
     <Wrapper>
-      {isReserved(nodeFrom) ? (
+      {isReserved(nodeFrom.path) ? (
         <Tippy theme="mex" placement="bottom-start" content="Reserved Node">
-          <TitleStatic>{nodeTitle?.length > 0 ? nodeTitle : nodeFrom}</TitleStatic>
+          <TitleStatic>{nodeTitle?.length > 0 ? nodeTitle : nodeFrom.path}</TitleStatic>
         </Tippy>
       ) : editable ? (
         <WrappedNodeSelect
@@ -170,10 +175,10 @@ const NodeRenameTitle = () => {
           name="NodeRenameTitleSelect"
           createAtTop
           disallowReserved
-          disallowMatch={(path) => isMatch(path, nodeFrom)}
+          disallowMatch={(path) => isMatch(path, nodeFrom.path)}
           disallowClash
           autoFocus
-          defaultValue={to ?? nodeFrom}
+          defaultValue={to ?? nodeFrom.path}
           handleSelectItem={handleToChange}
           handleCreateItem={handleToCreate}
         />
@@ -185,7 +190,7 @@ const NodeRenameTitle = () => {
               setEditable(true)
             }}
           >
-            {nodeTitle?.length > 0 ? nodeTitle : nodeFrom}
+            {nodeTitle?.length > 0 ? nodeTitle : nodeFrom.path}
           </TitleStatic>
         </Tippy>
       )}

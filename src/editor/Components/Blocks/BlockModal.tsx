@@ -32,7 +32,7 @@ const BlockModal = () => {
   }
 
   const onNodeSelect = (quickLink: QuickLink) => {
-    const nodeid = getNodeidFromPath(quickLink.value)
+    const nodeid = getNodeidFromPath(quickLink.value, quickLink.namespace)
     const editorBlocks = deleteSelectedBlock()
     const content = getContentWithNewBlocks(nodeid, editorBlocks)
     const namespace = quickLink.namespace ?? getDefaultNamespaceId()

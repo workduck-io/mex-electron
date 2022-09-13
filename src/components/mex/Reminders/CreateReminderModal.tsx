@@ -203,7 +203,7 @@ const CreateReminderModal = () => {
     const newValue = quickLink.value
     if (newValue) {
       // mog('newValue', { newValue, quickLink })
-      setNodeId(getNodeidFromPath(newValue))
+      setNodeId(getNodeidFromPath(newValue, quickLink.namespace))
     }
   }
   const { trackEvent } = useAnalytics()

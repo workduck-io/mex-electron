@@ -76,14 +76,14 @@ export const useHierarchy = () => {
   const { saveNewNodeAPI, bulkSaveNodes } = useApi()
   const { saveEditorValueAndUpdateStores } = useDataSaverFromContent()
 
-  const createNoteHierarchyString = (notePath: string) => {
+  const createNoteHierarchyString = (notePath: string, namespace: string) => {
     const ilinks = useDataStore.getState().ilinks
     let prefix = ''
 
     const noteLink = notePath.split(SEPARATOR).reduce((prevPath, currentNotePath) => {
       prefix = appendToText(prefix, currentNotePath)
 
-      const currentNoteId = getNodeidFromPathAndLinks(ilinks, prefix)
+      const currentNoteId = getNodeidFromPathAndLinks(ilinks, prefix, namespace)
       const linkWithTitle = appendToText(prevPath, currentNotePath, HASH_SEPARATOR)
       const link = appendToText(linkWithTitle, currentNoteId, HASH_SEPARATOR)
 
@@ -105,7 +105,7 @@ export const useHierarchy = () => {
       mog('OPTIONS ARE', { options })
 
       const content = noteContent ?? defaultContent.content
-      const bulkNotePath = !parentNoteId ? createNoteHierarchyString(notePath) : notePath
+      const bulkNotePath = !parentNoteId ? createNoteHierarchyString(notePath, options.namespace) : notePath
 
       const node = parentNoteId
         ? await saveNewNodeAPI(noteId, options.namespace, {

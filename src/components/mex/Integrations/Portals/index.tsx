@@ -27,7 +27,7 @@ const Portals = () => {
   const [isLoading, setIsLoading] = React.useState(false)
   const [parentNote, setParentNote] = React.useState<QuickLink>(undefined)
 
-  const { getPathFromNodeid } = useLinks()
+  const { getILinkFromNodeid } = useLinks()
   const { connectToPortal, updateParentNote } = usePortals()
 
   const apps = usePortalStore((store) => store.apps)
@@ -36,17 +36,21 @@ const Portals = () => {
 
   const actionGroup = apps[params.actionGroupId]
 
-  const { connectedPortalInfo, parentNoteName } = useMemo(() => {
+  const { connectedPortalInfo, parentNoteName, parentNamespace } = useMemo(() => {
     const connectedPortalInfo = getIsPortalConnected(actionGroup.actionGroupId)
 
     let parentNoteName = ''
+    let parentNamespace = ''
     if (connectedPortalInfo) {
-      parentNoteName = getPathFromNodeid(connectedPortalInfo?.parentNodeId)
+      const node = getILinkFromNodeid(connectedPortalInfo?.parentNodeId)
+      parentNoteName = node?.path
+      parentNamespace = node?.namespace
     }
 
     return {
       parentNoteName,
-      connectedPortalInfo
+      connectedPortalInfo,
+      parentNamespace
     }
   }, [params.actionGroupId, connectedPortals])
 
@@ -105,7 +109,14 @@ const Portals = () => {
           <div>Select a Parent Note</div>
           <GlobalSectionHeader>
             <CreateInput
-              value={parentNoteName}
+              value={
+                parentNoteName
+                  ? {
+                      path: parentNoteName,
+                      namespace: parentNamespace
+                    }
+                  : undefined
+              }
               autoFocus={isNewPortal || isEdit}
               disabled={!isNewPortal && !isEdit}
               onChange={onNodeChange}

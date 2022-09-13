@@ -13,7 +13,6 @@ import { Button, DisplayShortcut } from '@workduck-io/mex-components'
 import { tinykeys } from '@workduck-io/tinykeys'
 
 import { doesLinkRemain } from '../../../components/mex/Refactor/doesLinkRemain'
-import { useLinks } from '../../../hooks/useLinks'
 import { useNavigation } from '../../../hooks/useNavigation'
 import { useRefactor } from '../../../hooks/useRefactor'
 import { useAnalysisStore } from '../../../store/useAnalysis'
@@ -24,16 +23,13 @@ import { isClash, isMatch, isReserved } from '../../../utils/lib/paths'
 import { ButtonWrapper, TitleStatic, Wrapper } from './NodeRename.style'
 
 const NodeRenameOnlyTitle = () => {
-  const { getNodeidFromPath } = useLinks()
   const { execRefactorAsync, getMockRefactor } = useRefactor()
 
-  // const focus = useRenameStore((store) => store.focus)
   const to = useRenameStore((store) => store.to)
   const ilinks = useDataStore((store) => store.ilinks)
   const nodeTitle = useAnalysisStore((state) => state.analysis.title)
 
   const { push } = useNavigation()
-  const { updateILinks } = useLinks()
   const setMockRefactored = useRenameStore((store) => store.setMockRefactored)
   const modalReset = useRenameStore((store) => store.closeModal)
   const { path: nodeFrom, namespace: nodeFromNS } = useEditorStore((store) => store.node)
@@ -151,10 +147,10 @@ const NodeRenameOnlyTitle = () => {
         push(nodeid)
       }
       // What is this code? Isn't res an object, what does res[0] refer to?
-      // else if (res.length > 0) {
-      //   const nodeid = getNodeidFromPath(res[0].to)
-      //   push(nodeid, { savePrev: false })
-      // }
+      else if (refactored.length > 0) {
+        const nodeid = refactored[0].nodeid
+        push(nodeid, { savePrev: false })
+      }
       reset()
 
       const editorRef = getPlateEditorRef()

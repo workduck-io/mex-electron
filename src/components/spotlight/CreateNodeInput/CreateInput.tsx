@@ -3,7 +3,12 @@ import NodeSelect from '../../../components/mex/NodeSelect/NodeSelect'
 import React from 'react'
 import { StyledSpotlightInputWrapper } from '../../../components/mex/NodeSelect/NodeSelect.styles'
 
-export type CreateInputType = { value?: string; onChange; disabled?: boolean; autoFocus?: boolean }
+export type CreateInputType = {
+  value?: { path: string; namespace: string }
+  onChange
+  disabled?: boolean
+  autoFocus?: boolean
+}
 
 const CreateInput: React.FC<CreateInputType> = ({ autoFocus, onChange, value, disabled }) => {
   return (

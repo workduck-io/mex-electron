@@ -116,7 +116,10 @@ interface NodeSelectProps {
   /** If true, when autofocused, all text will be selected */
   autoFocusSelectAll?: boolean
 
-  defaultValue?: string | undefined
+  defaultValue?: {
+    path: string
+    namespace: string
+  }
   placeholder?: string
 
   /** Show icon highlig‸ht for whether an option has been selected */
@@ -484,26 +487,26 @@ function NodeSelect({
 
   useEffect(() => {
     if (defaultValue) {
-      const newItems = getNewItems(defaultValue)
-      const nodeid = getNodeidFromPath(defaultValue)
+      const newItems = getNewItems(defaultValue.path)
+      const nodeid = getNodeidFromPath(defaultValue.path, defaultValue.namespace)
       onReverseClashAction({
-        path: defaultValue,
+        path: defaultValue.path,
         onSuccess: () => {
           setInputItems(newItems)
-          setInputValue(defaultValue)
-          setSelectedItem(makeQuickLink(defaultValue, { nodeid }))
+          setInputValue(defaultValue.path)
+          setSelectedItem(makeQuickLink(defaultValue.path, { nodeid, namespace: defaultValue.namespace }))
         },
         onReserve: (reserved) => {
           setNodeSelectState({ ...nodeSelectState, inputItems, reserved })
-          setInputValue(defaultValue)
+          setInputValue(defaultValue.path)
         },
         onClash: (clash) => {
           setNodeSelectState({ ...nodeSelectState, inputItems, clash })
-          setInputValue(defaultValue)
+          setInputValue(defaultValue.path)
         },
         onMatch: (isMatch) => {
           setNodeSelectState({ ...nodeSelectState, inputItems, isMatch })
-          setInputValue(defaultValue)
+          setInputValue(defaultValue.path)
         }
       })
     } else {

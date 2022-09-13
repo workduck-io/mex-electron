@@ -110,7 +110,7 @@ export const useRefactor = () => {
 
   const execRefactorAsync = async (from: RefactorPath, to: RefactorPath, clearBuffer = true) => {
     mog('FROM < TO', { from, to })
-    const nodeId = getNodeidFromPath(from.path)
+    const nodeId = getNodeidFromPath(from.path, from.namespaceID)
 
     const res = await refactorNotes(
       { path: from.path.split('.').join('#'), namespaceID: from.namespaceID },

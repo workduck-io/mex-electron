@@ -38,6 +38,7 @@ export const getTitleFromPath = (path: string, withNoteId = false) => {
 
   return path?.split(separator)?.slice(titleAt)[0]
 }
+
 export const useLinks = () => {
   const contents = useContentStore((state) => state.contents)
   const addInternalLink = useDataStore((state) => state.addInternalLink)
@@ -214,14 +215,14 @@ export const useLinks = () => {
     }
   }
 
-  const getNodeidFromPath = (path: string) => {
+  const getNodeidFromPath = (path: string, namespace: string) => {
     const links = useDataStore.getState().ilinks
     const archive = useDataStore.getState().archive
     const sharedNodes = useDataStore.getState().sharedNodes
 
-    const link = links.find((l) => l.path === path)
-    const archivedLink = archive.find((l) => l.path === path)
-    const sharedNode = sharedNodes.find((l) => l.path === path)
+    const link = links.find((l) => l.path === path && l.namespace === namespace)
+    const archivedLink = archive.find((l) => l.path === path && l.namespace === namespace)
+    const sharedNode = sharedNodes.find((l) => l.path === path && l.namespace === namespace)
 
     if (link) return link.nodeid
     if (archivedLink) return archivedLink.nodeid
@@ -233,8 +234,7 @@ export const useLinks = () => {
 
     const intersection = removedILinks.filter((l) => addedILinks.find((rem) => l.nodeid === rem.nodeid))
 
-
-    mog("INTERSECTION", { intersection, links })
+    mog('INTERSECTION', { intersection, links })
     intersection.forEach((ilink) => {
       links.splice(
         links.findIndex((item) => item.nodeid === ilink.nodeid),
@@ -242,7 +242,7 @@ export const useLinks = () => {
       )
     })
 
-    mog("After intersection", { links, intersection })
+    mog('After intersection', { links, intersection })
     addedILinks.forEach((p) => {
       const idx = links.find((link) => link.nodeid === p.nodeid)
 
@@ -270,7 +270,7 @@ export const useLinks = () => {
     const links = useDataStore.getState().ilinks
     const parentPath = path.split(SEPARATOR).slice(0, -1).join(SEPARATOR)
 
-    const namespaceILinks = !namespace ? links : links.filter(l => l.namespace === namespace)
+    const namespaceILinks = !namespace ? links : links.filter((l) => l.namespace === namespace)
     const note = namespaceILinks.find((ilink) => ilink.path === parentPath)
 
     return note
@@ -321,8 +321,8 @@ export const useLinks = () => {
   }
 }
 
-export const getNodeidFromPathAndLinks = (links: ILink[], path: string) => {
-  const link = links.find((l) => l.path === path)
+export const getNodeidFromPathAndLinks = (links: ILink[], path: string, namespace: string) => {
+  const link = links.find((l) => l.path === path && l.namespace === namespace)
   if (link) return link.nodeid
 }
 

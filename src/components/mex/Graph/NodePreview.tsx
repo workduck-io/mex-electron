@@ -72,7 +72,7 @@ const SmallText = styled.div`
 const NodePreview = ({ node }: { node: ILink }) => {
   const getContent = useContentStore((store) => store.getContent)
   const { getNodeidFromPath } = useLinks()
-  const nodeid = getNodeidFromPath(node?.path)
+  const nodeid = getNodeidFromPath(node?.path, node?.namespace)
   const content = getContent(nodeid)
 
   const { getUserDetailsUserId } = useUserService()

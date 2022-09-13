@@ -1,3 +1,4 @@
+import { useNamespaces } from '@hooks/useNamespaces'
 import {
   deleteText,
   getBlockAbove,
@@ -36,6 +37,7 @@ export interface ComboTypeHandlers {
 export const useElementOnChange = (elementComboType: SingleComboboxConfig, keys?: any) => {
   const { trackEvent } = useAnalytics()
   const { getNodeidFromPath } = useLinks()
+  const { getDefaultNamespace } = useNamespaces()
   const closeMenu = useComboboxStore((state) => state.closeMenu)
 
   return (editor: PlateEditor, item: IComboboxItem, elementType?: string, tab?: boolean) => {
@@ -74,9 +76,11 @@ export const useElementOnChange = (elementComboType: SingleComboboxConfig, keys?
         let itemValue = item.text
 
         if ((type === ELEMENT_ILINK || type === ELEMENT_INLINE_BLOCK) && !itemValue?.startsWith(`${NODE_ID_PREFIX}_`)) {
-          // mog('Replacing itemValue', { comboType, type, itemValue, item })
+          mog('Replacing itemValue', { comboType, type, itemValue, item })
 
-          const nodeId = getNodeidFromPath(itemValue)
+          // TODO: Fix this
+          const namespace = getDefaultNamespace()
+          const nodeId = getNodeidFromPath(itemValue, namespace.id)
           mog('Value of Item', { itemValue })
           itemValue = nodeId
         }

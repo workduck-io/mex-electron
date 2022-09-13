@@ -99,7 +99,11 @@ export const useDelete = () => {
       let toLoad: string
 
       if (isCurrent) toLoad = currentNode.nodeid
-      if (!toLoad) toLoad = allParents.length > 1 ? getNodeidFromPath(allParents[allParents.length - 2]) : undefined
+      if (!toLoad)
+        toLoad =
+          allParents.length > 1
+            ? getNodeidFromPath(allParents[allParents.length - 2], currentNode.namespace)
+            : undefined
       if (!toLoad) toLoad = newHistory.length > 0 ? newHistory[0] : undefined
       if (!toLoad) toLoad = newIlinks.length > 0 ? newIlinks[0].nodeid : undefined
 
