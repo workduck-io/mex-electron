@@ -1,11 +1,14 @@
+import React, { useEffect, useRef, useState } from 'react'
+
 import { useWindowSize } from '@hooks/ui/windowSize'
 import { useLayoutStore } from '@store/useLayoutStore'
-import { IconButton } from '@workduck-io/mex-components'
-import { mog } from '@workduck-io/mex-utils'
 import equal from 'fast-deep-equal'
-import React, { useEffect, useRef, useState } from 'react'
 import { ForceGraph3D } from 'react-force-graph'
 import { useTheme } from 'styled-components'
+
+import { IconButton } from '@workduck-io/mex-components'
+import { mog } from '@workduck-io/mex-utils'
+
 import { getTitleFromPath } from '../../../hooks/useLinks'
 import { useGraphStore } from '../../../store/useGraphStore'
 import { InfobarButtons, InfobarFull, InfobarTools } from '../../../style/infobar'

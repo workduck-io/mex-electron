@@ -1,3 +1,5 @@
+import React, { useEffect, useState } from 'react'
+
 import useLoad from '@hooks/useLoad'
 import editIcon from '@iconify/icons-bx/bx-edit-alt'
 import timeIcon from '@iconify/icons-bx/bx-time-five'
@@ -5,8 +7,8 @@ import { Icon } from '@iconify/react'
 import { useUserService } from '@services/auth/useUserService'
 import { NavigationType, ROUTE_PATHS, useRouting } from '@views/routes/urls'
 import { transparentize } from 'polished'
-import React, { useEffect, useState } from 'react'
 import styled from 'styled-components'
+
 import EditorPreviewRenderer from '../../../editor/EditorPreviewRenderer'
 import { getTitleFromPath, useLinks } from '../../../hooks/useLinks'
 import { useContentStore } from '../../../store/useContentStore'
@@ -83,7 +85,7 @@ const NodePreview = ({ node, fullscreen }: { node: ILink; fullscreen: boolean })
   const [alias, setAlias] = useState<string | undefined>()
 
   useEffect(() => {
-    (async () => {
+    ;(async () => {
       if (content?.metadata?.lastEditedBy) {
         const user = await getUserDetailsUserId(content?.metadata?.lastEditedBy)
         if (user.alias) setAlias(user.alias)

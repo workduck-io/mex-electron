@@ -115,10 +115,11 @@ const Rename = () => {
       }
 
       // What is this code? Isn't res an object, what does res[0] refer to?
-      // else if (res.length > 0) {
-      //   const nodeid = getNodeidFromPath(res[0].to)
-      //   push(nodeid, { savePrev: false })
-      // }
+      // res == result == refactored
+      else if (refactored.length > 0) {
+        const nodeid = refactored[0].nodeid
+        push(nodeid, { savePrev: false })
+      }
     }
 
     closeModal()

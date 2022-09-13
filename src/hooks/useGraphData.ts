@@ -1,6 +1,8 @@
 import { useUserPreferenceStore } from '@store/userPreferenceStore'
-import { mog } from '@workduck-io/mex-utils'
 import { useTheme } from 'styled-components'
+
+import { mog } from '@workduck-io/mex-utils'
+
 import { GraphEdge, GraphNode } from '../components/mex/Graph/Graph.types'
 import { ServiceImg } from '../components/mex/Graph/icons'
 import { getNameFromPath, isParent, isTopNode } from '../components/mex/Sidebar/treeUtils'

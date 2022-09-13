@@ -1,3 +1,4 @@
+import { useNamespaces } from '@hooks/useNamespaces'
 import {
   deleteText,
   getBlockAbove,
@@ -13,17 +14,18 @@ import {
   Value
 } from '@udecode/plate'
 import { mog } from '@utils/lib/helper'
+
 import { QuickLinkType } from '../../../components/mex/NodeSelect/NodeSelect'
 import { NODE_ID_PREFIX } from '../../../data/Defaults/idPrefixes'
 import useAnalytics from '../../../services/analytics'
 import { ActionType } from '../../../services/analytics/events'
 import { getEventNameFromElement, getSlug } from '../../../utils/lib/strings'
+import { ELEMENT_INLINE_BLOCK } from '../InlineBlock/types'
+import { useSlashCommandOnChange } from '../SlashCommands/useSlashCommandOnChange'
 import { IComboboxItem, InsertableElement } from '../combobox/components/Combobox.types'
 import { isInternalCommand, useComboboxOnKeyDown } from '../combobox/hooks/useComboboxOnKeyDown'
 import { ComboboxKey, useComboboxStore } from '../combobox/useComboboxStore'
 import { ELEMENT_ILINK } from '../ilink/defaults'
-import { ELEMENT_INLINE_BLOCK } from '../InlineBlock/types'
-import { useSlashCommandOnChange } from '../SlashCommands/useSlashCommandOnChange'
 import { ComboConfigData, ConfigDataSlashCommands, SingleComboboxConfig } from './multiComboboxContainer'
 import { ComboSearchType } from './types'
 
