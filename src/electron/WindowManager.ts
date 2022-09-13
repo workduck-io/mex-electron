@@ -1,27 +1,28 @@
-import { IS_DEV } from "@data/Defaults/dev_";
-import { IpcAction } from "@data/IpcAction";
-import { WindowOptions } from "../types/window.types";
-import { BrowserWindow, shell } from "electron";
-import { mog } from "@utils/lib/helper";
+import { IS_DEV } from '@data/Defaults/dev_'
+import { IpcAction } from '@data/IpcAction'
+import { mog } from '@utils/lib/helper'
+import { BrowserWindow, shell } from 'electron'
+
+import { WindowOptions } from '../types/window.types'
 
 class WindowManager {
   private windowRef: Record<string, number>
-  private static instance: WindowManager;
+  private static instance: WindowManager
 
   private constructor() {
-    mog("Window Manager constructor")
+    mog('Window Manager initialzing..')
   }
 
   public static getInstance(): WindowManager {
     if (!WindowManager.instance) {
-      WindowManager.instance = new WindowManager();
+      WindowManager.instance = new WindowManager()
     }
 
-    return WindowManager.instance;
+    return WindowManager.instance
   }
 
   public createWindow = (windowId: string, options: WindowOptions): BrowserWindow => {
-    const browserWindowId = this.windowRef?.[windowId];
+    const browserWindowId = this.windowRef?.[windowId]
     if (browserWindowId) return BrowserWindow.fromId(browserWindowId)
 
     const window = new BrowserWindow(options.windowConstructorOptions)
@@ -48,8 +49,10 @@ class WindowManager {
 
     window.on('close', (event) => {
       if (options?.onClose) options?.onClose(window)
-      if (options?.deleteOnClose === false) event.preventDefault()
-      this.deleteWindow(windowId, options?.deleteOnClose)
+      const closeIfDeveloping = IS_DEV || options?.deleteOnClose
+
+      if (closeIfDeveloping === false) event.preventDefault()
+      this.deleteWindow(windowId, closeIfDeveloping)
     })
 
     if (options?.debug && IS_DEV) window.webContents.openDevTools({ mode: 'right' })
@@ -69,23 +72,21 @@ class WindowManager {
 
   public getWindow = (windowId: string): BrowserWindow => {
     const browserWindowId = this.windowRef?.[windowId]
-
     try {
       return BrowserWindow.fromId(browserWindowId)
     } catch (err) {
-      mog("Unable to get Window from ID")
+      mog('Unable to get Window from ID', { err: err.toString() })
     }
-
   }
 
   public sendToWindow = (windowId: string, ipcType: IpcAction, data?: any) => {
-    const window = this.getWindow(windowId);
+    const window = this.getWindow(windowId)
 
     if (window) window.webContents.send(ipcType, data)
   }
 
   public deleteWindow = (windowId: string, areYouSure = true) => {
-    const window = this.getWindow(windowId);
+    const window = this.getWindow(windowId)
 
     if (areYouSure) {
       const { [windowId]: refId, ...windows } = this.windowRef
@@ -93,7 +94,6 @@ class WindowManager {
       window?.close()
     } else window?.hide()
   }
-
 }
 
-export const windowManager = WindowManager.getInstance() 
+export const windowManager = WindowManager.getInstance()
