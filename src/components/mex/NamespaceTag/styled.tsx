@@ -13,6 +13,10 @@ export const StyledNamespaceTag = styled.div<{ separator?: boolean }>`
   ${Ellipsis}
   flex-shrink: 0;
 
+  svg {
+    flex-shrink: 0;
+  }
+
   ${({ theme, separator }) =>
     separator &&
     css`

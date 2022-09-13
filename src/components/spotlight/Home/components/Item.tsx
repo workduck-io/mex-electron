@@ -12,6 +12,9 @@ import { ItemShortcutContainer, RowTitle } from './styled'
 import { BodyFont } from '@style/spotlight/global'
 import { getIconType, ProjectIconMex } from '@components/spotlight/ActionStage/Project/ProjectIcon'
 import { DisplayShortcut } from '@workduck-io/mex-components'
+import { mog } from '@workduck-io/mex-utils'
+import NamespaceTag from '@components/mex/NamespaceTag'
+import { useNamespaces } from '@hooks/useNamespaces'
 
 export const ActionIcon = styled.div`
   display: flex;
@@ -64,6 +67,9 @@ const Item: React.FC<ItemProps> = ({ item, active, onClick, showHover }) => {
 
   const newNodeName = cleanString(search.type === CategoryType.backlink ? search.value.slice(2) : search.value)
   const { mexIcon } = getIconType(item?.icon ?? 'codicon:circle-filled')
+  const { getNamespace } = useNamespaces()
+
+  // mog('item', { item })
 
   return (
     <StyledRow background={active} onClick={onClick} showHover={showHover}>
@@ -84,7 +90,10 @@ const Item: React.FC<ItemProps> = ({ item, active, onClick, showHover }) => {
                   Create a <PrimaryText>{search.value && !activeItem.active ? newNodeName : 'Quick note'}</PrimaryText>
                 </>
               ) : (
-                <>{item?.type === QuickLinkType.backlink ? cleanString(item?.title) : item?.title}</>
+                <>
+                  {item?.type === QuickLinkType.backlink ? cleanString(item?.title) : item?.title}
+                  {item?.extras?.namespace && <NamespaceTag namespace={getNamespace(item?.extras?.namespace)} />}
+                </>
               )}
             </RowTitle>
             <Description>{item?.description ?? 'some content'}</Description>

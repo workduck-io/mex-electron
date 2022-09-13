@@ -16,12 +16,10 @@ type ListItemNodeOptions = {
   searchRepExtra: SearchRepExtra
 }
 
-export const getListItemFromNode = (
-  node: ILink,
-  options: Partial<ListItemNodeOptions> = {}
-) => {
+export const getListItemFromNode = (node: ILink, options: Partial<ListItemNodeOptions> = {}) => {
   const rawText =
-    options.description ?? convertContentToRawText(getLatestContent(node?.nodeid) ?? [], ' ', { extra: options.searchRepExtra })
+    options.description ??
+    convertContentToRawText(getLatestContent(node?.nodeid) ?? [], ' ', { extra: options.searchRepExtra })
 
   const listItem: ListItemType = {
     icon: node?.icon ?? 'gg:file-document',
@@ -34,6 +32,7 @@ export const getListItemFromNode = (
       nodeid: node?.nodeid,
       blockid: options.blockId,
       path: node?.path,
+      namespace: node?.namespace,
       new: false
     },
     shortcut: {

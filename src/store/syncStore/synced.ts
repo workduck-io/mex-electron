@@ -41,7 +41,8 @@ const syncStores = () => {
         { field: 'archive' },
         { field: 'sharedNodes' },
         { field: 'slashCommands' },
-        { field: 'tags' }
+        { field: 'tags' },
+        { field: 'namespaces' }
       ]
     })
     syncStoreState(useReminderStore, {
