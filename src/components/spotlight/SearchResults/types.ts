@@ -24,6 +24,7 @@ export interface ItemExtraType {
   new: boolean
   // New Task
   newTask: boolean
+  namespace: string
   actionGroup?: {
     actionGroupId: string
     authTypeId: AuthTypeId
