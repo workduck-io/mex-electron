@@ -11,7 +11,7 @@ import { useSnippets } from '../../../hooks/useSnippets'
 import { CategoryType, useSpotlightContext } from '../../../store/Context/context.spotlight'
 import { mog } from '../../../utils/lib/helper'
 import { isReservedOrClash } from '../../../utils/lib/paths'
-import { QuickLinkType } from '../../mex/NodeSelect/NodeSelect'
+import { QuickLinkType } from '../../mex/NodeSelect/types'
 import { useActionsCache } from '../Actions/useActionsCache'
 import { ListItemType } from '../SearchResults/types'
 import { getListItemFromNode, getListItemFromSnippet } from './helper'
@@ -101,8 +101,7 @@ export const useSearch = () => {
           )
 
           searchList = isNew ? [CREATE_NEW_ITEM, ...results] : results
-        }
-        else {
+        } else {
           searchList = quickLinks
         }
         break

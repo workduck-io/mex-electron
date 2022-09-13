@@ -1,16 +1,18 @@
+import React from 'react'
+
 import linkedinIcon from '@iconify/icons-logos/linkedin-icon'
 import twitterIcon from '@iconify/icons-logos/twitter'
 import globeIcon from '@iconify/icons-ph/globe'
 import { Icon } from '@iconify/react'
 import { SettingsCard } from '@style/UserPage'
 import { ipcRenderer } from 'electron'
-import React from 'react'
 import styled from 'styled-components'
+
 import { IpcAction } from '../../../data/IpcAction'
-import { AppType } from '../../../hooks/useInitialize'
 import { useVersionStore } from '../../../store/useAppDataStore'
 import useOnboard from '../../../store/useOnboarding'
 import { Title } from '../../../style/Typography'
+import { AppType } from '../../../types/Types'
 import { NavigationType, ROUTE_PATHS, useRouting } from '../../../views/routes/urls'
 
 const Margin = styled.div`

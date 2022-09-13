@@ -1,13 +1,14 @@
-import { ItemActionType, ListItemType } from '../SearchResults/types'
-import { ActionHelperConfig, ActionGroup } from '@workduck-io/action-request-helper'
+import { getLatestContent } from '@hooks/useEditorBuffer'
+
+import { ActionGroup, ActionHelperConfig } from '@workduck-io/action-request-helper'
 
 import { CategoryType } from '../../../store/Context/context.spotlight'
-import { ILink } from '../../../types/Types'
-import { QuickLinkType } from '../../mex/NodeSelect/NodeSelect'
 import { Snippet } from '../../../store/useSnippetStore'
-import { convertContentToRawText } from '../../../utils/search/parseData'
+import { ILink } from '../../../types/Types'
 import { SearchRepExtra } from '../../../types/search'
-import { getLatestContent } from '@hooks/useEditorBuffer'
+import { convertContentToRawText } from '../../../utils/search/parseData'
+import { QuickLinkType } from '../../mex/NodeSelect/types'
+import { ItemActionType, ListItemType } from '../SearchResults/types'
 
 type ListItemNodeOptions = {
   description: string

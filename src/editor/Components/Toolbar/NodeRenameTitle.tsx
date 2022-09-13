@@ -5,8 +5,9 @@ import styled from 'styled-components'
 
 import { Button } from '@workduck-io/mex-components'
 
-import { QuickLink, WrappedNodeSelect } from '../../../components/mex/NodeSelect/NodeSelect'
+import { WrappedNodeSelect } from '../../../components/mex/NodeSelect/NodeSelect'
 import { StyledInputWrapper } from '../../../components/mex/NodeSelect/NodeSelect.styles'
+import { QuickLink } from "../../../components/mex/NodeSelect/types"
 import { doesLinkRemain } from '../../../components/mex/Refactor/doesLinkRemain'
 import { useLinks } from '../../../hooks/useLinks'
 import { useNavigation } from '../../../hooks/useNavigation'

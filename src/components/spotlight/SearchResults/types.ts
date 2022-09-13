@@ -1,9 +1,10 @@
-import { CategoryType } from '../../../store/Context/context.spotlight'
-import { IpcAction } from '../../../data/IpcAction'
-import { QuickLinkType } from '../../mex/NodeSelect/NodeSelect'
-import { Shortcut } from '../../mex/Help/Help.types'
-import { CalendarEvent } from '../../../hooks/useCalendar'
 import { AuthTypeId } from '@workduck-io/action-request-helper'
+
+import { IpcAction } from '../../../data/IpcAction'
+import type { CalendarEvent } from '../../../hooks/useCalendar'
+import type { CategoryType } from '../../../store/Context/context.spotlight'
+import { Shortcut } from '../../mex/Help/Help.types'
+import { QuickLinkType } from '../../mex/NodeSelect/types'
 
 export interface ListItemType {
   id: string

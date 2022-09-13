@@ -1,8 +1,13 @@
 import { add, startOfTomorrow, sub } from 'date-fns'
+import { uniqBy } from 'lodash'
 import create from 'zustand'
+
+import { ReminderControls, SnoozeControl } from '../components/mex/Reminders/Reminder'
 import { IpcAction } from '../data/IpcAction'
 import { appNotifierWindow } from '../electron/utils/notifiers'
-import { uniqBy } from 'lodash'
+import { getReminderState } from '../services/reminders/reminders'
+import useTodoStore from '../store/useTodoStore'
+import { AppType } from '../types/Types'
 // import { ToastStatus } from '../electron/Toast'
 import {
   DisplayReminder,
@@ -13,16 +18,12 @@ import {
   ReminderGroup,
   ReminderState
 } from '../types/reminders'
+import { KanbanBoard, KanbanCard, KanbanColumn } from '../types/search'
 import { ToastStatus } from '../types/toast'
 import { mog } from '../utils/lib/helper'
 import { isInSameMinute } from '../utils/time'
-import { AppType } from './useInitialize'
-import { useSaveData } from './useSaveData'
 import { useLinks } from './useLinks'
-import { KanbanBoard, KanbanCard, KanbanColumn } from '../types/search'
-import { ReminderControls, SnoozeControl } from '../components/mex/Reminders/Reminder'
-import { getReminderState } from '../services/reminders/reminders'
-import useTodoStore from '../store/useTodoStore'
+import { useSaveData } from './useSaveData'
 
 interface ArmedReminder {
   reminderId: string

@@ -1,14 +1,13 @@
-import { CategoryType, useSpotlightContext } from '../../../store/Context/context.spotlight'
-import { ItemActionType, ListItemType } from '../SearchResults/types'
-
-import { AppType } from '../../../hooks/useInitialize'
 import { IpcAction } from '../../../data/IpcAction'
+import { appNotifierWindow } from '../../../electron/utils/notifiers'
+import { CategoryType, useSpotlightContext } from '../../../store/Context/context.spotlight'
 import { useSpotlightAppStore } from '../../../store/app.spotlight'
 import { useSpotlightEditorStore } from '../../../store/editor.spotlight'
-import { appNotifierWindow } from '../../../electron/utils/notifiers'
-import { useActionStore } from '../Actions/useActionStore'
+import { AppType } from '../../../types/Types'
 import { NavigationType, useRouting } from '../../../views/routes/urls'
 import { useActionMenuStore } from '../ActionStage/ActionMenu/useActionMenuStore'
+import { useActionStore } from '../Actions/useActionStore'
+import { ItemActionType, ListItemType } from '../SearchResults/types'
 
 const useItemExecutor = () => {
   const spotlightContext = useSpotlightContext()

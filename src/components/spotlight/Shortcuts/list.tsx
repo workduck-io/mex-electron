@@ -1,6 +1,6 @@
 import { CategoryType } from '../../../store/Context/context.spotlight'
 import { Shortcut } from '../../mex/Help/Help.types'
-import { QuickLinkType } from '../../mex/NodeSelect/NodeSelect'
+import { QuickLinkType } from '../../mex/NodeSelect/types'
 
 export const spotlightShortcuts = {
   save: {

@@ -1,9 +1,9 @@
 import { SourceType } from '../components/spotlight/Source/types'
 import { defaultContent } from '../data/Defaults/baseData'
 import { useContentStore } from '../store/useContentStore'
-import { NodeProperties } from '../store/useEditorStore'
-import { NodeContent } from '../types/data'
+import type { NodeProperties } from '../store/useEditorStore'
 import { NodeEditorContent } from '../types/Types'
+import { NodeContent } from '../types/data'
 import { convertContentToRawText } from './search/parseData'
 
 /** Get the contents of the node with id */
@@ -61,7 +61,8 @@ export const getInitialNode = (): NodeProperties => ({
   title: '__loading__',
   id: '__loading__',
   path: '__loading__',
-  nodeid: '__null__'
+  nodeid: '__null__',
+  namespace: '__null__'
 })
 
 export const typeInvert = (type: string) => (type === 'from' ? 'to' : 'from')

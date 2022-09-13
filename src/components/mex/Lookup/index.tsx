@@ -1,20 +1,23 @@
-import { NavigationType, ROUTE_PATHS, useRouting } from '../../../views/routes/urls'
-import NodeSelect, { QuickLink, QuickLinkType } from '../NodeSelect/NodeSelect'
 import React, { useEffect, useState } from 'react'
-import { StyledCombobox, StyledInputWrapper } from '../NodeSelect/NodeSelect.styles'
+
+import { useCreateNewNote } from '@hooks/useCreateNewNote'
+import toast from 'react-hot-toast'
+import Modal from 'react-modal'
 import styled from 'styled-components'
 
-import { Input } from '../../../style/Form'
-import Modal from 'react-modal'
+import { mog } from '@workduck-io/mex-utils'
 import { tinykeys } from '@workduck-io/tinykeys'
-import toast from 'react-hot-toast'
-import { useHelpStore } from '../../../store/useHelpStore'
-import { useKeyListener } from '../../../hooks/useShortcutListener'
+
 import { useNavigation } from '../../../hooks/useNavigation'
+import { useKeyListener } from '../../../hooks/useShortcutListener'
+import { useHelpStore } from '../../../store/useHelpStore'
 import useOnboard from '../../../store/useOnboarding'
 import { useSnippetStore } from '../../../store/useSnippetStore'
-import { useCreateNewNote } from '@hooks/useCreateNewNote'
-import { mog } from '@workduck-io/mex-utils'
+import { Input } from '../../../style/Form'
+import { NavigationType, ROUTE_PATHS, useRouting } from '../../../views/routes/urls'
+import NodeSelect from '../NodeSelect/NodeSelect'
+import { StyledCombobox, StyledInputWrapper } from '../NodeSelect/NodeSelect.styles'
+import { QuickLink, QuickLinkType } from '../NodeSelect/types'
 
 const StyledModal = styled(Modal)`
   z-index: 10010000;

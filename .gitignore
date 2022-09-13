@@ -113,3 +113,7 @@ actionConfigs.ts
 dist/
 out/
 assets/icon.icns
+
+
+##Madge file
+.madgerc

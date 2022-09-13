@@ -1,8 +1,8 @@
 import { useApi } from '@apis/useSaveApi'
 import { useContentStore } from '@store/useContentStore'
 import create from 'zustand'
+
 import { useDataSaverFromContent } from '../editor/Components/Saver'
-import { useSnippetStore } from '../store/useSnippetStore'
 import { NodeEditorContent } from '../types/Types'
 import { getContent } from '../utils/helpers'
 import { areEqual } from '../utils/lib/hash'
@@ -117,7 +117,7 @@ export const useSnippetBuffer = () => {
   const api = useApi()
   const add2Buffer = useSnippetBufferStore((s) => s.add)
   const clearBuffer = useSnippetBufferStore((s) => s.clear)
-  const updateSnippetContent = useSnippetStore((s) => s.updateSnippetContentAndTitle)
+  const { getDefaultNamespace } = useNamespaces()
   const { saveData } = useSaveData()
   const { updateSnippet: updateSnippetIndex, getSnippet } = useSnippets()
 
@@ -157,7 +157,8 @@ export const useSnippetBuffer = () => {
             snippetId,
             snippetTitle: val.title ?? snippet.title,
             content: val?.content ?? snippet?.content,
-            template: val?.template ?? snippet?.template ?? false
+            template: val?.template ?? snippet?.template ?? false,
+            namespace: getDefaultNamespace().id
           })
           // updateSnippetContent(snippetId, val.content ?? snippet.content, val.title ?? snippet.title, val.template)
           // TODO: Switch snippet to template index

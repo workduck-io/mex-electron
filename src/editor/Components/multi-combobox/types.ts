@@ -1,15 +1,10 @@
-import { ListItemType } from '@components/spotlight/SearchResults/types'
-import { BaseRange } from 'slate'
-import { QuickLinkType } from '../../../components/mex/NodeSelect/NodeSelect'
-import { CategoryType } from '../../../store/Context/context.spotlight'
-import { ComboboxKey } from '../combobox/useComboboxStore'
+import type { BaseRange } from 'slate'
 
-export enum SlashType {
-  embed = 'media_embed',
-  table = 'table',
-  canvas = 'excalidraw',
-  remind = 'remind'
-}
+import { QuickLinkType } from '../../../components/mex/NodeSelect/types'
+import type { CategoryType } from '../../../store/Context/context.spotlight'
+import { ComboboxKey } from '../combobox/types'
+
+
 
 export interface ComboboxItem {
   text: string

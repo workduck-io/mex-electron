@@ -1,9 +1,12 @@
-import { SEPARATOR } from '../components/mex/Sidebar/treeUtils'
-import { useSnippetStore, Snippet } from '../store/useSnippetStore'
-import { SlashCommandConfig } from '../editor/Components/SlashCommands/Types'
-import { useSearch } from './useSearch'
-import { mog } from '../utils/lib/helper'
 import { useApi } from '@apis/useSaveApi'
+
+import { SnippetCommandPrefix } from '@workduck-io/mex-utils'
+
+import { SEPARATOR } from '../components/mex/Sidebar/treeUtils'
+import { SlashCommandConfig } from '../editor/Components/SlashCommands/Types'
+import { Snippet, useSnippetStore } from '../store/useSnippetStore'
+import { mog } from '../utils/lib/helper'
+import { useSearch } from './useSearch'
 
 export const useSnippets = () => {
   const addSnippetZus = useSnippetStore((state) => state.addSnippet)
@@ -93,5 +96,4 @@ export const extractSnippetCommands = (snippets: Snippet[]): string[] => {
   return snippets.map((c) => getSnippetCommand(c.title))
 }
 
-export const SnippetCommandPrefix = `snip`
 export const getSnippetCommand = (title: string) => `${SnippetCommandPrefix}${SEPARATOR}${title}`

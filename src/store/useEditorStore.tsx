@@ -1,6 +1,8 @@
 import React from 'react'
+
 import create from 'zustand'
-import { ComboTriggerType } from '../editor/Components/combobox/useComboboxStore'
+
+import { ComboTriggerType } from '../editor/Components/combobox/types'
 import { getInitialNode } from '../utils/helpers'
 
 export interface NodeProperties {

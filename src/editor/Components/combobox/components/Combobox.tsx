@@ -2,7 +2,7 @@ import React, { useCallback, useEffect, useState } from 'react'
 
 import { DEFAULT_LIST_ITEM_ICON } from '@components/spotlight/ActionStage/ActionMenu/ListSelector'
 import { getIconType, ProjectIconMex } from '@components/spotlight/ActionStage/Project/ProjectIcon'
-import { shift, offset, flip } from '@floating-ui/react-dom-interactions'
+import { flip, offset, shift } from '@floating-ui/react-dom-interactions'
 import usePointerMovedSinceMount from '@hooks/listeners/usePointerMovedSinceMount'
 import { Icon } from '@iconify/react'
 import { getRangeBoundingClientRect, PortalBody, useEditorState, useVirtualFloating } from '@udecode/plate'
@@ -11,7 +11,7 @@ import { useTheme } from 'styled-components'
 
 import { DisplayShortcut } from '@workduck-io/mex-components'
 
-import { QuickLinkType } from '../../../../components/mex/NodeSelect/NodeSelect'
+import { QuickLinkType } from '../../../../components/mex/NodeSelect/types'
 import { ActionTitle } from '../../../../components/spotlight/Actions/styled'
 import { ShortcutText } from '../../../../components/spotlight/Home/components/Item'
 import { ElementTypeBasedShortcut } from '../../../../components/spotlight/Shortcuts/list'

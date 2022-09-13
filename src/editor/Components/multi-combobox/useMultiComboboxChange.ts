@@ -1,19 +1,21 @@
-import { OnChange, usePlateEditorRef } from '@udecode/plate'
 import { useCallback } from 'react'
+
+import { OnChange, usePlateEditorRef } from '@udecode/plate'
+
+import { QuickLinkType } from '../../../components/mex/NodeSelect/types'
+import { CreateNewPrefix, InviteUserPrefix } from '../../../data/Defaults/generalPrefixes'
+import { useLinks } from '../../../hooks/useLinks'
 import { fuzzySearch } from '../../../utils/lib/fuzzySearch'
+import { withoutContinuousDelimiter } from '../../../utils/lib/helper'
+import { isReservedOrClash } from '../../../utils/lib/paths'
+import { getTimeInText, toLocaleString } from '../../../utils/time'
+import { useRouting } from '../../../views/routes/urls'
+import { ComboboxKey } from "../combobox/types"
 import { useComboboxOnChange } from '../combobox/hooks/useComboboxOnChange'
 import { isInternalCommand } from '../combobox/hooks/useComboboxOnKeyDown'
-import { ComboboxKey, useComboboxStore } from '../combobox/useComboboxStore'
-import { ComboboxType } from './types'
-import { isReservedOrClash } from '../../../utils/lib/paths'
-import { useRouting } from '../../../views/routes/urls'
-import { useLinks } from '../../../hooks/useLinks'
-import { mog, withoutContinuousDelimiter } from '../../../utils/lib/helper'
-import { makeQuickLink, QuickLinkType } from '../../../components/mex/NodeSelect/NodeSelect'
-import { getTimeInText, toLocaleString } from '../../../utils/time'
+import { useComboboxStore } from '../combobox/useComboboxStore'
 import { cleanEditorId } from '../Todo'
-
-export const CreateNewPrefix = `Create `
+import { ComboboxType } from './types'
 
 export const getNewItem = (ct: ComboboxType, searchTerm: string) => {
   let type = QuickLinkType.backlink
@@ -26,7 +28,7 @@ export const getNewItem = (ct: ComboboxType, searchTerm: string) => {
     }
     case 'mention': {
       type = QuickLinkType.mentions
-      createNewPrefix = 'Invite '
+      createNewPrefix = InviteUserPrefix
       break
     }
   }

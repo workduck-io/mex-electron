@@ -1,14 +1,14 @@
-import { AppType } from '../../hooks/useInitialize'
-import { appNotifierWindow } from '../../electron/utils/notifiers'
-import React, { useEffect, useMemo, useState } from 'react'
+import React, { useEffect, useState } from 'react'
+
+import { IpcAction } from '../../data/IpcAction'
 import { PriorityType, TodoStatus, TodoType } from '../../editor/Components/Todo/types'
 import EditorPreviewRenderer from '../../editor/EditorPreviewRenderer'
-import Todo, { TodoControls } from '../../ui/components/Todo'
-import { IpcAction } from '../../data/IpcAction'
-import { Reminder } from '../../types/reminders'
+import { AppType } from '../../electron/utils/helper'
+import { appNotifierWindow } from '../../electron/utils/notifiers'
 import { getPureContent } from '../../hooks/useTodoKanban'
 import useTodoStore from '../../store/useTodoStore'
-import { mog } from '../../utils/lib/helper'
+import { Reminder } from '../../types/reminders'
+import Todo, { TodoControls } from '../../ui/components/Todo'
 
 interface NotificationTodoProps {
   oid?: string

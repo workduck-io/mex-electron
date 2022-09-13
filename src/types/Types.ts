@@ -199,3 +199,8 @@ export enum NodeType {
   ARCHIVED,
   MISSING
 }
+
+export enum AppType {
+  SPOTLIGHT = 'SPOTLIGHT',
+  MEX = 'MEX'
+}

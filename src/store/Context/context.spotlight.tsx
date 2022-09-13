@@ -1,6 +1,6 @@
 import React, { createContext, useContext, useState } from 'react'
 
-import { ListItemType } from '../../components/spotlight/SearchResults/types'
+import type { ListItemType } from '../../components/spotlight/SearchResults/types'
 
 export enum CategoryType {
   backlink = 'Backlinks',

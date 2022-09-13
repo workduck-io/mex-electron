@@ -1,16 +1,21 @@
 import { IpcAction } from '@data/IpcAction'
 import Toast from '@electron/Toast'
+import { windowManager } from '@electron/WindowManager'
 import createTray from '@electron/tray'
 import { setupUpdateService } from '@electron/update'
 import { SEARCH_INDEX_LOCATION, TEMP_DATA_BEFORE_UPDATE } from '@electron/utils/fileLocations'
 import { getDataOfLocation } from '@electron/utils/filedata'
-import { handleToggleMainWindow, createAllWindows, createMexWindow, createSpotLighWindow } from '@electron/utils/helper'
+import {
+  AppType,
+  createAllWindows,
+  createMexWindow,
+  createSpotLighWindow,
+  handleToggleMainWindow
+} from '@electron/utils/helper'
 import extensionsForDevX from '@electron/utils/installExtensions'
 import { getRedirectPath } from '@electron/utils/redirect'
 import { dumpIndexDisk } from '@electron/worker/controller'
 import { app, globalShortcut } from 'electron'
-import { windowManager } from '@electron/WindowManager'
-import { AppType } from '@hooks/useInitialize'
 
 export type WindowsType = { toast?: Toast }
 
@@ -71,7 +76,7 @@ const appEventListeners = () => {
   app.removeAsDefaultProtocolClient('mex')
   app.setAsDefaultProtocolClient('mex')
 
-  app.on('open-url', function(event, url) {
+  app.on('open-url', function (event, url) {
     event.preventDefault()
 
     getRedirectPath(windowManager.getWindow(AppType.MEX), url)

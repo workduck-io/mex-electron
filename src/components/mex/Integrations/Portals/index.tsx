@@ -1,19 +1,22 @@
+import React, { useMemo } from 'react'
+
+import { QuickLink } from '@components/mex/NodeSelect/types'
 import CreateInput from '@components/spotlight/CreateNodeInput/CreateInput'
+import { useLinks } from '@hooks/useLinks'
+import { usePortals } from '@hooks/usePortals'
 import { Icon } from '@iconify/react'
 import { mog } from '@utils/lib/helper'
 import { shell } from 'electron'
-import React, { useMemo } from 'react'
+import toast from 'react-hot-toast'
 import { useLocation, useParams } from 'react-router-dom'
 import { useTheme } from 'styled-components'
+
+import { LoadingButton } from '@workduck-io/mex-components'
+
 import { GlobalSectionContainer, GlobalSectionHeader } from '../GlobalSection/styled'
 import ServiceHeader from '../ServiceHeader'
 import ServiceInfo from '../ServiceInfo'
-import toast from 'react-hot-toast'
 import usePortalStore from './usePortalStore'
-import { QuickLink } from '@components/mex/NodeSelect/NodeSelect'
-import { useLinks } from '@hooks/useLinks'
-import { usePortals } from '@hooks/usePortals'
-import { LoadingButton } from '@workduck-io/mex-components'
 
 const Portals = () => {
   const theme = useTheme()

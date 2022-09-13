@@ -1,5 +1,8 @@
-import { ILink } from '../../types/Types'
 import toast from 'react-hot-toast'
+
+import { BreadcrumbItem } from '@workduck-io/mex-components'
+import { SnippetCommandPrefix } from '@workduck-io/mex-utils'
+
 import {
   getAllParentIds,
   getNameFromPath,
@@ -8,15 +11,12 @@ import {
   SEPARATOR
 } from '../../components/mex/Sidebar/treeUtils'
 import { BASE_DRAFT_PATH, BASE_MEETING_PATH, BASE_TASKS_PATH } from '../../data/Defaults/baseData'
-import { FlowCommandPrefix } from '../../editor/Components/SlashCommands/useSyncConfig'
-import { SnippetCommandPrefix } from '../../hooks/useSnippets'
+import { ILink } from '../../types/Types'
 import { mog } from './helper'
-import { BreadcrumbItem } from '@workduck-io/mex-components'
 
 const RESERVED_PATHS: string[] = [
   BASE_DRAFT_PATH,
   BASE_TASKS_PATH,
-  FlowCommandPrefix,
   'mex',
   SnippetCommandPrefix,
   BASE_MEETING_PATH,

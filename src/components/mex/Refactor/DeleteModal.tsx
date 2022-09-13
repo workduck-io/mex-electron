@@ -1,11 +1,14 @@
+import React, { useEffect } from 'react'
+
 import archiveLine from '@iconify/icons-ri/archive-line'
 import { Icon } from '@iconify/react'
-import { Button, DisplayShortcut } from '@workduck-io/mex-components'
-import React, { useEffect } from 'react'
 import Modal from 'react-modal'
 import { useLocation } from 'react-router-dom'
-import { tinykeys } from '@workduck-io/tinykeys'
 import create from 'zustand'
+
+import { Button, DisplayShortcut } from '@workduck-io/mex-components'
+import { tinykeys } from '@workduck-io/tinykeys'
+
 import { useDelete } from '../../../hooks/useDelete'
 import { useEditorBuffer } from '../../../hooks/useEditorBuffer'
 import { useKeyListener } from '../../../hooks/useShortcutListener'
@@ -13,7 +16,8 @@ import { useEditorStore } from '../../../store/useEditorStore'
 import { useHelpStore } from '../../../store/useHelpStore'
 import { isReserved } from '../../../utils/lib/paths'
 import { NavigationType, ROUTE_PATHS, useRouting } from '../../../views/routes/urls'
-import { QuickLink, WrappedNodeSelect } from '../NodeSelect/NodeSelect'
+import { WrappedNodeSelect } from '../NodeSelect/NodeSelect'
+import { QuickLink } from '../NodeSelect/types'
 import { DeleteIcon, MockRefactorMap, ModalControls, ModalHeader, MRMHead, MRMRow } from './styles'
 
 interface DeleteStoreState {

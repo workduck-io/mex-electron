@@ -1,3 +1,5 @@
+import React, { useEffect } from 'react'
+
 import { SpotlightModals } from '@components/layouts/Modals'
 import { isParent } from '@components/mex/Sidebar/treeUtils'
 import { DRAFT_NODE, DRAFT_PREFIX } from '@data/Defaults/idPrefixes'
@@ -5,25 +7,26 @@ import { getLatestContent } from '@hooks/useEditorBuffer'
 import { useSearchExtra } from '@hooks/useSearch'
 import { getTodayTaskNodePath, useTaskFromSelection } from '@hooks/useTaskFromSelection'
 import useMultipleEditors from '@store/useEditorsStore'
-import React, { useEffect } from 'react'
 import 'react-contexify/dist/ReactContexify.css'
 import { ErrorBoundary } from 'react-error-boundary'
+
 import EditorErrorFallback from '../../../components/mex/Error/EditorErrorFallback'
 import { BASE_TASKS_PATH, defaultContent } from '../../../data/Defaults/baseData'
+import { DEFAULT_PREVIEW_TEXT } from '../../../data/IpcAction'
 import { MeetingSnippetContent } from '../../../data/initial/MeetingNote'
-import { DEFAULT_PREVIEW_TEXT } from '../../../data/IpcAction' // FIXME import
+// FIXME import
 import { getUntitledDraftKey } from '../../../editor/Components/SyncBlock/getNewBlockData'
 import { getAttendeeUserIDsFromCalendarEvent, useCalendar, useCalendarStore } from '../../../hooks/useCalendar'
 import useEditorActions from '../../../hooks/useEditorActions'
-import { AppType } from '../../../hooks/useInitialize'
 import useLoad from '../../../hooks/useLoad'
-import { useSpotlightAppStore } from '../../../store/app.spotlight'
 import { CategoryType, useSpotlightContext } from '../../../store/Context/context.spotlight'
+import { useSpotlightAppStore } from '../../../store/app.spotlight'
 import { useSpotlightEditorStore } from '../../../store/editor.spotlight'
 import useDataStore from '../../../store/useDataStore'
 import { useRecentsStore } from '../../../store/useRecentsStore'
+import { AppType } from '../../../types/Types'
 import { createNodeWithUid, insertItemInArray, mog } from '../../../utils/lib/helper'
-import { QuickLinkType } from '../../mex/NodeSelect/NodeSelect'
+import { QuickLinkType } from '../../mex/NodeSelect/types'
 import { useActionsCache } from '../Actions/useActionsCache'
 import { MAX_RECENT_ITEMS } from '../Home/components/List'
 import { getListItemFromNode } from '../Home/helper'
@@ -40,7 +43,6 @@ export const INIT_PREVIEW: PreviewType = {
 }
 
 const Content = () => {
-
   // * Store
   const ilinks = useDataStore((s) => s.ilinks)
   const lastOpenedNodes = useRecentsStore((store) => store.lastOpened)
@@ -68,7 +70,7 @@ const Content = () => {
   const { search, selection, activeItem, activeIndex, searchResults, setSearchResults } = useSpotlightContext()
   const events = useCalendarStore((store) => store.events)
   const actions = useActionsCache((store) => store.actions)
-  const pinned = useMultipleEditors(store => store.pinned)
+  const pinned = useMultipleEditors((store) => store.pinned)
 
   const getRecentList = (noteIds: Array<string>, limit = MAX_RECENT_ITEMS) => {
     const recentList: Array<ListItemType> = []
@@ -77,16 +79,16 @@ const Content = () => {
     const pinned = useMultipleEditors.getState().pinned
     const ilinks = useDataStore.getState().ilinks
 
-    noteIds.forEach(noteId => {
+    noteIds.forEach((noteId) => {
       if (!pinned.has(noteId)) {
-        const noteLink = ilinks.find(noteLink => noteLink.nodeid === noteId)
+        const noteLink = ilinks.find((noteLink) => noteLink.nodeid === noteId)
 
         if (noteLink && !isParent(noteLink.path, BASE_TASKS_PATH)) {
           const item = getListItemFromNode(noteLink, { searchRepExtra: extra })
           recentList.push(item)
         }
       }
-    });
+    })
 
     if (recentList.length > limit) {
       return recentList.slice(0, limit)
@@ -101,9 +103,9 @@ const Content = () => {
     const pinned = useMultipleEditors.getState().pinned
     const ilinks = useDataStore.getState().ilinks
 
-    pinned.forEach(pinnedNoteId => {
-      const noteLink = ilinks.find(noteLink => noteLink.nodeid === pinnedNoteId)
-      const item = getListItemFromNode(noteLink, { categoryType: CategoryType.pinned });
+    pinned.forEach((pinnedNoteId) => {
+      const noteLink = ilinks.find((noteLink) => noteLink.nodeid === pinnedNoteId)
+      const item = getListItemFromNode(noteLink, { categoryType: CategoryType.pinned })
       pinnedItems.push(item)
     })
 
@@ -136,7 +138,6 @@ const Content = () => {
     }
 
     if (normalMode) getSearchItems()
-
   }, [search.value, actions, selection, activeItem.item, normalMode, pinned, ilinks, events])
 
   // * For setting the preview
@@ -145,7 +146,7 @@ const Content = () => {
     const isNode = resultNode?.type === QuickLinkType.backlink
     const isMeeting = resultNode?.category === CategoryType.meeting
     const isNewTask = resultNode?.category === CategoryType.task
-    let nodeid: string;
+    let nodeid: string
 
     if (isNode && !activeItem.active) {
       const isNew = resultNode?.extras?.new

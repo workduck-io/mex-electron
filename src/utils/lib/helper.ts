@@ -1,12 +1,12 @@
-import { FAKE_APP_URI, IS_DEV } from '../../data/Defaults/dev_'
-
 import { ELEMENT_PARAGRAPH } from '@udecode/plate'
-import { NodeEditorContent } from '../../types/Types'
-import { NodeProperties } from '../../store/useEditorStore'
-import { SEPARATOR } from '../../components/mex/Sidebar/treeUtils'
-import WebStorageCookieStore from 'tough-cookie-web-storage-store'
-import { generateNodeUID } from '../../data/Defaults/idPrefixes'
 import tough from 'tough-cookie'
+import WebStorageCookieStore from 'tough-cookie-web-storage-store'
+
+import { SEPARATOR } from '../../components/mex/Sidebar/treeUtils'
+import { FAKE_APP_URI, IS_DEV } from '../../data/Defaults/dev_'
+import { generateNodeUID } from '../../data/Defaults/idPrefixes'
+import type { NodeProperties } from '../../store/useEditorStore'
+import { NodeEditorContent } from '../../types/Types'
 
 type MogOptions = {
   pretty: boolean
@@ -35,25 +35,26 @@ export const mog = (
 export const electronCookies = () => {
   const { Cookie } = tough
 
-    ; (function(document) {
-      const store = new WebStorageCookieStore(localStorage)
-      const cookiejar = new tough.CookieJar(store, { rejectPublicSuffixes: false })
-      Object.defineProperty(document, 'cookie', {
-        get() {
-          return cookiejar.getCookieStringSync(FAKE_APP_URI)
-        },
-        set(cookie) {
-          cookiejar.setCookieSync(Cookie.parse(cookie), FAKE_APP_URI)
-        }
-      })
-    })(document)
+  ;(function (document) {
+    const store = new WebStorageCookieStore(localStorage)
+    const cookiejar = new tough.CookieJar(store, { rejectPublicSuffixes: false })
+    Object.defineProperty(document, 'cookie', {
+      get() {
+        return cookiejar.getCookieStringSync(FAKE_APP_URI)
+      },
+      set(cookie) {
+        cookiejar.setCookieSync(Cookie.parse(cookie), FAKE_APP_URI)
+      }
+    })
+  })(document)
 }
 
-export const createNodeWithUid = (key: string): NodeProperties => ({
+export const createNodeWithUid = (key: string, namespace?: string): NodeProperties => ({
   title: key,
   id: key,
   nodeid: generateNodeUID(),
-  path: key
+  path: key,
+  namespace
 })
 
 /*

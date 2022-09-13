@@ -2,12 +2,11 @@ import { IpcAction } from '@data/IpcAction'
 import Toast from '@electron/Toast'
 import { windows } from '@electron/main'
 import MenuBuilder from '@electron/menu'
-import { mog } from '@utils/lib/helper'
 import { sanitizeHtml } from '@utils/sanitizeHtml'
-import { session, app, BrowserWindow, screen } from 'electron'
+import { app, BrowserWindow, screen, session } from 'electron'
 
 import { windowManager } from '../WindowManager'
-import { SelectionType, getSelectedTextSync, getSelectedText } from './getSelectedText'
+import { getSelectedText, getSelectedTextSync, SelectionType } from './getSelectedText'
 
 export enum AppType {
   SPOTLIGHT = 'SPOTLIGHT',

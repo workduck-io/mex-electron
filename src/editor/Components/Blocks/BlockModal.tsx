@@ -1,12 +1,15 @@
+import React from 'react'
+
+import { WrappedNodeSelect } from '@components/mex/NodeSelect/NodeSelect'
+import { QuickLink } from '@components/mex/NodeSelect/types'
 import { useEditorBlockSelection } from '@editor/Actions/useEditorBlockSelection'
 import { useCreateNewNote } from '@hooks/useCreateNewNote'
-import React from 'react'
-import Modal from 'react-modal'
-import { QuickLink, WrappedNodeSelect } from '@components/mex/NodeSelect/NodeSelect'
 import { useLinks } from '@hooks/useLinks'
-import useBlockStore from '@store/useBlockStore'
-import { useDataSaverFromContent } from '../Saver'
 import { useNamespaces } from '@hooks/useNamespaces'
+import useBlockStore from '@store/useBlockStore'
+import Modal from 'react-modal'
+
+import { useDataSaverFromContent } from '../Saver'
 
 const BlockModal = () => {
   const blocksFromStore = useBlockStore((store) => store.blocks)

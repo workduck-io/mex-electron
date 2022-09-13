@@ -1,3 +1,4 @@
+import { generateNamespaceId } from '@data/Defaults/idPrefixes'
 import { hierarchyParser } from '@hooks/useHierarchy'
 import { useLastOpened } from '@hooks/useLastOpened'
 import { useNodes } from '@hooks/useNodes'
@@ -14,7 +15,7 @@ import { client } from '@workduck-io/dwindle'
 import { allNamespacesHierarchyParser } from '@workduck-io/mex-utils'
 
 import { defaultContent } from '../data/Defaults/baseData'
-import { DEFAULT_NAMESPACE, WORKSPACE_HEADER } from '../data/Defaults/defaults'
+import { WORKSPACE_HEADER } from '../data/Defaults/defaults'
 import { USE_API } from '../data/Defaults/dev_'
 import { useLinks } from '../hooks/useLinks'
 import '../services/apiClient/apiClient'
@@ -26,7 +27,6 @@ import { mog } from '../utils/lib/helper'
 import { extractMetadata } from '../utils/lib/metadata'
 import { deserializeContent, serializeContent } from '../utils/lib/serialize'
 import { apiURLs } from './routes'
-import { generateNamespaceId } from '@data/Defaults/idPrefixes'
 
 const API_CACHE_LOG = `\nAPI has been requested before, cancelling.\n`
 
@@ -402,18 +402,20 @@ export const useApi = () => {
     snippetId,
     snippetTitle,
     content,
-    template
+    template,
+    namespace
   }: {
     snippetId: string
     snippetTitle: string
     content: any[]
+    namespace: string
     template?: boolean
   }) => {
     const reqData = {
       id: snippetId,
       type: 'SnippetRequest',
       title: snippetTitle,
-      namespaceIdentifier: DEFAULT_NAMESPACE,
+      namespaceIdentifier: namespace,
       data: serializeContent(content ?? defaultContent.content, snippetId),
       template: template ?? false
     }

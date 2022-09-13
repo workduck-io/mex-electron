@@ -5,16 +5,13 @@ import useDataStore from '../store/useDataStore'
 import { useSnippetStore } from '../store/useSnippetStore'
 import { useSyncStore } from '../store/useSyncStore'
 import useTodoStore from '../store/useTodoStore'
+import { AppType } from '../types/Types'
 import { FileData } from '../types/data'
 import { createNodeWithUid } from '../utils/lib/helper'
 import useLoad from './useLoad'
+import { useNamespaces } from './useNamespaces'
 import { useSlashCommands } from './useSlashCommands'
 import { useViewStore } from './useTaskViews'
-
-export enum AppType {
-  SPOTLIGHT = 'SPOTLIGHT',
-  MEX = 'MEX'
-}
 
 export const useInitialize = () => {
   const initializeDataStore = useDataStore((state) => state.initializeDataStore)
@@ -25,6 +22,7 @@ export const useInitialize = () => {
   const setReminders = useReminderStore((state) => state.setReminders)
   const setViews = useViewStore((state) => state.setViews)
   const initSnippets = useSnippetStore((state) => state.initSnippets)
+  const { getNamespaceOfNodeid } = useNamespaces()
   const { generateSlashCommands } = useSlashCommands()
   const { loadNodeProps } = useLoad()
 
@@ -80,9 +78,9 @@ export const useInitialize = () => {
     // mog('INIT data', { data })
     update(data)
     const keyToLoad = initNodeId || '@'
-
+    const namespace = getNamespaceOfNodeid(keyToLoad).id
     if (initFor === AppType.SPOTLIGHT) {
-      loadNodeProps(createNodeWithUid(keyToLoad))
+      loadNodeProps(createNodeWithUid(keyToLoad, namespace))
     }
   }
 

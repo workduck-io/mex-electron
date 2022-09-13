@@ -1,5 +1,6 @@
 import React, { useEffect, useMemo, useState } from 'react'
 
+import { useNamespaces } from '@hooks/useNamespaces'
 import { useSearchExtra } from '@hooks/useSearch'
 import addCircleLine from '@iconify/icons-ri/add-circle-line'
 import checkboxCircleLine from '@iconify/icons-ri/checkbox-circle-line'
@@ -7,6 +8,8 @@ import errorWarningLine from '@iconify/icons-ri/error-warning-line'
 import fileList2Line from '@iconify/icons-ri/file-list-2-line'
 import lock2Line from '@iconify/icons-ri/lock-2-line'
 import { Icon } from '@iconify/react'
+import { useUserPreferenceStore } from '@store/userPreferenceStore'
+import { StyledNamespaceSelectComponents } from '@style/Select'
 import { useCombobox } from 'downshift'
 import toast from 'react-hot-toast'
 // import { MexIcon } from '../../../style/Layouts'
@@ -20,15 +23,15 @@ import { useSnippetStore } from '../../../store/useSnippetStore'
 import { Input, StyledCreatatbleSelect } from '../../../style/Form'
 import { ILink, SingleNamespace } from '../../../types/Types'
 import { fuzzySearch } from '../../../utils/lib/fuzzySearch'
-import { mog, withoutContinuousDelimiter } from '../../../utils/lib/helper'
-import { isClash, isMatch, isReserved, RESERVED_NAMESPACES } from '../../../utils/lib/paths'
+import { withoutContinuousDelimiter } from '../../../utils/lib/helper'
+import { isClash, isReserved, RESERVED_NAMESPACES } from '../../../utils/lib/paths'
 import { convertContentToRawText } from '../../../utils/search/parseData'
+import NamespaceTag from '../NamespaceTag'
 import { SEPARATOR } from '../Sidebar/treeUtils'
 import {
   StyledCombobox,
   StyledInputWrapper,
   StyledMenu,
-  StyledNodeSelectWrapper,
   Suggestion,
   SuggestionContentWrapper,
   SuggestionDesc,
@@ -36,44 +39,14 @@ import {
   SuggestionText,
   SuggestionTextWrapper
 } from './NodeSelect.styles'
-import NamespaceTag from '../NamespaceTag'
-import { FlexGap } from '../Archive/styled'
-import { useUserPreferenceStore } from '@store/userPreferenceStore'
-import { useNamespaces } from '@hooks/useNamespaces'
-import { StyledNamespaceSelectComponents } from '@style/Select'
-
-export type QuickLink = {
-  // Text to be shown in the combobox list
-  text: string
-
-  // Value of the item. In this case NodeId
-  value: string
-
-  // Does it 'exist' or is it QuickLinkStatus.new
-  status: QuickLinkStatus
-
-  type?: QuickLinkType
-
-  // Unique identifier
-  // Not present if the node is not yet created i.e. QuickLinkStatus.new
-  nodeid?: string
-  namespace?: string
-
-  icon?: string
-}
-
-export enum QuickLinkType {
-  backlink = 'Backlinks',
-  snippet = 'Snippets',
-  flow = 'Flows',
-  tags = 'Tags',
-  mentions = 'Mentions'
-}
-
-enum QuickLinkStatus {
-  new,
-  exists
-}
+import {
+  NodeSelectProps,
+  NodeSelectState,
+  QuickLink,
+  QuickLinkStatus,
+  QuickLinkType,
+  ReserveClashActionProps
+} from './types'
 
 export const makeQuickLink = (
   title: string,
@@ -94,69 +67,6 @@ export const createNewQuickLink = (path: string, type: QuickLinkType = QuickLink
   type,
   status: QuickLinkStatus.new
 })
-
-interface NodeSelectProps {
-  handleSelectItem: (item: QuickLink) => void
-  handleCreateItem?: (item: QuickLink) => void
-  id?: string
-  name?: string
-  disabled?: boolean
-  inputRef?: any
-  showAll?: boolean
-  prefillRecent?: boolean
-  /**
-   * Whether to show menu as an overlay or inline
-   * @default true
-   */
-  menuOverlay?: boolean
-
-  menuOpen?: boolean
-  /** If true, the combobox will be autofocused */
-  autoFocus?: boolean
-  /** If true, when autofocused, all text will be selected */
-  autoFocusSelectAll?: boolean
-
-  defaultValue?: string | undefined
-  placeholder?: string
-
-  /** Show icon highlig‸ht for whether an option has been selected */
-  highlightWhenSelected?: boolean
-
-  /** disallow input if reserved */
-  disallowReserved?: boolean
-
-  /** disallow input if clash */
-  disallowClash?: boolean
-
-  /** disallow input if match  */
-  disallowMatch?: (path: string) => boolean
-
-  /** Which highlight to show, true for selected (check) */
-  iconHighlight?: boolean
-
-  /** Add the create option at the top of the suggestions */
-  createAtTop?: boolean
-
-  onFocus?: React.FocusEventHandler<HTMLInputElement>
-  onBlur?: React.FocusEventHandler<HTMLInputElement>
-}
-
-interface NodeSelectState {
-  inputItems: QuickLink[]
-  namespaces: SingleNamespace[]
-  selectedItem: QuickLink | null
-  selectedNamespace: SingleNamespace | null
-  reserved: boolean
-  clash: boolean
-  isMatch: boolean
-}
-interface ReserveClashActionProps {
-  path: string
-  onReserve: (reserve: boolean) => void
-  onClash: (clash: boolean) => void
-  onMatch: (isMatch: boolean) => void
-  onSuccess: () => void
-}
 
 /**
  * Select nodes for for a given path

@@ -1,10 +1,10 @@
 import { insertText } from '@udecode/plate'
-import { deleteFragment, PlatePlugin, WithOverride, getPreviousNode } from '@udecode/plate-core'
+import { getPreviousNode, PlatePlugin, WithOverride } from '@udecode/plate-core'
 import { mog } from '@utils/lib/helper'
 import { Range } from 'slate'
 import { getPathFromNodeIdHookless } from '../../../hooks/useLinks'
 import { useEditorStore } from '../../../store/useEditorStore'
-import { ComboboxKey } from '../combobox/useComboboxStore'
+import { ComboboxKey } from "../combobox/types"
 import { ELEMENT_ILINK } from './defaults'
 import { getILinkDeserialize } from './getILinkDeserialize'
 

@@ -1,16 +1,14 @@
-import { Range } from 'slate'
 import {
-  getParentNode,
-  isCollapsed,
-  isElement,
   ELEMENT_CODE_BLOCK,
-  ELEMENT_CODE_LINE,
-  PlateEditor
+  ELEMENT_CODE_LINE, getParentNode,
+  isCollapsed,
+  isElement, PlateEditor
 } from '@udecode/plate'
-import { ComboboxType, ComboTriggerDataType } from './types'
-import { getTextFromTrigger } from '../combobox/utils/getTextFromTrigger'
 import { debounce } from 'lodash'
-import { ComboTriggerType } from '../combobox/useComboboxStore'
+import { Range } from 'slate'
+import { ComboTriggerType } from "../combobox/types"
+import { getTextFromTrigger } from '../combobox/utils/getTextFromTrigger'
+import { ComboboxType, ComboTriggerDataType } from './types'
 
 export const getTriggeredData = (
   editor: PlateEditor,

@@ -13,15 +13,17 @@ import {
   Value
 } from '@udecode/plate'
 import { mog } from '@utils/lib/helper'
-import { QuickLinkType } from '../../../components/mex/NodeSelect/NodeSelect'
+
+import { QuickLinkType } from '../../../components/mex/NodeSelect/types'
 import { NODE_ID_PREFIX } from '../../../data/Defaults/idPrefixes'
 import { useLinks } from '../../../hooks/useLinks'
 import useAnalytics from '../../../services/analytics'
 import { ActionType } from '../../../services/analytics/events'
 import { getEventNameFromElement, getSlug } from '../../../utils/lib/strings'
+import { ComboboxKey } from "../combobox/types"
 import { IComboboxItem, InsertableElement } from '../combobox/components/Combobox.types'
 import { isInternalCommand, useComboboxOnKeyDown } from '../combobox/hooks/useComboboxOnKeyDown'
-import { ComboboxKey, useComboboxStore } from '../combobox/useComboboxStore'
+import { useComboboxStore } from '../combobox/useComboboxStore'
 import { ELEMENT_ILINK } from '../ilink/defaults'
 import { ELEMENT_INLINE_BLOCK } from '../InlineBlock/types'
 import { useSlashCommandOnChange } from '../SlashCommands/useSlashCommandOnChange'

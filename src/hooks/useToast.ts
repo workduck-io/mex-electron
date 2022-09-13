@@ -2,8 +2,9 @@ import { IpcAction } from '@data/IpcAction'
 import { appNotifierWindow } from '@electron/utils/notifiers'
 import { useSpotlightContext } from '@store/Context/context.spotlight'
 import showToast from 'react-hot-toast'
+
+import { AppType } from '../types/Types'
 import { ToastStatus } from '../types/toast'
-import { AppType } from './useInitialize'
 
 export const useToast = () => {
   const isSpotlight = useSpotlightContext()

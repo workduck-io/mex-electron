@@ -1,10 +1,10 @@
 import React, { useEffect, useState } from 'react'
 
-import { AppType } from '../../../hooks/useInitialize'
 import { IpcAction } from '../../../data/IpcAction'
-import { StyledMessage } from './styled'
 import { appNotifierWindow } from '../../../electron/utils/notifiers'
 import { useContentStore } from '../../../store/useContentStore'
+import { AppType } from '../../../types/Types'
+import { StyledMessage } from './styled'
 
 const Message: React.FC<{ text: string }> = ({ text }) => {
   const [show, setShow] = useState<boolean>(true)

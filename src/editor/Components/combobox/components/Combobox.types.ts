@@ -1,7 +1,13 @@
-import { PlateEditor, TElement, Value } from '@udecode/plate'
-import { QuickLinkType } from '../../../../components/mex/NodeSelect/NodeSelect'
-import { SlashType } from '../../multi-combobox/types'
+import type { PlateEditor, TElement, Value } from '@udecode/plate'
 
+import { QuickLinkType } from '../../../../components/mex/NodeSelect/types'
+
+enum SlashType {
+  embed = 'media_embed',
+  table = 'table',
+  canvas = 'excalidraw',
+  remind = 'remind'
+}
 export interface RenderFunction<P = { [key: string]: any }> {
   (props: P, defaultRender?: (props?: P) => JSX.Element | null): JSX.Element | null
 }
@@ -72,7 +78,6 @@ export interface ComboboxItemProps {
 export type ComboboxOptions = {
   showPreview?: boolean
 }
-
 
 export interface ComboboxProps {
   isSlash?: boolean
