@@ -4,9 +4,9 @@ import { useTheme } from 'styled-components'
 import { useLayoutStore } from '../../../store/useLayoutStore'
 import { OverlaySidebarWindowWidth, size } from '@style/responsive'
 import { useMediaQuery } from 'react-responsive'
+import { mog } from '@workduck-io/mex-utils'
 
-const sidebarCollapsedWidth = '86px'
-const sidebarExpandedWidth = '362px'
+const navWidth = 86
 
 export const useSidebarTransition = () => {
   const sidebar = useLayoutStore((state) => state.sidebar)
@@ -16,9 +16,12 @@ export const useSidebarTransition = () => {
   const isDesktop = useMediaQuery({ minWidth: size.wide })
   const overlaySidebar = useMediaQuery({ maxWidth: OverlaySidebarWindowWidth })
 
+  const sidebarCollapsedWidth = `${navWidth}px`
+  const sidebarExpandedWidth = `${navWidth + sidebar.width}px`
+
   const sidebarStyle = useMemo(() => {
     const showSidebar = sidebar.show && sidebar.expanded
-    const firstColumnWidth = `${showSidebar ? '276px' : '0px'}`
+    const firstColumnWidth = `${showSidebar ? sidebar.width : 0}px`
     if (!overlaySidebar) {
       const style = {
         width: firstColumnWidth
@@ -59,7 +62,9 @@ export const useSidebarTransition = () => {
     const visibleEndColumnWidth = `${isDesktop ? '600px' : '400px'}`
     const endColumnWidth = `${showRHSidebar ? visibleEndColumnWidth : '0px'}`
     const themeGap = `${theme.additional.hasBlocks ? '4rem' : '0rem'}`
-    // mog('Overlay', { overlaySidebar, showSidebar, showRHSidebar })
+
+    // mog('Overlay', { overlaySidebar, showSidebar, showRHSidebar, firstColumnWidth, endColumnWidth, themeGap })
+
     if (!overlaySidebar) {
       const style = {
         gridTemplateColumns: `${firstColumnWidth} calc(100vw - ${firstColumnWidth} - ${endColumnWidth} - ${themeGap}) ${endColumnWidth}`
