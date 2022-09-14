@@ -3,6 +3,7 @@ import styled, { css } from 'styled-components'
 import { Input } from '../../../style/Form'
 import { transparentize } from 'polished'
 import { Ellipsis } from '@workduck-io/mex-components'
+import { StyledNamespaceTag } from '../NamespaceTag/styled'
 
 export const StyledInputWrapper = styled.div<{ isOverlay: boolean }>`
   width: 100%;
@@ -116,6 +117,12 @@ export const Suggestion = styled.li<SuggestionProps>`
       }
       ${SuggestionDesc} {
         color: ${({ theme }) => transparentize(0.25, theme.colors.text.oppositePrimary)};
+      }
+      ${StyledNamespaceTag} {
+        color: ${({ theme }) => theme.colors.text.oppositePrimary};
+        svg {
+          color: ${({ theme }) => theme.colors.text.oppositePrimary};
+        }
       }
     `}
 `

@@ -625,7 +625,7 @@ function NodeSelect({
                       <SuggestionContentWrapper>
                         <SuggestionTextWrapper>
                           <SuggestionText>{item.text}</SuggestionText>
-                          <NamespaceTag separator={!!item.text} namespace={namespace} />
+                          <NamespaceTag namespace={namespace} />
                         </SuggestionTextWrapper>
                         <SuggestionDesc>{desc !== undefined && desc}</SuggestionDesc>
                       </SuggestionContentWrapper>

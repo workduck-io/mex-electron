@@ -7,7 +7,6 @@ export const StyledNamespaceTag = styled.div<{ separator?: boolean }>`
   display: flex;
   align-items: center;
   padding-left: 0.25rem;
-  margin-left: 0.5rem;
   min-width: 4rem;
   max-width: 8rem;
   ${Ellipsis}

@@ -1,3 +1,4 @@
+import { useNamespaces } from '@hooks/useNamespaces'
 import { useSaveData } from '@hooks/useSaveData'
 import { useSnippets } from '@hooks/useSnippets'
 import deleteBin6Line from '@iconify/icons-ri/delete-bin-6-line'
@@ -48,6 +49,7 @@ import { getInitialNode } from '../../../utils/helpers'
 import { NavigationType, ROUTE_PATHS, useRouting } from '../../../views/routes/urls'
 import Backlinks from '../Backlinks'
 import Metadata from '../Metadata/Metadata'
+import NamespaceTag from '../NamespaceTag'
 import TagsRelated, { TagsRelatedTiny } from '../Tags/TagsRelated'
 import SearchFilters from './SearchFilters'
 import SearchView, { RenderFilterProps, RenderItemProps, RenderPreviewProps } from './SearchView'
@@ -85,6 +87,7 @@ const Search = () => {
   const { saveData } = useSaveData()
   const { goTo } = useRouting()
   const { deleteSnippet, getSnippet } = useSnippets()
+  const { getNamespace } = useNamespaces()
   const {
     applyCurrentFilters,
     addCurrentFilter,
@@ -226,6 +229,7 @@ const Search = () => {
     const edNode = node ? { ...node, title: node.path, id: node.nodeid } : getInitialNode()
     const isTagged = hasTags(edNode.nodeid)
     const id = `${item.id}_ResultFor_Search`
+    const namespace = getNamespace(node.namespace)
     // mog('Baseitem', { item, node, icon, nodeType })
     if (props.view === View.Card) {
       return (
@@ -233,6 +237,7 @@ const Search = () => {
           <ResultHeader active={item.matchField?.includes('title')}>
             <Icon icon={icon} />
             <ResultTitle>{node.path}</ResultTitle>
+            {namespace && <NamespaceTag namespace={namespace} />}
           </ResultHeader>
           <SearchPreviewWrapper active={item.matchField?.includes('text')}>
             <EditorPreviewRenderer content={content} editorId={`editor_${item.id}`} />
@@ -250,7 +255,10 @@ const Search = () => {
           <ResultRow active={item.matchField?.includes('title')} selected={props.selected}>
             <Icon icon={icon} />
             <ResultMain>
-              <ResultTitle>{node.path}</ResultTitle>
+              <ResultTitle>
+                {node.path}
+                {namespace && <NamespaceTag namespace={namespace} />}
+              </ResultTitle>
               <ResultDesc>{item.text ?? convertContentToRawText(content, ' ')}</ResultDesc>
             </ResultMain>
             {(!splitOptions || splitOptions.type === SplitType.NONE) && (
@@ -326,13 +334,17 @@ const Search = () => {
       const node = getNode(item.id, true)
       const nodeType = getNodeType(node?.nodeid)
       const icon = node?.icon ?? (nodeType === NodeType.SHARED ? shareLine : fileList2Line)
+      const namespace = getNamespace(node?.namespace)
       const edNode = { ...node, title: node?.path, id: node?.nodeid }
       // mog('RenderPreview', { item, content, node })
       return (
         <SplitSearchPreviewWrapper id={`splitSearchPreview_for_${item.id}`}>
           <Title onMouseUp={(e) => onDoubleClick(e, item)}>
             <Icon icon={icon} />
-            <TitleText>{edNode?.title}</TitleText>
+            <TitleText>
+              {edNode?.title}
+              {namespace && <NamespaceTag namespace={namespace} />}
+            </TitleText>
             <ResultPreviewMetaData>
               <Metadata fadeOnHover={false} node={edNode} />
             </ResultPreviewMetaData>
