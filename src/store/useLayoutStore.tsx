@@ -64,7 +64,7 @@ export const useLayoutStore = create<LayoutState>((set, get) => ({
   toggleRHSidebar: () => set((state) => ({ rhSidebar: { ...state.rhSidebar, expanded: !state.rhSidebar.expanded } })),
   setRHSidebarExpanded: (expanded) => set((state) => ({ rhSidebar: { ...state.rhSidebar, expanded } })),
   showRHSidebar: () => set((state) => ({ rhSidebar: { ...state.rhSidebar, show: true } })),
-  hideRHSidebar: () => set((state) => ({ rhSidebar: { ...state.rhSidebar, show: false } })),
+  hideRHSidebar: () => set((state) => ({ rhSidebar: { ...state.rhSidebar, show: false, expanded: false } })),
 
   collapseAllSidebars: () =>
     set((state) => ({
@@ -81,13 +81,13 @@ export const useLayoutStore = create<LayoutState>((set, get) => ({
   hideAllSidebars: () =>
     set((state) => ({
       sidebar: { ...state.sidebar, show: false },
-      rhSidebar: { ...state.rhSidebar, show: false }
+      rhSidebar: { ...state.rhSidebar, show: false, expanded: false }
     })),
 
   toggleAllSidebars: () =>
     set((state) => ({
       sidebar: { ...state.sidebar, expanded: !state.sidebar.expanded },
-      rhSidebar: { ...state.rhSidebar, expanded: !state.rhSidebar.expanded }
+      rhSidebar: { ...state.rhSidebar, expanded: state.rhSidebar.show && !state.rhSidebar.expanded }
     })),
 
   // Infobar

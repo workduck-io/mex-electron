@@ -98,12 +98,18 @@ export const MexTree = ({ items, filterText }: SpaceTreeProps) => {
         ArrowDown: (event) => {
           event.stopPropagation()
           // Circular increment
-          setSelected((selected + 1) % matchedFlatItems.length)
+          const newSelected = (selected + 1) % matchedFlatItems.length
+          if (newSelected >= 0) {
+            setSelected(newSelected)
+          }
         },
         ArrowUp: (event) => {
           event.stopPropagation()
           // Circular decrement with no negative
-          setSelected((selected - 1 + matchedFlatItems.length) % matchedFlatItems.length)
+          const newSelected = (selected - 1 + matchedFlatItems.length) % matchedFlatItems.length
+          if (newSelected >= 0) {
+            setSelected(newSelected)
+          }
         }
       })
       return () => {
