@@ -1,6 +1,6 @@
 import useModalStore, { ModalsType } from '@store/useModalStore';
 import React, { useMemo } from 'react';
-import Fleet from './'
+import { Fleet } from '@workduck-io/mex-components'
 import { useOnNewItem } from './useOnNewItem';
 
 const FleetContainer = () => {

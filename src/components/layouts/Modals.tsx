@@ -11,7 +11,7 @@ import ShareModal from '@components/mex/Mention/ShareModal'
 import ReleaseNotesModal from '@components/mex/ReleaseNotes'
 import TaskViewModal from '@components/mex/TaskViewModal'
 import TemplateModal from '@components/mex/Template/TemplateModal'
-import FleetContainer from '@components/QuickNew/FleetContainer'
+import FleetContainer from '@components/FleetContainer'
 
 
 export interface ModalOpenAction {
