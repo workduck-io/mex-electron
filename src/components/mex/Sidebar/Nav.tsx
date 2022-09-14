@@ -54,21 +54,21 @@ const CreateNewNote: React.FC<{ target: any }> = ({ target }) => {
     goTo(ROUTE_PATHS.node, NavigationType.push, note?.nodeid)
   }
 
-  const { shortcutHandler } = useKeyListener()
+  // const { shortcutHandler } = useKeyListener()
 
-  useEffect(() => {
-    const unsubscribe = tinykeys(window, {
-      [shortcuts.newNode.keystrokes]: (event) => {
-        event.preventDefault()
-        shortcutHandler(shortcuts.newNode, () => {
-          createNoteWithQABlock()
-        })
-      }
-    })
-    return () => {
-      unsubscribe()
-    }
-  }, [shortcuts])
+  // useEffect(() => {
+  //   const unsubscribe = tinykeys(window, {
+  //     [shortcuts.newNode.keystrokes]: (event) => {
+  //       event.preventDefault()
+  //       shortcutHandler(shortcuts.newNode, () => {
+  //         createNoteWithQABlock()
+  //       })
+  //     }
+  //   })
+  //   return () => {
+  //     unsubscribe()
+  //   }
+  // }, [shortcuts])
 
   return (
     <NavTooltip

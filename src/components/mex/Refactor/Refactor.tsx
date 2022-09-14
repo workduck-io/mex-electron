@@ -24,6 +24,7 @@ import { QuickLink, WrappedNodeSelect } from '../NodeSelect/NodeSelect'
 import { doesLinkRemain } from './doesLinkRemain'
 import { ArrowIcon, MockRefactorMap, ModalControls, ModalHeader, MRMHead, MRMRow } from './styles'
 import { useUserPreferenceStore } from '@store/userPreferenceStore'
+import useModalStore, { ModalsType } from '@store/useModalStore'
 
 interface RefactorPath {
   path: string
@@ -93,7 +94,8 @@ export const useRefactorStore = create<RefactorState>((set) => ({
  * Shows mock refactored nodes before executing
  */
 const Refactor = () => {
-  const open = useRefactorStore((store) => store.open)
+  const open = useModalStore(store => store.open === ModalsType.refactor)
+  const toggleModal = useModalStore(store => store.toggleOpen)
   const focus = useRefactorStore((store) => store.focus)
   const to = useRefactorStore((store) => store.to)
   const from = useRefactorStore((store) => store.from)
@@ -102,8 +104,6 @@ const Refactor = () => {
   const mockRefactored = useRefactorStore((store) => store.mockRefactored)
   const shortcuts = useHelpStore((store) => store.shortcuts)
 
-  const openModal = useRefactorStore((store) => store.openModal)
-  const closeModal = useRefactorStore((store) => store.closeModal)
   const setMockRefactored = useRefactorStore((store) => store.setMockRefactored)
   const setTo = useRefactorStore((store) => store.setTo)
   const setFrom = useRefactorStore((store) => store.setFrom)
@@ -142,6 +142,14 @@ const Refactor = () => {
     if (newValue && newNS) {
       setFrom({ path: newValue, namespaceID: newNS })
     }
+  }
+
+  const openModal = () => {
+    toggleModal(ModalsType.refactor)
+  }
+
+  const closeModal = () => {
+    toggleModal(undefined)
   }
 
   const handleToChange = (quickLink: QuickLink) => {

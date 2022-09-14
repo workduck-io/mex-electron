@@ -76,10 +76,13 @@ export const getUniquePath = (
   }
 
   // Is path is already present (Clash)
+  mog("GET UNIQUE PATH", { path, paths })
+
   if (paths.includes(path)) {
     let newPath = getPathNum(path)
     while (paths.includes(newPath)) {
       newPath = getPathNum(newPath)
+      mog("NEW PATH", { newPath })
     }
     if (showNotification) toast('Path clashed with existing, incremented a numeric suffix')
     return { unique: newPath }
@@ -174,7 +177,7 @@ export const getPartialTreeGroups = <T>(
   // const itemsInsertedInParent: T[] =
   const toGroupItems = [...itemArrayGrouped] //.reverse()
   const groupedItems: PartialTreeItem<T>[] = []
-  toGroupItems.forEach((item, index) => {
+  toGroupItems.forEach((item) => {
     const path = getPath(item)
     const parentPath = getParentFromPath(path)
     if (parentPath) {

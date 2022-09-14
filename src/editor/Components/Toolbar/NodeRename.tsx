@@ -71,13 +71,12 @@ const NodeRenameOnlyTitle = () => {
         event.preventDefault()
         // TODO: Fix the shortcut handler (not working after the shortcut is renamed)
         shortcutHandler(shortcuts.showRename, () => {
-          console.log({ event })
           setEditable(true)
-          inpRef.current.focus()
+          inpRef.current?.focus()
         })
       }
     })
-    // console.log(shortcuts.showRename)
+
     return () => {
       unsubscribe()
     }

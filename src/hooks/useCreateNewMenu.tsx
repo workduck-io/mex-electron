@@ -1,5 +1,5 @@
 import { ELEMENT_PARAGRAPH } from '@udecode/plate'
-import { defaultContent, getRandomQAContent } from '@data/Defaults/baseData'
+import { getRandomQAContent } from '@data/Defaults/baseData'
 import { generateSnippetId } from '@data/Defaults/idPrefixes'
 import { IconifyIcon } from '@iconify/react'
 import generateName from 'project-name-generator'
@@ -9,8 +9,6 @@ import { useUpdater } from './useUpdater'
 import { useSnippetStore } from '@store/useSnippetStore'
 import { useSnippets } from './useSnippets'
 import { useNamespaces } from './useNamespaces'
-import { mog } from '@workduck-io/mex-utils'
-import { useLayoutStore } from '@store/useLayoutStore'
 import { useUserPreferenceStore } from '@store/userPreferenceStore'
 
 interface CreateNewMenuItem {
@@ -30,17 +28,9 @@ export const useCreateNewMenu = () => {
   const currentSpace = useUserPreferenceStore((store) => store.activeNamespace)
   const changeSpace = useUserPreferenceStore((store) => store.setActiveNamespace)
 
-  // const createNoteWithQABlock = () => {
-  //   const qaContent = getRandomQAContent()
-  //   const note = createNewNote({ noteContent: qaContent })
-
-  //   goTo(ROUTE_PATHS.node, NavigationType.push, note?.nodeid)
-  // }
 
   const createNewNamespace = () => {
     addDefaultNewNamespace().then((ns) => {
-      // mog('After creating ns in contenxtmenu', { ns })
-      // Change the space in the sidebar to the newly created space
       if (ns) changeSpace(ns.id)
     })
   }
@@ -48,7 +38,7 @@ export const useCreateNewMenu = () => {
   const createNewNoteInNamespace = (namespaceId: string) => {
     const qaContent = getRandomQAContent()
     const note = createNewNote({ namespace: namespaceId, noteContent: qaContent })
-    mog('After creating note in namespace', { note })
+
     if (note) {
       goTo(ROUTE_PATHS.node, NavigationType.push, note?.nodeid)
     }
@@ -81,14 +71,6 @@ export const useCreateNewMenu = () => {
           createNewNoteInNamespace(currentSpace || getDefaultNamespaceId())
         }
       },
-      // Preserved to create a note in default namespace if needed
-      //{
-      //   id: 'new-note-in-ns',
-      //   label: 'New Note in Default Space',
-      //   onSelect: () => {
-      //     createNoteWithQABlock()
-      //   }
-      // },
       {
         id: 'new-space',
         label: 'New Space',

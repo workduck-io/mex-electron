@@ -1,7 +1,7 @@
 import styled, { css } from 'styled-components'
 import { rgba, transparentize } from 'polished'
 
-const ModalContent = (multi = false) => css`
+export const ModalContent = (multi = false) => css`
   width: max-content;
   height: max-content;
   margin: auto;
@@ -13,7 +13,7 @@ const ModalContent = (multi = false) => css`
   ${({ theme }) =>
     !multi
       ? css`
-          padding: ${({ theme }) => `${theme.spacing.medium} ${theme.spacing.large}`};
+          padding: ${theme.spacing.medium};
           background: ${theme.colors.gray[9]};
           box-shadow: 0px 20px 100px ${transparentize(0.75, theme.colors.primary)};
           border: 1px solid ${theme.colors.gray[8]};
@@ -46,6 +46,11 @@ export const ModalStyles = css`
   .ModalOverlay {
     ${ModalOverlay}
   }
+  
+  .SwitcherOverlay {
+    backdrop-filter: none;
+  }
+
   .ModalContentSplit {
     ${ModalContent(true)}
   }
@@ -107,6 +112,7 @@ export const MRMRow = styled.div`
   &:nth-child(2n) {
     background: ${({ theme }) => transparentize(0.5, theme.colors.gray[8])};
   }
+
   p {
     margin: 0;
     /* flex: 1; */

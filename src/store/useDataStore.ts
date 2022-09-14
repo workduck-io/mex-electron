@@ -79,10 +79,11 @@ const useDataStore = create<DataStoreState>(
    */
 
       addILink: ({ ilink, namespace, nodeid, openedNotePath, archived, showAlert }) => {
-        const uniquePath = get().checkValidILink({ notePath: ilink, openedNotePath, showAlert })
+        const uniquePath = get().checkValidILink({ notePath: ilink, openedNotePath, namespace, showAlert })
+        mog("Unique Path", { uniquePath })
 
         const ilinks = get().ilinks
-        const linksStrings = ilinks.map((l) => l.path)
+        const linksStrings = ilinks.filter(l => l.namespace === namespace).map((l) => l.path)
 
         const parents = getAllParentIds(uniquePath) // includes link of child
         const newLinks = parents.filter((l) => !linksStrings.includes(l)) // only create links for non existing
@@ -94,7 +95,7 @@ const useDataStore = create<DataStoreState>(
           icon: getNodeIcon(l)
         }))
 
-        const newLink = newILinks.find((l) => l.path === uniquePath)
+        const newLink = newILinks.find((l) => l.path === uniquePath && l.namespace === namespace)
 
         const userILinks = archived ? ilinks.map((val) => (val.path === uniquePath ? { ...val, nodeid } : val)) : ilinks
         const createdILinks = [...userILinks, ...newILinks]
@@ -116,11 +117,12 @@ const useDataStore = create<DataStoreState>(
           notePath = isChild && openedNotePath ? `${openedNotePath}${key}` : key
         }
 
-        const ilinks = namespace ? get().ilinks.filter(link => link.namespace === namespace) : get().ilinks
+        const iLinksOfNamespace = namespace ? get().ilinks.filter(link => link.namespace === namespace) : get().ilinks
+        mog("ILINKS OF NOTE ARE", { iLinksOfNamespace, notePath })
 
-        const linksStrings = ilinks.map((l) => l.path)
+
+        const linksStrings = iLinksOfNamespace.map((l) => l.path)
         const reservedOrUnique = getUniquePath(notePath, linksStrings, showAlert)
-
 
         if (!reservedOrUnique) {
           throw Error(`ERROR-RESERVED: PATH (${notePath}) IS RESERVED. YOU DUMB`)
