@@ -89,7 +89,6 @@ export const apiURLs = {
   namespaces: {
     getHierarchy: `${API_URL}/namespace/all/hierarchy?getMetadata=true`,
     get: (id: string) => `${API_URL}/namespace/${id}`,
-    delete: (spaceId: string) => `${API_URL}/namesapce/${spaceId}`,
     getAll: `${API_URL}/namespace/all`,
     create: `${API_URL}/namespace`, // POST
     update: `${API_URL}/namespace`, // POST

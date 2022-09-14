@@ -30,7 +30,6 @@ import toast from 'react-hot-toast'
 import { useLastOpened } from '@hooks/useLastOpened'
 import NavBreadCrumbs from '@components/mex/NavBreadcrumbs'
 import { useContentStore } from '@store/useContentStore'
-import { mog } from '@utils/lib/helper'
 
 const ContentEditor = () => {
   const fetchingContent = useEditorStore((state) => state.fetchingContent)
@@ -104,9 +103,6 @@ const ContentEditor = () => {
         shortcutHandler(shortcuts.toggleFocusMode, () => {
           toggleFocusMode()
         })
-      },
-      '$mod+KeyJ': (event) => {
-        mog('LOgging', { event })
       },
       [shortcuts.refreshNode.keystrokes]: (event) => {
         event.preventDefault()

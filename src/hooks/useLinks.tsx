@@ -192,7 +192,7 @@ export const useLinks = () => {
 
     if (archived) {
       const archiveNoteLinks = useDataStore.getState().archive
-      const noteLink = archiveNoteLinks?.find((l) => l.nodeid === nodeid)
+      const noteLink = archiveNoteLinks?.find((l) => l.nodeid === noteId)
       return noteLink
     }
 
