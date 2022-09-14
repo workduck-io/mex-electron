@@ -2,6 +2,7 @@ import { transparentize } from 'polished'
 import styled, { css } from 'styled-components'
 
 import { Ellipsis } from '@workduck-io/mex-components'
+import { StyledNamespaceTag } from '../NamespaceTag/styled'
 
 import { Input } from '../../../style/Form'
 import { StyledNamespaceTag } from '../NamespaceTag/styled'
