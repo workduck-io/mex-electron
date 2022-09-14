@@ -5,7 +5,7 @@ import { mog } from '@workduck-io/mex-utils'
 import { useLinks } from './useLinks'
 
 export const useGenericFilterFunctions = () => {
-  const { getPathFromNodeid } = useLinks()
+  const { getPathFromNodeid, getILinkFromNodeid } = useLinks()
   return {
     note: (item, value) => {
       // return true
@@ -17,6 +17,12 @@ export const useGenericFilterFunctions = () => {
       const tagsCache = useDataStore.getState().tagsCache
       const tags = tagsCache[value]
       return tags && tags.nodes.includes(item.id)
+    },
+    space: (item, value) => {
+      // mog('namespace', { item, value })
+      const iLink = getILinkFromNodeid(item.id)
+      const namespace = iLink?.namespace
+      return namespace === value
     }
   }
 }

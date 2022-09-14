@@ -5,7 +5,7 @@ interface SidebarListWrapperProps {
   noMargin?: boolean
 }
 export const SidebarListWrapper = styled.div<SidebarListWrapperProps>`
-  margin-top: ${({ noMargin }) => (noMargin ? '0' : '4rem')};
+  margin-top: ${({ noMargin }) => (noMargin ? '0' : '1rem')};
   flex-grow: 1;
   display: flex;
   flex-direction: column;
