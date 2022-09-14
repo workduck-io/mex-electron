@@ -1,8 +1,10 @@
+import { NAMESPACE_ID_PREFIX } from '@data/Defaults/idPrefixes'
 import { useNodes } from '@hooks/useNodes'
 import { useEditorStore } from '@store/useEditorStore'
 import { EditorBreadcrumbs } from '@style/Editor'
 import { NavigationType, ROUTE_PATHS, useRouting } from '@views/routes/urls'
 import { Breadcrumbs } from '@workduck-io/mex-components'
+import { mog } from '@workduck-io/mex-utils'
 import React from 'react'
 import { StyledTopNavigation } from './styled'
 
@@ -16,7 +18,7 @@ const NavBreadCrumbs = ({ nodeId }: NavBreadCrumbsType) => {
   const isUserEditing = useEditorStore((store) => store.isEditing)
 
   const openBreadcrumb = (nodeId: string) => {
-    if (nodeId.startsWith('space')) return
+    if (nodeId.startsWith(NAMESPACE_ID_PREFIX)) return
     goTo(ROUTE_PATHS.node, NavigationType.push, nodeId)
   }
 

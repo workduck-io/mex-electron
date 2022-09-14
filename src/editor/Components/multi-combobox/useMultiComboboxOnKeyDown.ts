@@ -76,13 +76,10 @@ export const useElementOnChange = (elementComboType: SingleComboboxConfig, keys?
         let itemValue = item.text
 
         if ((type === ELEMENT_ILINK || type === ELEMENT_INLINE_BLOCK) && !itemValue?.startsWith(`${NODE_ID_PREFIX}_`)) {
-          mog('Replacing itemValue', { comboType, type, itemValue, item })
-
-          // TODO: Fix this
-          const namespace = getDefaultNamespace()
-          const nodeId = getNodeidFromPath(itemValue, namespace.id)
-          mog('Value of Item', { itemValue })
+          // mog('Replacing itemValue', { comboType, type, itemValue, item })
+          const nodeId = item.key // getNodeidFromPath(itemValue, namespace.id)
           itemValue = nodeId
+          // mog('Value of Item', { itemValue })
         }
 
         // select the ilink text and insert the ilink element

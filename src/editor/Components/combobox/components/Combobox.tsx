@@ -36,6 +36,9 @@ import BlockCombo from './BlockCombo'
 import { ComboboxProps } from './Combobox.types'
 import PreviewMeta from './PreviewMeta'
 import { ComboboxShortcuts, ComboSeperator } from './styled'
+import { useNamespaces } from '@hooks/useNamespaces'
+import NamespaceTag from '@components/mex/NamespaceTag'
+import { mog } from '@workduck-io/mex-utils'
 
 export const Combobox = ({ onSelectItem, onRenderItem, options }: ComboboxProps) => {
   // TODO clear the error-esque warnings for 'type inference'
@@ -57,6 +60,8 @@ export const Combobox = ({ onSelectItem, onRenderItem, options }: ComboboxProps)
   const { textAfterTrigger, textAfterBlockTrigger } = useComboboxStore((store) => store.search)
   const getContent = useContentStore((store) => store.getContent)
   const { getSnippetContent } = useSnippets()
+  const { getNamespace } = useNamespaces()
+
   const setIsSlash = useComboboxStore((store) => store.setIsSlash)
   const [metaData, setMetaData] = useState(undefined)
   const editor = useEditorState()
@@ -136,6 +141,8 @@ export const Combobox = ({ onSelectItem, onRenderItem, options }: ComboboxProps)
   const listItem = items[itemIndex]
   const itemShortcut = listItem?.type ? ElementTypeBasedShortcut[listItem?.type] : undefined
 
+  // mog('combobox', { listItem, itemShortcut })
+
   return (
     <PortalBody>
       {isOpen && (
@@ -149,7 +156,10 @@ export const Combobox = ({ onSelectItem, onRenderItem, options }: ComboboxProps)
                       const Item = onRenderItem ? onRenderItem({ item }) : item.text
                       const lastItem = index > 0 ? items[index - 1] : undefined
                       const { mexIcon } = getIconType(item?.icon ?? DEFAULT_LIST_ITEM_ICON)
-
+                      // let namespace = undefined
+                      // if (item?.namespace) {
+                      //   namespace = getNamespace(item?.namespace)
+                      // }
                       return (
                         <span key={`${item.key}-${String(index)}`}>
                           {item.type !== lastItem?.type && <ActionTitle>{item.type}</ActionTitle>}
@@ -181,6 +191,7 @@ export const Combobox = ({ onSelectItem, onRenderItem, options }: ComboboxProps)
                               )}
                               {item.desc && <ItemDesc>{item.desc}</ItemDesc>}
                             </ItemCenterWrapper>
+                            {/* namespace && <NamespaceTag namespace={namespace} />(*/}
                             {item.rightIcons && (
                               <ItemRightIcons>
                                 {item.rightIcons.map((i: string) => (

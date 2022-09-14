@@ -29,6 +29,8 @@ import {
   PreviewActionHeader
 } from './EditorPreview.styles'
 import { useTheme } from 'styled-components'
+import { useNamespaces } from '@hooks/useNamespaces'
+import NamespaceTag from '@components/mex/NamespaceTag'
 
 export interface EditorPreviewProps {
   nodeid: string
@@ -67,6 +69,7 @@ const EditorPreview = ({
   const { loadNode, getNoteContent } = useLoad()
   const match = useMatch(`${ROUTE_PATHS.node}/:nodeid`)
   const { goTo } = useRouting()
+  const { getNamespace } = useNamespaces()
 
   const cc = useMemo(() => {
     const nodeContent = getNoteContent(nodeid)
@@ -76,6 +79,8 @@ const EditorPreview = ({
   }, [nodeid, editorContentFromStore])
 
   const ilink = getILinkFromNodeid(nodeid, true)
+
+  const namespace = getNamespace(ilink.namespace)
 
   const editorId = `${nodeid}_Preview`
 
@@ -115,12 +120,13 @@ const EditorPreview = ({
                       <EditorPreviewNoteName onClick={onClickNavigate}>
                         <Icon icon={ilink?.icon ?? fileList2Line} />
                         {getNameFromPath(ilink.path)}
+                        {namespace && <NamespaceTag namespace={namespace} />}
                       </EditorPreviewNoteName>
-                      {
-                        icon && iconTooltip && <Tooltip key={labelId} content={iconTooltip}>
+                      {icon && iconTooltip && (
+                        <Tooltip key={labelId} content={iconTooltip}>
                           <MexIcon color={theme.colors.gray[5]} noHover icon={icon} height="14" width="14" />
                         </Tooltip>
-                      }
+                      )}
                     </PreviewActionHeader>
                   )}
                   <PreviewActionHeader>

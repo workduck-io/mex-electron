@@ -186,11 +186,11 @@ const useEditorPluginConfig = (editorId: string, options?: PluginOptionType) => 
         ? {
             slateElementType: ELEMENT_MENTION,
             onItemInsert: (alias) => {
-              mog('Inserted new item', { alias })
+              // mog('Inserted new item', { alias })
               grantUserAccessOnMention(alias, nodeid)
             },
             newItemHandler: (newAlias) => {
-              mog('ELEMENT_MENTIONS', { newAlias, spotlightCtx })
+              // mog('ELEMENT_MENTIONS', { newAlias, spotlightCtx })
               prefillShareModal('invite', { alias: newAlias, fromEditor: true })
               return newAlias
             },

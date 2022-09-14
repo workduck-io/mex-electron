@@ -25,6 +25,9 @@ export interface ComboboxItem {
   /** Extended command -> Text after the command is part of it and used as arguments */
   extended?: boolean
 
+  // Namespace of the item
+  namespace?: string
+
   // Inserted to element if present
   additional?: Record<string, any>
 }
