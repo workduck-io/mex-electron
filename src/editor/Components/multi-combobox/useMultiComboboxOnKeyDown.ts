@@ -1,4 +1,3 @@
-import { useNamespaces } from '@hooks/useNamespaces'
 import {
   deleteText,
   getBlockAbove,
