@@ -204,7 +204,12 @@ const Refactor = () => {
         menuOpen={focus}
         autoFocus={focus}
         autoFocusSelectAll
-        defaultValue={from ?? useEditorStore.getState().node.path}
+        defaultValue={
+          { path: from, namespace: fromNS } ?? {
+            path: useEditorStore.getState().node.path,
+            namespace: useEditorStore.getState().node.namespace
+          }
+        }
         highlightWhenSelected
         disallowReserved
         iconHighlight={from !== undefined}
@@ -219,7 +224,7 @@ const Refactor = () => {
         createAtTop
         disallowClash
         iconHighlight={to !== undefined}
-        defaultValue={to ?? ''}
+        defaultValue={to ? { path: to, namespace: toNS } : undefined}
         handleSelectItem={handleToChange}
         handleCreateItem={handleToCreate}
       />

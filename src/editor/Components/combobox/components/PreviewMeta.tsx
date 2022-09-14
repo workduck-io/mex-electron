@@ -27,11 +27,12 @@ const PreviewMetaContainer = styled.div`
 `
 
 const PreviewMeta: React.FC<PreviewMetaProps> = ({ meta, namespace }) => {
-  if (!meta) return <></>
   const { getNamespace } = useNamespaces()
   const currentNoteNamespace = useMemo(() => getNamespace(namespace), [namespace])
 
-  mog("NAMESPACE", { namespace })
+  mog('NAMESPACE', { namespace })
+
+  if (!meta) return <></>
 
   return (
     <PreviewMetaContainer>
