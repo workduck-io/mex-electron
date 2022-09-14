@@ -41,7 +41,7 @@ export const reminderFilterFunctions = {
 }
 
 export const useTaskFilterFunctions = () => {
-  const { getPathFromNodeid } = useLinks()
+  const { getPathFromNodeid, getILinkFromNodeid } = useLinks()
 
   return {
     note: (item, value) => {
@@ -62,6 +62,13 @@ export const useTaskFilterFunctions = () => {
 
     mention: (item, value) => {
       return item.mentions?.includes(value)
+    },
+
+    space: (item, value) => {
+      // mog('namespace', { item, value })
+      const iLink = getILinkFromNodeid(item.nodeid)
+      const namespace = iLink?.namespace
+      return namespace === value
     }
   }
 }
