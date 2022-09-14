@@ -88,14 +88,14 @@ const SearchFilterInput = <Item,>({
         )}
       </FilterComboboxToggle>
       <StyledCombobox {...getComboboxProps()}>
-        <SearchFilterInputWrapper>
+        <SearchFilterInputWrapper isOverlay>
           <Input
             {...getInputProps()}
             onFocus={() => openMenu()}
             placeholder={placeholder ?? `Apply Filter...`}
             className={`FilterInput`}
           />
-          <StyledMenu {...getMenuProps()} isOpen={isOpen}>
+          <StyledMenu {...getMenuProps()} isOpen={isOpen} isOverlay>
             {isOpen &&
               inputItems.map((item, index) => (
                 <Suggestion

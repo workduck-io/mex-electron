@@ -1,6 +1,7 @@
 import { isElder } from '@components/mex/Sidebar/treeUtils'
 import { getReminderState } from '@services/reminders/reminders'
 import useDataStore from '@store/useDataStore'
+import { mog } from '@workduck-io/mex-utils'
 import { useLinks } from './useLinks'
 
 export const useGenericFilterFunctions = () => {
@@ -35,6 +36,7 @@ export const reminderFilterFunctions = {
 
 export const useTaskFilterFunctions = () => {
   const { getPathFromNodeid } = useLinks()
+
   return {
     note: (item, value) => {
       // filter: (item: TodoType) => {
@@ -46,7 +48,10 @@ export const useTaskFilterFunctions = () => {
     },
 
     tag: (item, value) => {
-      return item.tags?.includes(value)
+      const tagsCache = useDataStore.getState().tagsCache
+      const tag = tagsCache[value]
+      // Check if the note of task has the tag
+      return tag && tag.nodes.includes(item.nodeid)
     },
 
     mention: (item, value) => {

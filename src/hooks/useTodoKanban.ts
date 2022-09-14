@@ -14,6 +14,7 @@ import { mog } from '../utils/lib/helper'
 import { useSearchExtra } from './useSearch'
 import { useTaskFilterFunctions } from './useFilterFunctions'
 import { useMentions } from './useMentions'
+import { useTags } from './useTags'
 
 export interface TodoKanbanCard extends KanbanCard {
   todo: TodoType
@@ -59,6 +60,7 @@ export const useTodoKanban = () => {
   const { isInArchive } = useNodes()
   const { getSearchExtra } = useSearchExtra()
   const { getUserFromUserid } = useMentions()
+  const { getTags } = useTags()
   const taskFilterFunctions = useTaskFilterFunctions()
 
   const changeStatus = (todo: TodoType, newStatus: TodoStatus) => {
@@ -77,8 +79,10 @@ export const useTodoKanban = () => {
 
     board.columns.forEach((column) => {
       column.cards.forEach((card) => {
+        // Use tags of the node instead of tags
+        const tags = getTags(card.todo.nodeid)
         todoNodes.push(card.todo.nodeid)
-        todoTags.push(...(card.todo.tags ?? []))
+        todoTags.push(...(tags ?? []))
         todoMentions.push(...(card.todo.mentions ?? []))
       })
     })

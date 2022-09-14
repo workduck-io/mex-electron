@@ -79,7 +79,7 @@ export const useLayoutStore = create<LayoutState>((set, get) => ({
   toggleRHSidebar: () => set((state) => ({ rhSidebar: { ...state.rhSidebar, expanded: !state.rhSidebar.expanded } })),
   setRHSidebarExpanded: (expanded) => set((state) => ({ rhSidebar: { ...state.rhSidebar, expanded } })),
   showRHSidebar: () => set((state) => ({ rhSidebar: { ...state.rhSidebar, show: true } })),
-  hideRHSidebar: () => set((state) => ({ rhSidebar: { ...state.rhSidebar, show: false, expanded: false } })),
+  hideRHSidebar: () => set((state) => ({ rhSidebar: { ...state.rhSidebar, show: false } })),
 
   collapseAllSidebars: () =>
     set((state) => ({
