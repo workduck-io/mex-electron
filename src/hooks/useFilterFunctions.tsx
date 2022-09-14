@@ -1,7 +1,7 @@
 import { isElder } from '@components/mex/Sidebar/treeUtils'
 import { getReminderState } from '@services/reminders/reminders'
 import useDataStore from '@store/useDataStore'
-import { mog } from '@workduck-io/mex-utils'
+
 import { Filter, FilterJoin, FilterValue, SearchFilterFunctions } from '../types/filters'
 import { useLinks } from './useLinks'
 
