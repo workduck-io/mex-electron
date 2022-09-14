@@ -16,6 +16,7 @@ const NamespaceControl = styled(components.Control)`
   padding: 0.25rem 0;
   border-radius: 0;
   opacity: 0.5;
+  min-width: 10rem;
   ${({ menuIsOpen, isFocused }) =>
     (menuIsOpen || isFocused) &&
     css`

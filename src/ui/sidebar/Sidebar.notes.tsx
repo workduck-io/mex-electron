@@ -21,11 +21,6 @@ export const NoteSidebar = () => {
   const namespaces = useDataStore((store) => store.namespaces)
   const spaceId = useUserPreferenceStore((store) => store.activeNamespace)
   const changeSidebarSpace = useUserPreferenceStore((store) => store.setActiveNamespace)
-  const [index, setIndex] = useState({
-    current: 0,
-    // Required to find direction of the animation
-    prev: -1
-  })
   const { getMostUsedTags } = useTags()
   const tags = useDataStore((s) => s.tags)
   const replaceAndAddActionToPoll = useApiStore((store) => store.replaceAndAddActionToPoll)
@@ -69,13 +64,19 @@ export const NoteSidebar = () => {
     })
 
     // mog('Spaces', { spaces: nspaces, nodesByNamespaces })
-
     return nspaces
   }, [ilinks, namespaces])
+
+  const [index, setIndex] = useState({
+    current: spaces.findIndex((space) => space.id === spaceId),
+    // Required to find direction of the animation
+    prev: -1
+  })
 
   const changeIndex = (newIndex: number, updateStores = true) => {
     if (newIndex === index.current) return
     const nextSpaceId = spaces[newIndex]?.id
+    mog('Changing index', { newIndex, index })
     if (nextSpaceId) {
       if (updateStores) {
         changeSidebarSpace(nextSpaceId)
@@ -84,21 +85,33 @@ export const NoteSidebar = () => {
     }
   }
 
+  useEffect(() => {
+    const newIndex = spaces.findIndex((s) => s.id === spaceId)
+    if (newIndex === -1) return
+    // if (newIndex === index.current) return
+    changeIndex(newIndex, false)
+  }, [spaceId, spaces])
+
   const currentSpace = spaces[index.current]
 
   const transRef = useSpringRef()
+  const defaultStyles = { opacity: 1, transform: 'translate3d(0%,0,0)' }
   const transitions = useTransition(index, {
     ref: transRef,
     keys: null,
     from: () => {
+      // Skip if there is no previous index
+      if (index.prev === -1) return defaultStyles
       const direction = index.prev > -1 ? Math.sign(index.current - index.prev) : 1
-      // mog('from', { item, index, direction, i })
+      // mog('from', { index, direction })
       return { opacity: 0, transform: `translate3d(${direction * 100}%,0,0)` }
     },
-    enter: { opacity: 1, transform: 'translate3d(0%,0,0)' },
+    enter: defaultStyles,
     leave: () => {
+      // Skip if there is no previous index
+      if (index.prev === -1) return defaultStyles
       const direction = index.prev > -1 ? -Math.sign(index.current - index.prev) : -1
-      // mog('leave', { item, index, direction, i })
+      // mog('leave', { index, direction })
       return { opacity: 0, transform: `translate3d(${direction * 100}%,0,0)` }
     }
   })
@@ -119,13 +132,6 @@ export const NoteSidebar = () => {
   }, [])
 
   usePolling()
-
-  useEffect(() => {
-    const newIndex = spaces.findIndex((s) => s.id === spaceId)
-    if (newIndex === -1) return
-    // if (newIndex === index.current) return
-    changeIndex(newIndex, false)
-  }, [spaceId, spaces])
 
   useEffect(() => {
     transRef.start()

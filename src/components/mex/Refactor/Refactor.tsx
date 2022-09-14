@@ -173,7 +173,7 @@ const Refactor = () => {
   // console.log({ mockRefactored });
 
   const handleRefactor = async () => {
-    mog('Refactor', { open, to, from })
+    // mog('Refactor', { open, to, from })
     if (to && from && !isReserved(from) && !isReserved(to)) {
       const refactored = await execRefactorAsync({ path: from, namespaceID: fromNS }, { path: to, namespaceID: toNS })
 
@@ -205,10 +205,12 @@ const Refactor = () => {
         autoFocus={focus}
         autoFocusSelectAll
         defaultValue={
-          { path: from, namespace: fromNS } ?? {
-            path: useEditorStore.getState().node.path,
-            namespace: useEditorStore.getState().node.namespace
-          }
+          from
+            ? { path: from, namespace: fromNS }
+            : {
+                path: useEditorStore.getState().node.path,
+                namespace: useEditorStore.getState().node.namespace
+              }
         }
         highlightWhenSelected
         disallowReserved

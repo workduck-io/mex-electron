@@ -239,15 +239,14 @@ function NodeSelect({
   }
 
   const reset = () =>
-    setNodeSelectState({
+    setNodeSelectState((state) => ({
+      ...state,
       inputItems: [],
-      namespaces: [],
       selectedItem: null,
-      selectedNamespace: null,
       reserved: false,
       clash: false,
       isMatch: false
-    })
+    }))
 
   const quickLinks = getQuickLinks()
   const { namespaces, defaultNamespace } = getNamespaceOptions()
@@ -268,7 +267,8 @@ function NodeSelect({
   const contents = useContentStore((store) => store.contents)
 
   const getNewItems = (inputValue: string) => {
-    if (inputValue !== '') {
+    if (inputValue !== '' && inputValue !== undefined) {
+      // mog('getNewItems', { inputValue, quickLinks })
       const newItems = fuzzySearch(quickLinks, inputValue, (item) => item.text)
 
       if (
@@ -467,6 +467,7 @@ function NodeSelect({
 
     // mog('onInpChange', { search, newItems })
 
+    if (!search) return
     // Update if search is reserved/clash, or when reserved is true
     onReverseClashAction({
       path: search,
@@ -569,8 +570,8 @@ function NodeSelect({
               onChange={(selected) => {
                 // mog('Selected', selected)
                 if (selected && highlightedItem && highlightedItem.status === QuickLinkStatus.new) {
-                  handleSelectedItemChange({ selectedItem: { ...highlightedItem, namespace: selected.id } })
                   setSelectedNamespace(selected)
+                  handleSelectedItemChange({ selectedItem: { ...highlightedItem, namespace: selected.id } })
                 }
               }}
               value={namespaceSelectValue}
