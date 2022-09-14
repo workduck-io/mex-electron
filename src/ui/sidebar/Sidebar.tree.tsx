@@ -1,3 +1,4 @@
+import addCircleLine from '@iconify/icons-ri/add-circle-line'
 import { SidebarListFilter } from '@components/mex/Sidebar/SidebarList.style'
 import Tree from '@components/mex/Sidebar/Tree'
 import { getRandomQAContent } from '@data/Defaults/baseData'
@@ -17,7 +18,7 @@ import { tinykeys } from '@workduck-io/tinykeys'
 import { debounce } from 'lodash'
 import React, { useEffect, useMemo, useState } from 'react'
 import { ILink } from '../../types/Types'
-import { MexTreeWrapper, SpaceList } from './Sidebar.style'
+import { CreateNewNoteSidebarButton, MexTreeWrapper, SpaceList } from './Sidebar.style'
 
 interface SpaceTreeProps {
   spaceId: string
@@ -155,9 +156,10 @@ export const MexTree = ({ items, filterText, spaceId }: SpaceTreeProps) => {
           </SpaceList>
         </>
       ) : (
-        <Centered>
-          <Button onClick={createNewNoteInNamespace}>Create a new note</Button>
-        </Centered>
+        <CreateNewNoteSidebarButton onClick={createNewNoteInNamespace}>
+          <Icon width={24} icon={addCircleLine} />
+          Create a new note
+        </CreateNewNoteSidebarButton>
       )}
     </MexTreeWrapper>
   )

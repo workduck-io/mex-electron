@@ -1,4 +1,3 @@
-import { useNamespaces } from '@hooks/useNamespaces'
 import {
   deleteText,
   getBlockAbove,
@@ -16,7 +15,6 @@ import {
 import { mog } from '@utils/lib/helper'
 import { QuickLinkType } from '../../../components/mex/NodeSelect/NodeSelect'
 import { NODE_ID_PREFIX } from '../../../data/Defaults/idPrefixes'
-import { useLinks } from '../../../hooks/useLinks'
 import useAnalytics from '../../../services/analytics'
 import { ActionType } from '../../../services/analytics/events'
 import { getEventNameFromElement, getSlug } from '../../../utils/lib/strings'
@@ -36,8 +34,6 @@ export interface ComboTypeHandlers {
 
 export const useElementOnChange = (elementComboType: SingleComboboxConfig, keys?: any) => {
   const { trackEvent } = useAnalytics()
-  const { getNodeidFromPath } = useLinks()
-  const { getDefaultNamespace } = useNamespaces()
   const closeMenu = useComboboxStore((state) => state.closeMenu)
 
   return (editor: PlateEditor, item: IComboboxItem, elementType?: string, tab?: boolean) => {

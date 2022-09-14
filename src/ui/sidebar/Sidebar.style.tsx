@@ -1,5 +1,5 @@
 import { TagsFlex } from '@components/mex/Tags/TagsRelated.styles'
-import { Ellipsis, LoadingButton } from '@workduck-io/mex-components'
+import { Button, Ellipsis, LoadingButton } from '@workduck-io/mex-components'
 import { transparentize } from 'polished'
 import { animated } from 'react-spring'
 import { clamp } from 'lodash'
@@ -262,7 +262,7 @@ export const CreateNewMenuItemWrapper = styled.div`
   }
 `
 
-export const SStarNoteButton = styled(LoadingButton)`
+const SpecialNoteStyle = css`
   background: ${({ theme }) => transparentize(0.75, theme.colors.gray[9])};
   border: 1px dashed ${({ theme }) => theme.colors.gray[8]};
   padding: 0.5rem;
@@ -293,6 +293,15 @@ export const SStarNoteButton = styled(LoadingButton)`
     background: transparent;
   }
 
+  svg {
+    flex-shrink: 0;
+    height: 16px;
+    width: 16px;
+  }
+`
+
+export const SStarNoteButton = styled(LoadingButton)`
+  ${SpecialNoteStyle}
   ${({ highlight }) =>
     highlight &&
     css`
@@ -300,10 +309,8 @@ export const SStarNoteButton = styled(LoadingButton)`
       opacity: 0;
       pointer-events: none;
     `}
+`
 
-  svg {
-    flex-shrink: 0;
-    height: 16px;
-    width: 16px;
-  }
+export const CreateNewNoteSidebarButton = styled(Button)`
+  ${SpecialNoteStyle}
 `
