@@ -27,7 +27,6 @@ import { AccessLevel } from '../../../../types/mentions'
 import { getBlock } from '../../../../utils/search/parseData'
 import { NavigationType, ROUTE_PATHS, useRouting } from '../../../../views/routes/urls'
 import EditorPreview from '../../EditorPreview/EditorPreview'
-import { useHotkeys } from '../hooks/useHotkeys'
 import { SILink, SILinkRoot, StyledIcon } from './ILinkElement.styles'
 import { ILinkElementProps } from './ILinkElement.types'
 
