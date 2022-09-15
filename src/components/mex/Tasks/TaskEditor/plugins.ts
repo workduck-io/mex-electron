@@ -2,18 +2,19 @@ import ActionBlock from '@editor/Components/Actions'
 import { createActionPlugin } from '@editor/Components/Actions/createActionPlugin'
 import { ELEMENT_ACTION_BLOCK } from '@editor/Components/Actions/types'
 import { createBlockModifierPlugin } from '@editor/Components/Blocks/createBlockModifierPlugin'
+import { createInlineBlockPlugin } from '@editor/Components/InlineBlock/createInlineBlockPlugin'
+import Todo from '@editor/Components/Todo'
+import createTodoPlugin from '@editor/Components/Todo/createTodoPlugin'
 import { ILinkElement } from '@editor/Components/ilink/components/ILinkElement'
 import { createILinkPlugin } from '@editor/Components/ilink/createILinkPlugin'
 import { ELEMENT_ILINK } from '@editor/Components/ilink/defaults'
-import { createInlineBlockPlugin } from '@editor/Components/InlineBlock/createInlineBlockPlugin'
+import { MediaEmbedElement } from '@editor/Components/media-embed-ui/src'
+import { createMentionPlugin } from '@editor/Components/mentions/createMentionsPlugin'
 import { TagElement } from '@editor/Components/tag/components/TagElement'
 import { createTagPlugin } from '@editor/Components/tag/createTagPlugin'
 import { ELEMENT_TAG } from '@editor/Components/tag/defaults'
-import createTodoPlugin from '@editor/Components/Todo/createTodoPlugin'
 import { createBlurSelectionPlugin } from '@editor/Plugins/blurSelection'
 import { optionsCreateNodeIdPlugin, optionsImagePlugin } from '@editor/Plugins/pluginOptions'
-import { createMentionPlugin } from '@editor/Components/mentions/createMentionsPlugin'
-
 import {
   createParagraphPlugin,
   createImagePlugin,
@@ -40,8 +41,6 @@ import {
 } from '@udecode/plate'
 import { createExcalidrawPlugin, ExcalidrawElement } from '@udecode/plate-excalidraw'
 import { createHighlightPlugin } from '@udecode/plate-highlight'
-import { MediaEmbedElement } from '@editor/Components/media-embed-ui/src'
-import Todo from '@editor/Components/Todo'
 
 const generateTodoPlugins = () => {
   return [
@@ -87,23 +86,24 @@ const generateTodoPlugins = () => {
   ]
 }
 
-const components = createPlateUI({
-  [ELEMENT_LINK]: withProps(LinkElement, {
-    as: 'a'
-  }),
-  [ELEMENT_PARAGRAPH]: withProps(StyledElement, {
-    styles: {
-      root: {
-        margin: '0.1rem 0 0'
+const getComponents = () =>
+  createPlateUI({
+    [ELEMENT_LINK]: withProps(LinkElement, {
+      as: 'a'
+    }),
+    [ELEMENT_PARAGRAPH]: withProps(StyledElement, {
+      styles: {
+        root: {
+          margin: '0.1rem 0 0'
+        }
       }
-    }
-  }),
-  [ELEMENT_TODO_LI]: Todo as any,
-  [ELEMENT_TAG]: TagElement as any,
-  [ELEMENT_MENTION]: MentionElement as any,
-  [ELEMENT_ILINK]: ILinkElement as any,
-  [ELEMENT_MEDIA_EMBED]: MediaEmbedElement as any,
-  [ELEMENT_ACTION_BLOCK]: ActionBlock
-})
+    }),
+    [ELEMENT_TODO_LI]: Todo as any,
+    [ELEMENT_TAG]: TagElement as any,
+    [ELEMENT_MENTION]: MentionElement as any,
+    [ELEMENT_ILINK]: ILinkElement as any,
+    [ELEMENT_MEDIA_EMBED]: MediaEmbedElement as any,
+    [ELEMENT_ACTION_BLOCK]: ActionBlock
+  })
 
-export const getTodoPlugins = () => createPlugins(generateTodoPlugins(), { components })
+export const getTodoPlugins = () => createPlugins(generateTodoPlugins(), { components: getComponents() })

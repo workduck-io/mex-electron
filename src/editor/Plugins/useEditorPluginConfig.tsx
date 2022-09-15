@@ -1,15 +1,14 @@
 import { useMemo } from 'react'
 
 import { useShareModalStore } from '@components/mex/Mention/ShareModalStore'
-import useActions from '@components/spotlight/Actions/useActions'
 import { useActionsCache } from '@components/spotlight/Actions/useActionsCache'
 import { ELEMENT_ACTION_BLOCK } from '@editor/Components/Actions/types'
-import { cleanEditorId } from '@editor/Components/Todo'
 import { useCreateNewNote } from '@hooks/useCreateNewNote'
 import { useMentions } from '@hooks/useMentions'
 import { useMentionStore } from '@store/useMentionStore'
 import { ELEMENT_MEDIA_EMBED, ELEMENT_MENTION, ELEMENT_PARAGRAPH, ELEMENT_TABLE } from '@udecode/plate'
 import { ELEMENT_EXCALIDRAW } from '@udecode/plate-excalidraw'
+import { getNodeIdFromEditor } from '@utils/helpers'
 import { mog } from '@utils/lib/helper'
 
 import { QuickLinkType } from '../../components/mex/NodeSelect/NodeSelect'
@@ -37,7 +36,7 @@ const useEditorPluginConfig = (editorId: string, options?: PluginOptionType) => 
   const ilinks = useDataStore((state) => state.ilinks)
   const sharedNodes = useDataStore((state) => state.sharedNodes)
   const slashCommands = useDataStore((state) => state.slashCommands)
-  const nodeid = cleanEditorId(editorId)
+  const nodeid = getNodeIdFromEditor(editorId)
   const actionGroups = useActionsCache((store) => store.actionGroups)
   const mentionable = useMentionStore((state) => state.mentionable)
   const invitedUsers = useMentionStore((state) => state.invitedUsers)

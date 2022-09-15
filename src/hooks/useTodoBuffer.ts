@@ -19,7 +19,7 @@ export const useTodoBuffer = () => {
   const removeTodoFromBuffer = useTodoBufferStore((store) => store.removeTodo)
   const removeNoteBuffer = useTodoBufferStore((store) => store.remove)
   /*
-    Adds given to respecive Note's Todo buffer.
+    Adds given Todo to respecive Note's Todo buffer.
   */
   const addTodoInBuffer = (noteId: string, todo: TodoType) => {
     updateTodoBuffer(noteId, todo)
@@ -39,10 +39,10 @@ export const useTodoBuffer = () => {
       if (todo)
         return {
           ...prev,
-          [todo.entityId]: { 
-            ...todo, 
-            content: [todoContent], 
-            entityMetadata: { ...todo.entityMetadata, tags, mentions} 
+          [todo.entityId]: {
+            ...todo,
+            content: [todoContent],
+            entityMetadata: { ...todo.entityMetadata, tags, mentions }
           }
         }
     }, {})

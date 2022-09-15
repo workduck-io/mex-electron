@@ -78,6 +78,7 @@ export const apiURLs = {
   getTodosOfWorkspace: `${ENTITIES_API.task}/all/workspace`,
   getTodosOfNote: (noteId: string) => `${ENTITIES_API.task}/all/node/${noteId}`,
   batchUpdateTodos: `${ENTITIES_API.task}/batch`,
+  batchGetTasksOfNoes: `${ENTITIES_API.task}/getBatch`,  // * POST Request
 
   // * Loch
   getLochServices: () => `${MEX_LOCH_BASE_URL}/connect/all`,

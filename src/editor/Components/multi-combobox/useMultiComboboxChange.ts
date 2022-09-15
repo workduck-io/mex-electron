@@ -1,17 +1,19 @@
-import { getPlateEditorRef, OnChange, usePlateEditorRef } from '@udecode/plate'
 import { useCallback } from 'react'
+
+import { OnChange, usePlateEditorRef } from '@udecode/plate'
+import { getNodeIdFromEditor } from '@utils/helpers'
+
+import { QuickLinkType } from '../../../components/mex/NodeSelect/NodeSelect'
+import { useLinks } from '../../../hooks/useLinks'
 import { fuzzySearch } from '../../../utils/lib/fuzzySearch'
+import { withoutContinuousDelimiter } from '../../../utils/lib/helper'
+import { isReservedOrClash } from '../../../utils/lib/paths'
+import { getTimeInText, toLocaleString } from '../../../utils/time'
+import { useRouting } from '../../../views/routes/urls'
 import { useComboboxOnChange } from '../combobox/hooks/useComboboxOnChange'
 import { isInternalCommand } from '../combobox/hooks/useComboboxOnKeyDown'
 import { ComboboxKey, useComboboxStore } from '../combobox/useComboboxStore'
 import { ComboboxType } from './types'
-import { isReservedOrClash } from '../../../utils/lib/paths'
-import { useRouting } from '../../../views/routes/urls'
-import { useLinks } from '../../../hooks/useLinks'
-import { mog, withoutContinuousDelimiter } from '../../../utils/lib/helper'
-import { makeQuickLink, QuickLinkType } from '../../../components/mex/NodeSelect/NodeSelect'
-import { getTimeInText, toLocaleString } from '../../../utils/time'
-import { cleanEditorId } from '../Todo'
 
 export const CreateNewPrefix = `Create `
 
@@ -101,7 +103,7 @@ const useMultiComboboxOnChange = (editorId: string, keys: Record<string, Combobo
     if (params.snippetid && textAfterTrigger?.startsWith('.')) return
 
     const { isChild, key: pathKey } = withoutContinuousDelimiter(textAfterTrigger)
-    const noteId = cleanEditorId(editorId)
+    const noteId = getNodeIdFromEditor(editorId)
     const searchTerm = isChild ? `${getPathFromNodeid(noteId)}${pathKey}` : pathKey
 
     const searchItems = fuzzySearch(data, searchTerm, (item) => item.text)

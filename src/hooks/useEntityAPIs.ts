@@ -7,7 +7,6 @@ import { mog } from '@utils/lib/helper'
 import { getTodosFromContent } from '@utils/lib/content'
 import useTodoStore from '@store/useTodoStore'
 import { deserializeTodos, serializeTodo } from '@utils/lib/serialize'
-import { useContentStore } from '@store/useContentStore'
 import { useUpdater } from './useUpdater'
 
 type UpdateTodosType = {
