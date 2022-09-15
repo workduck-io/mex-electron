@@ -1,3 +1,5 @@
+import React, { useEffect } from 'react'
+
 import { SpotlightModals } from '@components/layouts/Modals'
 import { isParent } from '@components/mex/Sidebar/treeUtils'
 import { DRAFT_NODE, DRAFT_PREFIX } from '@data/Defaults/idPrefixes'
@@ -6,20 +8,21 @@ import { useLinks } from '@hooks/useLinks'
 import { useSearchExtra } from '@hooks/useSearch'
 import { getTodayTaskNodePath, useTaskFromSelection } from '@hooks/useTaskFromSelection'
 import useMultipleEditors from '@store/useEditorsStore'
-import React, { useEffect } from 'react'
 import 'react-contexify/dist/ReactContexify.css'
 import { ErrorBoundary } from 'react-error-boundary'
+
 import EditorErrorFallback from '../../../components/mex/Error/EditorErrorFallback'
 import { BASE_TASKS_PATH, defaultContent } from '../../../data/Defaults/baseData'
+import { DEFAULT_PREVIEW_TEXT } from '../../../data/IpcAction'
 import { MeetingSnippetContent } from '../../../data/initial/MeetingNote'
-import { DEFAULT_PREVIEW_TEXT } from '../../../data/IpcAction' // FIXME import
+// FIXME import
 import { getUntitledDraftKey } from '../../../editor/Components/SyncBlock/getNewBlockData'
 import { getAttendeeUserIDsFromCalendarEvent, useCalendar, useCalendarStore } from '../../../hooks/useCalendar'
 import useEditorActions from '../../../hooks/useEditorActions'
 import { AppType } from '../../../hooks/useInitialize'
 import useLoad from '../../../hooks/useLoad'
-import { useSpotlightAppStore } from '../../../store/app.spotlight'
 import { CategoryType, useSpotlightContext } from '../../../store/Context/context.spotlight'
+import { useSpotlightAppStore } from '../../../store/app.spotlight'
 import { useSpotlightEditorStore } from '../../../store/editor.spotlight'
 import useDataStore from '../../../store/useDataStore'
 import { useRecentsStore } from '../../../store/useRecentsStore'
@@ -46,8 +49,10 @@ const Content = () => {
   const lastOpenedNodes = useRecentsStore((store) => store.lastOpened)
   const recentResearchNodes = useRecentsStore((store) => store.recentResearchNodes)
   const normalMode = useSpotlightAppStore((store) => store.normalMode)
-  const { getNewTaskNode, getNewTaskContent } = useTaskFromSelection()
-  const { getUpcomingEvents } = useCalendar()
+  const events = useCalendarStore((store) => store.events)
+  const actions = useActionsCache((store) => store.actions)
+  const pinned = useMultipleEditors((store) => store.pinned)
+
   const { editorNode, setNodeContent, setPreviewEditorNode, preview, setPreview } = useSpotlightEditorStore(
     (store) => ({
       editorNode: store.node,
@@ -65,12 +70,11 @@ const Content = () => {
   const { getILinkFromNodeid } = useLinks()
   const { searchInList } = useSearch()
   const { resetEditor } = useEditorActions()
+  const { getNewTaskNode, getNewTaskContent } = useTaskFromSelection()
+  const { getUpcomingEvents } = useCalendar()
   const { getSearchExtra } = useSearchExtra()
   const { search, selection, selectedNamespace, activeItem, activeIndex, searchResults, setSearchResults } =
     useSpotlightContext()
-  const events = useCalendarStore((store) => store.events)
-  const actions = useActionsCache((store) => store.actions)
-  const pinned = useMultipleEditors((store) => store.pinned)
 
   const getRecentList = (noteIds: Array<string>, limit = MAX_RECENT_ITEMS) => {
     const recentList: Array<ListItemType> = []

@@ -47,8 +47,10 @@ export enum KEYBOARD_KEYS {
   Enter = 'Enter',
   ArrowUp = 'ArrowUp',
   ArrowDown = 'ArrowDown',
+  ArrowLeft = 'ArrowLeft',
+  ArrowRight = 'ArrowRight',
   Escape = 'Escape',
-  Space = 'Space'
+  Space = 'Space',
 }
 
 const List = ({

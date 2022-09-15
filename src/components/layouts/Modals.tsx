@@ -11,6 +11,8 @@ import ShareModal from '@components/mex/Mention/ShareModal'
 import ReleaseNotesModal from '@components/mex/ReleaseNotes'
 import TaskViewModal from '@components/mex/TaskViewModal'
 import TemplateModal from '@components/mex/Template/TemplateModal'
+import FleetContainer from '@components/FleetContainer'
+
 
 export interface ModalOpenAction {
   type: 'share-invite-prefill'
@@ -34,6 +36,7 @@ const Modals = () => {
       <CreateReminderModal />
       <TaskViewModal />
       <TemplateModal />
+      <FleetContainer />
     </>
   )
 }
@@ -42,7 +45,6 @@ export default Modals
 
 export const SpotlightModals = () => {
   const isAuthenticated = useAuthStore((store) => store.authenticated)
-
   if (!isAuthenticated) return <></>
   return (
     <>

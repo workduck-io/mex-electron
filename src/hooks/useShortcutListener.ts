@@ -1,4 +1,5 @@
 import { useLayoutStore } from '@store/useLayoutStore'
+import useModalStore from '@store/useModalStore'
 import { useEffect, useCallback, useMemo } from 'react'
 import { Shortcut } from '../components/mex/Help/Help.types'
 import useAnalytics from '../services/analytics'
@@ -120,9 +121,8 @@ export const useKeyListener = () => {
 
   const shortcutHandler = (shortcut: Shortcut, callback: any) => {
     const showLoader = useLayoutStore.getState().showLoader
-
-    mog('shortcutHandler', { shortcut, shortcutDisabled, show: shortcut.disabled, showLoader })
-    if (!shortcutDisabled && !shortcut.disabled && !showLoader) {
+    const isModalOpen = !!useModalStore.getState().open
+    if (!shortcutDisabled && !shortcut.disabled && !showLoader && !isModalOpen) {
       trackEvent(getEventNameFromElement('Shortcut Settings', ActionType.KEY_PRESS, 'Shortcut'), shortcut)
       callback()
     }

@@ -42,11 +42,11 @@ export const useCreateNewNote = () => {
 
   const createNewNote = (options?: NewNoteOptions) => {
     const childNodepath = options?.parent !== undefined ? getUntitledKey(options?.parent) : getUntitledDraftKey()
+    const defaultNamespace = getDefaultNamespace()
 
-    const namespacePath = options?.namespace ? DRAFT_NODE : childNodepath
+    const namespacePath = options?.namespace !== defaultNamespace?.id ? DRAFT_NODE : childNodepath
 
     const newNotePath = options?.path || namespacePath
-    // mog('createNewNote', { options, newNotePath })
 
     const uniquePath = checkValidILink({
       notePath: newNotePath,
@@ -65,8 +65,6 @@ export const useCreateNewNote = () => {
       options?.noteContent ||
       (nodeMetadata?.templateID && parentNote?.path !== 'Drafts' && getSnippet(nodeMetadata.templateID)?.content)
 
-    const defaultNamespace = getDefaultNamespace()
-
     // TODO: Get default namespace name here
     const namespace = options?.namespace ?? parentNote?.namespace ?? defaultNamespace?.id
 
@@ -83,8 +81,6 @@ export const useCreateNewNote = () => {
 
       return undefined
     }
-
-    // mog('NODE CREATED IS HERE', { node })
 
     addInHierarchy({
       noteId: node.nodeid,

@@ -137,9 +137,6 @@ export const useLinks = () => {
   const createLink = (nodeid: string, nodeLink: NodeLink): boolean => {
     if (nodeLink.to === nodeLink.from) return false
 
-    // console.log('Creating links', { nodeLink })
-    // No self links will be added
-
     let nodeLinks = useDataStore.getState().linkCache[nodeid]
     let secondNodeLinks = useDataStore.getState().linkCache[nodeLink.to]
 
@@ -152,13 +149,6 @@ export const useLinks = () => {
       nodeid: nodeid
     })
 
-    // set({
-    //   linkCache: {
-    //     ...get().linkCache,
-    //     [nodeid]: nodeLinks,
-    //     [ilink.nodeid]: secondNodeLinks
-    //   }
-    // })
     return true
   }
 
@@ -171,8 +161,6 @@ export const useLinks = () => {
   }
 
   const updateLinksFromContent = (nodeid: string, content: any[]) => {
-    // console.log('We are updating links from content', { nodeid, content, linkCache })
-
     if (content) {
       const links: CachedILink[] = getLinksFromContent(content).map((l) => ({
         type: 'to',
@@ -197,20 +185,20 @@ export const useLinks = () => {
     }
   }
 
-  const getILinkFromNodeid = (nodeid: string, shared?: boolean, archived?: boolean) => {
+  const getILinkFromNodeid = (noteId: string, shared?: boolean, archived?: boolean) => {
     const links = useDataStore.getState().ilinks
-    const link = links.find((l) => l.nodeid === nodeid)
+    const link = links.find((l) => l.nodeid === noteId)
     if (link) return link
 
     if (archived) {
       const archiveNoteLinks = useDataStore.getState().archive
-      const noteLink = archiveNoteLinks?.find(l => l.nodeid === nodeid)
+      const noteLink = archiveNoteLinks?.find((l) => l.nodeid === noteId)
       return noteLink
     }
 
     if (shared) {
       const sharedLinks = useDataStore.getState().sharedNodes
-      const sharedLink = sharedLinks?.find((l) => l.nodeid === nodeid)
+      const sharedLink = sharedLinks?.find((l) => l.nodeid === noteId)
       if (sharedLink) return sharedLink
     }
   }
@@ -234,7 +222,6 @@ export const useLinks = () => {
 
     const intersection = removedILinks.filter((l) => addedILinks.find((rem) => l.nodeid === rem.nodeid))
 
-    mog('INTERSECTION', { intersection, links })
     intersection.forEach((ilink) => {
       links.splice(
         links.findIndex((item) => item.nodeid === ilink.nodeid),
@@ -253,7 +240,6 @@ export const useLinks = () => {
 
     const newILinks = [...links]
 
-    mog('NEW LINKS AFTER MERGING', { links, intersection, newILinks })
     setILinks(newILinks)
 
     return newILinks

@@ -67,6 +67,7 @@ export const useEditorBuffer = () => {
       if (explicitSave !== false && (saved || explicitSave)) {
         saveData()
       }
+
       clearBuffer()
     }
   }
