@@ -2622,9 +2622,9 @@
   integrity sha512-NADE1e1euqohnuCt7ymtwzGBC+5rPbtmKjp0VE0BF2w8cjvO1E9o2KNrPkMtHYRR+snr0iqO6lcBLM+J51m9QA==
 
 "@workduck-io/mex-components@^0.0.12":
-  version "0.0.11"
-  resolved "https://npm.pkg.github.com/download/@workduck-io/mex-components/0.0.11/034b0c2a3bc146c95544cf1abb9f607f24f0408f#034b0c2a3bc146c95544cf1abb9f607f24f0408f"
-  integrity sha512-C87UeUqubvnInjUjj/HH8bo9+HlCRNudStZwuLqVUozHKiQvdVNqiycRKsp14z3PoTavbExhDhdWqugQj9mHXg==
+  version "0.0.12"
+  resolved "https://npm.pkg.github.com/download/@workduck-io/mex-components/0.0.12/2a29efb8edf5230b0453997628d63b6ad60b345d#2a29efb8edf5230b0453997628d63b6ad60b345d"
+  integrity sha512-BDRu7Y/jiLAG7yDjV33RoQKwl/fVSnpVm4f/cPH7ooJf23PWBw80R8/gjYDBPsnPEAB/MIpOfxswxkefEpIWTw==
   dependencies:
     "@tippyjs/react" "^4.2.6"
     core-js "^3.21.0"
