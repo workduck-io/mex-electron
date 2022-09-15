@@ -39,7 +39,10 @@ export const NoteSidebar = () => {
         return {
           id: ns.id,
           label: ns.name,
-          icon: ns.name === RESERVED_NAMESPACES.default ? 'ri:user-line' : 'heroicons-outline:view-grid',
+          icon: ns.icon ?? {
+            type: 'ICON',
+            value: ns.name === RESERVED_NAMESPACES.default ? 'ri:user-line' : 'heroicons-outline:view-grid'
+          },
           tooltip: ns.name,
           list: {
             type: 'hierarchy',
@@ -50,12 +53,13 @@ export const NoteSidebar = () => {
           pollAction: PollActions.hierarchy
         } as SidebarSpace
       })
+    // .slice(0, 5)
     // Add shared notes namespace
     nspaces.push({
       id: 'shared',
       label: 'Shared Notes',
       tooltip: 'Shared Notes',
-      icon: SharedNodeIconify,
+      icon: { type: 'ICON', value: 'mex:shared-note' },
       list: {
         type: 'flat',
         renderItems: () => <SharedNotes />

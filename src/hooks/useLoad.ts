@@ -18,7 +18,7 @@ import { useRefactor } from './useRefactor'
 import { getAllParentIds, getParentNodePath, SEPARATOR } from '@components/mex/Sidebar/treeUtils'
 import { useAnalysisStore } from '@store/useAnalysis'
 import { checkIfUntitledDraftNode } from '@utils/lib/strings'
-import { getPathFromNodeIdHookless } from './useLinks'
+import { getLinkFromNodeIdHookless, getPathFromNodeIdHookless } from './useLinks'
 import { DRAFT_PREFIX } from '@data/Defaults/idPrefixes'
 import { useBlockHighlightStore } from '@editor/Actions/useFocusBlock'
 import { useTreeStore } from '@store/useTreeStore'
@@ -66,7 +66,7 @@ const useLoad = () => {
 
   // const { saveNodeAPIandFs } = useDataSaverFromContent()
   const { saveAndClearBuffer } = useEditorBuffer()
-  const { execRefactor } = useRefactor()
+  const { execRefactorAsync } = useRefactor()
   // const { saveQ } = useSaveQ()
 
   const saveNodeName = (nodeId: string, title?: string) => {
@@ -75,7 +75,8 @@ const useLoad = () => {
     mog('SAVE NODE NAME', { draftNodeTitle })
     if (!draftNodeTitle) return
 
-    const nodePath = getPathFromNodeIdHookless(nodeId)
+    const node = getLinkFromNodeIdHookless(nodeId)
+    const { path: nodePath, namespace } = node
     const isUntitled = checkIfUntitledDraftNode(nodePath)
 
     if (!isUntitled) return
@@ -85,7 +86,19 @@ const useLoad = () => {
 
     if (newNodePath !== nodePath)
       try {
-        execRefactor(nodePath, newNodePath, false)
+        execRefactorAsync(
+          {
+            path: nodePath,
+            namespaceID: namespace
+          },
+          {
+            path: newNodePath,
+            namespaceID: namespace
+          },
+          false
+        )
+
+        // execRefactor(nodePath, newNodePath, false)
         loadNode(nodeId, { fetch: false })
       } catch (err) {
         toast('Unable to rename node')

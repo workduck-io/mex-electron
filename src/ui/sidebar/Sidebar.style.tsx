@@ -4,6 +4,8 @@ import { transparentize } from 'polished'
 import { animated } from 'react-spring'
 import { clamp } from 'lodash'
 import styled, { css } from 'styled-components'
+import { IconWrapper } from '@ui/components/IconPicker/IconPicker.style'
+import { ScrollStyles } from '@style/helpers'
 
 export const SidebarWrapper = styled.div`
   display: flex;
@@ -129,14 +131,20 @@ export const SpaceSwitcher = styled.div`
   flex-shrink: 0;
   display: flex;
   justify-content: space-between;
+  gap: ${({ theme }) => theme.spacing.small};
 `
 
 export const SwitcherSpaceItems = styled.div`
-  display: flex;
+  display: -webkit-box;
+  align-items: center;
   gap: ${({ theme }) => theme.spacing.small};
   flex-grow: 1;
-  align-items: center;
-  justify-content: center;
+  overflow-y: hidden;
+  overflow-x: auto;
+  padding: 0 ${({ theme }) => theme.spacing.medium};
+  ::-webkit-scrollbar {
+    display: none;
+  }
 `
 
 export const SpaceItem = styled.div<{ active: boolean; totalItems: number; sidebarWidth: number }>`
@@ -145,32 +153,37 @@ export const SpaceItem = styled.div<{ active: boolean; totalItems: number; sideb
   justify-content: center;
   padding: 4px;
   border-radius: ${({ theme }) => theme.borderRadius.small};
-  transition: 0.2s color ease-out, 0.2s background-color ease-out, 0.2s height ease-out, 0.2s width ease-out;
+  flex-shrink: 0;
+  transition: 0.2s color ease-out, 0.2s font-size ease-out, 0.2s background-color ease-out, 0.2s height ease-out,
+    0.2s width ease-out;
+
+  ${IconWrapper} {
+    transition: 0.2s color ease-out, 0.2s font-size ease-out, 0.2s background-color ease-out, 0.2s height ease-out,
+      0.2s width ease-out;
+  }
   // To set icon size
-  // font-size: 24px;
-  // height:
-  // width: 100%;
-  max-height: 32px;
-  max-width: 32px;
+  max-height: 34px;
+  max-width: 34px;
 
   ${({ theme, sidebarWidth, totalItems, active }) => {
     // Calculate apparent size of icons
-    const calcSize = active ? 32 : (sidebarWidth - 150) / totalItems
+    const calcSize = active ? 28 : (sidebarWidth - 150) / totalItems
     // Limit it
-    const size = clamp(calcSize, 8, 32)
+    const size = clamp(calcSize, 8, 28)
 
     // We show size greater than 16px as icons
-    if (calcSize > 16) {
+    if (calcSize > 20) {
       return css`
         background-color: ${active ? theme.colors.gray[8] : 'transparent'};
         color: ${active ? theme.colors.primary : theme.colors.text.fade};
 
-        height: ${size}px;
-        width: ${size}px;
+        ${IconWrapper} {
+          height: ${size}px;
+          width: ${size}px;
+          font-size: ${size}px;
+        }
         :hover {
           background-color: ${theme.colors.gray[8]};
-          height: ${size * 1.5}px;
-          width: ${size * 1.5}px;
         }
       `
     }
@@ -178,20 +191,22 @@ export const SpaceItem = styled.div<{ active: boolean; totalItems: number; sideb
     // Otherwise hide svg and show a dot
     return css`
       background-color: ${theme.colors.gray[8]};
-      svg {
+      ${IconWrapper} {
         height: 0%;
         width: 0%;
+        font-size: 0px;
       }
       height: 6px;
       width: 6px;
       :hover {
         background-color: ${theme.colors.gray[8]};
-        height: ${24}px;
-        width: ${24}px;
+        height: ${28}px;
+        width: ${28}px;
 
-        svg {
-          height: 100%;
-          width: 100%;
+        ${IconWrapper} {
+          height: ${24}px;
+          width: ${24}px;
+          font-size: ${24}px;
         }
       }
     `

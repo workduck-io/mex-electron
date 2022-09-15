@@ -2,12 +2,15 @@ import { useApi } from '@apis/useSaveApi'
 import useDataStore from '@store/useDataStore'
 import { getNewNamespaceName, RESERVED_NAMESPACES } from '@utils/lib/paths'
 import { mog } from '@workduck-io/mex-utils'
-import { ILink, SingleNamespace } from '../types/Types'
+import { ILink, MIcon, SingleNamespace } from '../types/Types'
+import { useNodes } from './useNodes'
 
 export const useNamespaces = () => {
+  const namespaces = useDataStore((state) => state.namespaces)
   const { createNewNamespace } = useApi()
+  const { getNode } = useNodes()
   const addNamespace = useDataStore((s) => s.addNamespace)
-  const { changeNamespaceName: chageNamespaceNameApi } = useApi()
+  const { changeNamespaceName: chageNamespaceNameApi, changeNamespaceIcon: changeNamespaceIconApi } = useApi()
 
   const getNamespace = (id: string): SingleNamespace | undefined => {
     const namespaces = useDataStore.getState().namespaces
@@ -32,6 +35,12 @@ export const useNamespaces = () => {
           }
         : undefined
     }
+  }
+
+  const getNamespaceOfNode = (nodeId: string): SingleNamespace | undefined => {
+    const node = getNode(nodeId)
+    const namespace = namespaces.find((ns) => ns.id === node?.namespace)
+    if (namespace) return namespace
   }
 
   const getNodesOfNamespace = (id: string): ILink[] => {
@@ -103,6 +112,39 @@ export const useNamespaces = () => {
       })
   }
 
+  const changeNamespaceIcon = async (id: string, name: string, icon: MIcon) => {
+    // Lets change the icon in hope that it changes
+    const namespaces = useDataStore.getState().namespaces
+    const namespace = namespaces.find((n) => n.id === id)
+    const oldIcon = { ...namespace }.icon
+    const newNamespaces = namespaces.map((n) =>
+      n.id === id
+        ? {
+            ...n,
+            icon,
+            updatedAt: Date.now()
+          }
+        : n
+    )
+    useDataStore.setState({ namespaces: newNamespaces })
+
+    await changeNamespaceIconApi(id, name, icon).catch((err) => {
+      console.log('Error changing namespace icon', err)
+      // We revert the icon
+      const namespaces = useDataStore.getState().namespaces
+      const newNamespaces = namespaces.map((n) =>
+        n.id === id
+          ? {
+              ...n,
+              icon: oldIcon,
+              updatedAt: Date.now()
+            }
+          : n
+      )
+      useDataStore.setState({ namespaces: newNamespaces })
+    })
+  }
+
   return {
     getNamespace,
     getNodesOfNamespace,
@@ -112,7 +154,9 @@ export const useNamespaces = () => {
     getNamespaceOfNodeid,
     getNodesByNamespaces,
     changeNamespaceName,
+    changeNamespaceIcon,
     addDefaultNewNamespace,
+    getNamespaceOfNode,
     getNamespaceOptions
   }
 }

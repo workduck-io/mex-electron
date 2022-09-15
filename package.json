@@ -104,7 +104,7 @@
     "@workduck-io/action-request-helper": "^0.1.6",
     "@workduck-io/dwindle": "^0.0.19",
     "@workduck-io/flexsearch": "^0.7.22",
-    "@workduck-io/mex-components": "^0.0.12",
+    "@workduck-io/mex-components": "^0.0.15",
     "@workduck-io/mex-utils": "^0.0.5",
     "@workduck-io/tinykeys": "1.5.0",
     "active-win-universal": "^7.6.2",

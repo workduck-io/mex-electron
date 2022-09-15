@@ -22,6 +22,8 @@ import { Input } from '@style/Form'
 import { RESERVED_NAMESPACES } from '@utils/lib/paths'
 import toast from 'react-hot-toast'
 import { useNamespaces } from '@hooks/useNamespaces'
+import IconPicker from '@ui/components/IconPicker/IconPicker'
+import { MIcon } from '../../../types/Types'
 
 const Header = ({ space }: { space: SidebarSpace }) => {
   const sidebar = useLayoutStore((state) => state.sidebar)
@@ -32,7 +34,7 @@ const Header = ({ space }: { space: SidebarSpace }) => {
   const { getFocusProps } = useLayout()
   const inpRef = React.useRef<HTMLInputElement>(null)
   const titleRef = React.useRef<HTMLDivElement>(null)
-  const { changeNamespaceName } = useNamespaces()
+  const { changeNamespaceName, changeNamespaceIcon } = useNamespaces()
   const [showInput, setShowInput] = useState(false)
   const [title, setTitle] = useState(space.label)
 
@@ -59,6 +61,10 @@ const Header = ({ space }: { space: SidebarSpace }) => {
     setShowInput(false)
   }
 
+  const onChangeIcon = (icon: MIcon) => {
+    changeNamespaceIcon(space.id, space.label, icon)
+  }
+
   useEffect(() => {
     if (inpRef.current) {
       if (showInput) {
@@ -80,6 +86,7 @@ const Header = ({ space }: { space: SidebarSpace }) => {
   const isNamespaceInputDisabled =
     space.label === RESERVED_NAMESPACES.default || space.label === RESERVED_NAMESPACES.shared
 
+  const isNamespaceIconDisabled = isNamespaceInputDisabled
   const showTags = space.popularTags && space.popularTags.length > 0
   const showSeparator = showTags
 
@@ -88,7 +95,7 @@ const Header = ({ space }: { space: SidebarSpace }) => {
       <SpaceHeader>
         <SpaceTitleWrapper>
           <SpaceTitle>
-            <Icon icon={space.icon} />
+            <IconPicker size={20} allowPicker={!isNamespaceIconDisabled} onChange={onChangeIcon} value={space.icon} />
             {showInput && !isNamespaceInputDisabled ? (
               <Input defaultValue={space.label} onBlur={(e) => onChangeName(e.target.value)} ref={inpRef} />
             ) : (

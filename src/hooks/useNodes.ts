@@ -120,19 +120,19 @@ export const useNodes = () => {
     const node = nodes.find((l) => l.nodeid === nodeid)
 
     if (node) {
-      const namespaces = useDataStore.getState().namespaces
+      // const namespaces = useDataStore.getState().namespaces
       const parents = getParentBreadcurmbs(node.path, nodes)
 
-      const namespaceDetails = namespaces?.find((n) => n.id === node.namespace)
+      // const namespaceDetails = namespaces?.find((n) => n.id === node.namespace)
 
-      if (namespaceDetails) {
-        parents.unshift({
-          id: namespaceDetails.id,
-          icon: namespaceDetails.name === RESERVED_NAMESPACES.default ? 'ri:user-line' : 'heroicons-outline:view-grid',
-          label: namespaceDetails.name,
-          hideLabel: true
-        })
-      }
+      // if (namespaceDetails) {
+      //   parents.unshift({
+      //     id: namespaceDetails.id,
+      //     icon: namespaceDetails.name === RESERVED_NAMESPACES.default ? 'ri:user-line' : 'heroicons-outline:view-grid',
+      //     label: namespaceDetails.name,
+      //     hideLabel: true
+      //   })
+      // }
 
       return parents
     }

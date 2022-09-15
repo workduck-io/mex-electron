@@ -1,3 +1,4 @@
+import { IconWrapper } from '@ui/components/IconPicker/IconPicker.style'
 import { Ellipsis } from '@workduck-io/mex-components'
 import styled, { css } from 'styled-components'
 
@@ -15,8 +16,9 @@ export const StyledNamespaceTag = styled.div<{ separator?: boolean }>`
   padding-left: 0.25rem;
   ${Ellipsis}
   flex-shrink: 0;
+  gap: ${({ theme }) => theme.spacing.tiny};
 
-  svg {
+  ${IconWrapper} {
     flex-shrink: 0;
   }
 

@@ -21,7 +21,7 @@ import '../services/apiClient/apiClient'
 import { useAuthStore } from '../services/auth/useAuth'
 import { isRequestedWithin } from '../store/useApiStore'
 import { useContentStore } from '../store/useContentStore'
-import { ILink, NodeEditorContent } from '../types/Types'
+import { ILink, MIcon, NodeEditorContent } from '../types/Types'
 import { mog } from '../utils/lib/helper'
 import { extractMetadata } from '../utils/lib/metadata'
 import { deserializeContent, serializeContent } from '../utils/lib/serialize'
@@ -634,6 +634,30 @@ export const useApi = () => {
     }
   }
 
+  const changeNamespaceIcon = async (id: string, name: string, icon: MIcon) => {
+    try {
+      const res = await client
+        .patch(
+          apiURLs.namespaces.update,
+          {
+            type: 'NamespaceRequest',
+            id,
+            name,
+            metadata: {
+              icon
+            }
+          },
+          {
+            headers: workspaceHeaders()
+          }
+        )
+        .then(() => icon)
+      return res
+    } catch (err) {
+      throw new Error('Unable to update namespace icon')
+    }
+  }
+
   return {
     saveDataAPI,
     getDataAPI,
@@ -655,6 +679,7 @@ export const useApi = () => {
     getAllViews,
     getAllNamespaces,
     changeNamespaceName,
+    changeNamespaceIcon,
     createNewNamespace
   }
 }

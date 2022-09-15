@@ -30,6 +30,12 @@ export interface ComboText {
   icon?: string
 }
 
+// M stands for Multi/Mex/Many (yet to decide)
+export interface MIcon {
+  type: 'URL' | 'ICON' | 'EMOJI'
+  value: string
+}
+
 export interface CheckValidILinkProps {
   notePath: string
   openedNotePath?: string
@@ -120,7 +126,7 @@ export interface SingleNamespace {
   name: string
   createdAt: number
   updatedAt: number
-  icon?: string
+  icon?: MIcon
 }
 
 export interface DataStoreState {

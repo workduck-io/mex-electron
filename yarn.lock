@@ -585,6 +585,16 @@
     minimatch "^3.0.4"
     plist "^3.0.4"
 
+"@emoji-mart/data@^1.0.6":
+  version "1.0.6"
+  resolved "https://registry.yarnpkg.com/@emoji-mart/data/-/data-1.0.6.tgz#68f71be5e023653a3f9f73f4beadfd50848e2131"
+  integrity sha512-8wu3ec/kLCB0Y3K+pOKyY6Ob+xtQu3XhZvntdrpOTUQZ/PO6FW5PpFw7RE1kQ/up1fsVSJBl5mZ8Gs4SPwTYeg==
+
+"@emoji-mart/react@^1.0.1":
+  version "1.0.1"
+  resolved "https://registry.yarnpkg.com/@emoji-mart/react/-/react-1.0.1.tgz#46b6a2e92faf16fa9b7f9471f137fa2e3d1e8ac3"
+  integrity sha512-ALhLD96BOL5w+a4NI5NpmfqfF1aVjjj2qJE0dLst/OhjBfVmpteWNgn/h8LZy9ulU6AnbeS+13KnPFzDjCvRRw==
+
 "@emotion/babel-plugin@^11.10.0":
   version "11.10.2"
   resolved "https://registry.yarnpkg.com/@emotion/babel-plugin/-/babel-plugin-11.10.2.tgz#879db80ba622b3f6076917a1e6f648b1c7d008c7"
@@ -2621,14 +2631,17 @@
   resolved "https://npm.pkg.github.com/download/@workduck-io/flexsearch/0.7.22/968178df34cab6b6df5489f73ed86ff0b9e97123#968178df34cab6b6df5489f73ed86ff0b9e97123"
   integrity sha512-NADE1e1euqohnuCt7ymtwzGBC+5rPbtmKjp0VE0BF2w8cjvO1E9o2KNrPkMtHYRR+snr0iqO6lcBLM+J51m9QA==
 
-"@workduck-io/mex-components@^0.0.12":
-  version "0.0.12"
-  resolved "https://npm.pkg.github.com/download/@workduck-io/mex-components/0.0.12/2a29efb8edf5230b0453997628d63b6ad60b345d#2a29efb8edf5230b0453997628d63b6ad60b345d"
-  integrity sha512-BDRu7Y/jiLAG7yDjV33RoQKwl/fVSnpVm4f/cPH7ooJf23PWBw80R8/gjYDBPsnPEAB/MIpOfxswxkefEpIWTw==
+"@workduck-io/mex-components@^0.0.15":
+  version "0.0.15"
+  resolved "https://npm.pkg.github.com/download/@workduck-io/mex-components/0.0.15/826684bc1d66eba6f8be90b0a4948f6dac3eeb7e#826684bc1d66eba6f8be90b0a4948f6dac3eeb7e"
+  integrity sha512-F/kFjhLhqSRSAvSuY5EeAL2d/3TWFVmFBIOJzg1YbRG7KgE81feukTva4KwzE6pM+CzcuCylBN305PDhaxEn3Q==
   dependencies:
+    "@emoji-mart/data" "^1.0.6"
+    "@emoji-mart/react" "^1.0.1"
     "@tippyjs/react" "^4.2.6"
     core-js "^3.21.0"
     deepmerge "^4.2.2"
+    emoji-mart "^5.2.2"
     polished "^4.1.4"
     react-spring "^9.5.2"
 
@@ -4216,6 +4229,11 @@ electron@^17.1.1:
     "@electron/get" "^1.13.0"
     "@types/node" "^14.6.2"
     extract-zip "^1.0.3"
+
+emoji-mart@^5.2.2:
+  version "5.2.2"
+  resolved "https://registry.yarnpkg.com/emoji-mart/-/emoji-mart-5.2.2.tgz#1c093ffc19554dd6edfcfeec9aca43ff38bcc16e"
+  integrity sha512-BvcrX+Ps9MxSVEjnvxupclU3MBD6WVC4WZOY26csfC6oFdaWpFhdrzeVNVBmCLPOmzY1SE0aAsqZJRNVbZ1yhQ==
 
 emoji-regex@^8.0.0:
   version "8.0.0"
