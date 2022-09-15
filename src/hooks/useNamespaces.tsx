@@ -84,25 +84,6 @@ export const useNamespaces = () => {
     }
   }
 
-  const getNamespaceOptions = () => {
-    const namespaces = useDataStore.getState().namespaces.map((n) => ({
-      ...n,
-      value: n.name,
-      label: n.name
-    }))
-    const defaultNamespace = getDefaultNamespace() ?? namespaces[0]
-    return {
-      namespaces,
-      defaultNamespace: defaultNamespace
-        ? {
-            ...defaultNamespace,
-            value: defaultNamespace.name,
-            label: defaultNamespace.name
-          }
-        : undefined
-    }
-  }
-
   const getNodesOfNamespace = (id: string): ILink[] => {
     const ilinks = useDataStore.getState().ilinks
     return ilinks.filter((l) => l.namespace === id)
