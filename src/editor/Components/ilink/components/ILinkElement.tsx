@@ -25,6 +25,9 @@ import { useHotkeys } from '../hooks/useHotkeys'
 import { SILink, SILinkRoot, StyledIcon } from './ILinkElement.styles'
 import { ILinkElementProps } from './ILinkElement.types'
 import { AccessLevel } from '../../../../types/mentions'
+import { useNamespaces } from '@hooks/useNamespaces'
+import IconDisplay from '@ui/components/IconPicker/IconDisplay'
+import { mog } from '@workduck-io/mex-utils'
 
 /**
  * ILinkElement with no default styles. [Use the `styles` API to add your own styles.](https://github.com/OfficeDev/office-ui-fabric-react/wiki/Component-Styling) */
@@ -76,6 +79,7 @@ export const ILinkElement = ({ attributes, children, element }: ILinkElementProp
   const [preview, setPreview] = useState(false)
   const { push } = useNavigation()
   const { getPathFromNodeid } = useLinks()
+  const { getNamespaceOfNode, getNamespaceIconForNode } = useNamespaces()
   const { getArchiveNode, getSharedNode, getNodeType } = useNodes()
   const spotlightCtx = useSpotlightContext()
   const noteCtx = useNoteContext()
@@ -205,6 +209,13 @@ export const ILinkElement = ({ attributes, children, element }: ILinkElementProp
   const content = block ? [block] : undefined
   const archivedNode = nodeType === NodeType.ARCHIVED ? getArchiveNode(element.value) : undefined
   const sharedNode = nodeType === NodeType.SHARED ? getSharedNode(element.value) : undefined
+  const currentMainNode = match?.params?.nodeid
+  const namespace = getNamespaceOfNode(element?.value)
+  const currentNodeNamespace = getNamespaceOfNode(currentMainNode)
+  const showNamespace = namespace.id !== currentNodeNamespace.id
+  const namespaceIcon = showNamespace ? getNamespaceIconForNode(element?.value) : undefined
+
+  // mog('ILinkElement', { element, namespace, currentNodeNamespace })
 
   const sharedAccessIcon: Record<AccessLevel, string> = {
     READ: 'bi:eye-fill',
@@ -257,6 +268,7 @@ export const ILinkElement = ({ attributes, children, element }: ILinkElementProp
               setPreview={setPreview}
             >
               <SILink selected={selected} onClick={onClickProps}>
+                {namespaceIcon && <IconDisplay icon={namespaceIcon} />}
                 <span className="ILink_decoration ILink_decoration_left">[[</span>
                 <span className="ILink_decoration ILink_decoration_value">
                   {' '}

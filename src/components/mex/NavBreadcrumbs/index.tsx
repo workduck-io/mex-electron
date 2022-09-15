@@ -19,7 +19,7 @@ type NavBreadCrumbsType = {
 const NavBreadCrumbs = ({ nodeId }: NavBreadCrumbsType) => {
   const { goTo } = useRouting()
   const { getNodeBreadcrumbs } = useNodes()
-  const { getNamespaceOfNode } = useNamespaces()
+  const { getNamespaceIconForNode } = useNamespaces()
   const isUserEditing = useEditorStore((store) => store.isEditing)
 
   const openBreadcrumb = (nodeId: string) => {
@@ -27,24 +27,14 @@ const NavBreadCrumbs = ({ nodeId }: NavBreadCrumbsType) => {
     goTo(ROUTE_PATHS.node, NavigationType.push, nodeId)
   }
 
-  const namespace = getNamespaceOfNode(nodeId)
-
-  const icon = namespace.icon ?? {
-    type: 'ICON',
-    value:
-      namespace.name === RESERVED_NAMESPACES.default
-        ? 'ri:user-line'
-        : namespace.name === RESERVED_NAMESPACES.shared
-        ? 'ri:share-line'
-        : 'heroicons-outline:view-grid'
-  }
+  const namespaceIcon = getNamespaceIconForNode(nodeId)
 
   return (
     <StyledTopNavigation>
       <EditorBreadcrumbs isVisible={!isUserEditing}>
-        {icon && (
+        {namespaceIcon && (
           <>
-            <IconDisplay icon={icon} />
+            <IconDisplay icon={namespaceIcon} />
             <Icon icon="ri:arrow-drop-right-line" fontSize="1.5rem" />
           </>
         )}

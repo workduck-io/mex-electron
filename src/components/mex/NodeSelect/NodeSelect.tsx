@@ -434,6 +434,7 @@ function NodeSelect({
   }
 
   const onReverseClashAction = ({ path, onReserve, onClash, onSuccess, onMatch }: ReserveClashActionProps) => {
+    if (!path) return
     const reserved = isReserved(path)
     const clash = isClash(
       path,
