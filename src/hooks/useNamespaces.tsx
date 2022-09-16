@@ -14,6 +14,14 @@ export const useNamespaces = () => {
   const addNamespace = useDataStore((s) => s.addNamespace)
   const { changeNamespaceName: chageNamespaceNameApi, changeNamespaceIcon: changeNamespaceIconApi } = useApi()
 
+  const SHARED_NAMESPACE: SingleNamespace = {
+    id: 'NAMESPACE_shared',
+    name: RESERVED_NAMESPACES.shared,
+    createdAt: 0,
+    updatedAt: 0,
+    icon: { type: 'ICON', value: 'mex:shared-note' }
+  }
+
   const getNamespace = (id: string): SingleNamespace | undefined => {
     const namespaces = useDataStore.getState().namespaces
     const namespace = namespaces.find((ns) => ns.id === id)
