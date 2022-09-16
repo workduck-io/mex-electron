@@ -16,7 +16,10 @@ import { NavigationType, ROUTE_PATHS, useRouting } from '@views/routes/urls'
 
 export type NewNoteOptions = {
   path?: string
-  parent?: string
+  parent?: {
+    path: string
+    namespace: string
+  }
   noteId?: string
   noteContent?: NodeEditorContent
   openedNotePath?: string
@@ -41,10 +44,10 @@ export const useCreateNewNote = () => {
   const { getDefaultNamespace } = useNamespaces()
 
   const createNewNote = (options?: NewNoteOptions) => {
-    const childNodepath = options?.parent !== undefined ? getUntitledKey(options?.parent) : getUntitledDraftKey()
+    const childNodepath = options?.parent !== undefined ? getUntitledKey(options?.parent.path) : getUntitledDraftKey()
     const defaultNamespace = getDefaultNamespace()
 
-    const namespacePath = options?.namespace !== defaultNamespace?.id ? DRAFT_NODE : childNodepath
+    const namespacePath = options?.namespace && options?.namespace !== defaultNamespace?.id ? DRAFT_NODE : childNodepath
 
     const newNotePath = options?.path || namespacePath
 
@@ -52,11 +55,11 @@ export const useCreateNewNote = () => {
       notePath: newNotePath,
       openedNotePath: options?.openedNotePath,
       showAlert: false,
-      namespace: options?.namespace
+      namespace: options?.parent?.namespace ?? options?.namespace
     })
 
     // Use namespace of parent if namespace not provided
-    const parentNote = getParentILink(uniquePath)
+    const parentNote = getParentILink(uniquePath, options?.parent?.namespace ?? options?.namespace)
     const parentNoteId = parentNote?.nodeid
 
     const nodeMetadata = getMetadata(parentNoteId)

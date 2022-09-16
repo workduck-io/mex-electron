@@ -80,10 +80,10 @@ const useDataStore = create<DataStoreState>(
 
       addILink: ({ ilink, namespace, nodeid, openedNotePath, archived, showAlert }) => {
         const uniquePath = get().checkValidILink({ notePath: ilink, openedNotePath, namespace, showAlert })
-        mog("Unique Path", { uniquePath })
+        // mog('Unique Path', { uniquePath })
 
         const ilinks = get().ilinks
-        const linksStrings = ilinks.filter(l => l.namespace === namespace).map((l) => l.path)
+        const linksStrings = ilinks.filter((l) => l.namespace === namespace).map((l) => l.path)
 
         const parents = getAllParentIds(uniquePath) // includes link of child
         const newLinks = parents.filter((l) => !linksStrings.includes(l)) // only create links for non existing
@@ -117,9 +117,8 @@ const useDataStore = create<DataStoreState>(
           notePath = isChild && openedNotePath ? `${openedNotePath}${key}` : key
         }
 
-        const iLinksOfNamespace = namespace ? get().ilinks.filter(link => link.namespace === namespace) : get().ilinks
-        mog("ILINKS OF NOTE ARE", { iLinksOfNamespace, notePath })
-
+        const iLinksOfNamespace = namespace ? get().ilinks.filter((link) => link.namespace === namespace) : get().ilinks
+        // mog('ILINKS OF NOTE ARE', { iLinksOfNamespace, notePath, namespace })
 
         const linksStrings = iLinksOfNamespace.map((l) => l.path)
         const reservedOrUnique = getUniquePath(notePath, linksStrings, showAlert)
@@ -133,7 +132,7 @@ const useDataStore = create<DataStoreState>(
 
       setIlinks: (ilinks) => {
         set(
-          produce(draft => {
+          produce((draft) => {
             draft.ilinks = ilinks
           })
         )

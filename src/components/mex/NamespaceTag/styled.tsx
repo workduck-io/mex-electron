@@ -25,6 +25,6 @@ export const StyledNamespaceTag = styled.div<{ separator?: boolean }>`
   ${({ theme, separator }) =>
     separator &&
     css`
-      border-left: 1px solid ${theme.colors.text.disabled};
+      border-left: 1px solid ${theme.colors.gray[7]};
     `}
 `

@@ -77,7 +77,7 @@ export const SpaceTitle = styled.div`
   display: flex;
   align-items: center;
   flex-grow: 1;
-  gap: ${({ theme }) => theme.spacing.small};
+  gap: ${({ theme }) => theme.spacing.tiny};
 `
 
 export const SidebarToggle = styled.div<{ isVisible?: boolean }>`
@@ -190,7 +190,7 @@ export const SpaceItem = styled.div<{ active: boolean; totalItems: number; sideb
 
     // Otherwise hide svg and show a dot
     return css`
-      background-color: ${theme.colors.gray[8]};
+      background-color: ${theme.colors.gray[7]};
       ${IconWrapper} {
         height: 0%;
         width: 0%;

@@ -2,15 +2,23 @@ import { useApi } from '@apis/useSaveApi'
 import useDataStore from '@store/useDataStore'
 import { getNewNamespaceName, RESERVED_NAMESPACES } from '@utils/lib/paths'
 import { mog } from '@workduck-io/mex-utils'
-import { ILink, MIcon, SingleNamespace } from '../types/Types'
+import { ILink, MIcon, NodeType, SingleNamespace } from '../types/Types'
 import { useNodes } from './useNodes'
 
 export const useNamespaces = () => {
   const namespaces = useDataStore((state) => state.namespaces)
   const { createNewNamespace } = useApi()
-  const { getNode } = useNodes()
+  const { getNode, getNodeType } = useNodes()
   const addNamespace = useDataStore((s) => s.addNamespace)
   const { changeNamespaceName: chageNamespaceNameApi, changeNamespaceIcon: changeNamespaceIconApi } = useApi()
+
+  const SHARED_NAMESPACE: SingleNamespace = {
+    id: 'NAMESPACE_shared',
+    name: RESERVED_NAMESPACES.shared,
+    createdAt: 0,
+    updatedAt: 0,
+    icon: { type: 'ICON', value: 'mex:shared-note' }
+  }
 
   const getNamespace = (id: string): SingleNamespace | undefined => {
     const namespaces = useDataStore.getState().namespaces
@@ -38,9 +46,13 @@ export const useNamespaces = () => {
   }
 
   const getNamespaceOfNode = (nodeId: string): SingleNamespace | undefined => {
-    const node = getNode(nodeId)
+    const node = getNode(nodeId, true)
     const namespace = namespaces.find((ns) => ns.id === node?.namespace)
     if (namespace) return namespace
+    const nodeType = getNodeType(nodeId)
+    if (nodeType === NodeType.SHARED) {
+      return SHARED_NAMESPACE
+    }
   }
 
   const getNamespaceIconForNode = (nodeId: string): MIcon | undefined => {
@@ -58,6 +70,14 @@ export const useNamespaces = () => {
               : 'heroicons-outline:view-grid'
         }
       )
+
+    const nodeType = getNodeType(nodeId)
+    if (nodeType === NodeType.SHARED) {
+      return {
+        type: 'ICON',
+        value: 'ri:share-line'
+      }
+    }
   }
 
   const getNodesOfNamespace = (id: string): ILink[] => {
@@ -104,6 +124,11 @@ export const useNamespaces = () => {
     if (namespace) {
       const ns = namespaces.find((ns) => ns.id === namespace)
       return ns
+    }
+    const nodeType = getNodeType(nodeid)
+
+    if (nodeType === NodeType.SHARED) {
+      return SHARED_NAMESPACE
     }
   }
 

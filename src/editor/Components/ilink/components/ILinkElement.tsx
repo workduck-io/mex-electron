@@ -212,7 +212,7 @@ export const ILinkElement = ({ attributes, children, element }: ILinkElementProp
   const currentMainNode = match?.params?.nodeid
   const namespace = getNamespaceOfNode(element?.value)
   const currentNodeNamespace = getNamespaceOfNode(currentMainNode)
-  const showNamespace = namespace.id !== currentNodeNamespace.id
+  const showNamespace = namespace?.id !== currentNodeNamespace?.id
   const namespaceIcon = showNamespace ? getNamespaceIconForNode(element?.value) : undefined
 
   // mog('ILinkElement', { element, namespace, currentNodeNamespace })

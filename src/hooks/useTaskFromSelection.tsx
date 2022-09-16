@@ -28,7 +28,7 @@ export const useTaskFromSelection = () => {
       : create
       ? createNewNote({
           path: todayTaskNodePath,
-          parent: dailyTaskNode?.nodeid,
+          parent: { path: dailyTaskNode?.nodeid, namespace: dailyTaskNode?.namespace },
           noteContent: nodeContent,
           namespace: selectedNamespace
         })

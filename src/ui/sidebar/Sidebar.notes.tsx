@@ -56,8 +56,8 @@ export const NoteSidebar = () => {
     // .slice(0, 5)
     // Add shared notes namespace
     nspaces.push({
-      id: 'shared',
-      label: 'Shared Notes',
+      id: 'NAMESPACE_shared',
+      label: RESERVED_NAMESPACES.shared,
       tooltip: 'Shared Notes',
       icon: { type: 'ICON', value: 'mex:shared-note' },
       list: {

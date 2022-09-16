@@ -46,7 +46,6 @@ export const StyledInlineBlock = styled.section<InlineBlockType>`
   svg {
     width: 16px;
     height: 16px;
-    margin-left: ${({ theme }) => theme.spacing.small};
     fill: ${({ theme }) => theme.colors.gray[4]};
   }
 `
@@ -65,6 +64,7 @@ export const InlineFlex = styled.div`
   display: flex;
   align-items: center;
   justify-content: center;
+  gap: ${({ theme }) => theme.spacing.small};
 `
 
 export const Chip = styled(StyledMessage)`

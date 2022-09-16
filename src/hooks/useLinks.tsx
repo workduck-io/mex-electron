@@ -259,6 +259,8 @@ export const useLinks = () => {
     const namespaceILinks = !namespace ? links : links.filter((l) => l.namespace === namespace)
     const note = namespaceILinks.find((ilink) => ilink.path === parentPath)
 
+    // mog('getParentILink', { path, parentPath, note, namespaceILinks })
+
     return note
   }
 
