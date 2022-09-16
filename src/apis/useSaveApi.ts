@@ -45,6 +45,7 @@ export const useApi = () => {
   const addInArchive = useDataStore((store) => store.addInArchive)
   const setILinks = useDataStore((store) => store.setIlinks)
   const setNamespaces = useDataStore((s) => s.setNamespaces)
+  const setArchive = useDataStore((state) => state.setArchive)
   const initSnippets = useSnippetStore((store) => store.initSnippets)
   const updateSnippet = useSnippetStore((store) => store.updateSnippet)
   const { updateFromContent } = useUpdater()

@@ -34,7 +34,6 @@ import { useDeleteStore } from '../Refactor/DeleteModal'
 import { useRefactorStore } from '../Refactor/Refactor'
 import { doesLinkRemain } from '../Refactor/doesLinkRemain'
 import ContextMenuListWithFilter from './ContextMenuListWithFilter'
-import { useNamespaces } from '@hooks/useNamespaces'
 
 export const MENU_ID = 'Tree-Menu'
 
@@ -221,7 +220,7 @@ export const TreeContextMenu = ({ item }: TreeContextMenuProps) => {
             color="#df7777"
             // disabled
             onSelect={(args) => {
-              handleArchive(item)
+              // handleArchive(item)
             }}
           >
             <Icon icon={archiveLine} />
