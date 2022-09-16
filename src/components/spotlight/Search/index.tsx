@@ -129,6 +129,12 @@ const Search = () => {
     }
   }
 
+  mog('spotlight', {
+    input,
+    placeholder,
+    editorNode
+  })
+
   return (
     <StyledSearch id="wd-mex-spotlight-search-container">
       <CenterIcon id="wd-mex-search-left-icon" pointer={!normalMode} onClick={onBackClick}>
