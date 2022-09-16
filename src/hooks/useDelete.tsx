@@ -63,12 +63,12 @@ export const useDelete = () => {
     return notesToDelete
   }
 
-  const execArchive = async (del: string) => {
+  const execArchive = async (del: string, namespace: string) => {
     const currentNode = useEditorStore.getState().node
     const { archivedNodes, newIlinks } = getMockArchive(del)
 
     try {
-      await addArchiveData(archivedNodes)
+      await addArchiveData(archivedNodes, namespace)
 
       // Update history
       const { newIds: newHistory, currentIndex: newCurIndex } = applyDeleteToIds(historyStack, currentIndex, newIlinks)

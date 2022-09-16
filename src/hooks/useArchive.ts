@@ -53,7 +53,7 @@ const useArchive = () => {
     return archive.find((node) => node.nodeid === nodeid)
   }
 
-  const addArchiveData = async (nodes: ILink[]): Promise<boolean> => {
+  const addArchiveData = async (nodes: ILink[], namespaceID: string): Promise<boolean> => {
     if (!USE_API) {
       addInArchive(nodes)
       return true
@@ -75,9 +75,10 @@ const useArchive = () => {
         )
         .then((d) => {
           const { archivedHierarchy } = d.data
+          mog('archivedHierarchy', { archivedHierarchy })
 
           if (archivedHierarchy) {
-            const addedArchivedLinks = hierarchyParser(archivedHierarchy, {
+            const addedArchivedLinks = hierarchyParser(archivedHierarchy, namespaceID, {
               withParentNodeId: true,
               allowDuplicates: true
             })
@@ -124,6 +125,7 @@ const useArchive = () => {
       .catch(console.error)
   }
 
+  // TODO: figure how namespaces are working with archive hierarchy
   const getArchiveNotesHierarchy = async () => {
     if (!USE_API) {
       return archive
@@ -140,23 +142,25 @@ const useArchive = () => {
         if (d.data) {
           const hierarchy = d.data
 
-          const archivedNotes = hierarchyParser(hierarchy, { withParentNodeId: true, allowDuplicates: true })
+          mog('getArchiveNotesHierarchy', { hierarchy })
 
-          if (archivedNotes && archivedNotes.length > 0) {
-            const localILinks = useDataStore.getState().archive
-            const { toUpdateLocal } = iLinksToUpdate(localILinks, archivedNotes)
+          // const archivedNotes = hierarchyParser(hierarchy, { withParentNodeId: true, allowDuplicates: true })
 
-            runBatch(
-              toUpdateLocal.map((ilink) =>
-                getDataAPI(ilink.nodeid, false, false, false).then((data) => {
-                  setContent(ilink.nodeid, data.content, data.metadata)
-                  updateDocument('archive', ilink.nodeid, data.content)
-                })
-              )
-            )
-          }
+          // if (archivedNotes && archivedNotes.length > 0) {
+          //   const localILinks = useDataStore.getState().archive
+          //   const { toUpdateLocal } = iLinksToUpdate(localILinks, archivedNotes)
 
-          setArchive(archivedNotes)
+          //   runBatch(
+          //     toUpdateLocal.map((ilink) =>
+          //       getDataAPI(ilink.nodeid, false, false, false).then((data) => {
+          //         setContent(ilink.nodeid, data.content, data.metadata)
+          //         updateDocument('archive', ilink.nodeid, data.content)
+          //       })
+          //     )
+          //   )
+          // }
+
+          // setArchive(archivedNotes)
         }
         return d.data
       })

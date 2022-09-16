@@ -1,3 +1,4 @@
+import { MIcon } from '../types/Types'
 import create from 'zustand'
 
 import { getAllParentIds, isElder } from '../components/mex/Sidebar/treeUtils'
@@ -25,7 +26,7 @@ export interface SearchFilter<Item> {
   // Value to filter with
   value: string
   // filter: (item: Item) => boolean | number -> Replaced by FilterFunctions
-  icon?: string
+  icon?: MIcon
   // No. of items that match this filter
   count?: number
   // sort: 'asc' | 'desc'
@@ -121,7 +122,7 @@ export const useFilters = <Item>() => {
             ...p,
             {
               key: 'tag',
-              icon: 'ri:hashtag',
+              icon: { type: 'ICON', value: 'ri:hashtag' },
               id: `tag_filter_${tag}`,
               label: tag,
               count: rank as number,
@@ -165,7 +166,7 @@ export const useFilters = <Item>() => {
         acc.push({
           key: 'note',
           id: `node_${path}`,
-          icon: 'ri:file-list-2-line',
+          icon: { type: 'ICON', value: 'ri:file-list-2-line' },
           value: path,
           label: path,
           count: rank as number
@@ -212,7 +213,7 @@ export const useFilters = <Item>() => {
           key: 'space',
           id: `namespace_${namespace}`,
           // Use Namespace icon
-          icon: namespace.icon.value ?? 'heroicons-outline:view-grid',
+          icon: namespace.icon ?? { type: 'ICON', value: 'heroicons-outline:view-grid' },
           value: namespaceID,
           label: namespace.name,
           count: rank as number

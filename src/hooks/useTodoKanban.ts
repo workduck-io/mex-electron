@@ -111,7 +111,7 @@ export const useTodoKanban = () => {
         acc.push({
           key: 'note',
           id: `node_${path}`,
-          icon: 'ri:file-list-2-line',
+          icon: { type: 'ICON', value: 'ri-file-list-line' },
           label: path,
           value: path
         })
@@ -134,7 +134,7 @@ export const useTodoKanban = () => {
         acc.push({
           key: 'tag',
           id: `tag_${tag}`,
-          icon: 'ri:hashtag',
+          icon: { type: 'ICON', value: 'ri:hashtag' },
           label: tag,
           value: tag
         })
@@ -157,7 +157,8 @@ export const useTodoKanban = () => {
         acc.push({
           key: 'mention',
           id: `mention_${mention}`,
-          icon: 'ri:at-line',
+          icon: { type: 'ICON', value: 'ri:at-line' },
+          // 'ri:at-line',
           label: getUserFromUserid(mention)?.alias ?? mention,
           value: mention
         })
@@ -187,7 +188,8 @@ export const useTodoKanban = () => {
         acc.push({
           key: 'space',
           id: `node_${namespaceID}`,
-          icon: namespace.icon.value ?? 'heroicons-outline:view-grid',
+          icon: namespace.icon ?? { type: 'ICON', value: 'heroicons-outline:view-grid' },
+          // 'heroicons-outline:view-grid',
           label: namespace.name,
           value: namespaceID,
           count: rank
