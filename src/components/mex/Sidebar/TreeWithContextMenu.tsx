@@ -221,8 +221,9 @@ export const TreeContextMenu = ({ item }: TreeContextMenuProps) => {
 
           <ContextMenuItem
             color="#df7777"
+            disabled
             onSelect={(args) => {
-              handleArchive(item)
+              // handleArchive(item)
             }}
           >
             <Icon icon={archiveLine} />

@@ -27,11 +27,14 @@ import { extractMetadata } from '../utils/lib/metadata'
 import { deserializeContent, serializeContent } from '../utils/lib/serialize'
 import { apiURLs } from './routes'
 import { generateNamespaceId } from '@data/Defaults/idPrefixes'
+import { useSearch } from '@hooks/useSearch'
 
 const API_CACHE_LOG = `\nAPI has been requested before, cancelling.\n`
 
 export const useApi = () => {
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  //
+  const { updateDocument } = useSearch()
   const getWorkspaceId = useAuthStore((store) => store.getWorkspaceId)
   const getMetadata = useContentStore((store) => store.getMetadata)
   const setMetadata = useContentStore((store) => store.setMetadata)
@@ -41,6 +44,7 @@ export const useApi = () => {
   const { addLastOpened } = useLastOpened()
   const setILinks = useDataStore((store) => store.setIlinks)
   const setNamespaces = useDataStore((s) => s.setNamespaces)
+  const setArchive = useDataStore((state) => state.setArchive)
   const initSnippets = useSnippetStore((store) => store.initSnippets)
 
   const { updateFromContent } = useUpdater()
@@ -561,13 +565,15 @@ export const useApi = () => {
       })
       .then((d) => {
         mog('namespaces all', d.data)
-
         return d.data.map((item: any) => ({
-          id: item.id,
-          name: item.name,
-          icon: item.namespaceMetadata?.icon ?? undefined,
-          createdAt: item.createdAt,
-          updatedAt: item.updatedAt
+          ns: {
+            id: item.id,
+            name: item.name,
+            icon: item.namespaceMetadata?.icon ?? undefined,
+            createdAt: item.createdAt,
+            updatedAt: item.updatedAt
+          },
+          archiveHierarchy: item.archivedNodeHierarchyInformation
         }))
       })
       .catch((e) => {
@@ -576,7 +582,32 @@ export const useApi = () => {
       })
 
     if (namespaces) {
-      setNamespaces(namespaces)
+      setNamespaces(namespaces.map((n) => n.ns))
+      namespaces.map((n) => {
+        const archivedNotes = hierarchyParser(n.archiveHierarchy, n.ns.id, {
+          withParentNodeId: true,
+          allowDuplicates: true
+        })
+
+        if (archivedNotes && archivedNotes.length > 0) {
+          const localILinks = useDataStore.getState().archive
+          const { toUpdateLocal } = iLinksToUpdate(localILinks, archivedNotes)
+
+          mog('toUpdateLocal', { n, toUpdateLocal, archivedNotes })
+
+          runBatch(
+            toUpdateLocal.map((ilink) =>
+              getDataAPI(ilink.nodeid, false, false, false).then((data) => {
+                mog('toUpdateLocal', { ilink, data })
+                setContent(ilink.nodeid, data.content, data.metadata)
+                updateDocument('archive', ilink.nodeid, data.content)
+              })
+            )
+          ).then(() => {
+            setArchive(archivedNotes)
+          })
+        }
+      })
     }
   }
 

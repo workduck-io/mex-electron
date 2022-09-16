@@ -62,6 +62,7 @@ export const apiURLs = {
 
   // Archive
   archiveNodes: () => `${API_URL}/node/archive/middleware`,
+  archiveInNamesapce: (namespaceId: string) => `${API_URL}/node/archive/${namespaceId}`,
   deleteArchiveNodes: () => `${API_URL}/node/archive/delete`,
   getArchivedNodes: (workspaceId: string) => `${API_URL}/node/archive/${workspaceId}`,
   getArchiveNotesHierarchy: () => `${API_URL}/workspace/hierarchy/archived`,
