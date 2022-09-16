@@ -15,18 +15,19 @@ import { isReserved } from '../../../utils/lib/paths'
 import { NavigationType, ROUTE_PATHS, useRouting } from '../../../views/routes/urls'
 import { QuickLink, WrappedNodeSelect } from '../NodeSelect/NodeSelect'
 import { DeleteIcon, MockRefactorMap, ModalControls, ModalHeader, MRMHead, MRMRow } from './styles'
+import { RefactorPath } from './types'
 
 interface DeleteStoreState {
   open: boolean
   focus: boolean
   mockRefactored: string[]
-  del: string | undefined
-  openModal: (id?: string) => void
+  del: RefactorPath | undefined
+  openModal: (del?: RefactorPath) => void
   closeModal: () => void
   setFocus: (focus: boolean) => void
-  setDel: (del: string) => void
+  setDel: (del: RefactorPath) => void
   setMockRefactored: (mr: string[]) => void
-  setDelAndRefactored: (del: string, mR: string[]) => void
+  setDelAndRefactored: (del: RefactorPath, mR: string[]) => void
 }
 
 export const useDeleteStore = create<DeleteStoreState>((set) => ({
@@ -34,9 +35,9 @@ export const useDeleteStore = create<DeleteStoreState>((set) => ({
   mockRefactored: [],
   del: undefined,
   focus: true,
-  openModal: (id) => {
-    if (id) {
-      set({ open: true, del: id })
+  openModal: (del) => {
+    if (del) {
+      set({ open: true, del })
     } else {
       set({
         open: true
@@ -82,7 +83,10 @@ const Delete = () => {
         shortcutHandler(shortcuts.showArchiveModal, () => {
           const node = useEditorStore.getState().node
           goTo(ROUTE_PATHS.node, NavigationType.push, node.nodeid)
-          openModal(useEditorStore.getState().node.id)
+          openModal({
+            path: useEditorStore.getState().node.path,
+            namespaceID: useEditorStore.getState().node.namespace
+          })
         })
       },
       '$mod+Enter': (event) => {
@@ -103,20 +107,23 @@ const Delete = () => {
     const newValue = quickLink.value
     saveAndClearBuffer()
     if (newValue) {
-      setDel(newValue)
+      setDel({
+        path: quickLink.value,
+        namespaceID: quickLink.namespace
+      })
     }
   }
 
   // const { del, mockData, open } = deleteState
   useEffect(() => {
-    if (del && !isReserved(del)) {
-      setMockRefactored(getMockArchive(del).archivedNodes.map((item) => item.path))
+    if (del && !isReserved(del.path)) {
+      setMockRefactored(getMockArchive(del.path).archivedNodes.map((item) => item.path))
     }
   }, [del])
 
   const handleDelete = async () => {
-    if (del && !isReserved(del)) {
-      const res = await execArchive(del)
+    if (del && !isReserved(del.path)) {
+      const res = await execArchive(del.path)
       if (res) {
         goTo(ROUTE_PATHS.node, NavigationType.replace, res.toLoad)
       }
@@ -136,7 +143,11 @@ const Delete = () => {
         autoFocus
         // menuOpen
         disallowReserved
-        defaultValue={del ?? useEditorStore.getState().node.path}
+        defaultValue={
+          del
+            ? { path: del.path, namespace: del.namespaceID }
+            : { path: useEditorStore.getState().node.path, namespace: useEditorStore.getState().node.namespace }
+        }
         handleSelectItem={handleDeleteChange}
       />
 

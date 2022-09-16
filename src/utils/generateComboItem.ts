@@ -5,12 +5,12 @@ export const generateTag = (item: string): Tag => ({
   value: item
 })
 
-export const generateIlink = (path: string): ILink => ({
+export const generateTempLinks = (path: string): { path: string; nodeid: string } => ({
   path,
   nodeid: generateNodeUID()
 })
 
-export const generateILinks = (items: string[]) => items.map(generateIlink)
+export const generateILinks = (items: string[]) => items.map(generateTempLinks)
 
 export const addIconToSlashCommand = (items: SlashCommand[], icon: string) =>
   items.map((i: SlashCommand): SlashCommand => ({ ...i, icon }))

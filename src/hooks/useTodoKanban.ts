@@ -187,7 +187,7 @@ export const useTodoKanban = () => {
         acc.push({
           key: 'space',
           id: `node_${namespaceID}`,
-          icon: namespace.icon ?? 'heroicons-outline:view-grid',
+          icon: namespace.icon.value ?? 'heroicons-outline:view-grid',
           label: namespace.name,
           value: namespaceID,
           count: rank

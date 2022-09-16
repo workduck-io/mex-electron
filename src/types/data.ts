@@ -16,7 +16,8 @@ export interface Snippet {
   template?: boolean
 }
 
-export type FilterKey = 'note' | 'tag' | 'date' | 'state' | 'has' | 'mention'
+export type FilterKey = 'note' | 'tag' | 'date' | 'state' | 'has' | 'mention' | 'space'
+
 export interface View<Item> {
   title: string
   description?: string

@@ -13,6 +13,7 @@ import { useSnippets } from './useSnippets'
 import { useNamespaces } from './useNamespaces'
 import { DRAFT_NODE, mog } from '@workduck-io/mex-utils'
 import { NavigationType, ROUTE_PATHS, useRouting } from '@views/routes/urls'
+import { useSpotlightContext } from '@store/Context/context.spotlight'
 
 export type NewNoteOptions = {
   path?: string
@@ -36,6 +37,7 @@ export const useCreateNewNote = () => {
   const checkValidILink = useDataStore((s) => s.checkValidILink)
   const getMetadata = useContentStore((s) => s.getMetadata)
   const { getSnippet } = useSnippets()
+  const spotlightContext = useSpotlightContext()
 
   const { saveNodeName } = useLoad()
   const { getParentILink } = useLinks()
@@ -98,7 +100,10 @@ export const useCreateNewNote = () => {
     })
     if (!options?.noRedirect) {
       push(node.nodeid, { withLoading: false, fetch: false })
-      goTo(ROUTE_PATHS.node, NavigationType.push, node.nodeid)
+
+      if (!spotlightContext) {
+        goTo(ROUTE_PATHS.node, NavigationType.push, node.nodeid)
+      }
     }
     return node
   }

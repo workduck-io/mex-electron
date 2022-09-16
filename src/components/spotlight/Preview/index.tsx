@@ -15,7 +15,7 @@ import { useSpotlightAppStore } from '../../../store/app.spotlight'
 import { useSnippetStore } from '../../../store/useSnippetStore'
 import PreviewContainer from './PreviewContainer'
 import PreviewHeader from './PreviewHeader'
-import { ScrollablePreview, SeePreview, StyledPreview } from './styled'
+import { SeePreview, StyledPreview } from './styled'
 
 export type PreviewType = {
   text: string

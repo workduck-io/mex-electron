@@ -250,7 +250,7 @@ export const ILinkElement = ({ attributes, children, element }: ILinkElementProp
               setPreview={setPreview}
             >
               <SILink selected={selected} onClick={onClickProps}>
-                <StyledIcon icon={shareLine} />
+                {namespaceIcon && <IconDisplay icon={namespaceIcon} />}
                 <span className="ILink_decoration ILink_decoration_left">[[</span>
                 <span className="ILink_decoration ILink_decoration_value"> {sharedNode?.path}</span>
                 <span className="ILink_decoration ILink_decoration_right">]]</span>

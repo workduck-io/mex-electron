@@ -21,7 +21,7 @@ import { Input, StyledCreatatbleSelect } from '../../../style/Form'
 import { ILink, SingleNamespace } from '../../../types/Types'
 import { fuzzySearch } from '../../../utils/lib/fuzzySearch'
 import { mog, withoutContinuousDelimiter } from '../../../utils/lib/helper'
-import { isClash, isMatch, isReserved, RESERVED_NAMESPACES } from '../../../utils/lib/paths'
+import { isClash, isMatch, isReserved, RESERVED_NAMESPACES, SHARED_NAMESPACE } from '../../../utils/lib/paths'
 import { convertContentToRawText } from '../../../utils/search/parseData'
 import { SEPARATOR } from '../Sidebar/treeUtils'
 import {
@@ -226,7 +226,7 @@ function NodeSelect({
     const mLinks = fLinks.map((l) => makeQuickLink(l.path, { namespace: l.namespace, nodeid: l.nodeid, icon: l.icon }))
 
     const sLinks = sharedNodes.map((l) =>
-      makeQuickLink(l.path, { namespace: RESERVED_NAMESPACES.shared, nodeid: l.nodeid, icon: 'ri:share-line' })
+      makeQuickLink(l.path, { namespace: SHARED_NAMESPACE.id, nodeid: l.nodeid, icon: 'mex:shared-note' })
     )
 
     if (!showAll) return mLinks

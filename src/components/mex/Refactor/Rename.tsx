@@ -129,7 +129,11 @@ const Rename = () => {
 
       <WrappedNodeSelect
         placeholder="Rename node from..."
-        defaultValue={from ?? useEditorStore.getState().node.id}
+        defaultValue={
+          from
+            ? { path: from, namespace: fromNS }
+            : { path: useEditorStore.getState().node.path, namespace: useEditorStore.getState().node.namespace }
+        }
         disallowReserved
         highlightWhenSelected
         iconHighlight={from !== undefined}
@@ -140,7 +144,7 @@ const Rename = () => {
         placeholder="Rename node to..."
         autoFocus={to === undefined}
         menuOpen={to === undefined}
-        defaultValue={to}
+        defaultValue={to && { path: to, namespace: toNS }}
         disallowClash
         disallowMatch={(path) => isMatch(path, from)}
         createAtTop

@@ -135,7 +135,8 @@ export const openCalendarMeetingNote = (
       title: node.path,
       nodeid: node.nodeid,
       id: node.nodeid,
-      path: node.path
+      path: node.path,
+      namespace: node.namespace
     },
 
     realContent

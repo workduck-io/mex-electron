@@ -17,7 +17,7 @@ import toast from 'react-hot-toast'
 import { AccessLevel, DefaultPermission, DefaultPermissionValue, permissionOptions } from '../../../types/mentions'
 import { InputFormError } from '../Forms/Input'
 import { InviteFormFieldset, InviteFormWrapper, InviteWrapper } from './ShareModal.styles'
-import { InviteModalData, useShareModalStore } from './ShareModalStore'
+import { InviteModalData, MultiInviteModalData, useShareModalStore } from './ShareModalStore'
 
 export const InviteModalContent = () => {
   const smodaldata = useShareModalStore((state) => state.data)

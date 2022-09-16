@@ -1,5 +1,5 @@
 import { ELEMENT_PARAGRAPH } from '@udecode/plate'
-import { getRandomQAContent } from '@data/Defaults/baseData'
+import { defaultContent } from '@data/Defaults/baseData'
 import { generateSnippetId } from '@data/Defaults/idPrefixes'
 import { IconifyIcon } from '@iconify/react'
 import generateName from 'project-name-generator'
@@ -28,7 +28,6 @@ export const useCreateNewMenu = () => {
   const currentSpace = useUserPreferenceStore((store) => store.activeNamespace)
   const changeSpace = useUserPreferenceStore((store) => store.setActiveNamespace)
 
-
   const createNewNamespace = () => {
     addDefaultNewNamespace().then((ns) => {
       if (ns) changeSpace(ns.id)
@@ -36,8 +35,7 @@ export const useCreateNewMenu = () => {
   }
 
   const createNewNoteInNamespace = (namespaceId: string) => {
-    const qaContent = getRandomQAContent()
-    const note = createNewNote({ namespace: namespaceId, noteContent: qaContent })
+    const note = createNewNote({ namespace: namespaceId, noteContent: defaultContent.content })
 
     if (note) {
       goTo(ROUTE_PATHS.node, NavigationType.push, note?.nodeid)

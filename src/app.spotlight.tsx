@@ -1,3 +1,4 @@
+import { addIconsToIconify } from '@components/icons/Icons'
 import { actionStore, Provider } from '@components/spotlight/Actions/useActionStore'
 import { actionMenuStore, MenuProvider } from '@components/spotlight/ActionStage/ActionMenu/useActionMenuStore'
 import Providers from '@store/Context/Providers'
@@ -13,6 +14,7 @@ import Routes from './views/spotlight/routes'
 if (!IS_DEV) initializeSentry()
 
 export default function App() {
+  addIconsToIconify()
   return (
     <Provider createStore={actionStore}>
       <MenuProvider createStore={actionMenuStore}>

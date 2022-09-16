@@ -266,7 +266,12 @@ const CreateReminderModal = () => {
         <WrappedNodeSelect
           placeholder="Reminder for node"
           disabled={modalValue.blockContent !== undefined}
-          defaultValue={useEditorStore.getState().node.id ?? ''}
+          defaultValue={
+            useEditorStore.getState().node && {
+              path: useEditorStore.getState().node.path,
+              namespace: useEditorStore.getState().node.namespace
+            }
+          }
           disallowReserved
           highlightWhenSelected
           iconHighlight={modalValue.nodeid !== undefined}

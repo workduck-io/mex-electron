@@ -73,6 +73,7 @@ const NodeRenameTitle = () => {
 
   // const focus = useRenameStore((store) => store.focus)
   const to = useRenameStore((store) => store.to)
+  const toNS = useRenameStore((store) => store.toNS)
   // const from = useRenameStore((store) => store.from)
   const mockRefactored = useRenameStore((store) => store.mockRefactored)
   const nodeTitle = useAnalysisStore((state) => state.analysis.title)
@@ -178,7 +179,7 @@ const NodeRenameTitle = () => {
           disallowMatch={(path) => isMatch(path, nodeFrom.path)}
           disallowClash
           autoFocus
-          defaultValue={to ?? nodeFrom.path}
+          defaultValue={to ? { path: to, namespace: toNS } : { path: nodeFrom.path, namespace: nodeFrom.namespaceID }}
           handleSelectItem={handleToChange}
           handleCreateItem={handleToCreate}
         />

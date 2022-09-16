@@ -1,7 +1,7 @@
 import addCircleLine from '@iconify/icons-ri/add-circle-line'
 import { SidebarListFilter } from '@components/mex/Sidebar/SidebarList.style'
 import Tree from '@components/mex/Sidebar/Tree'
-import { getRandomQAContent } from '@data/Defaults/baseData'
+import { defaultContent, getRandomQAContent } from '@data/Defaults/baseData'
 import { useCreateNewNote } from '@hooks/useCreateNewNote'
 import { getTitleFromPath } from '@hooks/useLinks'
 import { getPartialTreeFromLinks, getTreeFromLinks } from '@hooks/useTreeFromLinks'
@@ -86,9 +86,8 @@ export const MexTree = ({ items, filterText, spaceId }: SpaceTreeProps) => {
   }
 
   const createNewNoteInNamespace = () => {
-    const qaContent = getRandomQAContent()
-    mog('New Note', { spaceId })
-    const note = createNewNote({ namespace: spaceId, noteContent: qaContent })
+    // mog('New Note', { spaceId })
+    const note = createNewNote({ namespace: spaceId, noteContent: defaultContent.content })
     goTo(ROUTE_PATHS.node, NavigationType.push, note?.nodeid)
     // updater({
     //   id: note?.nodeid,

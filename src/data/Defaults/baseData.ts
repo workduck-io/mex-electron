@@ -20,6 +20,7 @@ const ELEMENT_PARAGRAPH = 'p'
 export const BASE_DRAFT_PATH = 'Drafts'
 export const BASE_TASKS_PATH = 'Daily Tasks'
 export const BASE_MEETING_PATH = MEETING_PREFIX
+// Note that these are only used for content section
 const links = generateILinks(['doc', 'dev', 'design', '@'])
 
 export const onboardingLink = {
@@ -39,7 +40,7 @@ const draftLink = {
   icon: 'ri:draft-line'
 }
 
-const linksWithSpecialContent = [onboardingLink, draftLink, tasksLink]
+// const linksWithSpecialContent = [onboardingLink, draftLink, tasksLink]
 
 export const defaultContent: NodeContent = {
   type: 'init',

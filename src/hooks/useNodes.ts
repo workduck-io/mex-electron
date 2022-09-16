@@ -142,12 +142,12 @@ export const useNodes = () => {
     if (sharedNode) {
       const parents = getParentBreadcurmbs(sharedNode.path, sharedNodes)
 
-      parents.unshift({
-        id: 'space-shared',
-        icon: 'ri:share-line',
-        label: 'Shared Notes',
-        hideLabel: true
-      })
+      // parents.unshift({
+      //   id: 'space-shared',
+      //   icon: 'ri:share-line',
+      //   label: 'Shared Notes',
+      //   hideLabel: true
+      // })
 
       return parents
     }

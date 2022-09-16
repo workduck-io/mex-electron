@@ -5,8 +5,10 @@ import { getNameFromPath } from '@components/mex/Sidebar/treeUtils'
 import { ProjectTimeStyled } from '@components/spotlight/ActionStage/Project/ProjectTime'
 import { useContentStore } from '@store/useContentStore'
 import useDataStore from '@store/useDataStore'
+import { useNamespaces } from '@hooks/useNamespaces'
 
 import { NoteHeaderContainer, NoteTitle } from './styled'
+import NamespaceTag from '@components/mex/NamespaceTag'
 
 type NoteHeaderType = {
   noteId: string
@@ -16,6 +18,8 @@ const Header = ({ noteId }: NoteHeaderType) => {
   const ilinks = useDataStore((store) => store.ilinks)
   const archive = useDataStore((store) => store.archive)
   const metadata = useContentStore((store) => store.contents?.[noteId]?.metadata)
+  const { getNamespaceOfNode } = useNamespaces()
+  const namespace = getNamespaceOfNode(noteId)
 
   const noteTitle = useMemo(() => {
     let notePath = ilinks.find((ilink) => ilink.nodeid === noteId)?.path
@@ -35,7 +39,8 @@ const Header = ({ noteId }: NoteHeaderType) => {
   return (
     <NoteHeaderContainer>
       <NoteTitle>{noteTitle}</NoteTitle>
-      {metadata?.updatedAt && <ProjectTimeStyled>{<RelativeTime dateNum={metadata.updatedAt} />}</ProjectTimeStyled>}
+      {namespace && <NamespaceTag namespace={namespace} />}
+      {/*metadata?.updatedAt && <ProjectTimeStyled>{<RelativeTime dateNum={metadata.updatedAt} />}</ProjectTimeStyled>*/}
     </NoteHeaderContainer>
   )
 }

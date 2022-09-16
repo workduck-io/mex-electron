@@ -163,7 +163,7 @@ const Content = () => {
 
       if (isNew) {
         if (editorNode.title !== `${DRAFT_PREFIX}.${DRAFT_NODE}`) {
-          node = createNodeWithUid(nodeValue)
+          node = createNodeWithUid(nodeValue, selectedNamespace)
         }
       } else {
         node = getNode(resultNode?.id ?? '')
@@ -236,7 +236,7 @@ const Content = () => {
         setPreview(INIT_PREVIEW)
       }
     }
-  }, [search.value, activeIndex, activeItem, selection, searchResults])
+  }, [search.value, activeIndex, activeItem, selection, searchResults, selectedNamespace])
 
   return (
     <StyledContent>

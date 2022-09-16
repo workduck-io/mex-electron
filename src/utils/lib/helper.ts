@@ -35,25 +35,26 @@ export const mog = (
 export const electronCookies = () => {
   const { Cookie } = tough
 
-    ; (function(document) {
-      const store = new WebStorageCookieStore(localStorage)
-      const cookiejar = new tough.CookieJar(store, { rejectPublicSuffixes: false })
-      Object.defineProperty(document, 'cookie', {
-        get() {
-          return cookiejar.getCookieStringSync(FAKE_APP_URI)
-        },
-        set(cookie) {
-          cookiejar.setCookieSync(Cookie.parse(cookie), FAKE_APP_URI)
-        }
-      })
-    })(document)
+  ;(function (document) {
+    const store = new WebStorageCookieStore(localStorage)
+    const cookiejar = new tough.CookieJar(store, { rejectPublicSuffixes: false })
+    Object.defineProperty(document, 'cookie', {
+      get() {
+        return cookiejar.getCookieStringSync(FAKE_APP_URI)
+      },
+      set(cookie) {
+        cookiejar.setCookieSync(Cookie.parse(cookie), FAKE_APP_URI)
+      }
+    })
+  })(document)
 }
 
-export const createNodeWithUid = (key: string): NodeProperties => ({
+export const createNodeWithUid = (key: string, namespace: string): NodeProperties => ({
   title: key,
   id: key,
   nodeid: generateNodeUID(),
-  path: key
+  path: key,
+  namespace
 })
 
 /*

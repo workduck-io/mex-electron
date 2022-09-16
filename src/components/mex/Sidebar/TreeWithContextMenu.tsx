@@ -113,7 +113,7 @@ export const TreeContextMenu = ({ item }: TreeContextMenuProps) => {
   }
 
   const handleCreateChild = (item: TreeItem) => {
-    mog('handleCreateChild', { item })
+    // mog('handleCreateChild', { item })
     const node = createNewNote({ parent: { path: item.data.path, namespace: item.data.namespace } })
     goTo(ROUTE_PATHS.node, NavigationType.push, node?.nodeid)
   }

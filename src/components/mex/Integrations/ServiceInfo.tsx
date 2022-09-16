@@ -7,7 +7,9 @@ import { useKeyListener } from '../../../hooks/useShortcutListener'
 import { ServiceContainer, GroupHeaderContainer, FloatingIcon } from './styled'
 import { Button, IconButton } from '@workduck-io/mex-components'
 
-type ServiceInfoProps = {}
+type ServiceInfoProps = {
+  children: React.ReactElement
+}
 
 const ServiceInfo: React.FC<ServiceInfoProps> = ({ children }) => {
   const { goTo } = useRouting()

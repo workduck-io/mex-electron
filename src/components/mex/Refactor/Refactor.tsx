@@ -25,11 +25,7 @@ import { doesLinkRemain } from './doesLinkRemain'
 import { ArrowIcon, MockRefactorMap, ModalControls, ModalHeader, MRMHead, MRMRow } from './styles'
 import { useUserPreferenceStore } from '@store/userPreferenceStore'
 import useModalStore, { ModalsType } from '@store/useModalStore'
-
-interface RefactorPath {
-  path: string
-  namespaceID?: string
-}
+import { RefactorPath } from './types'
 
 // Prefill modal has been added to the Tree via withRefactor from useRefactor
 interface RefactorState {
@@ -94,8 +90,8 @@ export const useRefactorStore = create<RefactorState>((set) => ({
  * Shows mock refactored nodes before executing
  */
 const Refactor = () => {
-  const open = useModalStore(store => store.open === ModalsType.refactor)
-  const toggleModal = useModalStore(store => store.toggleOpen)
+  const open = useModalStore((store) => store.open === ModalsType.refactor)
+  const toggleModal = useModalStore((store) => store.toggleOpen)
   const focus = useRefactorStore((store) => store.focus)
   const to = useRefactorStore((store) => store.to)
   const from = useRefactorStore((store) => store.from)

@@ -1,6 +1,6 @@
 import { useApi } from '@apis/useSaveApi'
 import useDataStore from '@store/useDataStore'
-import { getNewNamespaceName, RESERVED_NAMESPACES } from '@utils/lib/paths'
+import { getNewNamespaceName, RESERVED_NAMESPACES, SHARED_NAMESPACE } from '@utils/lib/paths'
 import { mog } from '@workduck-io/mex-utils'
 import { ILink, MIcon, NodeType, SingleNamespace } from '../types/Types'
 import { useNodes } from './useNodes'
@@ -12,18 +12,12 @@ export const useNamespaces = () => {
   const addNamespace = useDataStore((s) => s.addNamespace)
   const { changeNamespaceName: chageNamespaceNameApi, changeNamespaceIcon: changeNamespaceIconApi } = useApi()
 
-  const SHARED_NAMESPACE: SingleNamespace = {
-    id: 'NAMESPACE_shared',
-    name: RESERVED_NAMESPACES.shared,
-    createdAt: 0,
-    updatedAt: 0,
-    icon: { type: 'ICON', value: 'mex:shared-note' }
-  }
-
   const getNamespace = (id: string): SingleNamespace | undefined => {
     const namespaces = useDataStore.getState().namespaces
     const namespace = namespaces.find((ns) => ns.id === id)
     if (namespace) return namespace
+    if (id === SHARED_NAMESPACE.id) return SHARED_NAMESPACE
+    return undefined
   }
 
   const getNamespaceOptions = () => {
@@ -33,6 +27,11 @@ export const useNamespaces = () => {
       label: n.name
     }))
     const defaultNamespace = getDefaultNamespace() ?? namespaces[0]
+    namespaces.push({
+      ...SHARED_NAMESPACE,
+      value: SHARED_NAMESPACE.name,
+      label: SHARED_NAMESPACE.name
+    })
     return {
       namespaces,
       defaultNamespace: defaultNamespace

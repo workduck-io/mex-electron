@@ -61,7 +61,7 @@ const SearchIndexInput = ({ indexGroups, onChange, placeholder }: SearchIndexInp
     }
   })
   return (
-    <SearchFilterInputWrapper>
+    <SearchFilterInputWrapper isOverlay>
       <StyledCombobox {...getComboboxProps()}>
         <SearchIndexValue onClick={() => toggleMenu()}>
           <Icon icon={indexIcons[selectedGroup] ?? arrowDownSLine} />
@@ -76,7 +76,7 @@ const SearchIndexInput = ({ indexGroups, onChange, placeholder }: SearchIndexInp
           className={`FilterInput`}
         />
       </StyledCombobox>
-      <StyledMenu {...getMenuProps()} isOpen={isOpen}>
+      <StyledMenu {...getMenuProps()} isOverlay isOpen={isOpen}>
         {isOpen &&
           inputItems.map((item, index) => (
             <Suggestion

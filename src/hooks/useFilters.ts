@@ -212,7 +212,7 @@ export const useFilters = <Item>() => {
           key: 'space',
           id: `namespace_${namespace}`,
           // Use Namespace icon
-          icon: namespace.icon ?? 'heroicons-outline:view-grid',
+          icon: namespace.icon.value ?? 'heroicons-outline:view-grid',
           value: namespaceID,
           label: namespace.name,
           count: rank as number
