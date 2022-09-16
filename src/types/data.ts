@@ -5,7 +5,7 @@ import {
   SyncStoreIntents
 } from '../editor/Components/SyncBlock/SyncBlock.types'
 import { TodosType } from '../editor/Components/Todo/types'
-import { ILink, LinkCache, NodeEditorContent, SharedNode, Tag, TagsCache } from '../types/Types'
+import { ILink, LinkCache, MIcon, NodeEditorContent, SharedNode, Tag, TagsCache } from '../types/Types'
 import { Reminder } from './reminders'
 
 export interface Snippet {
@@ -32,7 +32,7 @@ export interface SearchFilter<Item> {
   // Value to filter with
   value: string
   // filter: (item: Item) => boolean | number -> Replaced by FilterFunctions
-  icon?: string
+  icon?: MIcon
   // No. of items that match this filter
   count?: number
   // sort: 'asc' | 'desc'

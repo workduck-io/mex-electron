@@ -5,6 +5,7 @@ import { useTaskViews, useViewStore } from '@hooks/useTaskViews'
 import { Icon } from '@iconify/react'
 import { Label, TextAreaBlock } from '@style/Form'
 import { SearchFilterCount, SearchFilterListCurrent, SearchFilterStyled } from '@style/Search'
+import IconDisplay from '@ui/components/IconPicker/IconDisplay'
 import { mog } from '@utils/lib/helper'
 import { getPathNum } from '@utils/lib/paths'
 import { NavigationType, ROUTE_PATHS, useRouting } from '@views/routes/urls'
@@ -183,7 +184,7 @@ const TaskViewModal = () => {
           <SearchFilterListCurrent>
             {filters.map((f) => (
               <SearchFilterStyled selected key={`current_f_${f.id}`}>
-                {f.icon ? <Icon icon={f.icon} /> : null}
+                {f.icon ? <IconDisplay icon={f.icon} /> : null}
                 {f.label}
                 {f.count && <SearchFilterCount>{f.count}</SearchFilterCount>}
               </SearchFilterStyled>
