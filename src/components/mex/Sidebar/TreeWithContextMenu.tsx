@@ -37,6 +37,7 @@ import { useDeleteStore } from '../Refactor/DeleteModal'
 import { useRefactorStore } from '../Refactor/Refactor'
 import { doesLinkRemain } from '../Refactor/doesLinkRemain'
 import ContextMenuListWithFilter from './ContextMenuListWithFilter'
+import { useNamespaces } from '@hooks/useNamespaces'
 
 export const MENU_ID = 'Tree-Menu'
 
@@ -89,6 +90,7 @@ export const TreeContextMenu = ({ item }: TreeContextMenuProps) => {
   const toggleModal = useModalStore((store) => store.toggleOpen)
   const { goTo } = useRouting()
   const namespaces = useDataStore((store) => store.namespaces)
+  const { getNamespaceIcon } = useNamespaces()
 
   const contents = useContentStore((store) => store.contents)
   const { execRefactorAsync } = useRefactor()
@@ -199,14 +201,14 @@ export const TreeContextMenu = ({ item }: TreeContextMenuProps) => {
             item={{
               id: 'menu_for_namespace',
               label: 'Move to Space',
-              icon: fileTransferLine
+              icon: { type: 'ICON', value: 'ri:file-transfer-line' }
             }}
             items={namespaces
               // Don't move in same namespace
               .filter((ns) => ns.id !== item.data.namespace)
               .map((ns) => ({
                 id: ns.id,
-                icon: ns.name === RESERVED_NAMESPACES.default ? 'ri:user-line' : 'heroicons-outline:view-grid',
+                icon: getNamespaceIcon(ns),
                 label: ns.name
               }))}
             onSelectItem={(args) => {

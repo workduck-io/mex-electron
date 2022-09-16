@@ -24,6 +24,7 @@ import toast from 'react-hot-toast'
 import { useNamespaces } from '@hooks/useNamespaces'
 import IconPicker from '@ui/components/IconPicker/IconPicker'
 import { MIcon } from '../../../types/Types'
+import { Tooltip } from '@components/FloatingElements/Tooltip'
 
 const Header = ({ space }: { space: SidebarSpace }) => {
   const sidebar = useLayoutStore((state) => state.sidebar)
@@ -99,14 +100,16 @@ const Header = ({ space }: { space: SidebarSpace }) => {
             {showInput && !isNamespaceInputDisabled ? (
               <Input defaultValue={space.label} onBlur={(e) => onChangeName(e.target.value)} ref={inpRef} />
             ) : (
-              <SpaceTitleFakeInput
-                ref={titleRef}
-                onClick={() => {
-                  setShowInput(true)
-                }}
-              >
-                {title}
-              </SpaceTitleFakeInput>
+              <Tooltip content="Click to rename Space">
+                <SpaceTitleFakeInput
+                  ref={titleRef}
+                  onClick={() => {
+                    setShowInput(true)
+                  }}
+                >
+                  {title}
+                </SpaceTitleFakeInput>
+              </Tooltip>
             )}
           </SpaceTitle>
           <Tippy

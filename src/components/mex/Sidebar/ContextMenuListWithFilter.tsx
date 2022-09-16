@@ -16,10 +16,18 @@ import searchLine from '@iconify/icons-ri/search-line'
 import { debounce } from 'lodash'
 import { Input } from '@style/Form'
 import { mog } from '@workduck-io/mex-utils'
+import { MIcon } from '../../../types/Types'
+import IconDisplay from '@ui/components/IconPicker/IconDisplay'
+
+interface ContextMenuItem {
+  id: string
+  label: string
+  icon?: MIcon
+}
 
 interface ContextMenuListWithFilterProps {
-  item: DesignItem
-  items: DesignItem[]
+  item: ContextMenuItem
+  items: ContextMenuItem[]
   filter?: boolean
   filterPlaceholder?: string
   onSelectItem: (id: string) => void
@@ -113,7 +121,7 @@ const ContextMenuListWithFilter = ({
         }}
       >
         <ContextMenuSubTrigger>
-          {item.icon && <Icon icon={item.icon} />}
+          {item.icon && <IconDisplay icon={item.icon} />}
           {item.label}
           <RightSlot>
             <Icon icon={arrowRightSLine} />
@@ -139,7 +147,7 @@ const ContextMenuListWithFilter = ({
                 onSelect={() => onSelectingItem(item.id)}
                 key={`ContextMenuList_${item.id}`}
               >
-                {item.icon && <Icon icon={item.icon} />}
+                {item.icon && <IconDisplay icon={item.icon} />}
                 {item.label}
               </ContextMenuItem>
             ))}

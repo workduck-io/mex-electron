@@ -54,21 +54,24 @@ export const useNamespaces = () => {
     }
   }
 
+  const getNamespaceIcon = (namespace: SingleNamespace): MIcon => {
+    return (
+      namespace.icon ?? {
+        type: 'ICON',
+        value:
+          namespace.name === RESERVED_NAMESPACES.default
+            ? 'ri:user-line'
+            : namespace.name === RESERVED_NAMESPACES.shared
+            ? 'ri:share-line'
+            : 'heroicons-outline:view-grid'
+      }
+    )
+  }
+
   const getNamespaceIconForNode = (nodeId: string): MIcon | undefined => {
     const node = getNode(nodeId)
     const namespace = namespaces.find((ns) => ns.id === node?.namespace)
-    if (namespace)
-      return (
-        namespace.icon ?? {
-          type: 'ICON',
-          value:
-            namespace.name === RESERVED_NAMESPACES.default
-              ? 'ri:user-line'
-              : namespace.name === RESERVED_NAMESPACES.shared
-              ? 'ri:share-line'
-              : 'heroicons-outline:view-grid'
-        }
-      )
+    if (namespace) return getNamespaceIcon(namespace)
 
     const nodeType = getNodeType(nodeId)
     if (nodeType === NodeType.SHARED) {
@@ -196,6 +199,7 @@ export const useNamespaces = () => {
     getNodesByNamespaces,
     changeNamespaceName,
     changeNamespaceIcon,
+    getNamespaceIcon,
     getNamespaceIconForNode,
     addDefaultNewNamespace,
     getNamespaceOfNode,
