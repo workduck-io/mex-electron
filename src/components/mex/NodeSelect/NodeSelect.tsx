@@ -269,10 +269,6 @@ function NodeSelect({
   const getNewItems = (inputValue: string) => {
     if (inputValue !== '' && inputValue !== undefined) {
       // mog('getNewItems', { inputValue, quickLinks })
-<<<<<<< HEAD
-
-=======
->>>>>>> 74bd7175 (Fix refactor modal and fix sidebar space transition)
       const newItems = fuzzySearch(quickLinks, inputValue, (item) => item.text)
 
       if (

@@ -1,11 +1,11 @@
 import React, { useMemo } from 'react'
 
+import NamespaceTag from '@components/mex/NamespaceTag'
 import { getNameFromPath } from '@components/mex/Sidebar/treeUtils'
-import useDataStore from '@store/useDataStore'
 import { useNamespaces } from '@hooks/useNamespaces'
+import useDataStore from '@store/useDataStore'
 
 import { NoteHeaderContainer, NoteTitle } from './styled'
-import NamespaceTag from '@components/mex/NamespaceTag'
 
 type NoteHeaderType = {
   noteId: string
