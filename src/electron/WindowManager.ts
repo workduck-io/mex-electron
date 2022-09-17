@@ -78,7 +78,10 @@ class WindowManager {
     if (options.alwaysOnTop) {
       window.setAlwaysOnTop(true, 'modal-panel', 100)
       window.setVisibleOnAllWorkspaces(true, { visibleOnFullScreen: true })
-      app.dock.show()
+
+      if (!app.dock.isVisible) {
+        app.dock.show()
+      }
     }
 
     if (!app.dock.isVisible())
