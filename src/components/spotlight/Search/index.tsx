@@ -113,13 +113,13 @@ const Search = () => {
   const disabled = !normalMode || !!view || isActionMenuOpen
   const { mexIcon } = getIconType((icon as string) ?? 'codicon:circle-filled')
 
-  const { namespaces, defaultNamespace } = getNamespaceOptions()
+  const { namespaceOptions, defaultNamespace } = getNamespaceOptions()
 
   // The current item should be create new and there should be some input value
 
   const currentActiveItem = searchResults[activeIndex]
   const showNamespaceSelect = currentActiveItem?.extras.new && input.length > 0
-  const selectedNsItem = selectedNamespace ? namespaces.find((ns) => ns.id === selectedNamespace) : undefined
+  const selectedNsItem = selectedNamespace ? namespaceOptions.find((ns) => ns.id === selectedNamespace) : undefined
   const activeNamespace = selectedNsItem ?? defaultNamespace
 
   const selectNamespace = (selected) => {
@@ -164,7 +164,7 @@ const Search = () => {
             selectNamespace(selected)
           }}
           value={activeNamespace}
-          options={namespaces}
+          options={namespaceOptions}
           closeMenuOnSelect={true}
           closeMenuOnBlur={false}
           components={StyledNamespaceSpotlightSelectComponents}

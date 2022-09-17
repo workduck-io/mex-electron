@@ -27,13 +27,13 @@ export const useNamespaces = () => {
       label: n.name
     }))
     const defaultNamespace = getDefaultNamespace() ?? namespaces[0]
-    namespaces.push({
-      ...SHARED_NAMESPACE,
-      value: SHARED_NAMESPACE.name,
-      label: SHARED_NAMESPACE.name
-    })
+    // namespaces.push({
+    //   ...SHARED_NAMESPACE,
+    //   value: SHARED_NAMESPACE.name,
+    //   label: SHARED_NAMESPACE.name
+    // })
     return {
-      namespaces,
+      namespaceOptions,
       defaultNamespace: defaultNamespace
         ? {
             ...defaultNamespace,

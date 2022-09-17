@@ -249,7 +249,8 @@ function NodeSelect({
     }))
 
   const quickLinks = getQuickLinks()
-  const { namespaces, defaultNamespace } = getNamespaceOptions()
+  const { namespaceOptions, defaultNamespace } = getNamespaceOptions()
+  const namespaces = useDataStore((state) => state.namespaces)
 
   const lastOpened = useRecentsStore((store) => store.lastOpened)
 
@@ -334,7 +335,7 @@ function NodeSelect({
       if (highlightedItem && highlightedItem.value) {
         setInputValue(highlightedItem.value)
         if (highlightedItem.namespace) {
-          const ns = namespaces.find((n) => n.id === highlightedItem.namespace)
+          const ns = namespaceOptions.find((n) => n.id === highlightedItem.namespace)
           setSelectedNamespace(ns)
         }
       }
@@ -527,7 +528,7 @@ function NodeSelect({
 
   const getRelevantNamespace = () => {
     const activeNamespaceId = useUserPreferenceStore.getState().activeNamespace
-    const activeNamespace = namespaces.find((n) => n.id === activeNamespaceId)
+    const activeNamespace = namespaceOptions.find((n) => n.id === activeNamespaceId)
 
     return activeNamespace ?? defaultNamespace
   }
@@ -576,7 +577,7 @@ function NodeSelect({
                 }
               }}
               value={namespaceSelectValue}
-              options={namespaces}
+              options={namespaceOptions}
               closeMenuOnSelect={true}
               closeMenuOnBlur={false}
               components={StyledNamespaceSelectComponents}
