@@ -187,6 +187,7 @@ const handleIPCListener = () => {
 
       windows.toast?.send(IpcAction.TOAST_MESSAGE, { status: ToastStatus.LOADING, title: 'Checking for updates..' })
       windows.toast?.open(false, false, true)
+
       checkForUpdatesAndNotifyWrapper()
     }
   })
