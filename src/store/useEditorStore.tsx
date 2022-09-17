@@ -75,7 +75,6 @@ export const useEditorStore = create<EditorContextType>((set, get) => ({
     set({
       fetchingContent: value
     }),
-
   loadingNodeid: null,
   setLoadingNodeid: (nodeid) =>
     set({

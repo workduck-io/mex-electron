@@ -90,6 +90,7 @@ class WindowManager {
 
   public getWindow = (windowId: string): BrowserWindow => {
     const browserWindowId = this.windowRef?.[windowId]
+
     try {
       if (browserWindowId) return BrowserWindow.fromId(browserWindowId)
     } catch (err) {

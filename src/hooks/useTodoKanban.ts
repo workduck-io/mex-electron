@@ -240,8 +240,10 @@ export const useTodoKanban = () => {
   }
 
   const getTodoBoard = () => {
+    // * Existing Todos
     const nodetodos = useTodoStore.getState().todos
     const extra = getSearchExtra()
+
     const todoBoard: TodoKanbanBoard = {
       columns: [
         {
@@ -261,10 +263,13 @@ export const useTodoKanban = () => {
         }
       ]
     }
+
     const currentFilters = useKanbanFilterStore.getState().currentFilters
+
     Object.entries(nodetodos).forEach(([nodeid, todos]) => {
       if (nodeid.startsWith(SNIPPET_PREFIX)) return
       if (isInArchive(nodeid)) return
+
       todos
         .filter((todo) =>
           currentFilters.length > 0

@@ -19,7 +19,7 @@ const AuthRoute: React.FC<MexRouteProps> = ({ component: Component, redirectTo }
   if (showLoader) return <FullPageLoader />
 
   if (authenticated) {
-    return <Navigate to={redirectTo || `${ROUTE_PATHS.node}/${nodeid}`} />
+    return <Navigate to={redirectTo || `${ROUTE_PATHS.tasks}`} />
   }
 
   return <Component />

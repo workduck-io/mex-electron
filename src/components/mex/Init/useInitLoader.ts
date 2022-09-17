@@ -4,6 +4,7 @@ import { useApi } from '@apis/useSaveApi'
 import { useActionsPerfomerClient } from '@components/spotlight/Actions/useActionPerformer'
 import useActions from '@components/spotlight/Actions/useActions'
 import useArchive from '@hooks/useArchive'
+import useEntityAPIs from '@hooks/useEntityAPIs'
 import { useFetchShareData } from '@hooks/useFetchShareData'
 import useLoad from '@hooks/useLoad'
 import { useNodes } from '@hooks/useNodes'
@@ -31,10 +32,10 @@ export const useInitLoader = () => {
   const { logout } = useAuthentication()
   const { fetchShareData } = useFetchShareData()
   const { initPortals } = usePortals()
-
+  const { getAllTodosOfWorkspace } = useEntityAPIs()
   const backgroundFetch = async () => {
     try {
-      runBatch<any>([fetchShareData(), getArchiveNotesHierarchy()])
+      runBatch<any>([fetchShareData(), getArchiveNotesHierarchy(), getAllTodosOfWorkspace()])
     } catch (err) {
       mog('Background fetch failed')
     }

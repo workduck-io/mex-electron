@@ -36,6 +36,7 @@ export const TodoStatusRanks: Record<TodoStatus, number> = {
 
 export type TodosType = Record<string, Array<TodoType>> // * nodeid, todos
 
+// * Used internally
 export type TodoType = {
   id: string // * blockId
   entityId?: string

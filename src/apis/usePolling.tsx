@@ -22,21 +22,27 @@ export const usePolling = () => {
 
   useIntervalWithTimeout(
     () => {
-      fetchShareData().then(() => mog('Successfully fetched shared nodes'))
+      fetchShareData()
+        .then(() => mog('Successfully fetched shared nodes'))
+        .catch(err => mog('Unable to fetch Shared Notes', { err }))
     },
     isAuthenticated && polling.has(PollActions.shared) ? PollingInterval[PollActions.shared] : null
   )
 
   useIntervalWithTimeout(
     () => {
-      getAllBookmarks().then(() => mog('Successfully fetched bookmarks'))
+      getAllBookmarks()
+        .then(() => mog('Successfully fetched bookmarks'))
+        .catch(err => mog('Unable to fetch bookmarks', { err }))
     },
     isAuthenticated && polling.has(PollActions.bookmarks) ? PollingInterval[PollActions.bookmarks] : null
   )
 
   useIntervalWithTimeout(
     () => {
-      getNodesByWorkspace().then(() => mog('Successfully fetched hierarchy'))
+      getNodesByWorkspace()
+        .then(() => mog('Successfully fetched hierarchy'))
+        .catch(err => mog('Unable to fetch Workspace hierarchy', { err }))
     },
     isAuthenticated && polling.has(PollActions.hierarchy) ? PollingInterval[PollActions.hierarchy] : null
   )

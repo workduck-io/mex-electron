@@ -41,7 +41,7 @@ export const StyledBoard = styled.div<{ sidebarExpanded?: boolean }>`
   }
   .react-kanban-column {
     width: ${({ sidebarExpanded, theme }) =>
-      css`calc(${KANBAN_WIDTH(sidebarExpanded)} - ${theme.additional.hasBlocks ? '1.33rem' : '0px'})`};
+    css`calc(${KANBAN_WIDTH(sidebarExpanded)} - ${theme.additional.hasBlocks ? '1.33rem' : '0px'})`};
     max-height: ${KANBAN_HEIGHT};
     overflow-y: scroll;
     overflow-x: hidden;
@@ -146,16 +146,30 @@ export const ShortcutToken = styled.div`
 `
 
 export const TaskColumnHeader = styled.div`
-  padding: ${({ theme }) => theme.spacing.small};
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: ${({ theme }) => theme.spacing.small} 0;
   margin: ${({ theme }) => theme.spacing.medium} 0 ${({ theme }) => theme.spacing.small};
+`
+
+export const TaskColumnHeaderDetails = styled.div`
+  display: flex;
+    align-items: center;
   color: ${({ theme }) => theme.colors.text.fade};
   font-size: 1.5rem;
+  gap: ${({ theme }) => `0 ${theme.spacing.medium}`};
+  
+  span {
+    color: ${({ theme }) => theme.colors.text.disabled};
+    font-size: 1rem;
+  }
 `
 
 export const TaskCard = styled.div<{ dragging: boolean; selected: boolean; sidebarExpanded?: boolean }>`
   ${TodoContainer} {
     width: ${({ sidebarExpanded, theme }) =>
-      css`calc(${KANBAN_CARD_WIDTH(sidebarExpanded)} - ${theme.additional.hasBlocks ? '1.33rem' : '0px'})`};
+    css`calc(${KANBAN_CARD_WIDTH(sidebarExpanded)} - ${theme.additional.hasBlocks ? '1.33rem' : '0px'})`};
     padding: ${({ theme }) => `${theme.spacing.tiny} ${theme.spacing.small}`};
   }
   width: ${({ sidebarExpanded, theme }) =>

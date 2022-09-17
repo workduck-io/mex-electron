@@ -3,10 +3,10 @@ import useTodoStore from '@store/useTodoStore'
 import { mog } from '@utils/lib/helper'
 
 import { client } from '@workduck-io/dwindle'
-import { TodoType } from '@workduck-io/mex-utils'
 
 import { integrationURLs } from '../apis/routes'
 import { Service, SyncBlockTemplate } from '../editor/Components/SyncBlock'
+import { TodoType } from '../editor/Components/Todo/types'
 import { useAuthStore } from '../services/auth/useAuth'
 import useDataStore from '../store/useDataStore'
 import { useEditorStore } from '../store/useEditorStore'
@@ -30,6 +30,7 @@ export const useUpdater = () => {
   const setMetadata = useContentStore((store) => store.setMetadata)
   const getNoteContent = useContentStore((store) => store.getContent)
   const replaceContent = useEditorStore((store) => store.loadNodeAndReplaceContent)
+
   const getWorkspaceId = useAuthStore((store) => store.getWorkspaceId)
   const add2Buffer = useBufferStore((s) => s.add)
 
@@ -70,7 +71,6 @@ export const useUpdater = () => {
 
     if (nodeContent.content) {
       const todosToReplace = [...todos]
-
       const newContent = nodeContent.content?.map((block) => {
         const todoIndex = todosToReplace?.findIndex((td) => td.entityId === block.entityId)
         if (todoIndex >= 0) {

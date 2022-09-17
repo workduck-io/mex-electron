@@ -1,12 +1,13 @@
 import { getMentionsFromContent, getTagsFromContent } from '@utils/lib/content'
+import { produce } from 'immer'
 import create from 'zustand'
 import { devtools } from 'zustand/middleware'
+
 import { defaultContent, getDefaultTodo } from '../data/Defaults/baseData'
 import { TodoType, TodoStatus, PriorityType, TodosType } from '../editor/Components/Todo/types'
 import { useReminderStore } from '../hooks/useReminders'
 import { NodeEditorContent } from '../types/Types'
 import { convertContentToRawText } from '../utils/search/parseData'
-import { produce } from 'immer'
 
 export const createDefaultTodo = (nodeid: string, content?: NodeEditorContent): TodoType => {
   const defaultTodo = getDefaultTodo()
@@ -34,6 +35,7 @@ type TodoStoreType = {
   getTodoOfNodeWithoutCreating: (nodeid: string, todoId: string) => TodoType | undefined
   updateTodoOfNode: (nodeid: string, todo: TodoType) => void
   updateTodosOfNode: (nodeId: string, todos: Array<TodoType>) => void
+  updateTodosOfNodes: (notesWithTodos: Record<string, TodoType>) => void
   replaceContentOfTodos: (nodeid: string, todosContent: NodeEditorContent) => void
   getAllTodos: () => TodosType
   getNodeTodos: (nodeId: string) => Array<TodoType> | undefined
@@ -76,7 +78,6 @@ const useTodoStore = create<TodoStoreType>()(
 
       //   return newTodo
       // }
-
       return todo
     },
 
@@ -90,15 +91,26 @@ const useTodoStore = create<TodoStoreType>()(
           return updatedTodo || todo
         })
 
-        set(produce(draft => {
-          draft.todos[nodeId] = newTodos
-        }))
+        set(
+          produce((draft) => {
+            draft.todos[nodeId] = newTodos
+          })
+        )
       } else {
-        set(produce(draft => {
-          draft.todos[nodeId] = todos
-        }))
+        set(
+          produce((draft) => {
+            draft.todos[nodeId] = todos
+          })
+        )
       }
-
+    },
+    updateTodosOfNodes: (nodesWithTodos) => {
+      set(
+        produce((draft) => {
+          const existingTodos = draft.todos || {}
+          draft.todos = { ...existingTodos, ...nodesWithTodos }
+        })
+      )
     },
 
     getAllTodos: () => {
@@ -171,11 +183,15 @@ const useTodoStore = create<TodoStoreType>()(
         }
       })
 
-      const leftOutTodos = nTodo.filter((todo) => !nodeTodos.find((t) => t.entityId === todo.entityId && nodeid === t.nodeid))
+      const leftOutTodos = nTodo.filter(
+        (todo) => !nodeTodos.find((t) => t.entityId === todo.entityId && nodeid === t.nodeid)
+      )
 
       const reminders = useReminderStore.getState().reminders
       const setReminders = useReminderStore.getState().setReminders
-      const newReminders = reminders.filter((reminder) => !leftOutTodos.find((todo) => todo.entityId === reminder.todoid))
+      const newReminders = reminders.filter(
+        (reminder) => !leftOutTodos.find((todo) => todo.entityId === reminder.todoid)
+      )
 
       setReminders(newReminders)
       const newtodos = { ...todos, [nodeid]: nodeTodos }

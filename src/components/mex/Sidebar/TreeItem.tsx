@@ -155,7 +155,7 @@ export const RenderTreeItem = ({
           }}
         >
           <ContextMenu.Trigger asChild>
-            <StyledTreeItem
+            <StyledTreeItem 
               ref={provided.innerRef}
               selected={isItemSelected}
               isDragging={snapshot.isDragging}

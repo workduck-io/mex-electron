@@ -5,31 +5,33 @@ import TaskHeader from '@components/mex/Tasks/TaskHeader'
 import { useEnableShortcutHandler } from '@hooks/useShortcutListener'
 import { useSyncTaskViews, useViewStore } from '@hooks/useTaskViews'
 import { useTodoBuffer } from '@hooks/useTodoBuffer'
+import useTodoBufferStore from '@hooks/useTodoBufferStore'
 import { useLayoutStore } from '@store/useLayoutStore'
 import useModalStore, { ModalsType } from '@store/useModalStore'
 import { OverlaySidebarWindowWidth } from '@style/responsive'
 import { useMediaQuery } from 'react-responsive'
 import { useMatch } from 'react-router-dom'
 
-import { mog } from '@workduck-io/mex-utils'
 import { tinykeys } from '@workduck-io/tinykeys'
 
-import SearchFilters from '../../components/mex/Search/SearchFilters'
-import { Heading } from '../../components/spotlight/SearchResults/styled'
-import { getNextStatus, getPrevStatus, PriorityType, TodoType } from '../../editor/Components/Todo/types'
-import EditorPreviewRenderer from '../../editor/EditorPreviewRenderer'
-import { useNavigation } from '../../hooks/useNavigation'
-import { KanbanBoardColumn, TodoKanbanCard, useTodoKanban } from '../../hooks/useTodoKanban'
-import useTodoStore from '../../store/useTodoStore'
-import { PageContainer } from '../../style/Layouts'
-import { StyledTasksKanban, TaskCard, TaskColumnHeader } from '../../style/Todo'
-import Todo from '../../ui/components/Todo'
-import { NavigationType, ROUTE_PATHS, useRouting } from '../routes/urls'
+import SearchFilters from '../../../components/mex/Search/SearchFilters'
+import { Heading } from '../../../components/spotlight/SearchResults/styled'
+import { getNextStatus, getPrevStatus, PriorityType, TodoType } from '../../../editor/Components/Todo/types'
+import EditorPreviewRenderer from '../../../editor/EditorPreviewRenderer'
+import { useNavigation } from '../../../hooks/useNavigation'
+import { KanbanBoardColumn, TodoKanbanCard, useTodoKanban } from '../../../hooks/useTodoKanban'
+import useTodoStore from '../../../store/useTodoStore'
+import { PageContainer } from '../../../style/Layouts'
+import { StyledTasksKanban, TaskCard } from '../../../style/Todo'
+import Todo from '../../../ui/components/Todo'
+import { NavigationType, ROUTE_PATHS, useRouting } from '../../routes/urls'
+import ColumnHeader from './ColumnHeader'
 
 const Tasks = () => {
   const [selectedCard, setSelectedCard] = React.useState<TodoKanbanCard | null>(null)
   const nodesTodo = useTodoStore((store) => store.todos)
   const clearTodos = useTodoStore((store) => store.clearTodos)
+  const todosInBuffer = useTodoBufferStore((store) => store.todosBuffer)
   const sidebar = useLayoutStore((store) => store.sidebar)
   const match = useMatch(`${ROUTE_PATHS.tasks}/:viewid`)
   const currentView = useViewStore((store) => store.currentView)
@@ -66,11 +68,11 @@ const Tasks = () => {
     setGlobalJoin
   } = useTodoKanban()
 
-  const board = useMemo(() => getTodoBoard(), [nodesTodo, globalJoin, currentFilters])
+  const board = useMemo(() => getTodoBoard(), [nodesTodo, todosInBuffer, globalJoin, currentFilters])
 
   const selectedRef = useRef<HTMLDivElement>(null)
+
   const handleCardMove = (card, source, destination) => {
-    // mog('card moved', { card, source, destination })
     changeStatus(card.todo, destination.toColumnId)
   }
 
@@ -224,51 +226,37 @@ const Tasks = () => {
 
   useEffect(() => {
     const shorcutConfig = () => {
-      mog('CALLED!!', { isModalOpen })
       if (isModalOpen !== undefined) return {}
 
       return {
         Escape: (event) => {
-          enableShortcutHandler(() => {
-            event.preventDefault()
-            if (selectedCard) {
-              setSelectedCard(null)
-            }
-            // else {
-            // mog('LOAD NODE')
-            // // const nodeid = nodeUID ?? lastOpened[0] ?? baseNodeId
-            // // loadNode(nodeid)
-            // // goTo(ROUTE_PATHS.node, NavigationType.push, nodeid)
-            // }
-          })
+          event.preventDefault()
+          if (selectedCard || currentFilters.length > 0) {
+            setSelectedCard(null)
+            resetCurrentFilters()
+          } else {
+            const nodeid = nodeUID ?? lastOpened[0] ?? baseNodeId
+            loadNode(nodeid)
+            goTo(ROUTE_PATHS.node, NavigationType.push, nodeid)
+          }
         },
-
         'Shift+ArrowRight': (event) => {
-          enableShortcutHandler(() => {
-            event.preventDefault()
-            handleCardMoveNext()
-          })
+          event.preventDefault()
+          handleCardMoveNext()
         },
-
         'Shift+ArrowLeft': (event) => {
-          enableShortcutHandler(() => {
-            event.preventDefault()
-            handleCardMovePrev()
-          })
+          event.preventDefault()
+          handleCardMovePrev()
         },
-
         ArrowRight: (event) => {
-          enableShortcutHandler(() => {
-            event.preventDefault()
-            selectNewCard('right')
-          })
+          event.preventDefault()
+          if (isOnSearchFilter()) return
+          selectNewCard('right')
         },
-
         ArrowLeft: (event) => {
-          enableShortcutHandler(() => {
-            event.preventDefault()
-            selectNewCard('left')
-          })
+          event.preventDefault()
+          if (isOnSearchFilter()) return
+          selectNewCard('left')
         },
         Enter: (event) => {
           event.preventDefault()
@@ -279,34 +267,29 @@ const Tasks = () => {
           }
         },
         ArrowDown: (event) => {
-          enableShortcutHandler(() => {
-            event.preventDefault()
-            selectNewCard('down')
-          })
+          event.preventDefault()
+          if (isOnSearchFilter()) return
+          selectNewCard('down')
         },
 
         ArrowUp: (event) => {
-          enableShortcutHandler(() => {
-            event.preventDefault()
-            selectNewCard('up')
-          })
+          event.preventDefault()
+          if (isOnSearchFilter()) return
+          selectNewCard('up')
         },
 
         '$mod+1': (event) => {
           event.preventDefault()
           changeSelectedPriority(PriorityType.low)
         },
-
         '$mod+2': (event) => {
           event.preventDefault()
           changeSelectedPriority(PriorityType.medium)
         },
-
         '$mod+3': (event) => {
           event.preventDefault()
           changeSelectedPriority(PriorityType.high)
         },
-
         '$mod+0': (event) => {
           event.preventDefault()
           changeSelectedPriority(PriorityType.noPriority)
@@ -356,10 +339,11 @@ const Tasks = () => {
 
   const RenderCard = ({ id, todo }: { id: string; todo: TodoType }, { dragging }: { dragging: boolean }) => {
     const pC = getPureContent(todo)
-    // mog('RenderTodo', { id, todo, dragging, sidebar })
+
     return (
       <TaskCard
         ref={selectedCard && id === selectedCard.id ? selectedRef : null}
+        key={id}
         selected={selectedCard && selectedCard.id === id}
         dragging={dragging}
         sidebarExpanded={sidebar.show && sidebar.expanded && !overlaySidebar}
@@ -406,7 +390,7 @@ const Tasks = () => {
           setGlobalJoin={setGlobalJoin}
         />
         <Board
-          renderColumnHeader={({ title }) => <TaskColumnHeader>{title}</TaskColumnHeader>}
+          renderColumnHeader={ColumnHeader}
           disableColumnDrag
           onCardDragEnd={handleCardMove}
           renderCard={RenderCard}

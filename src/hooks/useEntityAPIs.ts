@@ -1,12 +1,14 @@
 import { apiURLs } from '@apis/routes'
-import { useAuthStore } from '@services/auth/useAuth'
-import { NodeEditorContent } from '../types/Types'
-import { client } from '@workduck-io/dwindle'
 import { TodoType } from '@editor/Components/Todo/types'
-import { mog } from '@utils/lib/helper'
-import { getTodosFromContent } from '@utils/lib/content'
+import { useAuthStore } from '@services/auth/useAuth'
 import useTodoStore from '@store/useTodoStore'
+import { getTodosFromContent } from '@utils/lib/content'
+import { mog } from '@utils/lib/helper'
 import { deserializeTodos, serializeTodo } from '@utils/lib/serialize'
+
+import { client } from '@workduck-io/dwindle'
+
+import { NodeEditorContent } from '../types/Types'
 import { useUpdater } from './useUpdater'
 
 type UpdateTodosType = {
@@ -15,10 +17,20 @@ type UpdateTodosType = {
   content?: NodeEditorContent
   properties?: Record<string, any>
   type?: 'UPDATE' | 'DELETE'
+  created?: string
+  modified?: string
+}
+
+type TaskEntityResponseType = {
+  Items: Record<string, UpdateTodosType> | Array<UpdateTodosType>
+  Failed?: Array<{ nodeid: string; reason: string }>
+  lastKey?: string
 }
 
 const useEntityAPIs = () => {
   const updateTodosOfNode = useTodoStore((store) => store.updateTodosOfNode)
+  const updateTodosOfNodes = useTodoStore((store) => store.updateTodosOfNodes)
+
   const { updateTodoInContent } = useUpdater()
 
   const fetchAllEntitiesOfNote = async (noteId: string, content: NodeEditorContent) => {
@@ -34,6 +46,48 @@ const useEntityAPIs = () => {
     }
   }
 
+  // * Delete Todo
+  const deleteTodo = async (entityId: string): Promise<void> => {
+    const workspaceId = useAuthStore.getState().getWorkspaceId()
+
+    if (workspaceId) {
+      await client.delete(apiURLs.deleteTodo(entityId), {
+        headers: {
+          'mex-workspace-id': workspaceId
+        }
+      })
+    }
+  }
+
+  const getTodosOfNotes = async (noteIds: Array<string>): Promise<TaskEntityResponseType> => {
+    const workspaceId = useAuthStore.getState().getWorkspaceId()
+
+    if (workspaceId) {
+      const reqBody = {
+        nodes: noteIds
+      }
+
+      const res = await client.post<TaskEntityResponseType>(apiURLs.batchGetTasksOfNotes, reqBody, {
+        headers: workspaceId
+      })
+
+      if (res?.data) {
+        const notesWithTasks = res.data.Items
+        if (notesWithTasks) {
+          const deserializedNotesWithTodos = Object.entries(notesWithTasks).reduce((prev, current) => {
+            prev[current[0]] = current[1]
+            return prev
+          }, {})
+
+          mog('tasks to store', { deserializedNotesWithTodos })
+          updateTodosOfNodes(deserializedNotesWithTodos)
+        }
+
+        return res.data
+      }
+    }
+  }
+
   // * Todo Entity
   const updateTodos = async (todos: Array<UpdateTodosType>): Promise<any> => {
     const workspaceId = useAuthStore.getState().getWorkspaceId()
@@ -41,7 +95,6 @@ const useEntityAPIs = () => {
     if (workspaceId) {
       const res = await client.post(apiURLs.batchUpdateTodos, todos, {
         headers: {
-          Accept: 'application/json, text/plain, */*',
           'mex-workspace-id': workspaceId
         }
       })
@@ -58,7 +111,6 @@ const useEntityAPIs = () => {
     if (workspaceId) {
       const res = await client.get(apiURLs.getTodosOfNote(noteId), {
         headers: {
-          Accept: 'application/json, text/plain, */*',
           'mex-workspace-id': workspaceId
         }
       })
@@ -86,7 +138,7 @@ const useEntityAPIs = () => {
 
       if (res && res.status === 200) {
         const todos = deserializeTodos([res.data])
-        mog('todos', { todos })
+        // mog('todos', { todos })
         return todos[0]
       }
     }
@@ -103,25 +155,32 @@ const useEntityAPIs = () => {
         }
       })
 
-      if (res) {
+      if (res?.data) {
         return res.data
       }
     }
   }
 
-  const getAllTodosOfWorkspace = async (): Promise<Array<UpdateTodosType> | undefined> => {
+  const getAllTodosOfWorkspace = async (lastKey?: string): Promise<Array<TodoType>> => {
     const workspaceId = useAuthStore.getState().getWorkspaceId()
 
     if (workspaceId) {
-      const res = await client.get<Array<UpdateTodosType>>(apiURLs.getTodosOfWorkspace, {
+      const url = lastKey ? `${apiURLs.getTodosOfWorkspace}?lastKey=${lastKey}` : apiURLs.getTodosOfWorkspace
+      const res = await client.get<TaskEntityResponseType>(url, {
         headers: {
-          Accept: 'application/json, text/plain, */*',
           'mex-workspace-id': workspaceId
         }
       })
 
-      if (res) {
-        return res.data
+      if (res?.data) {
+        const items = deserializeTodos(res.data.Items)
+
+        if (items.length > 0 && res.data.lastKey) {
+          const data = await getAllTodosOfWorkspace(res.data.lastKey)
+          items.push(...data)
+        }
+
+        return items
       }
     }
   }
@@ -131,6 +190,8 @@ const useEntityAPIs = () => {
     getAllTodosOfWorkspace,
     getTodo,
     createTodo,
+    getTodosOfNotes,
+    deleteTodo,
     getNoteTodos,
     fetchAllEntitiesOfNote
   }

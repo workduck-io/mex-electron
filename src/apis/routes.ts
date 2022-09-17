@@ -47,7 +47,7 @@ export const apiURLs = {
   saveNode: `${API_URL}/node`,
   bulkSaveNodes: `${API_URL}/node/bulk`,
   getNode: (nodeid: string) => `${API_URL}/node/${nodeid}`,
-
+  getNodes: `${API_URL}/node/ids`,
   // * User Preference
   // getUserPreferences: (userId: string) => `${BASE_API_URL}/userPreference/all/${userId}`,
   // getPreference: (userId: string, preferenceType: string) =>
@@ -77,8 +77,9 @@ export const apiURLs = {
   createTodo: () => `${ENTITIES_API.task}`,
   getTodosOfWorkspace: `${ENTITIES_API.task}/all/workspace`,
   getTodosOfNote: (noteId: string) => `${ENTITIES_API.task}/all/node/${noteId}`,
-  batchUpdateTodos: `${ENTITIES_API.task}/batch`,
-  batchGetTasksOfNoes: `${ENTITIES_API.task}/getBatch`,  // * POST Request
+  deleteTodo: (entityId: string) => `${ENTITIES_API.task}/${entityId}`,
+  batchUpdateTodos: `${ENTITIES_API.task}/batch/update`,
+  batchGetTasksOfNotes: `${ENTITIES_API.task}/batch/get`, // * POST Request
 
   // * Loch
   getLochServices: () => `${MEX_LOCH_BASE_URL}/connect/all`,

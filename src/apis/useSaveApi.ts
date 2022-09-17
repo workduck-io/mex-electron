@@ -44,6 +44,8 @@ export const useApi = () => {
   const { getSharedNode } = useNodes()
   const { addLastOpened } = useLastOpened()
   const addInArchive = useDataStore((store) => store.addInArchive)
+
+  const { getTodosOfNotes } = useEntityAPIs()
   const setILinks = useDataStore((store) => store.setIlinks)
   const setNamespaces = useDataStore((s) => s.setNamespaces)
   const setArchive = useDataStore((state) => state.setArchive)
@@ -316,6 +318,23 @@ export const useApi = () => {
     if (meta?.[nodeid]?.publicAccess) return apiURLs.getNotePublicURL(nodeid)
   }
 
+  const getNotesDataAPI = async (noteIds: Array<string>) => {
+    try {
+      const reqBody = {
+        nodes: noteIds
+      }
+
+      const res = await client.post(apiURLs.getNodes, reqBody, { headers: workspaceHeaders() })
+
+      if (res) {
+        const data = res.data
+        return data
+      }
+    } catch (e) {
+      mog('MexError: Fetching notes failed', { e })
+    }
+  }
+
   const getDataAPI = async (
     nodeid: string,
     { isRefresh = false, isShared = false, isUpdate = true, withEntities = true }: GetDataTypeOptions
@@ -355,7 +374,6 @@ export const useApi = () => {
         if (d.data) {
           const hierarchy = d.data.hierarchy || {}
           const nodesMetadata = d.data.nodesMetadata || {}
-
           const parsedHierarchies = allNamespacesHierarchyParser(hierarchy)
 
           // We create the list of nodes with their respective namespaces
@@ -388,19 +406,24 @@ export const useApi = () => {
             const localILinks = useDataStore.getState().ilinks
             const { toUpdateLocal } = iLinksToUpdate(localILinks, nodes)
 
-            runBatch(
-              toUpdateLocal.map((ilink) =>
-                getDataAPI(ilink.nodeid, { isUpdate: true, isRefresh: true, withEntities: true })
+            if (toUpdateLocal.length > 0) {
+              const noteIds = toUpdateLocal.map((n) => n.nodeid)
+
+              getTodosOfNotes(noteIds)
+
+              // * Use this after NAMESPACES
+              // getNotesDataAPI(noteIds)
+
+              // * Remove this after NAMESPACES
+              await runBatch(
+                noteIds.map((noteId) => getDataAPI(noteId, { isUpdate: true, isRefresh: true, withEntities: false }))
               )
-            )
+            }
+
+            setILinks(nodes)
+
+            return nodes
           }
-
-          // setNamespaces(namespaces)
-          setILinks(nodes)
-
-          // mog('Name the spaces', { namespaces, nodes })
-
-          return nodes
         }
       })
       .catch((e) => {
@@ -408,7 +431,7 @@ export const useApi = () => {
         return []
       })
 
-    return data
+    return []
   }
 
   const getGoogleAuthUrl = async () => {

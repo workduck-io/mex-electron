@@ -4,6 +4,7 @@ import { mog } from '../../utils/lib/helper'
 
 export const clientInterceptor = client.interceptors.response.use(
   async (response) => {
+    mog("RESPONSE is", { response })
     const setRequest = useApiStore.getState().setRequest
     // mog(`setRequest { ${response.config.url ?? 'Unspecified URL'} }`)
     setRequest(response.config.url, {
@@ -11,6 +12,7 @@ export const clientInterceptor = client.interceptors.response.use(
       time: Date.now(),
       method: response.config.method
     })
+
     return response
   },
   (error) => {

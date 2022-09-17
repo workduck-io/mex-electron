@@ -116,9 +116,9 @@ export const createNoteWindow = (dataForPreviewWindow: { from: AppType; data: an
     onClose: () => {
       windowManager.sendToWindow(AppType.MEX, IpcAction.UNPIN_NOTE, { noteId: dataForPreviewWindow?.data?.noteId })
     },
-    handleCloseManually: (noteWindow => {
+    handleCloseManually: (noteWindow) => {
       noteWindow?.webContents?.send(IpcAction.SAVE_AND_QUIT, { noteId: dataForPreviewWindow?.data?.noteId })
-    }),
+    },
     deleteOnClose: true,
     alwaysOnTop: true,
     onLoad: (window) => {
@@ -143,6 +143,7 @@ export const createMexWindow = (onLoad?: (window: BrowserWindow) => void) => {
     handleCloseManually: (window) => {
       window.webContents.send(IpcAction.SAVE_AND_QUIT)
     },
+    onLoadShow: true,
     onLoad: (window) => {
       if (onLoad) onLoad(window)
     },
