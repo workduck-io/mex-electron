@@ -89,11 +89,10 @@ export const syncStoreState = <T extends State, K extends keyof T>(
         lastSyncedStateTimestamp = incomingEventUpdatedAt
 
         Object.entries(incomingEventState)?.map(([key, value]) => {
-          if (value?.state)
-            store.setState((prev) => ({
-              ...prev,
-              [key]: value?.atomicField ? { ...prev[key], [value.atomicField]: value.state } : value.state
-            }))
+          store.setState((prev) => ({
+            ...prev,
+            [key]: value?.atomicField ? { ...prev[key], [value.atomicField]: value.state } : value.state
+          }))
         })
       }
     }
