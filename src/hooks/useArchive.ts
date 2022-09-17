@@ -13,6 +13,7 @@ import { runBatch } from '@utils/lib/batchPromise'
 import { useApi } from '@apis/useSaveApi'
 import { useContentStore } from '@store/useContentStore'
 import { useSearch } from './useSearch'
+import { getTitleFromPath } from './useLinks'
 
 const useArchive = () => {
   const setArchive = useDataStore((state) => state.setArchive)
@@ -62,7 +63,7 @@ const useArchive = () => {
     if (userCred) {
       return await client
         .put(
-          apiURLs.archiveNodes(),
+          apiURLs.archiveInNamesapce(namespaceID),
           {
             ids: nodes.map((i) => i.nodeid)
           },
@@ -74,20 +75,34 @@ const useArchive = () => {
           }
         )
         .then((d) => {
-          const { archivedHierarchy } = d.data
-          mog('archivedHierarchy', { archivedHierarchy })
+          // We only get the data for archived nodeids in this response
 
-          if (archivedHierarchy) {
-            const addedArchivedLinks = hierarchyParser(archivedHierarchy, namespaceID, {
-              withParentNodeId: true,
-              allowDuplicates: true
-            })
+          const archivedNodeids = d.data
 
-            if (addedArchivedLinks) {
-              // * set the new hierarchy in the tree
-              setArchive(addedArchivedLinks)
-            }
+          mog('Archived Nodes', { archivedNodeids, d })
+          if (archivedNodeids && archivedNodeids?.length > 0) {
+            const archivedNodes = nodes
+              .filter((n) => archivedNodeids.includes(n.nodeid))
+              .map((n) => ({ ...n, path: getTitleFromPath(n.path) }))
+            addInArchive(archivedNodes)
           }
+          // TODO: Once middleware is setup, use returned hierarchy to update the archived notes
+          // const { archivedHierarchy } = d.data
+          // mog('archivedHierarchy', { archivedHierarchy })
+
+          // if (archivedHierarchy) {
+          //   const addedArchivedLinks = hierarchyParser(archivedHierarchy, namespaceID, {
+          //     withParentNodeId: true,
+          //     allowDuplicates: true
+          //   })
+
+          //   if (addedArchivedLinks) {
+          //     // * set the new hierarchy in the tree
+
+          //     mog('addedArchivedLinks', { addedArchivedLinks })
+          //     setArchive(addedArchivedLinks)
+          //   }
+          // }
         })
         .then(() => {
           return true

@@ -111,7 +111,7 @@ export const TreeContextMenu = ({ item }: TreeContextMenuProps) => {
   }
 
   const handleArchive = (item: TreeItem) => {
-    openDeleteModal(item.data.path)
+    openDeleteModal({ path: item.data.path, namespaceID: item.data.namespace })
   }
 
   const handleCreateChild = (item: TreeItem) => {
@@ -221,9 +221,9 @@ export const TreeContextMenu = ({ item }: TreeContextMenuProps) => {
 
           <ContextMenuItem
             color="#df7777"
-            disabled
+            // disabled
             onSelect={(args) => {
-              // handleArchive(item)
+              handleArchive(item)
             }}
           >
             <Icon icon={archiveLine} />

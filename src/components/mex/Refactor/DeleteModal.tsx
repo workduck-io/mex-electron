@@ -16,6 +16,7 @@ import { NavigationType, ROUTE_PATHS, useRouting } from '../../../views/routes/u
 import { QuickLink, WrappedNodeSelect } from '../NodeSelect/NodeSelect'
 import { DeleteIcon, MockRefactorMap, ModalControls, ModalHeader, MRMHead, MRMRow } from './styles'
 import { RefactorPath } from './types'
+import { mog } from '@workduck-io/mex-utils'
 
 interface DeleteStoreState {
   open: boolean
@@ -117,7 +118,7 @@ const Delete = () => {
   // const { del, mockData, open } = deleteState
   useEffect(() => {
     if (del && !isReserved(del.path)) {
-      setMockRefactored(getMockArchive(del.path).archivedNodes.map((item) => item.path))
+      setMockRefactored(getMockArchive(del).archivedNodes.map((item) => item.path))
     }
   }, [del])
 

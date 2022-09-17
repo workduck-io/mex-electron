@@ -249,7 +249,9 @@ const useDataStore = create<DataStoreState>(
       clear: () => set({ baseNodeId: 'doc' }),
 
       addInArchive: (archive) => {
-        const userArchive = [...get().archive, ...archive]
+        const prevArchive = get().archive
+        const prevNodeids = prevArchive.map((a) => a.nodeid)
+        const userArchive = [...prevArchive, ...archive.filter((a) => !prevNodeids.includes(a.nodeid))]
         set({ archive: userArchive })
       },
 

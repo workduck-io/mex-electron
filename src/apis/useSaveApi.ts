@@ -42,6 +42,7 @@ export const useApi = () => {
   const { getTitleFromNoteId, updateILinks } = useLinks()
   const { getSharedNode } = useNodes()
   const { addLastOpened } = useLastOpened()
+  const addInArchive = useDataStore((store) => store.addInArchive)
   const setILinks = useDataStore((store) => store.setIlinks)
   const setNamespaces = useDataStore((s) => s.setNamespaces)
   const setArchive = useDataStore((state) => state.setArchive)
@@ -604,7 +605,7 @@ export const useApi = () => {
               })
             )
           ).then(() => {
-            setArchive(archivedNotes)
+            addInArchive(archivedNotes)
           })
         }
       })
