@@ -82,15 +82,15 @@ export const getListItemFromAction = (config: ActionHelperConfig, actionGroup: A
 export const getListItemFromSnippet = (snippet: Snippet) => {
   const rawText = convertContentToRawText(snippet?.content ?? [], ' ')
   const listItem: ListItemType = {
-    icon: snippet.icon ?? 'ri:quill-pen-line',
-    title: snippet.title,
-    id: snippet.id,
+    icon: snippet?.icon ?? 'ri:quill-pen-line',
+    title: snippet?.title,
+    id: snippet?.id,
     description: rawText,
     type: QuickLinkType.snippet,
     category: CategoryType.backlink,
     extras: {
-      nodeid: snippet.id,
-      path: snippet.title
+      nodeid: snippet?.id,
+      path: snippet?.title
     },
     shortcut: {
       copy: {

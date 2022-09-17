@@ -339,7 +339,7 @@ export const useApi = () => {
       .get(apiURLs.namespaces.getHierarchy, {
         headers: workspaceHeaders()
       })
-      .then((d) => {
+      .then(async (d) => {
         if (d.data) {
           const hierarchy = d.data.hierarchy || {}
           const nodesMetadata = d.data.nodesMetadata || {}
@@ -376,7 +376,7 @@ export const useApi = () => {
             const localILinks = useDataStore.getState().ilinks
             const { toUpdateLocal } = iLinksToUpdate(localILinks, nodes)
 
-            runBatch(toUpdateLocal.map((ilink) => getDataAPI(ilink.nodeid)))
+            await runBatch(toUpdateLocal.map((ilink) => getDataAPI(ilink.nodeid)))
             // ipcRenderer.send(IpcAction.UPDATE_ILINKS, { ilinks: nodes }) // * Synced
           }
 
