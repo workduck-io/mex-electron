@@ -41,6 +41,7 @@ const Header = ({ space }: { space: SidebarSpace }) => {
 
   const onChangeName = (name: string) => {
     // mog('onChangeName', { name })
+    if (!name) return
     const namespaceNames = useDataStore
       .getState()
       .namespaces.filter((ns) => ns.id !== space.id)

@@ -191,7 +191,7 @@ export const useFilters = <Item>() => {
 
     const rankedNamespaces = filteredItems.reduce((acc, item) => {
       const node = getILinkFromNodeid(item.id, true)
-      const { namespace } = node
+      const namespace = node?.namespace
 
       if (namespace) {
         if (!acc[namespace]) {
