@@ -16,6 +16,7 @@ import { hierarchyParser } from './useHierarchy'
 import { getTitleFromPath } from './useLinks'
 import { useSaveData } from './useSaveData'
 import { useSearch } from './useSearch'
+import { getTitleFromPath } from './useLinks'
 
 const useArchive = () => {
   const setArchive = useDataStore((state) => state.setArchive)
