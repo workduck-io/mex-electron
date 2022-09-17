@@ -1,7 +1,7 @@
 import { IS_DEV } from '@data/Defaults/dev_'
 import { IpcAction } from '@data/IpcAction'
 import { mog } from '@utils/lib/helper'
-import { BrowserWindow, shell } from 'electron'
+import { app, BrowserWindow, shell } from 'electron'
 
 import { WindowOptions } from '../types/window.types'
 
@@ -65,6 +65,7 @@ class WindowManager {
     if (options.alwaysOnTop) {
       window.setAlwaysOnTop(true, 'modal-panel', 100)
       window.setVisibleOnAllWorkspaces(true, { visibleOnFullScreen: true })
+      app.dock.show()
     }
 
     return window

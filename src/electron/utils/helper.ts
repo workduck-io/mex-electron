@@ -111,7 +111,6 @@ export const createNoteWindow = (dataForPreviewWindow: { from: AppType; data: an
       ? import.meta.env.VITE_NOTE_WINDOW_DEV_SERVER_URL
       : new URL('dist/note.html', 'file://' + __dirname).toString()
 
-  app.dock.show()
   windowManager.createWindow(dataForPreviewWindow?.data?.noteId, {
     windowConstructorOptions: PINNED_NOTES_WINDOW_OPTIONS,
     loadURL: { url: noteWindow },
