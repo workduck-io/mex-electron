@@ -35,7 +35,7 @@ export const useNamespaces = () => {
     //   label: SHARED_NAMESPACE.name
     // })
     return {
-      namespaceOptions,
+      namespaces,
       defaultNamespace: defaultNamespace
         ? {
             ...defaultNamespace,
