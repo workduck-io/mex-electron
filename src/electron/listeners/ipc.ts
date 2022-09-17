@@ -14,6 +14,7 @@ import {
   closeWindow,
   createMexWindow,
   createNoteWindow,
+  createSpotLighWindow,
   handleToggleMainWindow,
   notifyOtherWindow
 } from '@electron/utils/helper'
@@ -81,7 +82,7 @@ const handleIPCListener = () => {
 
   ipcMain.on(IpcAction.USE_SNIPPET, (event, arg) => {
     const { data, from } = arg
-    windowManager.getWindow(from).hide()
+    windowManager.getWindow(from)?.hide()
     app.hide()
     useSnippetFromClipboard(data.text, data.html)
   })
@@ -91,7 +92,13 @@ const handleIPCListener = () => {
     copyToClipboard(data.text, data.html)
 
     if (!data?.hideToast) {
-      windows?.toast?.setParent(from)
+      let spotlightRef = windowManager.getWindow(AppType.SPOTLIGHT)
+
+      if (!spotlightRef) {
+        spotlightRef = createSpotLighWindow()
+      }
+
+      if (spotlightRef) windows?.toast?.setParent(spotlightRef)
       windows?.toast?.send(IpcAction.TOAST_MESSAGE, { status: ToastStatus.SUCCESS, title: data.title })
       windows?.toast?.open()
     }
@@ -162,9 +169,17 @@ const handleIPCListener = () => {
 
   ipcMain.on(IpcAction.CHECK_FOR_UPDATES, (_event, arg) => {
     if (arg.from === AppType.SPOTLIGHT) {
-      windows.toast?.setParent(windowManager.getWindow(AppType.SPOTLIGHT))
+      let spotlightRef = windowManager.getWindow(AppType.SPOTLIGHT)
+
+      if (!spotlightRef) {
+        spotlightRef = createSpotLighWindow()
+      }
+
+      if (spotlightRef) windows.toast?.setParent(spotlightRef)
+
       windows.toast?.send(IpcAction.TOAST_MESSAGE, { status: ToastStatus.LOADING, title: 'Checking for updates..' })
       windows.toast?.open(false, false, true)
+
       checkForUpdatesAndNotifyWrapper()
     }
   })
