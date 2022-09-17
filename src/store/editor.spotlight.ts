@@ -25,7 +25,7 @@ export type SpotlightEditorStoreType = {
 }
 
 export const useSpotlightEditorStore = create<SpotlightEditorStoreType>((set, get) => ({
-  node: createNodeWithUid(getNewDraftKey()),
+  node: createNodeWithUid(getNewDraftKey(), ''),
   preview: INIT_PREVIEW,
   setPreview: (val) => set({ preview: val }),
   isSelection: false,

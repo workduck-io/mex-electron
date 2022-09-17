@@ -16,10 +16,10 @@ export const SidebarSpaceComponent = ({ space, style }: AnimatedProps<SidebarSpa
       <Header space={space} />
       {
         {
-          hierarchy: space.list.type === 'hierarchy' && (
-            <MexTree items={space.list.items} spaceId={space.id} filterText="Filter Notes" />
+          hierarchy: space?.list?.type === 'hierarchy' && (
+            <MexTree items={space?.list?.items} spaceId={space?.id} filterText="Filter Notes" />
           ),
-          flat: space.list.type === 'flat' && <space.list.renderItems />
+          flat: space?.list?.type === 'flat' && <space.list.renderItems />
         }[space.list.type]
       }
     </SingleSpace>
