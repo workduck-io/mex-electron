@@ -248,7 +248,7 @@ export const useTodoKanban = () => {
         })
         .forEach((todo) => {
           todoBoard.columns
-            .find((column) => column.id === todo.metadata.status)
+            .find((column) => column.id === todo?.metadata?.status)
             ?.cards.push({
               id: `KANBAN_ID_${todo.nodeid}_${todo.id}`,
               todo: todo
@@ -261,7 +261,7 @@ export const useTodoKanban = () => {
 
     todoBoard.columns.forEach((column) => {
       column.cards.sort((a, b) => {
-        if (TodoRanks[a.todo.metadata.priority] < TodoRanks[b.todo.metadata.priority]) return 1
+        if (TodoRanks[a.todo?.metadata?.priority] < TodoRanks[b.todo?.metadata?.priority]) return 1
         else return -1
       })
     })
