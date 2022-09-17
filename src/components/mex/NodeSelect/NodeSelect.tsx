@@ -249,7 +249,7 @@ function NodeSelect({
     }))
 
   const quickLinks = getQuickLinks()
-  const { namespaceOptions, defaultNamespace } = getNamespaceOptions()
+  const { namespaces: namespaceOptions, defaultNamespace } = getNamespaceOptions()
   const namespaces = useDataStore((state) => state.namespaces)
 
   const lastOpened = useRecentsStore((store) => store.lastOpened)

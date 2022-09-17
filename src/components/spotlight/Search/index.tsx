@@ -113,7 +113,7 @@ const Search = () => {
   const disabled = !normalMode || !!view || isActionMenuOpen
   const { mexIcon } = getIconType((icon as string) ?? 'codicon:circle-filled')
 
-  const { namespaceOptions, defaultNamespace } = getNamespaceOptions()
+  const { namespaces: namespaceOptions, defaultNamespace } = getNamespaceOptions()
 
   // The current item should be create new and there should be some input value
 
