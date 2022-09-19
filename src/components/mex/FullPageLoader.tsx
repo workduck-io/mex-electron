@@ -1,7 +1,8 @@
 import React from 'react'
-import styled from 'styled-components'
-import Lottie from 'lottie-react'
+
 import { loader } from '@components/spotlight/ActionStage/Performers/loader'
+import Lottie from 'lottie-react'
+import styled from 'styled-components'
 
 const OverlayLoader = styled.div`
   position: absolute;
