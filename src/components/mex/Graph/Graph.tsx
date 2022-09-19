@@ -1,13 +1,16 @@
+import { ForceGraph2D, ForceGraph3D } from 'react-force-graph'
 import equal from 'fast-deep-equal'
 import React, { useEffect, useState } from 'react'
 import Graph from 'react-vis-network-graph'
-import { useLinks } from '../../../hooks/useLinks'
+import { getTitleFromPath, useLinks } from '../../../hooks/useLinks'
 import { useNavigation } from '../../../hooks/useNavigation'
 import { useGraphStore } from '../../../store/useGraphStore'
 import { InfobarFull, InfobarTools } from '../../../style/infobar'
 import Switch from '../Forms/Switch'
 import { GraphWrapper } from './Graph.styles'
 import NodePreview from './NodePreview'
+import SpriteText from 'three-spritetext'
+import { useTheme } from 'styled-components'
 
 /* eslint-disable @typescript-eslint/no-explicit-any */
 const options = {
@@ -63,9 +66,15 @@ export const TreeGraph = (props: TreeGraphProps) => {
   const toggleLocal = useGraphStore((state) => state.toggleLocal)
   const [network, setNetwork] = useState<any>()
 
+  const theme = useTheme()
+
   const [state, setState] = useState({
     counter: showLocal ? -graphData.nodes.length : graphData.nodes.length,
-    graph: graphData
+    graph: graphData,
+    dimensions: {
+      height: 0,
+      width: 0
+    }
   })
 
   useEffect(() => {
@@ -80,8 +89,10 @@ export const TreeGraph = (props: TreeGraphProps) => {
     })
   }, [graphData]) // eslint-disable-line react-hooks/exhaustive-deps
 
+  const wrapperRef = React.useRef<HTMLDivElement>(null)
+
   const { graph } = state
-  // console.log('Graph', { graph });
+  console.log('Graph', { graph })
   const events = {
     click: ({ nodes }: any) => {
       if (nodes.length === 1) {
@@ -123,6 +134,47 @@ export const TreeGraph = (props: TreeGraphProps) => {
     // }
   }
 
+  const getColor = (n) => '#' + ((n * 1234567) % Math.pow(2, 24)).toString(16).padStart(6, '0')
+  const nodePaint = (node, color, ctx) => {
+    const { id, x, y } = node
+    ctx.fillStyle = color
+    // ;[
+    //   () => {
+    //     ctx.fillRect(x - 6, y - 4, 12, 8)
+    //   }, // rectangle
+    //   () => {
+    //     ctx.beginPath()
+    //     ctx.moveTo(x, y - 5)
+    //     ctx.lineTo(x - 5, y + 5)
+    //     ctx.lineTo(x + 5, y + 5)
+    //     ctx.fill()
+    //   }, // triangle
+    // () => {
+    ctx.beginPath()
+    ctx.arc(x, y, 5, 0, 2 * Math.PI, false)
+    ctx.fill()
+    // }, // circle
+    // () => {
+    // ctx.font = '10px Sans-Serif'
+    // ctx.textAlign = 'center'
+    // ctx.textBaseline = 'middle'
+    // ctx.fillText(node.path, x, y)
+    // } // text
+    // ][id % 4]()
+  }
+
+  useEffect(() => {
+    if (wrapperRef.current) {
+      setState((prevState) => ({
+        ...prevState,
+        dimensions: {
+          height: wrapperRef.current.clientHeight,
+          width: wrapperRef.current.clientWidth
+        }
+      }))
+    }
+  }, [wrapperRef.current])
+
   return (
     <InfobarFull id={`graph_${showLocal ? 'local' : 'global'}`}>
       {showTools ? (
@@ -148,8 +200,36 @@ export const TreeGraph = (props: TreeGraphProps) => {
         </InfobarTools>
       ) : null}
       {showNodePreview && <NodePreview node={selectedNode} />}
-      <GraphWrapper>
-        <Graph
+      <GraphWrapper ref={wrapperRef}>
+        <ForceGraph3D
+          width={state.dimensions.width}
+          height={state.dimensions.height}
+          // width={window.innerWidth}
+          // height='calc(100vh - 15.5rem)'
+          backgroundColor={theme.colors.background.sidebar}
+          graphData={{ nodes: graph.nodes, links: graph.edges }}
+          nodeLabel="path"
+          // nodeCanvasObject={(node: any, ctx) => nodePaint(node as any, node.color.font, ctx)}
+          linkColor={(link: any) => link.color}
+          nodeThreeObject={(node) => {
+            const sprite = new SpriteText(getTitleFromPath(node.path).slice(0, 20))
+            sprite.color = node.color.font
+            sprite.backgroundColor = node.color.background
+            sprite.padding = 2
+            sprite.borderRadius = 2
+            sprite.textHeight = 8
+            return sprite
+          }}
+        />
+        {/*
+        <ForceGraph2D
+          nodeLabel="path"
+          nodeCanvasObject={(node, ctx) => nodePaint(node as any, getColor(node.id), ctx)}
+          graphData={{ nodes: graph.nodes, links: graph.edges }}
+
+        />
+
+            <Graph
           graph={graph}
           options={options}
           events={events}
@@ -158,7 +238,7 @@ export const TreeGraph = (props: TreeGraphProps) => {
           getNetwork={(p: any) => {
             setNetwork(p)
           }}
-        />
+        /> */}
       </GraphWrapper>
       {/* <NodeServices /> */}
     </InfobarFull>

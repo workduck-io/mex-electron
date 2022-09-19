@@ -15,6 +15,7 @@ export const getNodeStyles = (level: number, theme: DefaultTheme) => {
   return {
     color: {
       border: color,
+      font: fontColor,
       background: color,
       highlight: {
         border: mix(0.5, primary, color),

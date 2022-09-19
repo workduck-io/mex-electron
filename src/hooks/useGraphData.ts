@@ -1,3 +1,4 @@
+import { useUserPreferenceStore } from '@store/userPreferenceStore'
 import { useTheme } from 'styled-components'
 import { GraphEdge, GraphNode } from '../components/mex/Graph/Graph.types'
 import { ServiceImg } from '../components/mex/Graph/icons'
@@ -9,6 +10,7 @@ import { NodeLink } from '../types/relations'
 import { getEdgeGlobalStyles, getEdgeLocalStyles, getNodeStyles } from '../utils/GraphHelpers'
 import useIntents from './useIntents'
 import { useLinks } from './useLinks'
+import { useNamespaces } from './useNamespaces'
 
 // const addServiceNodes = (
 //   selectedNode: any,
@@ -20,7 +22,8 @@ import { useLinks } from './useLinks'
 
 export const useGraphData = () => {
   const ilinks = useDataStore((store) => store.ilinks)
-  const links = ilinks.map((i) => i.path)
+  const { getDefaultNamespace } = useNamespaces()
+  const currentnamespace = useUserPreferenceStore((store) => store.activeNamespace)
   const node = useEditorStore((store) => store.node)
   const selectedNode = useGraphStore((state) => state.selectedNode)
 
@@ -37,11 +40,16 @@ export const useGraphData = () => {
 
   const theme = useTheme()
 
+  const defaultNamespace = getDefaultNamespace()
+
+  const currentNamespaceID = currentnamespace ? currentnamespace : defaultNamespace.id
+
+  const links = ilinks.filter((l) => l.namespace === currentNamespaceID).map((i) => i.path)
   const nodes = links.map((node, id): GraphNode => {
     const level = getLevel(node)
     return {
       id: id + 1,
-      label: showLocal ? node : getNameFromPath(node),
+      // label: showLocal ? node : getNameFromPath(node),
       path: node,
       ...getNodeStyles(level, theme)
     }
@@ -56,8 +64,8 @@ export const useGraphData = () => {
           const level = getLevel(compNode.path)
           if (isParent(node.path, compNode.path)) {
             edges.push({
-              to: node.id,
-              from: compNode.id,
+              source: node.id,
+              target: compNode.id,
               ...getEdgeGlobalStyles(level, theme)
             })
           }
@@ -65,8 +73,8 @@ export const useGraphData = () => {
       })
       if (isTopNode(node.path)) {
         edges.push({
-          to: node.id,
-          from: 0,
+          source: node.id,
+          target: 0,
           ...getEdgeGlobalStyles(0, theme)
         })
       }
@@ -75,7 +83,7 @@ export const useGraphData = () => {
     nodes.push({
       id: 0,
       path: 'root',
-      label: 'root',
+      // label: 'root',
       ...getNodeStyles(0, theme)
     })
 
@@ -97,7 +105,7 @@ export const useGraphData = () => {
     newNodes.push({
       id: 2,
       path,
-      label: path,
+      // label: path,
       ...getNodeStyles(0, theme)
     })
   }
@@ -113,7 +121,7 @@ export const useGraphData = () => {
           // * Create service node
           newNodes.push({
             id: serviceId,
-            label: nodeIntent.service.name,
+            // label: nodeIntent.service.name,
             path: `SERVICE_${nodeIntent.service.id}`,
             ...{
               ...getNodeStyles(0, theme),
@@ -123,19 +131,27 @@ export const useGraphData = () => {
           })
 
           // * Attach this service node with Selected Node
-          edges.push({ from: serviceId, to: selectedNode.id, ...getEdgeGlobalStyles(0, theme) })
+          edges.push({
+            source: serviceId,
+            target: selectedNode.id,
+            ...getEdgeGlobalStyles(0, theme)
+          })
 
           const newServiceId = serviceId * 3
           // * Create Intent Type node
           newNodes.push({
             id: newServiceId,
-            label: nodeIntent.intent.name,
+            // label: nodeIntent.intent.name,
             path: `SERVICE_${nodeIntent.intent.value}`,
             ...getNodeStyles(0, theme)
           })
 
           // * Attach this intent type with service node
-          edges.push({ from: newServiceId, to: serviceId, ...getEdgeGlobalStyles(2, theme) })
+          edges.push({
+            source: newServiceId,
+            target: serviceId,
+            ...getEdgeGlobalStyles(2, theme)
+          })
         }
       })
     }
@@ -157,8 +173,8 @@ export const useGraphData = () => {
 
   nodeLinks.forEach((l) =>
     edges.push({
-      to: getNodeNumId(l.to, newNodes),
-      from: getNodeNumId(l.from, newNodes),
+      source: getNodeNumId(l.to, newNodes),
+      target: getNodeNumId(l.from, newNodes),
       ...getEdgeLocalStyles(l.to === path, theme)
     })
   )
