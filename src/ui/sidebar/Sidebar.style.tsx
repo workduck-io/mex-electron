@@ -6,6 +6,7 @@ import { clamp } from 'lodash'
 import styled, { css } from 'styled-components'
 import { IconWrapper } from '@ui/components/IconPicker/IconPicker.style'
 import { ScrollStyles } from '@style/helpers'
+import { SidebarListWrapper } from '@components/mex/Sidebar/SidebarList.style'
 
 export const SidebarWrapper = styled.div`
   display: flex;
@@ -13,6 +14,10 @@ export const SidebarWrapper = styled.div`
   flex-grow: 1;
   height: 100%;
   padding: ${({ theme }) => theme.spacing.small};
+
+  ${SidebarListWrapper} {
+    height: 90%;
+  }
 `
 
 export const SpaceWrapper = styled(SidebarWrapper)`

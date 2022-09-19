@@ -102,3 +102,12 @@ export const updateEmptyBlockTypes = (content: NodeEditorContent, type: string =
     }
   })
 }
+
+/**
+ * Duplicates an array of any type by provided number of times
+ *
+ * Useful to test views with multiple items
+ */
+export const duplicateTimes = (arr: Array<any>, times: number) => {
+  return new Array(times).fill(arr).flat()
+}

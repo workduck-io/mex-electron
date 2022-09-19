@@ -6,6 +6,7 @@ interface SidebarListWrapperProps {
 }
 export const SidebarListWrapper = styled.div<SidebarListWrapperProps>`
   margin-top: ${({ noMargin }) => (noMargin ? '0' : '1rem')};
+  height: inherit;
   flex-grow: 1;
   display: flex;
   flex-direction: column;
