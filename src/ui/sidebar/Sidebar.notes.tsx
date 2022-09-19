@@ -158,6 +158,11 @@ export const NoteSidebar = () => {
       </SpaceContentWrapper>
       {/* currentSpace && <SidebarSpaceComponent style={} space={currentSpace} />*/}
       <SidebarSpaceSwitcher currentSpace={currentSpace?.id} spaces={spaces} setCurrentIndex={changeIndex} />
+      {/* For testing purposes
+        <SidebarSpaceSwitcher currentSpace={currentSpace?.id} spaces={spaces.slice(0, 4)} setCurrentIndex={changeIndex} />
+        <SidebarSpaceSwitcher currentSpace={currentSpace?.id} spaces={spaces.slice(0, 6)} setCurrentIndex={changeIndex} />
+        <SidebarSpaceSwitcher currentSpace={currentSpace?.id} spaces={spaces.slice(0, 8)} setCurrentIndex={changeIndex} />
+      */}
     </SpaceWrapper>
   )
 }

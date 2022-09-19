@@ -137,7 +137,7 @@ export const SpaceSwitcher = styled.div`
 export const SwitcherSpaceItems = styled.div`
   display: -webkit-box;
   align-items: center;
-  gap: ${({ theme }) => theme.spacing.small};
+  gap: ${({ theme }) => theme.spacing.tiny};
   flex-grow: 1;
   overflow-y: hidden;
   overflow-x: auto;
@@ -155,7 +155,7 @@ export const SpaceItem = styled.div<{ active: boolean; totalItems: number; sideb
   border-radius: ${({ theme }) => theme.borderRadius.small};
   flex-shrink: 0;
   transition: 0.2s color ease-out, 0.2s font-size ease-out, 0.2s background-color ease-out, 0.2s height ease-out,
-    0.2s width ease-out;
+    0.2s width ease-out, border 0.2s ease-out;
 
   ${IconWrapper} {
     transition: 0.2s color ease-out, 0.2s font-size ease-out, 0.2s background-color ease-out, 0.2s height ease-out,
@@ -191,17 +191,19 @@ export const SpaceItem = styled.div<{ active: boolean; totalItems: number; sideb
     // Otherwise hide svg and show a dot
     return css`
       background-color: ${theme.colors.gray[7]};
+      border: 3px solid ${theme.colors.background.sidebar};
       ${IconWrapper} {
         height: 0%;
         width: 0%;
         font-size: 0px;
       }
-      height: 6px;
-      width: 6px;
+      height: 8px;
+      width: 8px;
       :hover {
         background-color: ${theme.colors.gray[8]};
         height: ${28}px;
         width: ${28}px;
+        border: 3px solid ${theme.colors.gray[8]};
 
         ${IconWrapper} {
           height: ${24}px;
