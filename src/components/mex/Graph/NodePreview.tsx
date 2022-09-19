@@ -36,7 +36,7 @@ const Header = styled.div`
   color: ${({ theme }) => theme.colors.primary};
 `
 
-const Content = styled.div`
+export const Content = styled.div`
   padding: ${({ theme }) => theme.spacing.tiny};
   height: 16rem;
   overflow-y: auto;
@@ -69,7 +69,7 @@ const SmallText = styled.div`
   color: ${({ theme }) => theme.colors.text.disabled};
 `
 
-const NodePreview = ({ node }: { node: ILink }) => {
+const NodePreview = ({ node, fullscreen }: { node: ILink; fullscreen: boolean }) => {
   const getContent = useContentStore((store) => store.getContent)
   const { getNodeidFromPath } = useLinks()
   const nodeid = node?.nodeid
@@ -79,7 +79,7 @@ const NodePreview = ({ node }: { node: ILink }) => {
   const [alias, setAlias] = useState<string | undefined>()
 
   useEffect(() => {
-    ;(async () => {
+    (async () => {
       if (content?.metadata?.lastEditedBy) {
         const user = await getUserDetailsUserId(content?.metadata?.lastEditedBy)
         if (user.alias) setAlias(user.alias)

@@ -16,6 +16,7 @@ import { FocusModeProp } from '@style/props'
 import { TitleWithShortcut } from '@workduck-io/mex-components'
 import { FadeInOut } from '@style/Layouts'
 import { useEditorStore } from '@store/useEditorStore'
+import { useGraphStore } from '@store/useGraphStore'
 
 const LogoWrapper = styled.div<{ expanded: boolean }>`
   ${({ expanded }) => (expanded ? 'width: 100%;' : 'width: 40px;')}
@@ -128,6 +129,7 @@ export const SidebarToggles = () => {
   const toggleSidebar = useLayoutStore((store) => store.toggleSidebar)
   const toggleRHSidebar = useLayoutStore((store) => store.toggleRHSidebar)
   const toggleAllSidebars = useLayoutStore((store) => store.toggleAllSidebars)
+  const graphFullscreen = useGraphStore((store) => store.fullscreen)
 
   /** Set shortcuts */
   const shortcuts = useHelpStore((store) => store.shortcuts)
@@ -153,44 +155,48 @@ export const SidebarToggles = () => {
   }, [shortcuts, shortcutDisabled]) // eslint-disable-line react-hooks/exhaustive-deps
 
   return (
-    <>
-      <Tippy
-        theme="mex-bright"
-        placement="right"
-        content={<TitleWithShortcut title={sidebar.expanded ? 'Collapse Sidebar' : 'Expand Sidebar'} />}
-      >
-        <SidebarToggleWrapper
-          side="left"
-          isVisible={!isUserEdititng}
-          onClick={toggleSidebar}
-          expanded={sidebar.expanded}
-          show={sidebar.show}
-          {...getFocusProps(focusMode)}
+    !graphFullscreen && (
+      <>
+        <Tippy
+          theme="mex-bright"
+          placement="right"
+          content={<TitleWithShortcut title={sidebar.expanded ? 'Collapse Sidebar' : 'Expand Sidebar'} />}
         >
-          <Icon
-            icon={sidebar.expanded ? 'heroicons-solid:chevron-double-left' : 'heroicons-solid:chevron-double-right'}
-          />
-        </SidebarToggleWrapper>
-      </Tippy>
-      <Tippy
-        theme="mex-bright"
-        placement="left"
-        content={<TitleWithShortcut title={rhSidebar.expanded ? 'Collapse Cooler Sidebar' : 'Expand Cooler Sidebar'} />}
-      >
-        <SidebarToggleWrapper
-          side="right"
-          isVisible={!isUserEdititng}
-          onClick={toggleRHSidebar}
-          expanded={rhSidebar.expanded}
-          show={rhSidebar.show}
-          endColumnWidth={endColumnWidth}
-          {...getFocusProps(focusMode)}
+          <SidebarToggleWrapper
+            side="left"
+            isVisible={!isUserEdititng}
+            onClick={toggleSidebar}
+            expanded={sidebar.expanded}
+            show={sidebar.show}
+            {...getFocusProps(focusMode)}
+          >
+            <Icon
+              icon={sidebar.expanded ? 'heroicons-solid:chevron-double-left' : 'heroicons-solid:chevron-double-right'}
+            />
+          </SidebarToggleWrapper>
+        </Tippy>
+        <Tippy
+          theme="mex-bright"
+          placement="left"
+          content={
+            <TitleWithShortcut title={rhSidebar.expanded ? 'Collapse Cooler Sidebar' : 'Expand Cooler Sidebar'} />
+          }
         >
-          <Icon
-            icon={rhSidebar.expanded ? 'heroicons-solid:chevron-double-right' : 'heroicons-solid:chevron-double-left'}
-          />
-        </SidebarToggleWrapper>
-      </Tippy>
-    </>
+          <SidebarToggleWrapper
+            side="right"
+            isVisible={!isUserEdititng}
+            onClick={toggleRHSidebar}
+            expanded={rhSidebar.expanded}
+            show={rhSidebar.show}
+            endColumnWidth={endColumnWidth}
+            {...getFocusProps(focusMode)}
+          >
+            <Icon
+              icon={rhSidebar.expanded ? 'heroicons-solid:chevron-double-right' : 'heroicons-solid:chevron-double-left'}
+            />
+          </SidebarToggleWrapper>
+        </Tippy>
+      </>
+    )
   )
 }

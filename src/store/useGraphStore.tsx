@@ -4,6 +4,7 @@ interface GraphStoreState {
   showTools: boolean
   showGraph: boolean
   showLocal: boolean
+  fullscreen: boolean
   selectedNode?: any
   showServices: boolean
   showNodePreview: boolean
@@ -13,6 +14,7 @@ interface GraphStoreState {
   toggleGraph: () => void
   toggleLocal: () => void
   toggleServiceNodes: () => void
+  toggleFullscreen: () => void
   setSelectedNode: (node: any) => void
   addServiceNode: (service: any) => void
   setNodePreview: (show: boolean) => void
@@ -23,6 +25,7 @@ export const useGraphStore = create<GraphStoreState>((set, get) => ({
   showTools: true,
   showGraph: false,
   showLocal: true,
+  fullscreen: false,
   serviceNodes: [],
   showServices: true,
   showNodePreview: false,
@@ -39,6 +42,7 @@ export const useGraphStore = create<GraphStoreState>((set, get) => ({
     set((state) => ({
       showLocal: !state.showLocal
     })),
+  toggleFullscreen: () => set((state) => ({ ...state, fullscreen: !state.fullscreen })),
   toggleServiceNodes: () => set({ showServices: !get().showServices }),
   setServiceNodes: (services) => set({ serviceNodes: services }),
   addServiceNode: (service: any) => {

@@ -44,13 +44,17 @@ export const useGraphData = () => {
 
   const currentNamespaceID = currentnamespace ? currentnamespace : defaultNamespace.id
 
-  const links = ilinks.filter((l) => l.namespace === currentNamespaceID).map((i) => i.path)
+  const links = ilinks.filter((l) => l.namespace === currentNamespaceID)
   const nodes = links.map((node, id): GraphNode => {
-    const level = getLevel(node)
+    const level = getLevel(node.path)
     return {
       id: id + 1,
       // label: showLocal ? node : getNameFromPath(node),
-      path: node,
+      // val: level,
+      group: node.namespace,
+      nodeid: node.nodeid,
+
+      path: node.path,
       ...getNodeStyles(level, theme)
     }
   })

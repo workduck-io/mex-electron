@@ -22,6 +22,7 @@ export interface GraphNode {
     face?: string
     size?: string
   }
+  // val?: number
   // size?: number
 }
 

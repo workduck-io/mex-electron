@@ -13,6 +13,9 @@ import SpriteText from 'three-spritetext'
 import { useTheme } from 'styled-components'
 import { CSS2DObject, CSS2DRenderer } from './CSS2Drenderer'
 import THREE from 'three'
+import { mog } from '@workduck-io/mex-utils'
+import { IconButton } from '@workduck-io/mex-components'
+import more2Fill from '@iconify/icons-ri/more-2-fill'
 
 /* eslint-disable @typescript-eslint/no-explicit-any */
 const options = {
@@ -63,6 +66,8 @@ export const TreeGraph = (props: TreeGraphProps) => {
   const selectedNode = useGraphStore((state) => state.selectedNode)
   const setNodePreview = useGraphStore((state) => state.setNodePreview)
   const setSelectedNode = useGraphStore((state) => state.setSelectedNode)
+  const fullscreen = useGraphStore((state) => state.fullscreen)
+  const toggleFullscreen = useGraphStore((state) => state.toggleFullscreen)
 
   const showLocal = useGraphStore((state) => state.showLocal)
   const toggleLocal = useGraphStore((state) => state.toggleLocal)
@@ -175,7 +180,7 @@ export const TreeGraph = (props: TreeGraphProps) => {
         }
       }))
     }
-  }, [wrapperRef.current])
+  }, [wrapperRef.current, fullscreen])
 
   const fgRef = useRef<any>(null)
 
@@ -187,6 +192,7 @@ export const TreeGraph = (props: TreeGraphProps) => {
 
       // const node = graphData.nodes.filter((n: any) => n.id === nodes[0])[0]
       if (!node.path.startsWith('SERVICE') && node.id !== 0) {
+        mog('Click', { node })
         setSelectedNode(node)
         setNodePreview(true)
       }
@@ -205,9 +211,10 @@ export const TreeGraph = (props: TreeGraphProps) => {
 
   return (
     <InfobarFull id={`graph_${showLocal ? 'local' : 'global'}`}>
-      {showTools ? (
-        <InfobarTools>
-          {/* <IconButton size={24} icon={bubbleChartLine} title="Graph" highlight={showGraph} onClick={toggleGraph} />
+      <GraphWrapper fullscreen={fullscreen} ref={wrapperRef}>
+        {showTools ? (
+          <InfobarTools>
+            {/* <IconButton size={24} icon={bubbleChartLine} title="Graph" highlight={showGraph} onClick={toggleGraph} />
           <IconButton
             size={24}
             icon={bubbleChartLine}
@@ -216,23 +223,29 @@ export const TreeGraph = (props: TreeGraphProps) => {
             highlight={infobar.mode === 'graph'}
             onClick={toggleGraph}
           />*/}
-          <Switch
-            showLabel
-            id="LocalGraphSwitch"
-            label="Show Local Graph"
-            value={showLocal}
-            onChange={() => toggleLocal()}
-          />
+            <Switch
+              showLabel
+              id="LocalGraphSwitch"
+              label="Show Local Graph"
+              value={showLocal}
+              onChange={() => toggleLocal()}
+            />
 
-          {/*<IconButton size={24} icon={more2Fill} title="Options" /> */}
-        </InfobarTools>
-      ) : null}
-      {showNodePreview && <NodePreview node={selectedNode} />}
-      <GraphWrapper ref={wrapperRef}>
+            <IconButton
+              size={24}
+              icon={fullscreen ? 'gridicons:fullscreen-exit' : 'gridicons:fullscreen'}
+              title="Fullscreen"
+              onClick={() => {
+                toggleFullscreen()
+              }}
+            />
+          </InfobarTools>
+        ) : null}
+        {showNodePreview && <NodePreview node={selectedNode} fullscreen={fullscreen} />}
         <ForceGraph3D
           width={state.dimensions.width}
           height={state.dimensions.height}
-          extraRenderers={extraRenderers}
+          extraRenderers={extraRenderers as any}
           // width={window.innerWidth}
           // height='calc(100vh - 15.5rem)'
           backgroundColor={theme.colors.background.sidebar}
