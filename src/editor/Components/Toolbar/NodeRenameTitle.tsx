@@ -133,11 +133,10 @@ const NodeRenameTitle = () => {
     if (to && nodeFrom) {
       const refactored = await execRefactorAsync(nodeFrom, { path: to, namespaceID: nodeFromNS })
 
-      const path = useEditorStore.getState().node.id
       const nodeid = useEditorStore.getState().node.nodeid
       setEditable(false)
 
-      if (doesLinkRemain(path, refactored)) {
+      if (doesLinkRemain(nodeid, refactored)) {
         push(nodeid)
       } else if (refactored.length > 0) {
         const nodeid = refactored[0].nodeid

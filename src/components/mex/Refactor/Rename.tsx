@@ -101,10 +101,9 @@ const Rename = () => {
       //   setBaseNodeId(baseId.to)
       // }
 
-      const path = useEditorStore.getState().node.path
       const nodeid = useEditorStore.getState().node.nodeid
 
-      if (doesLinkRemain(path, refactored)) {
+      if (doesLinkRemain(nodeid, refactored)) {
         push(nodeid, { savePrev: false })
       }
 

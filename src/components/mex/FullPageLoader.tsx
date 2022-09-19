@@ -1,11 +1,11 @@
 import React from 'react'
 import styled from 'styled-components'
-import { ModalStyles } from './Refactor/styles'
+import { ModalOverlay, ModalStyles } from './Refactor/styles'
 import Lottie from 'lottie-react'
 import { loader } from '@components/spotlight/ActionStage/Performers/loader'
 
 const OverlayLoader = styled.div`
-  ${ModalStyles}
+  ${ModalOverlay}
   height: 100%;
   width: 100%;
   display: flex;

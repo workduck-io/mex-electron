@@ -84,7 +84,7 @@ export const getUniquePath = (
   }
 
   // Is path is already present (Clash)
-  mog('GET UNIQUE PATH', { path, paths })
+  // mog('GET UNIQUE PATH', { path, paths })
 
   if (paths.includes(path)) {
     let newPath = getPathNum(path)

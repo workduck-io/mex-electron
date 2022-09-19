@@ -181,10 +181,9 @@ const Refactor = () => {
     if (to && from && !isReserved(from) && !isReserved(to)) {
       const refactored = await execRefactorAsync({ path: from, namespaceID: fromNS }, { path: to, namespaceID: toNS })
 
-      const path = useEditorStore.getState().node.path
       const nodeid = useEditorStore.getState().node.nodeid
 
-      if (doesLinkRemain(path, refactored)) {
+      if (doesLinkRemain(nodeid, refactored)) {
         push(nodeid, { savePrev: false })
       } else if (refactored.length > 0) {
         const nodeid = refactored[0].nodeid

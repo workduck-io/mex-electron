@@ -148,7 +148,7 @@ export const TreeContextMenu = ({ item }: TreeContextMenuProps) => {
       { path: item.data?.path, namespaceID: newNamespaceID }
     )
 
-    if (doesLinkRemain(item.data?.path, refactored)) {
+    if (doesLinkRemain(item.data?.nodeid, refactored)) {
       push(item.data?.nodeid, { savePrev: false })
     }
   }

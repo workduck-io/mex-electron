@@ -21,6 +21,7 @@ import { useRenameStore } from '../../../store/useRenameStore'
 import { Input } from '../../../style/Form'
 import { isClash, isMatch, isReserved } from '../../../utils/lib/paths'
 import { ButtonWrapper, TitleStatic, Wrapper } from './NodeRename.style'
+import { mog } from '@workduck-io/mex-utils'
 
 const NodeRenameOnlyTitle = () => {
   const { execRefactorAsync, getMockRefactor } = useRefactor()
@@ -142,7 +143,7 @@ const NodeRenameOnlyTitle = () => {
       const nodeid = useEditorStore.getState().node.nodeid
       setEditable(false)
 
-      if (doesLinkRemain(path, refactored)) {
+      if (doesLinkRemain(nodeid, refactored)) {
         push(nodeid)
       }
       // What is this code? Isn't res an object, what does res[0] refer to?
