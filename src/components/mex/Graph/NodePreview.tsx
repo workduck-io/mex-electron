@@ -72,14 +72,14 @@ const SmallText = styled.div`
 const NodePreview = ({ node }: { node: ILink }) => {
   const getContent = useContentStore((store) => store.getContent)
   const { getNodeidFromPath } = useLinks()
-  const nodeid = getNodeidFromPath(node?.path, node?.namespace)
+  const nodeid = node?.nodeid
   const content = getContent(nodeid)
 
   const { getUserDetailsUserId } = useUserService()
   const [alias, setAlias] = useState<string | undefined>()
 
   useEffect(() => {
-    (async () => {
+    ;(async () => {
       if (content?.metadata?.lastEditedBy) {
         const user = await getUserDetailsUserId(content?.metadata?.lastEditedBy)
         if (user.alias) setAlias(user.alias)

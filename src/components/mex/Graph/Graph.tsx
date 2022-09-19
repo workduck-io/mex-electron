@@ -1,6 +1,6 @@
 import { ForceGraph2D, ForceGraph3D } from 'react-force-graph'
 import equal from 'fast-deep-equal'
-import React, { useEffect, useState } from 'react'
+import React, { useEffect, useRef, useState } from 'react'
 import Graph from 'react-vis-network-graph'
 import { getTitleFromPath, useLinks } from '../../../hooks/useLinks'
 import { useNavigation } from '../../../hooks/useNavigation'
@@ -11,6 +11,8 @@ import { GraphWrapper } from './Graph.styles'
 import NodePreview from './NodePreview'
 import SpriteText from 'three-spritetext'
 import { useTheme } from 'styled-components'
+import { CSS2DObject, CSS2DRenderer } from './CSS2Drenderer'
+import THREE from 'three'
 
 /* eslint-disable @typescript-eslint/no-explicit-any */
 const options = {
@@ -175,6 +177,32 @@ export const TreeGraph = (props: TreeGraphProps) => {
     }
   }, [wrapperRef.current])
 
+  const fgRef = useRef<any>(null)
+
+  const handleClick = React.useCallback(
+    (node) => {
+      // Aim at node from outside it
+      const distance = 180
+      const distRatio = 1 + distance / Math.hypot(node.x, node.y, node.z)
+
+      // const node = graphData.nodes.filter((n: any) => n.id === nodes[0])[0]
+      if (!node.path.startsWith('SERVICE') && node.id !== 0) {
+        setSelectedNode(node)
+        setNodePreview(true)
+      }
+      if (fgRef.current) {
+        fgRef?.current?.cameraPosition(
+          { x: node.x * distRatio, y: node.y * distRatio, z: node.z * distRatio }, // new position
+          node, // lookAt ({ x, y, z })
+          3000 // ms transition duration
+        )
+      }
+    },
+    [fgRef]
+  )
+
+  const extraRenderers = [new CSS2DRenderer({})]
+
   return (
     <InfobarFull id={`graph_${showLocal ? 'local' : 'global'}`}>
       {showTools ? (
@@ -204,22 +232,43 @@ export const TreeGraph = (props: TreeGraphProps) => {
         <ForceGraph3D
           width={state.dimensions.width}
           height={state.dimensions.height}
+          extraRenderers={extraRenderers}
           // width={window.innerWidth}
           // height='calc(100vh - 15.5rem)'
           backgroundColor={theme.colors.background.sidebar}
           graphData={{ nodes: graph.nodes, links: graph.edges }}
-          nodeLabel="path"
-          // nodeCanvasObject={(node: any, ctx) => nodePaint(node as any, node.color.font, ctx)}
-          linkColor={(link: any) => link.color}
-          nodeThreeObject={(node) => {
-            const sprite = new SpriteText(getTitleFromPath(node.path).slice(0, 20))
-            sprite.color = node.color.font
-            sprite.backgroundColor = node.color.background
-            sprite.padding = 2
-            sprite.borderRadius = 2
-            sprite.textHeight = 8
-            return sprite
+          nodeColor={(node: any) => (node.id === selectedNode?.id ? theme.colors.primary : node.color.background)}
+          nodeThreeObject={(node: any) => {
+            const nodeEl = document.createElement('div')
+            nodeEl.textContent = getTitleFromPath(node.path).slice(0, 20)
+            nodeEl.style.color = node.color.font
+            nodeEl.style.backgroundColor = node.color.border
+            nodeEl.className = 'node-label'
+            if (selectedNode && selectedNode.id === node.id) {
+              nodeEl.style.color = theme.colors.text.oppositePrimary
+              nodeEl.style.backgroundColor = theme.colors.primary
+            }
+            return new CSS2DObject(nodeEl)
           }}
+          linkOpacity={0.3}
+          linkWidth={(link: any) =>
+            link.source === selectedNode?.id || link.target === selectedNode?.id ? 0.5 : undefined
+          }
+          linkColor={(link: any) =>
+            link.source === selectedNode?.id || link.target === selectedNode?.id ? theme.colors.primary : link.color
+          }
+          ref={fgRef}
+          onNodeClick={handleClick}
+          nodeThreeObjectExtend={true}
+          // nodeThreeObject={(node) => {
+          //   const sprite = new SpriteText(getTitleFromPath(node.path).slice(0, 20))
+          //   sprite.color = node.color.font
+          //   sprite.backgroundColor = node.color.background
+          //   sprite.padding = 2
+          //   sprite.borderRadius = 2
+          //   sprite.textHeight = 8
+          //   return sprite
+          // }}
         />
         {/*
         <ForceGraph2D

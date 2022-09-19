@@ -16,4 +16,11 @@ export const StyledSyncBlockInfo = styled(StyledGraph)`
 export const GraphWrapper = styled.div`
   margin-top: ${({ theme }) => theme.spacing.small};
   height: calc(100vh - 15.5rem);
+
+  .node-label {
+    font-size: 12px;
+    padding: 2px 4px;
+    border-radius: 4px;
+    user-select: none;
+  }
 `

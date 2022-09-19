@@ -1,6 +1,7 @@
 export interface GraphNode {
   id: number
   path: string
+  nodeid?: string
   // label: string
   color: {
     font: string
@@ -15,6 +16,7 @@ export interface GraphNode {
       background: string
     }
   }
+  group?: string
   font?: {
     color?: string
     face?: string
@@ -27,5 +29,6 @@ export interface GraphEdge {
   source: number
   target: number
   color: string
+  // value?: number
   // physics?: boolean
 }
