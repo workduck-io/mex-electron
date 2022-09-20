@@ -48,14 +48,21 @@ class WindowManager {
     })
 
     window.on('close', (event) => {
-      if (options?.onClose) options?.onClose(window)
-      const closeIfDeveloping = IS_DEV || options?.deleteOnClose
+      const { handleCloseManually, deleteOnClose } = options
+      if (options?.onClose) options.onClose(window)
 
-      if (closeIfDeveloping === false) event.preventDefault()
-      this.deleteWindow(windowId, closeIfDeveloping)
+      if ((deleteOnClose === false && handleCloseManually) && !IS_DEV) {
+        handleCloseManually(window)
+        event.preventDefault()
+        window.hide()
+      }
     })
 
-    if (options?.debug && IS_DEV) window.webContents.openDevTools({ mode: 'right' })
+    window.on('closed', () => {
+      this.cleanUp(windowId)
+    })
+
+    if (IS_DEV) window.webContents.openDevTools({ mode: 'right' })
 
     window.webContents?.on('new-window', (event, url) => {
       event.preventDefault()
@@ -89,14 +96,21 @@ class WindowManager {
     if (window) window.webContents.send(ipcType, data)
   }
 
+  public cleanUp = (windowId: string) => {
+    const { [windowId]: refId, ...windows } = this.windowRef
+    this.windowRef = windows
+  }
+
   public deleteWindow = (windowId: string, areYouSure = true) => {
     const window = this.getWindow(windowId)
 
     if (areYouSure) {
-      const { [windowId]: refId, ...windows } = this.windowRef
-      this.windowRef = windows
-      window?.close()
-    } else window?.hide()
+      this.cleanUp(windowId)
+
+      window?.destroy()
+    } else {
+      window?.hide()
+    }
   }
 }
 

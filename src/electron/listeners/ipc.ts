@@ -43,6 +43,7 @@ import { idxKey } from '../../types/search'
 import { ToastStatus, ToastType } from '../../types/toast'
 import handlePinnedWindowsIPCListener from './pinned-windows'
 import { checkForUpdatesAndNotifyWrapper } from '../update'
+import { mog } from '@workduck-io/mex-utils'
 
 export let SPOTLIGHT_SHORTCUT = 'CommandOrCOntrol+Shift+X'
 
@@ -154,6 +155,12 @@ const handleIPCListener = () => {
   ipcMain.on(IpcAction.SET_THEME, (ev, arg) => {
     const { data } = arg
     windows.toast?.send(IpcAction.SET_THEME, data.theme)
+  })
+
+  ipcMain.on(IpcAction.CLOSE_WINDOW, (ev, arg) => {
+    const { data } = arg
+
+    if (data?.windowId) windowManager.deleteWindow(data.windowId)
   })
 
   ipcMain.on(IpcAction.SET_LOCAL_DATA, (_event, arg) => {

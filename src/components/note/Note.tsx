@@ -1,19 +1,20 @@
 import React, { useMemo, useCallback, useEffect } from 'react'
 
 import { getDefaultContent } from '@components/spotlight/Preview'
-import { IpcAction } from '@data/IpcAction'
 import { Editor } from '@editor/Editor'
 import { useEditorBuffer } from '@hooks/useEditorBuffer'
 import { NoteProvider } from '@store/Context/context.note'
 import { useContentStore } from '@store/useContentStore'
 import useDataStore from '@store/useDataStore'
-import { ipcRenderer } from 'electron'
 
 import { tinykeys } from '@workduck-io/tinykeys'
 
 import { NodeEditorContent } from '../../types/Types'
 import InfoBar from './InfoBar'
 import { EditorContainer, NoteBodyContainer } from './styled'
+import { ipcRenderer } from 'electron'
+import { IpcAction } from '@data/IpcAction'
+import { mog } from '@workduck-io/mex-utils'
 
 const Note: React.FC<{ noteId: string }> = ({ noteId }) => {
   const noteContentInfo = useContentStore((store) => store.contents?.[noteId])
@@ -24,7 +25,7 @@ const Note: React.FC<{ noteId: string }> = ({ noteId }) => {
     return !!res
   }, [noteId, archive])
 
-  const { saveAndClearBuffer, addOrUpdateValBuffer } = useEditorBuffer()
+  const { saveNoteBuffer, saveAndClearBuffer, addOrUpdateValBuffer } = useEditorBuffer()
 
   const onChangeSave = useCallback(
     async (val: NodeEditorContent) => {
@@ -49,6 +50,12 @@ const Note: React.FC<{ noteId: string }> = ({ noteId }) => {
       saveAndClearBuffer()
     })
 
+    ipcRenderer.on(IpcAction.SAVE_AND_QUIT, () => {
+      saveNoteBuffer(noteId).then(d => {
+        ipcRenderer.send(IpcAction.CLOSE_WINDOW, { data: { windowId: noteId } })
+      })
+    })
+
     const unsubscribe = tinykeys(window, {
       '$mod+S': (event) => {
         event.preventDefault()
@@ -57,7 +64,7 @@ const Note: React.FC<{ noteId: string }> = ({ noteId }) => {
     })
 
     return () => unsubscribe()
-  }, [])
+  }, [noteId])
 
   return (
     <NoteBodyContainer>

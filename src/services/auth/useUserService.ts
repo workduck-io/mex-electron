@@ -123,7 +123,6 @@ export const useUserService = () => {
 
     try {
       return await client.put(apiURLs.user.updateInfo, { id: userID, preference: userPreferences }).then((resp) => {
-        mog('Response', { data: resp.data })
         return true
       })
     } catch (e) {

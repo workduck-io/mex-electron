@@ -56,7 +56,7 @@ export const useDataSaverFromContent = () => {
       setContent(nodeId, editorValue)
       mog('saveEditorValueAndUpdateStores', { nodeId, editorValue, options })
 
-      if (options?.saveApi !== false) saveDataAPI(nodeId, namespace, editorValue, options?.isShared ?? false)
+      if (options?.saveApi !== false) await saveDataAPI(nodeId, namespace, editorValue, options?.isShared ?? false)
 
       updateLinksFromContent(nodeId, editorValue)
       updateTagsFromContent(nodeId, editorValue)

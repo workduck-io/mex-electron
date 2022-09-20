@@ -72,7 +72,25 @@ export const useEditorBuffer = () => {
     }
   }
 
-  return { addOrUpdateValBuffer, saveAndClearBuffer, getBuffer, getBufferVal, clearBuffer }
+  const saveNoteBuffer = async (noteId: string): Promise<boolean> => {
+    const buffer = useBufferStore.getState().buffer?.[noteId]
+    const content = getContent(noteId)?.content
+
+    if (content) {
+      const res = areEqual(content, buffer)
+      if (!res) {
+        const namespace = getNamespaceOfNodeid(noteId)
+        try {
+          await saveEditorValueAndUpdateStores(noteId, namespace.id, buffer, { saveApi: true, })
+          return true
+        } catch (err) {
+          mog("Unable to save content", { err })
+        }
+      }
+    }
+  }
+
+  return { addOrUpdateValBuffer, saveNoteBuffer, saveAndClearBuffer, getBuffer, getBufferVal, clearBuffer }
 }
 
 export const getLatestContent = (nodeid: string): NodeEditorContent | undefined =>
