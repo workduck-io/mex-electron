@@ -20,7 +20,7 @@ import { checkIfUntitledDraftNode } from '@utils/lib/strings'
 import toast from 'react-hot-toast'
 
 import { ILink, NodeEditorContent } from '../types/Types'
-import { getLatestContent, useBufferStore, useEditorBuffer } from './useEditorBuffer'
+import { useBufferStore, useEditorBuffer } from './useEditorBuffer'
 import { useFetchShareData } from './useFetchShareData'
 import { useLastOpened } from './useLastOpened'
 import { getLinkFromNodeIdHookless } from './useLinks'

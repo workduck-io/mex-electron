@@ -12,6 +12,7 @@ import { OverlaySidebarWindowWidth } from '@style/responsive'
 import { useMediaQuery } from 'react-responsive'
 import { useMatch } from 'react-router-dom'
 
+import { mog } from '@workduck-io/mex-utils'
 import { tinykeys } from '@workduck-io/tinykeys'
 
 import SearchFilters from '../../../components/mex/Search/SearchFilters'
@@ -226,70 +227,81 @@ const Tasks = () => {
 
   useEffect(() => {
     const shorcutConfig = () => {
+      mog('CALLED!!', { isModalOpen })
       if (isModalOpen !== undefined) return {}
 
       return {
         Escape: (event) => {
-          event.preventDefault()
-          if (selectedCard || currentFilters.length > 0) {
-            setSelectedCard(null)
-            resetCurrentFilters()
-          } else {
-            const nodeid = nodeUID ?? lastOpened[0] ?? baseNodeId
-            loadNode(nodeid)
-            goTo(ROUTE_PATHS.node, NavigationType.push, nodeid)
-          }
+          enableShortcutHandler(() => {
+            event.preventDefault()
+            if (selectedCard) {
+              setSelectedCard(null)
+            }
+            // else {
+            // mog('LOAD NODE')
+            // // const nodeid = nodeUID ?? lastOpened[0] ?? baseNodeId
+            // // loadNode(nodeid)
+            // // goTo(ROUTE_PATHS.node, NavigationType.push, nodeid)
+            // }
+          })
         },
+
         'Shift+ArrowRight': (event) => {
-          event.preventDefault()
-          handleCardMoveNext()
+          enableShortcutHandler(() => {
+            event.preventDefault()
+            handleCardMoveNext()
+          })
         },
+
         'Shift+ArrowLeft': (event) => {
-          event.preventDefault()
-          handleCardMovePrev()
+          enableShortcutHandler(() => {
+            event.preventDefault()
+            handleCardMovePrev()
+          })
         },
+
         ArrowRight: (event) => {
-          event.preventDefault()
-          if (isOnSearchFilter()) return
-          selectNewCard('right')
+          enableShortcutHandler(() => {
+            event.preventDefault()
+            selectNewCard('right')
+          })
         },
+
         ArrowLeft: (event) => {
-          event.preventDefault()
-          if (isOnSearchFilter()) return
-          selectNewCard('left')
-        },
-        Enter: (event) => {
-          event.preventDefault()
-          if (isOnSearchFilter()) return
-          if (selectedCard) {
-            setTodoModalData(selectedCard.todo)
-            toggleModal(ModalsType.todo)
-          }
+          enableShortcutHandler(() => {
+            event.preventDefault()
+            selectNewCard('left')
+          })
         },
         ArrowDown: (event) => {
-          event.preventDefault()
-          if (isOnSearchFilter()) return
-          selectNewCard('down')
+          enableShortcutHandler(() => {
+            event.preventDefault()
+            selectNewCard('down')
+          })
         },
 
         ArrowUp: (event) => {
-          event.preventDefault()
-          if (isOnSearchFilter()) return
-          selectNewCard('up')
+          enableShortcutHandler(() => {
+            event.preventDefault()
+            selectNewCard('up')
+          })
         },
 
         '$mod+1': (event) => {
           event.preventDefault()
           changeSelectedPriority(PriorityType.low)
         },
+
         '$mod+2': (event) => {
           event.preventDefault()
           changeSelectedPriority(PriorityType.medium)
         },
+
         '$mod+3': (event) => {
           event.preventDefault()
           changeSelectedPriority(PriorityType.high)
         },
+
         '$mod+0': (event) => {
           event.preventDefault()
           changeSelectedPriority(PriorityType.noPriority)

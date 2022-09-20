@@ -1,6 +1,5 @@
 import { useContentStore } from '@store/useContentStore'
 import useTodoStore from '@store/useTodoStore'
-import { mog } from '@utils/lib/helper'
 
 import { client } from '@workduck-io/dwindle'
 
@@ -9,7 +8,6 @@ import { Service, SyncBlockTemplate } from '../editor/Components/SyncBlock'
 import { TodoType } from '../editor/Components/Todo/types'
 import { useAuthStore } from '../services/auth/useAuth'
 import useDataStore from '../store/useDataStore'
-import { useEditorStore } from '../store/useEditorStore'
 import useOnboard from '../store/useOnboarding'
 import { useSnippetStore } from '../store/useSnippetStore'
 import { useSyncStore } from '../store/useSyncStore'
@@ -22,16 +20,14 @@ import { useSlashCommands } from './useSlashCommands'
 import { useTags } from './useTags'
 
 export const useUpdater = () => {
-  const isOnboarding = useOnboard((s) => s.isOnboarding)
   const setSlashCommands = useDataStore((state) => state.setSlashCommands)
   const setContent = useContentStore((store) => store.setContent)
   const setServices = useSyncStore((store) => store.setServices)
   const setTemplates = useSyncStore((store) => store.setTemplates)
   const setMetadata = useContentStore((store) => store.setMetadata)
   const getNoteContent = useContentStore((store) => store.getContent)
-  const replaceContent = useEditorStore((store) => store.loadNodeAndReplaceContent)
-
   const getWorkspaceId = useAuthStore((store) => store.getWorkspaceId)
+  const isOnboarding = useOnboard((s) => s.isOnboarding)
   const add2Buffer = useBufferStore((s) => s.add)
 
   const { saveData } = useSaveData()
@@ -51,7 +47,6 @@ export const useUpdater = () => {
 
   const updateFromContent = async (noteId: string, content: NodeEditorContent, metadata?: any) => {
     if (content) {
-      mog('UPDATING CONTNET', { content })
       setContent(noteId, content)
       setMetadata(noteId, metadata)
       updateLinksFromContent(noteId, content)
@@ -87,12 +82,15 @@ export const useUpdater = () => {
 
       if (bufferEditorContent) {
         add2Buffer(noteId, contentWithNewTodos)
-      } else useContentStore.getState().setContent(noteId, contentWithNewTodos)
-      const currentNode = useEditorStore.getState().node
-
-      if (currentNode.nodeid === noteId) {
-        replaceContent(currentNode, { type: 'editor', content: contentWithNewTodos })
+      } else {
+        setContent(noteId, contentWithNewTodos)
       }
+
+      // const currentNode = useEditorStore.getState().node
+
+      // if (currentNode.nodeid === noteId) {
+      //   setContent(currentNode.nodeid, contentWithNewTodos)
+      // }
     }
   }
 

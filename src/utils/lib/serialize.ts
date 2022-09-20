@@ -1,8 +1,8 @@
 // import { generateTempId } from '../Defaults/idPrefixes'
-
 import { ELEMENT_TODO_LI } from '@editor/Components/Todo/createTodoPlugin'
 import { TodoType } from '@editor/Components/Todo/types'
 import { useAuthStore } from '@services/auth/useAuth'
+
 import { generateTempId } from '../../data/Defaults/idPrefixes'
 import { mog } from './helper'
 import { extractMetadata } from './metadata'
@@ -125,7 +125,6 @@ export const serializeSpecial: { [elementType: string]: (element: any, nodeid: s
     }
   },
   [ELEMENT_TODO_LI]: (el: any, nodeid: string) => {
-    mog('entity', { el })
     return {
       id: el.id || generateTempId(),
       elementType: el.type,
@@ -167,13 +166,7 @@ export const deserializeSpecial: { [elementType: string]: (element: any) => any 
   }
 }
 
-<<<<<<< Updated upstream
-=======
-<<<<<<< Updated upstream
-=======
-
-// * For: TODO 
->>>>>>> Stashed changes
+// * For: TODO
 export const serializeTodo = (todo: TodoType) => {
   const updatedTodo = {
     entityId: todo.entityId,
@@ -182,27 +175,13 @@ export const serializeTodo = (todo: TodoType) => {
     properties: todo.entityMetadata
   }
 
-<<<<<<< Updated upstream
   return todo.type ? { ...updatedTodo, type: todo.type } : updatedTodo
 }
 
 export const deserializeTodos = (todos) => {
   return todos.map((todo) => {
-    const { properties, entity, workspaceId, created, modified, nodeId, ...restTodo } = todo
-=======
-  // * If todo is updated or deleted
-  if (todo.type) return { ...updatedTodo, type: todo.type }
+    const { properties, created, modified, nodeId, ...restTodo } = todo
 
-  return updatedTodo
-}
-
-// * For: TODO
-export const deserializeTodos = (todos) => {
-  
-  return todos.map((todo) => {
-    const { properties, entity, workspaceId, created, modified, nodeId, ...restTodo } = todo
-    
->>>>>>> Stashed changes
     return {
       ...restTodo,
       createdAt: created,
@@ -213,10 +192,6 @@ export const deserializeTodos = (todos) => {
   })
 }
 
-<<<<<<< Updated upstream
-=======
->>>>>>> Stashed changes
->>>>>>> Stashed changes
 // From API to content
 export const deserializeContent = (sanatizedContent: any[]) => {
   return sanatizedContent.map((el) => {

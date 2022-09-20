@@ -17,22 +17,24 @@ import toast from 'react-hot-toast'
 import { useUpdater } from '@hooks/useUpdater'
 import { useEditorBuffer } from '@hooks/useEditorBuffer'
 import { tinykeys } from '@workduck-io/tinykeys'
+import { useNamespaces } from '@hooks/useNamespaces'
 
 const CreateTodoModal = () => {
-  const open = useModalStore((store) => store.open)
+  const isOpen = useModalStore((store) => store.open === ModalsType.todo)
   const setOpen = useModalStore((store) => store.toggleOpen)
   const { getNodeidFromPath } = useLinks()
   const { addTodoInBuffer, getTodoFromBuffer, clearAndSaveTodo } = useTodoBuffer()
   const { createTodo } = useEntityAPIs()
   const setModalData = useModalStore((store) => store.setData)
-  const isOpen = open === ModalsType.todo
   const { updateTodoInContent } = useUpdater()
   const { saveAndClearBuffer } = useEditorBuffer()
   const [isLoading, setIsLoading] = useState<boolean>(false)
+  const { getDefaultNamespaceId } = useNamespaces()
 
   useEffect(() => {
     if (isOpen) {
-      const dailyNotesId = getNodeidFromPath(BASE_TASKS_PATH)
+      const defaultNamespaceId = getDefaultNamespaceId()
+      const dailyNotesId = getNodeidFromPath(BASE_TASKS_PATH, defaultNamespaceId)
       const todo = useModalStore.getState().data
 
       if (todo) {
@@ -55,7 +57,7 @@ const CreateTodoModal = () => {
     }
   }, [isOpen])
 
-   useEffect(() => {
+  useEffect(() => {
     const unsubscribe = tinykeys(window, {
       '$mod+Enter': (event) => {
         if (open) {

@@ -210,9 +210,9 @@ const Refactor = () => {
           from
             ? { path: from, namespace: fromNS }
             : {
-                path: useEditorStore.getState().node.path,
-                namespace: useEditorStore.getState().node.namespace
-              }
+              path: useEditorStore.getState().node.path,
+              namespace: useEditorStore.getState().node.namespace
+            }
         }
         highlightWhenSelected
         disallowReserved

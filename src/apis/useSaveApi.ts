@@ -634,6 +634,15 @@ export const useApi = () => {
     return resp
   }
 
+  const deleteNamespace = async (id: string) => {
+    try {
+      const res = await client.delete(apiURLs.namespaces.delete(id), { headers: workspaceHeaders() })
+      if (res) mog('Namespace deleted', { id })
+    } catch (err) {
+      mog('Unable to delete Namesapce', { id })
+    }
+  }
+
   const getAllNamespaces = async () => {
     const namespaces = await client
       .get(apiURLs.namespaces.getAll, {
@@ -775,6 +784,7 @@ export const useApi = () => {
     getAllSnippetsByWorkspace,
     getSnippetById,
     makeNotePublic,
+    deleteNamespace,
     getPublicNoteApi,
     getPublicURL,
     bulkSaveNodes,
@@ -784,6 +794,7 @@ export const useApi = () => {
     saveView,
     deleteView,
     getAllViews,
+    getNotesDataAPI,
     getAllNamespaces,
     changeNamespaceName,
     changeNamespaceIcon,

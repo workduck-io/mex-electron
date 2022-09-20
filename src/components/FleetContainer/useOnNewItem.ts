@@ -3,21 +3,24 @@ import { useCreateNewNote } from '@hooks/useCreateNewNote';
 import { useNamespaces } from '@hooks/useNamespaces';
 import { useSnippets } from '@hooks/useSnippets';
 import { useEditorStore } from '@store/useEditorStore';
+import useModalStore, { ModalsType } from '@store/useModalStore';
 import { useUserPreferenceStore } from '@store/userPreferenceStore';
 import { useSnippetStore } from '@store/useSnippetStore';
 import { ROUTE_PATHS, useRouting, NavigationType } from '@views/routes/urls';
-import { generateSnippetId } from '@workduck-io/mex-utils';
+import { generateSnippetId, mog } from '@workduck-io/mex-utils';
 import generateName from 'project-name-generator'
 
 export const useOnNewItem = () => {
   const ICONS = {
     snippet: 'ri:quill-pen-line',
     note: 'ri:file-list-2-line',
-    space: 'heroicons-outline:view-grid'
+    space: 'heroicons-outline:view-grid',
+    todo: 'ri:task-line'
   }
 
   const loadSnippet = useSnippetStore(store => store.loadSnippet)
   const changeSpace = useUserPreferenceStore(store => store.setActiveNamespace)
+  const openModal = useModalStore(store => store.toggleOpen)
 
   const { goTo } = useRouting()
   const { addSnippet } = useSnippets()
@@ -58,6 +61,11 @@ export const useOnNewItem = () => {
     })
   }
 
+  const onNewTask = () => {
+    mog('Opening modal')
+    openModal(ModalsType.todo)
+  }
+
   const getQuickNewItems = () => {
 
     const data = [{
@@ -75,8 +83,15 @@ export const useOnNewItem = () => {
       name: 'New Space',
       icon: ICONS.space,
       onSelect: onNewSpace,
-    }, {
+    },
+    {
       id: 2,
+      name: 'New Task',
+      icon: ICONS.todo,
+      onSelect: onNewTask,
+    },
+    {
+      id: 3,
       name: 'New Snippet',
       icon: ICONS.snippet,
       onSelect: onNewSnippet,

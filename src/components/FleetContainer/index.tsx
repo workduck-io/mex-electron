@@ -6,7 +6,7 @@ import { useOnNewItem } from './useOnNewItem';
 const FleetContainer = () => {
   const { getQuickNewItems } = useOnNewItem()
   const toggleOpen = useModalStore(store => store.toggleOpen)
-  const open = useModalStore(store => store.open) === ModalsType.quickNew
+  const open = useModalStore(store => store.open === ModalsType.quickNew)
 
   const handleOpen = () => toggleOpen(ModalsType.quickNew)
   const handleClose = () => toggleOpen(undefined)

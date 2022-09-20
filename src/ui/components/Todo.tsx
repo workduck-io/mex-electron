@@ -1,17 +1,11 @@
+import React, { useEffect, useMemo, useState } from 'react'
+
 import { useTodoBuffer } from '@hooks/useTodoBuffer'
 import useTodoBufferStore from '@hooks/useTodoBufferStore'
 import { mog } from '@utils/lib/helper'
-import React, { useEffect, useMemo, useState } from 'react'
+
 import { getNextStatus, PriorityDataType, PriorityType, TodoStatus, TodoType } from '../../editor/Components/Todo/types'
-<<<<<<< Updated upstream
-// import { useReminders } from '../../hooks/useReminders'
-// import { getPureContent } from '../../hooks/useTodoKanban'
-<<<<<<< Updated upstream
-=======
 import useTodoStore from '../../store/useTodoStore'
-=======
->>>>>>> Stashed changes
->>>>>>> Stashed changes
 import { MexIcon } from '../../style/Layouts'
 import PrioritySelect from './Priority/PrioritySelect'
 import { CheckBoxWrapper, StyledTodoStatus, TodoContainer, TodoOptions, TodoText } from './Todo.style'
@@ -33,13 +27,8 @@ interface TodoProps {
   showDelete?: boolean
 }
 
-<<<<<<< Updated upstream
-const Todo = ({ parentNodeId, todoid, children, readOnly, oid, controls, showDelete = true }: TodoProps) => {
-  const [showOptions, setShowOptions] = useState(false)
-=======
 const Todo = React.forwardRef<any, TodoProps>((props, ref) => {
   const { parentNodeId, todoid, children, readOnly, oid, controls, showDelete = true } = props
->>>>>>> Stashed changes
 
   const [showOptions, setShowOptions] = useState(false)
   const [animate, setAnimate] = useState(false)
@@ -67,28 +56,16 @@ const Todo = React.forwardRef<any, TodoProps>((props, ref) => {
   }
 
   const changeStatus = () => {
-<<<<<<< Updated upstream
     if (controls && controls.onChangeStatus) controls.onChangeStatus(todoid, getNextStatus(todo.entityMetadata?.status))
     else {
-      mog("CHANGE STATUS", { parentNodeId, todoid, entityMetadata: {
-          priority: todo.entityMetadata?.priority || PriorityType.noPriority,
-          status: getNextStatus(todo.entityMetadata?.status)
-        } })
-=======
-<<<<<<< Updated upstream
-    if (controls && controls.onChangeStatus) controls.onChangeStatus(todoid, getNextStatus(todo.metadata.status))
-    else updateStatus(parentNodeId, todoid, getNextStatus(todo.metadata.status))
-=======
-    if (controls && controls.onChangeStatus) controls.onChangeStatus(todoid, getNextStatus(todo.entityMetadata?.status))
-    else {
-      mog("CHANGE STATUS", {
-        parentNodeId, todoid, entityMetadata: {
+      mog('CHANGE STATUS', {
+        parentNodeId,
+        todoid,
+        entityMetadata: {
           priority: todo.entityMetadata?.priority || PriorityType.noPriority,
           status: getNextStatus(todo.entityMetadata?.status)
         }
       })
->>>>>>> Stashed changes
-
       updateNoteTodo(parentNodeId, todoid, {
         entityMetadata: {
           priority: todo.entityMetadata?.priority || PriorityType.noPriority,
@@ -96,36 +73,18 @@ const Todo = React.forwardRef<any, TodoProps>((props, ref) => {
         }
       })
     }
-<<<<<<< Updated upstream
-      
-=======
-
->>>>>>> Stashed changes
->>>>>>> Stashed changes
     setAnimate(true)
   }
 
   return (
     <TodoContainer
-<<<<<<< Updated upstream
       key={`BasicTodo_${todo?.nodeid}_${todo?.entityId}_${oid}`}
       id={`BasicTodo_${todo?.nodeid}_${todo?.entityId}_${oid}`}
       checked={todo?.entityMetadata?.status === TodoStatus.completed}
-=======
-<<<<<<< Updated upstream
-      key={`BasicTodo_${todo.nodeid}_${todo.id}_${oid}`}
-      id={`BasicTodo_${todo.nodeid}_${todo.id}_${oid}`}
-      checked={todo?.metadata.status === TodoStatus.completed}
-=======
-      ref={ref}
-      key={`BasicTodo_${todo?.nodeid}_${todo?.entityId}_${oid}`}
-      id={`BasicTodo_${todo?.nodeid}_${todo?.entityId}_${oid}`}
-      checked={todo?.entityMetadata?.status === TodoStatus.completed}
->>>>>>> Stashed changes
->>>>>>> Stashed changes
       onMouseEnter={() => {
         setShowOptions(true)
       }}
+      ref={ref}
       onMouseLeave={() => setShowOptions(false)}
     >
       <CheckBoxWrapper id={`TodoStatusFor_${todo?.entityId}_${oid}`} contentEditable={false}>
@@ -162,5 +121,7 @@ const Todo = React.forwardRef<any, TodoProps>((props, ref) => {
     </TodoContainer>
   )
 })
+
+Todo.displayName = 'Todo'
 
 export default Todo

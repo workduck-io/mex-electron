@@ -106,6 +106,7 @@ export const apiURLs = {
     getAll: `${API_URL}/namespace/all`,
     create: `${API_URL}/namespace`, // POST
     update: `${API_URL}/namespace`, // POST
+    delete: (id: string) => `${API_URL}/namespace/${id}`, // DELETE
     makePublic: (id: string) => `${API_URL}/namespace/makePublic/${id}`,
     makePrivate: (id: string) => `${API_URL}/namespace/makePrivate/${id}`,
     getPublic: (id: string) => `${API_URL}/namespace/public/${id}`
