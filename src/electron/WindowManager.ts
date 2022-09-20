@@ -45,7 +45,6 @@ class WindowManager {
       if (!app.dock.isVisible()) {
         app.dock.show()
       }
-
     })
 
     window.on('blur', () => {
@@ -84,8 +83,7 @@ class WindowManager {
       }
     }
 
-    if (!app.dock.isVisible())
-      app.dock.show()
+    if (!app.dock.isVisible()) app.dock.show()
 
     return window
   }
@@ -93,8 +91,7 @@ class WindowManager {
   public getWindow = (windowId: string): BrowserWindow => {
     const browserWindowId = this.windowRef?.[windowId]
     try {
-      if (browserWindowId)
-        return BrowserWindow.fromId(browserWindowId)
+      if (browserWindowId) return BrowserWindow.fromId(browserWindowId)
     } catch (err) {
       mog('Unable to get Window from ID', { err: err.toString() })
     }
@@ -104,7 +101,7 @@ class WindowManager {
     const allWindows = this.windowRef
 
     if (allWindows) {
-      Object.keys(allWindows).forEach(windowId => this.deleteWindow(windowId))
+      Object.keys(allWindows).forEach((windowId) => this.deleteWindow(windowId))
     }
   }
 
@@ -112,8 +109,8 @@ class WindowManager {
     const allWindows = this.windowRef
 
     if (allWindows) {
-      const windowsToClose = Object.keys(allWindows).filter(windowId => !excludeWindows.includes(windowId))
-      windowsToClose.forEach(windowId => this.getWindow(windowId)?.minimize())
+      const windowsToClose = Object.keys(allWindows).filter((windowId) => !excludeWindows.includes(windowId))
+      windowsToClose.forEach((windowId) => this.getWindow(windowId)?.minimize())
     }
   }
 
