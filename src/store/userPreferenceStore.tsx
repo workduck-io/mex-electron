@@ -58,7 +58,7 @@ export const useUserPreferenceStore = create<UserPreferenceStore>(
       name: USER_PREF_STORE_KEY,
       getStorage: () => indexedDbStorageZustand,
       onRehydrateStorage: () => (state) => {
-        state.setHasHydrated(true)
+        state?.setHasHydrated(true)
       }
     }
   )
