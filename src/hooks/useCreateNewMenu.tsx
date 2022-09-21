@@ -10,6 +10,10 @@ import { useSnippetStore } from '@store/useSnippetStore'
 import { useSnippets } from './useSnippets'
 import { useNamespaces } from './useNamespaces'
 import { useUserPreferenceStore } from '@store/userPreferenceStore'
+import { useLayoutStore } from '@store/useLayoutStore'
+import toast from 'react-hot-toast'
+import InteractiveToast from '@ui/components/InteractiveToast'
+import React from 'react'
 
 interface CreateNewMenuItem {
   id: string
@@ -27,11 +31,27 @@ export const useCreateNewMenu = () => {
   const { addDefaultNewNamespace, getDefaultNamespaceId } = useNamespaces()
   const currentSpace = useUserPreferenceStore((store) => store.activeNamespace)
   const changeSpace = useUserPreferenceStore((store) => store.setActiveNamespace)
+  const expandSidebar = useLayoutStore((store) => store.expandSidebar)
 
   const createNewNamespace = () => {
-    addDefaultNewNamespace().then((ns) => {
-      if (ns) changeSpace(ns.id)
-    })
+    addDefaultNewNamespace()
+      .then((ns) => {
+        if (ns) changeSpace(ns.id)
+        return ns
+      })
+      .then((ns) => {
+        toast.custom((t) => (
+          <InteractiveToast
+            tid={t.id}
+            message={`Created new space: ${ns?.name}`}
+            actionName="Open"
+            onClick={() => {
+              if (ns) changeSpace(ns.id)
+              expandSidebar()
+            }}
+          />
+        ))
+      })
   }
 
   const createNewNoteInNamespace = (namespaceId: string) => {
