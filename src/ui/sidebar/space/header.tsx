@@ -44,19 +44,19 @@ const Header = ({ space }: { space: SidebarSpace }) => {
     if (!name) return
     const namespaceNames = useDataStore
       .getState()
-      .namespaces.filter((ns) => ns.id !== space.id)
+      .namespaces.filter((ns) => ns.id !== space?.id)
       .map((ns) => ns.name)
     const allowRename =
       !namespaceNames.includes(name) && name !== RESERVED_NAMESPACES.default && name !== RESERVED_NAMESPACES.shared
 
     if (allowRename) {
-      changeNamespaceName(space.id, name)
+      changeNamespaceName(space?.id, name)
       setTitle(name)
     } else {
       toast.error('Space already exists!')
       if (inpRef.current) {
-        inpRef.current.value = space.label
-        setTitle(space.label)
+        inpRef.current.value = space?.label
+        setTitle(space?.label)
       }
     }
 
@@ -64,7 +64,7 @@ const Header = ({ space }: { space: SidebarSpace }) => {
   }
 
   const onChangeIcon = (icon: MIcon) => {
-    changeNamespaceIcon(space.id, space.label, icon)
+    changeNamespaceIcon(space?.id, space?.label, icon)
   }
 
   useEffect(() => {
@@ -86,10 +86,10 @@ const Header = ({ space }: { space: SidebarSpace }) => {
   }, [inpRef, showInput])
 
   const isNamespaceInputDisabled =
-    space.label === RESERVED_NAMESPACES.default || space.label === RESERVED_NAMESPACES.shared
+    space?.label === RESERVED_NAMESPACES.default || space?.label === RESERVED_NAMESPACES.shared
 
   const isNamespaceIconDisabled = isNamespaceInputDisabled
-  const showTags = space.popularTags && space.popularTags.length > 0
+  const showTags = space?.popularTags && space?.popularTags.length > 0
   const showSeparator = showTags
 
   return (
@@ -97,9 +97,9 @@ const Header = ({ space }: { space: SidebarSpace }) => {
       <SpaceHeader>
         <SpaceTitleWrapper>
           <SpaceTitle>
-            <IconPicker size={20} allowPicker={!isNamespaceIconDisabled} onChange={onChangeIcon} value={space.icon} />
+            <IconPicker size={20} allowPicker={!isNamespaceIconDisabled} onChange={onChangeIcon} value={space?.icon} />
             {showInput && !isNamespaceInputDisabled ? (
-              <Input defaultValue={space.label} onBlur={(e) => onChangeName(e.target.value)} ref={inpRef} />
+              <Input defaultValue={space?.label} onBlur={(e) => onChangeName(e.target.value)} ref={inpRef} />
             ) : (
               <Tooltip content="Click to rename Space">
                 <SpaceTitleFakeInput
@@ -116,7 +116,7 @@ const Header = ({ space }: { space: SidebarSpace }) => {
           <Tippy
             theme="mex-bright"
             placement="right"
-            content={<TitleWithShortcut title={sidebar.expanded ? 'Collapse Sidebar' : 'Expand Sidebar'} />}
+            content={<TitleWithShortcut title={sidebar?.expanded ? 'Collapse Sidebar' : 'Expand Sidebar'} />}
           >
             <SidebarToggle isVisible={!isUserEdititng} onClick={toggleSidebar} {...getFocusProps(focusMode)}>
               <Icon
@@ -126,7 +126,7 @@ const Header = ({ space }: { space: SidebarSpace }) => {
           </Tippy>
         </SpaceTitleWrapper>
         {/*space.pinnedItems && <space.pinnedItems />*/}
-        {showTags && <TagsLabel tags={space.popularTags} />}
+        {showTags && <TagsLabel tags={space?.popularTags} />}
       </SpaceHeader>
       {showSeparator && <SpaceSeparator />}
     </>
