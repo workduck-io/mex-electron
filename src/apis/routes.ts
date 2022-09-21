@@ -41,7 +41,7 @@ export const API_URL = config.constants.MEX_BACKEND_BASE_URL
 export const apiURLs = {
   //node
   saveNode: `${API_URL}/node`,
-  bulkSaveNodes: `${API_URL}/node/bulkCreate`,
+  bulkSaveNodes: `${API_URL}/node/bulk`,
   getNode: (nodeid: string) => `${API_URL}/node/${nodeid}`,
 
   // * User Preference
