@@ -1,3 +1,4 @@
+import { useWindowSize } from '@hooks/ui/windowSize'
 import { useLayoutStore } from '@store/useLayoutStore'
 import { IconButton } from '@workduck-io/mex-components'
 import { mog } from '@workduck-io/mex-utils'
@@ -7,45 +8,13 @@ import { ForceGraph3D } from 'react-force-graph'
 import { useTheme } from 'styled-components'
 import { getTitleFromPath } from '../../../hooks/useLinks'
 import { useGraphStore } from '../../../store/useGraphStore'
-import { InfobarFull, InfobarTools } from '../../../style/infobar'
+import { InfobarButtons, InfobarFull, InfobarTools } from '../../../style/infobar'
 import Switch from '../Forms/Switch'
 import { CSS2DObject, CSS2DRenderer } from './CSS2Drenderer'
 import { GraphWrapper } from './Graph.styles'
 import NodePreview from './NodePreview'
 
 /* eslint-disable @typescript-eslint/no-explicit-any */
-const options = {
-  autoResize: true,
-  layout: {
-    hierarchical: false
-  },
-  edges: {
-    color: '#5e6c92',
-    smooth: {
-      enabled: true,
-      type: 'dynamic',
-      roundness: 0.5
-    }
-  },
-  nodes: {
-    font: '16px Inter #7D90C3',
-    scaling: {
-      label: true
-    },
-    shape: 'dot'
-  },
-  physics: {
-    barnesHut: {
-      theta: 0.5,
-      gravitationalConstant: -2000,
-      centralGravity: 0.5,
-      springLength: 75,
-      springConstant: 0.04,
-      damping: 0.09,
-      avoidOverlap: 0.5
-    }
-  }
-}
 
 interface TreeGraphProps {
   graphData: { nodes: any; links: any }
@@ -69,6 +38,8 @@ export const TreeGraph = (props: TreeGraphProps) => {
   // const [network, setNetwork] = useState<any>()
 
   const theme = useTheme()
+
+  const windowSize = useWindowSize()
 
   const [state, setState] = useState({
     counter: showLocal ? -graphData.nodes.length : graphData.nodes.length,
@@ -103,7 +74,7 @@ export const TreeGraph = (props: TreeGraphProps) => {
         }
       }))
     }
-  }, [wrapperRef.current, fullscreen, rhSidebar])
+  }, [wrapperRef.current, fullscreen, rhSidebar, windowSize])
 
   const fgRef = useRef<any>(null)
 
@@ -154,14 +125,24 @@ export const TreeGraph = (props: TreeGraphProps) => {
               onChange={() => toggleLocal()}
             />
 
-            <IconButton
-              size={24}
-              icon={fullscreen ? 'gridicons:fullscreen-exit' : 'gridicons:fullscreen'}
-              title="Fullscreen"
-              onClick={() => {
-                toggleFullscreen()
-              }}
-            />
+            <InfobarButtons>
+              <IconButton
+                size={24}
+                icon={'mdi:fit-to-page-outline'}
+                title="Fit to screen"
+                onClick={() => {
+                  if (fgRef.current) fgRef.current.zoomToFit(400)
+                }}
+              />
+              <IconButton
+                size={24}
+                icon={fullscreen ? 'gridicons:fullscreen-exit' : 'gridicons:fullscreen'}
+                title="Fullscreen"
+                onClick={() => {
+                  toggleFullscreen()
+                }}
+              />
+            </InfobarButtons>
           </InfobarTools>
         ) : null}
         {showNodePreview && <NodePreview node={selectedNode} fullscreen={fullscreen} />}
