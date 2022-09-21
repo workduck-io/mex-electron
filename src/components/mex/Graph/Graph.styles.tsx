@@ -30,6 +30,7 @@ export const GraphWrapper = styled.div<{ fullscreen?: boolean }>`
       z-index: 20;
       width: 100%;
       height: 100%;
+      margin-top: 0;
       ${InfobarTools} {
         position: fixed;
         top: ${({ theme }) => theme.spacing.large};

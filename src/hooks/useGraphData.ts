@@ -1,4 +1,5 @@
 import { useUserPreferenceStore } from '@store/userPreferenceStore'
+import { mog } from '@workduck-io/mex-utils'
 import { useTheme } from 'styled-components'
 import { GraphEdge, GraphNode } from '../components/mex/Graph/Graph.types'
 import { ServiceImg } from '../components/mex/Graph/icons'
@@ -22,7 +23,7 @@ import { useNamespaces } from './useNamespaces'
 
 export const useGraphData = () => {
   const ilinks = useDataStore((store) => store.ilinks)
-  const { getDefaultNamespace } = useNamespaces()
+  const { getDefaultNamespace, getNamespace } = useNamespaces()
   const currentnamespace = useUserPreferenceStore((store) => store.activeNamespace)
   const node = useEditorStore((store) => store.node)
   const selectedNode = useGraphStore((state) => state.selectedNode)
@@ -44,7 +45,12 @@ export const useGraphData = () => {
 
   const currentNamespaceID = currentnamespace ? currentnamespace : defaultNamespace.id
 
-  const links = ilinks.filter((l) => l.namespace === currentNamespaceID)
+  const currentNamespace = getNamespace(currentNamespaceID)
+
+  /**
+   * If show local then include all namespaces
+   */
+  const links = ilinks.filter((l) => showLocal || l.namespace === currentNamespaceID)
   const nodes = links.map((node, id): GraphNode => {
     const level = getLevel(node.path)
     return {
@@ -86,14 +92,14 @@ export const useGraphData = () => {
 
     nodes.push({
       id: 0,
-      path: 'root',
+      path: currentNamespace?.name ?? 'Space',
       // label: 'root',
       ...getNodeStyles(0, theme)
     })
 
     return {
       nodes,
-      edges
+      links: edges
     }
   }
 
@@ -175,17 +181,26 @@ export const useGraphData = () => {
   services.forEach((service) => newNodes.push(service))
    */
 
-  nodeLinks.forEach((l) =>
-    edges.push({
-      source: getNodeNumId(l.to, newNodes),
-      target: getNodeNumId(l.from, newNodes),
-      ...getEdgeLocalStyles(l.to === path, theme)
-    })
-  )
+  mog('newNodes', { newNodes, edges, nodeLinks })
+
+  nodeLinks.forEach((l) => {
+    const source = getNodeNumId(l.to, newNodes)
+    const target = getNodeNumId(l.from, newNodes)
+
+    if (source !== -1 && target !== -1) {
+      edges.push({
+        source,
+        target,
+        ...getEdgeLocalStyles(l.to === path, theme)
+      })
+    }
+  })
+
+  // mog('newNodes', { newNodes, edges, nodeLinks })
 
   return {
     nodes: newNodes,
-    edges: edges
+    links: edges
   }
 }
 

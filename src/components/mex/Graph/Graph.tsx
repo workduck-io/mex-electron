@@ -52,7 +52,7 @@ const options = {
 }
 
 interface TreeGraphProps {
-  graphData: { nodes: any; edges: any }
+  graphData: { nodes: any; links: any }
 }
 
 export const TreeGraph = (props: TreeGraphProps) => {
@@ -71,7 +71,7 @@ export const TreeGraph = (props: TreeGraphProps) => {
 
   const showLocal = useGraphStore((state) => state.showLocal)
   const toggleLocal = useGraphStore((state) => state.toggleLocal)
-  const [network, setNetwork] = useState<any>()
+  // const [network, setNetwork] = useState<any>()
 
   const theme = useTheme()
 
@@ -139,35 +139,6 @@ export const TreeGraph = (props: TreeGraphProps) => {
     //     //
     //   }
     // }
-  }
-
-  const getColor = (n) => '#' + ((n * 1234567) % Math.pow(2, 24)).toString(16).padStart(6, '0')
-  const nodePaint = (node, color, ctx) => {
-    const { id, x, y } = node
-    ctx.fillStyle = color
-    // ;[
-    //   () => {
-    //     ctx.fillRect(x - 6, y - 4, 12, 8)
-    //   }, // rectangle
-    //   () => {
-    //     ctx.beginPath()
-    //     ctx.moveTo(x, y - 5)
-    //     ctx.lineTo(x - 5, y + 5)
-    //     ctx.lineTo(x + 5, y + 5)
-    //     ctx.fill()
-    //   }, // triangle
-    // () => {
-    ctx.beginPath()
-    ctx.arc(x, y, 5, 0, 2 * Math.PI, false)
-    ctx.fill()
-    // }, // circle
-    // () => {
-    // ctx.font = '10px Sans-Serif'
-    // ctx.textAlign = 'center'
-    // ctx.textBaseline = 'middle'
-    // ctx.fillText(node.path, x, y)
-    // } // text
-    // ][id % 4]()
   }
 
   useEffect(() => {
@@ -249,7 +220,7 @@ export const TreeGraph = (props: TreeGraphProps) => {
           // width={window.innerWidth}
           // height='calc(100vh - 15.5rem)'
           backgroundColor={theme.colors.background.sidebar}
-          graphData={{ nodes: graph.nodes, links: graph.edges }}
+          graphData={state.graph}
           nodeColor={(node: any) => (node.id === selectedNode?.id ? theme.colors.primary : node.color.background)}
           nodeThreeObject={(node: any) => {
             const nodeEl = document.createElement('div')
