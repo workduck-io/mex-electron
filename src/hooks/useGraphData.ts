@@ -21,9 +21,10 @@ import { useLinks } from './useLinks'
 export const useGraphData = () => {
   const ilinks = useDataStore((store) => store.ilinks)
   const links = ilinks.map((i) => i.path)
-  const path = useEditorStore((store) => store.node.id)
-  const nodeid = useEditorStore((store) => store.node.nodeid)
+  const node = useEditorStore((store) => store.node)
   const selectedNode = useGraphStore((state) => state.selectedNode)
+
+  const { path, nodeid } = node
 
   // * Service Nodes
   // const serviceNodes = useGraphStore((store) => store.serviceNodes)
@@ -102,7 +103,7 @@ export const useGraphData = () => {
   }
 
   if (selectedNode) {
-    const nodeid = getNodeidFromPath(selectedNode.path)
+    const nodeid = getNodeidFromPath(selectedNode.path, selectedNode.namespace)
     if (nodeid) {
       const nodeIntents = getNodeIntents(nodeid) ?? []
       nodeIntents.forEach((nodeIntent, index) => {

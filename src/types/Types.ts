@@ -30,10 +30,17 @@ export interface ComboText {
   icon?: string
 }
 
+// M stands for Multi/Mex/Many (yet to decide)
+export interface MIcon {
+  type: 'URL' | 'ICON' | 'EMOJI'
+  value: string
+}
+
 export interface CheckValidILinkProps {
   notePath: string
   openedNotePath?: string
   showAlert?: boolean
+  namespace?: string
 }
 
 /**  ~~ILinks~~ (Node)
@@ -45,6 +52,8 @@ export interface ILink {
   /** The title of the node.
    * Uses separator for heirarchy */
   path: string
+
+  namespace: string
 
   /** Iconify Icon string */
   icon?: string
@@ -105,10 +114,19 @@ interface SlashCommands {
 
 export interface AddILinkProps {
   ilink: string
+  namespace: string
   nodeid?: string
   openedNotePath?: string
   archived?: boolean
   showAlert?: boolean
+}
+
+export interface SingleNamespace {
+  id: string
+  name: string
+  createdAt: number
+  updatedAt: number
+  icon?: MIcon
 }
 
 export interface DataStoreState {
@@ -124,6 +142,11 @@ export interface DataStoreState {
   initialized: boolean
 
   initializeDataStore: (initData: InitData) => void
+
+  // Namespaces
+  namespaces: SingleNamespace[]
+  setNamespaces: (namespaces: SingleNamespace[]) => void
+  addNamespace: (namespace: SingleNamespace) => void
 
   // adds the node
   addILink: (props: AddILinkProps) => ILink | undefined

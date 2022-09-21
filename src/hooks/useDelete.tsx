@@ -1,3 +1,4 @@
+import { RefactorPath } from '@components/mex/Refactor/types'
 import React from 'react'
 import { getAllParentIds } from '../components/mex/Sidebar/treeUtils'
 import useDataStore from '../store/useDataStore'
@@ -29,21 +30,22 @@ export const useDelete = () => {
   const updateLastOpened = useRecentsStore((state) => state.update)
   const { addArchiveData } = useArchive()
 
-  const getMockArchive = (del: string) => {
+  const getMockArchive = (del: RefactorPath) => {
     const archivedNodes = ilinks.filter((i) => {
-      const match = isMatch(i.path, del)
+      const match = isMatch(i.path, del.path) && i.namespace === del.namespaceID
       return match
     })
 
     const newIlinks = ilinks.filter((i) => archivedNodes.map((i) => i.path).indexOf(i.path) === -1)
 
+    // mog('Mock Archive', { archivedNodes, newIlinks })
     return { archivedNodes, newIlinks }
   }
 
   const getNotesToDelete = (noteId: string, archive: ILink[], notesToDelete: Array<ILink>) => {
     const archiveNote = archive.find((i) => i.parentNodeId === noteId)
 
-    mog('Archive note', { archiveNote, notesToDelete })
+    // mog('Archive note', { archiveNote, notesToDelete })
 
     if (!archiveNote) {
       return notesToDelete
@@ -63,12 +65,13 @@ export const useDelete = () => {
     return notesToDelete
   }
 
-  const execArchive = async (del: string) => {
+  const execArchive = async (del: string, namespace: string) => {
     const currentNode = useEditorStore.getState().node
-    const { archivedNodes, newIlinks } = getMockArchive(del)
+    const { archivedNodes, newIlinks } = getMockArchive({ path: del, namespaceID: namespace })
+    // mog('EXEC ARCHIVE Delete', { archivedNodes, newIlinks })
 
     try {
-      await addArchiveData(archivedNodes)
+      await addArchiveData(archivedNodes, namespace)
 
       // Update history
       const { newIds: newHistory, currentIndex: newCurIndex } = applyDeleteToIds(historyStack, currentIndex, newIlinks)
@@ -92,6 +95,7 @@ export const useDelete = () => {
         await updateDocument('archive', nodeid, content.content, path)
       })
 
+      mog('Delete', { archivedNodes, newIlinks, newHistory, newRecents })
       setILinks(newIlinks)
 
       const allParents = getAllParentIds(currentNode.path)
@@ -99,7 +103,11 @@ export const useDelete = () => {
       let toLoad: string
 
       if (isCurrent) toLoad = currentNode.nodeid
-      if (!toLoad) toLoad = allParents.length > 1 ? getNodeidFromPath(allParents[allParents.length - 2]) : undefined
+      if (!toLoad)
+        toLoad =
+          allParents.length > 1
+            ? getNodeidFromPath(allParents[allParents.length - 2], currentNode.namespace)
+            : undefined
       if (!toLoad) toLoad = newHistory.length > 0 ? newHistory[0] : undefined
       if (!toLoad) toLoad = newIlinks.length > 0 ? newIlinks[0].nodeid : undefined
 

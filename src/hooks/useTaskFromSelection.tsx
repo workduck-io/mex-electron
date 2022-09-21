@@ -7,12 +7,14 @@ import { format } from 'date-fns'
 import { generateTempId } from '@data/Defaults/idPrefixes'
 import { useCreateNewNote } from './useCreateNewNote'
 import { mog } from '@utils/lib/helper'
+import { useSpotlightContext } from '@store/Context/context.spotlight'
 
 export const getTodayTaskNodePath = () => {
   return `${BASE_TASKS_PATH}${SEPARATOR}${format(Date.now(), 'do MMM yyyy')}`
 }
 
 export const useTaskFromSelection = () => {
+  const { selectedNamespace } = useSpotlightContext()
   const { createNewNote } = useCreateNewNote()
 
   const getNewTaskNode = (create?: boolean, nodeContent?: NodeEditorContent) => {
@@ -26,8 +28,9 @@ export const useTaskFromSelection = () => {
       : create
       ? createNewNote({
           path: todayTaskNodePath,
-          parent: dailyTaskNode?.nodeid,
-          noteContent: nodeContent
+          parent: { path: dailyTaskNode?.nodeid, namespace: dailyTaskNode?.namespace },
+          noteContent: nodeContent,
+          namespace: selectedNamespace
         })
       : undefined
 

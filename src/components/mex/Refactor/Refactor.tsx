@@ -1,40 +1,48 @@
-import { hierarchyParser } from '@hooks/useHierarchy'
+import React, { useEffect } from 'react'
+
+// import { hierarchyParser } from '@hooks/useHierarchy'
 import arrowRightLine from '@iconify/icons-ri/arrow-right-line'
 import { Icon } from '@iconify/react'
 import useDataStore from '@store/useDataStore'
-import { Button, DisplayShortcut } from '@workduck-io/mex-components'
-import React, { useEffect } from 'react'
 import Modal from 'react-modal'
-import { tinykeys } from '@workduck-io/tinykeys'
 import create from 'zustand'
-import { useLinks } from '../../../hooks/useLinks'
+
+import { Button, DisplayShortcut } from '@workduck-io/mex-components'
+import { tinykeys } from '@workduck-io/tinykeys'
+
+// import { useLinks } from '../../../hooks/useLinks'
 import { useNavigation } from '../../../hooks/useNavigation'
 import { useRefactor } from '../../../hooks/useRefactor'
 import { useKeyListener } from '../../../hooks/useShortcutListener'
 import { useEditorStore } from '../../../store/useEditorStore'
 import { useHelpStore } from '../../../store/useHelpStore'
+import { useLayoutStore } from '../../../store/useLayoutStore'
 import { NodeLink } from '../../../types/relations'
 import { mog } from '../../../utils/lib/helper'
 import { isMatch, isReserved } from '../../../utils/lib/paths'
 import { QuickLink, WrappedNodeSelect } from '../NodeSelect/NodeSelect'
 import { doesLinkRemain } from './doesLinkRemain'
 import { ArrowIcon, MockRefactorMap, ModalControls, ModalHeader, MRMHead, MRMRow } from './styles'
+import { useUserPreferenceStore } from '@store/userPreferenceStore'
+import useModalStore, { ModalsType } from '@store/useModalStore'
+import { RefactorPath } from './types'
 
 // Prefill modal has been added to the Tree via withRefactor from useRefactor
-
 interface RefactorState {
   open: boolean
   focus: boolean
   mockRefactored: NodeLink[]
   from: string | undefined
   to: string | undefined
+  fromNS: string | undefined
+  toNS: string | undefined
   openModal: () => void
   closeModal: () => void
   setMockRefactored: (mR: NodeLink[]) => void
   setFocus: (focus: boolean) => void
-  setFrom: (from: string) => void
-  setTo: (from: string) => void
-  prefillModal: (from: string, to?: string) => void
+  setFrom: (from: RefactorPath) => void
+  setTo: (from: RefactorPath) => void
+  prefillModal: (from: RefactorPath, to?: RefactorPath) => void
 }
 
 export const useRefactorStore = create<RefactorState>((set) => ({
@@ -42,6 +50,8 @@ export const useRefactorStore = create<RefactorState>((set) => ({
   mockRefactored: [],
   from: undefined,
   to: undefined,
+  fromNS: undefined,
+  toNS: undefined,
   focus: true,
   openModal: () =>
     set({
@@ -59,12 +69,14 @@ export const useRefactorStore = create<RefactorState>((set) => ({
   setMockRefactored: (mockRefactored: NodeLink[]) => {
     set({ mockRefactored })
   },
-  setFrom: (from: string) => set({ from }),
-  setTo: (to: string) => set({ to }),
-  prefillModal: (from: string, to?: string) =>
+  setFrom: (from: RefactorPath) => set({ from: from.path, fromNS: from.namespaceID }),
+  setTo: (to: RefactorPath) => set({ to: to.path, toNS: to.namespaceID }),
+  prefillModal: (from: RefactorPath, to?: RefactorPath) =>
     set({
-      from,
-      to,
+      from: from.path,
+      fromNS: from.namespaceID,
+      to: to?.path,
+      toNS: to?.namespaceID,
       open: true,
       focus: false
     })
@@ -78,23 +90,26 @@ export const useRefactorStore = create<RefactorState>((set) => ({
  * Shows mock refactored nodes before executing
  */
 const Refactor = () => {
-  const open = useRefactorStore((store) => store.open)
+  const open = useModalStore((store) => store.open === ModalsType.refactor)
+  const toggleModal = useModalStore((store) => store.toggleOpen)
   const focus = useRefactorStore((store) => store.focus)
   const to = useRefactorStore((store) => store.to)
   const from = useRefactorStore((store) => store.from)
+  const fromNS = useRefactorStore((store) => store.fromNS)
+  const toNS = useRefactorStore((store) => store.toNS)
   const mockRefactored = useRefactorStore((store) => store.mockRefactored)
   const shortcuts = useHelpStore((store) => store.shortcuts)
 
-  const openModal = useRefactorStore((store) => store.openModal)
-  const closeModal = useRefactorStore((store) => store.closeModal)
   const setMockRefactored = useRefactorStore((store) => store.setMockRefactored)
   const setTo = useRefactorStore((store) => store.setTo)
   const setFrom = useRefactorStore((store) => store.setFrom)
-  const setBaseNodeId = useDataStore((store) => store.setBaseNodeId)
-
+  // const setBaseNodeId = useDataStore((store) => store.setBaseNodeId)
+  const currentSpace = useUserPreferenceStore((store) => store.activeNamespace)
+  // const layoutStore = useLayoutStore((store) => store.sidebar)
   const { push } = useNavigation()
-  const { updateILinks } = useLinks()
+  // const { updateILinks } = useLinks()
   const { shortcutDisabled, shortcutHandler } = useKeyListener()
+  const namespaces = useDataStore((store) => store.namespaces)
 
   useEffect(() => {
     const unsubscribe = tinykeys(window, {
@@ -119,27 +134,37 @@ const Refactor = () => {
 
   const handleFromChange = (quickLink: QuickLink) => {
     const newValue = quickLink.value
-    if (newValue) {
-      setFrom(newValue)
+    const newNS = quickLink.namespace ?? namespaces[0].id
+    if (newValue && newNS) {
+      setFrom({ path: newValue, namespaceID: newNS })
     }
+  }
+
+  const openModal = () => {
+    toggleModal(ModalsType.refactor)
+  }
+
+  const closeModal = () => {
+    toggleModal(undefined)
   }
 
   const handleToChange = (quickLink: QuickLink) => {
     const newValue = quickLink.value
-    if (newValue) {
-      setTo(newValue)
+    const newNS = quickLink.namespace ?? currentSpace ?? namespaces[0].id
+    if (newValue && newNS) {
+      setTo({ path: newValue, namespaceID: newNS })
     }
   }
 
   const handleToCreate = (quickLink: QuickLink) => {
     const inputValue = quickLink.value
-    if (inputValue) {
-      setTo(inputValue)
+    const newNS = quickLink.namespace ?? currentSpace ?? namespaces[0].id
+    if (inputValue && newNS) {
+      setTo({ path: inputValue, namespaceID: newNS })
     }
   }
 
   const { getMockRefactor, execRefactorAsync } = useRefactor()
-  const { getNodeidFromPath } = useLinks()
 
   useEffect(() => {
     // mog('Refactor', { open, to, from })
@@ -152,31 +177,16 @@ const Refactor = () => {
   // console.log({ mockRefactored });
 
   const handleRefactor = async () => {
-    mog('Refactor', { open, to, from })
+    // mog('Refactor', { open, to, from })
     if (to && from && !isReserved(from) && !isReserved(to)) {
-      const res = await execRefactorAsync(from, to)
+      const refactored = await execRefactorAsync({ path: from, namespaceID: fromNS }, { path: to, namespaceID: toNS })
 
-      const { addedPaths, removedPaths } = res
-      const addedILinks = hierarchyParser(addedPaths)
-      const removedILinks = hierarchyParser(removedPaths)
-
-      mog('RESULT OF REFACTORING', { addedILinks, removedILinks })
-
-      // // * set the new hierarchy in the tree
-      const refactored = updateILinks(addedILinks, removedILinks)
-
-      // const baseId = linkInRefactor(useDataStore.getState().baseNodeId, refactored)
-      // if (baseId !== false) {
-      //   setBaseNodeId(baseId.to)
-      // }
-
-      const path = useEditorStore.getState().node.path
       const nodeid = useEditorStore.getState().node.nodeid
 
-      if (doesLinkRemain(path, refactored)) {
+      if (doesLinkRemain(nodeid, refactored)) {
         push(nodeid, { savePrev: false })
-      } else if (res.length > 0) {
-        const nodeid = getNodeidFromPath(res[0].to)
+      } else if (refactored.length > 0) {
+        const nodeid = refactored[0].nodeid
         push(nodeid, { savePrev: false })
       }
     }
@@ -186,6 +196,8 @@ const Refactor = () => {
 
   // mog('Refactor', { open, focus, to, from, mockRefactored })
   return (
+    // eslint-disable-next-line
+    // @ts-ignore
     <Modal className="ModalContent" overlayClassName="ModalOverlay" onRequestClose={closeModal} isOpen={open}>
       <ModalHeader>Refactor</ModalHeader>
 
@@ -195,7 +207,14 @@ const Refactor = () => {
         menuOpen={focus}
         autoFocus={focus}
         autoFocusSelectAll
-        defaultValue={from ?? useEditorStore.getState().node.path}
+        defaultValue={
+          from
+            ? { path: from, namespace: fromNS }
+            : {
+                path: useEditorStore.getState().node.path,
+                namespace: useEditorStore.getState().node.namespace
+              }
+        }
         highlightWhenSelected
         disallowReserved
         iconHighlight={from !== undefined}
@@ -210,7 +229,7 @@ const Refactor = () => {
         createAtTop
         disallowClash
         iconHighlight={to !== undefined}
-        defaultValue={to ?? ''}
+        defaultValue={to ? { path: to, namespace: toNS } : undefined}
         handleSelectItem={handleToChange}
         handleCreateItem={handleToCreate}
       />

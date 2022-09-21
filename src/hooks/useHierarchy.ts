@@ -5,11 +5,13 @@ import { HASH_SEPARATOR } from '@data/Defaults/idPrefixes'
 import { useDataSaverFromContent } from '@editor/Components/Saver'
 import useDataStore from '@store/useDataStore'
 import { mog } from '@utils/lib/helper'
+
 import { ILink, NodeEditorContent } from '../types/Types'
 import { getNodeidFromPathAndLinks } from './useLinks'
 
 export const hierarchyParser = (
   linkData: string[],
+  namespace: string,
   options?: { withParentNodeId: boolean; allowDuplicates?: boolean }
 ): ILink[] => {
   const ilinks: ILink[] = []
@@ -32,8 +34,8 @@ export const hierarchyParser = (
 
       /*
           Drafts.A and Drafts.B exist, we need to check if the Drafts parent node is the same by checking
-          the parent nodeUID. This handles the case in which a nodeID might have two different node paths. 
- 
+          the parent nodeUID. This handles the case in which a nodeID might have two different node paths.
+
           We still do not handle the case where there are 2 nodes with the same path but different Node IDs,
           we handle that on the frontend for now
         */
@@ -48,12 +50,12 @@ export const hierarchyParser = (
         }
       } else if (pathIdMapping[nodePath] && !options?.allowDuplicates) {
         // mog(`Found existing notePath: ${nodePath} with ${nodeID} at index: ${pathIdMapping[nodePath].index}`)
-        ilinks[pathIdMapping[nodePath].index] = { nodeid: nodeID, path: nodePath }
+        ilinks[pathIdMapping[nodePath].index] = { nodeid: nodeID, path: nodePath, namespace }
       } else {
         // mog(`Inserting: ${nodePath} with ${nodeID} at index: ${ilinks.length}`)
         idPathMapping[nodeID] = nodePath
         pathIdMapping[nodePath] = { nodeid: nodeID, index: ilinks.length }
-        const ilink: ILink = { nodeid: nodeID, path: nodePath }
+        const ilink: ILink = { nodeid: nodeID, path: nodePath, namespace }
         ilinks.push(options?.withParentNodeId ? { ...ilink, parentNodeId } : ilink)
       }
 
@@ -74,14 +76,14 @@ export const useHierarchy = () => {
   const { saveNewNodeAPI, bulkSaveNodes } = useApi()
   const { saveEditorValueAndUpdateStores } = useDataSaverFromContent()
 
-  const createNoteHierarchyString = (notePath: string) => {
+  const createNoteHierarchyString = (notePath: string, namespace: string) => {
     const ilinks = useDataStore.getState().ilinks
     let prefix = ''
 
     const noteLink = notePath.split(SEPARATOR).reduce((prevPath, currentNotePath) => {
       prefix = appendToText(prefix, currentNotePath)
 
-      const currentNoteId = getNodeidFromPathAndLinks(ilinks, prefix)
+      const currentNoteId = getNodeidFromPathAndLinks(ilinks, prefix, namespace)
       const linkWithTitle = appendToText(prevPath, currentNotePath, HASH_SEPARATOR)
       const link = appendToText(linkWithTitle, currentNoteId, HASH_SEPARATOR)
 
@@ -95,6 +97,7 @@ export const useHierarchy = () => {
     noteId: string
     notePath: string
     parentNoteId: string
+    namespace: string
     noteContent?: NodeEditorContent
   }) => {
     try {
@@ -102,20 +105,20 @@ export const useHierarchy = () => {
       mog('OPTIONS ARE', { options })
 
       const content = noteContent ?? defaultContent.content
-      const bulkNotePath = !parentNoteId ? createNoteHierarchyString(notePath) : notePath
+      const bulkNotePath = !parentNoteId ? createNoteHierarchyString(notePath, options.namespace) : notePath
 
       const node = parentNoteId
-        ? await saveNewNodeAPI(noteId, {
+        ? await saveNewNodeAPI(noteId, options.namespace, {
             path: notePath,
             parentNoteId,
             content
           })
-        : await bulkSaveNodes(noteId, {
+        : await bulkSaveNodes(noteId, options.namespace, {
             path: bulkNotePath,
             content
           })
 
-      saveEditorValueAndUpdateStores(noteId, content, { saveApi: false })
+      saveEditorValueAndUpdateStores(noteId, node.namespace, content, { saveApi: false })
 
       return node
     } catch (error) {

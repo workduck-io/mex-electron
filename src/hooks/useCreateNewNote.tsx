@@ -10,40 +10,58 @@ import { useNavigation } from './useNavigation'
 import { useLastOpened } from './useLastOpened'
 import { useContentStore } from '@store/useContentStore'
 import { useSnippets } from './useSnippets'
+import { useNamespaces } from './useNamespaces'
+import { DRAFT_NODE, mog } from '@workduck-io/mex-utils'
+import { NavigationType, ROUTE_PATHS, useRouting } from '@views/routes/urls'
+import { useSpotlightContext } from '@store/Context/context.spotlight'
 
 export type NewNoteOptions = {
   path?: string
-  parent?: string
+  parent?: {
+    path: string
+    namespace: string
+  }
   noteId?: string
   noteContent?: NodeEditorContent
   openedNotePath?: string
   noRedirect?: boolean
+  // If provided added to that namespace
+  // Otherwise default namespace
+  namespace?: string
 }
 
 export const useCreateNewNote = () => {
   const { push } = useNavigation()
+  const { goTo } = useRouting()
   const addILink = useDataStore((s) => s.addILink)
   const checkValidILink = useDataStore((s) => s.checkValidILink)
   const getMetadata = useContentStore((s) => s.getMetadata)
   const { getSnippet } = useSnippets()
+  const spotlightContext = useSpotlightContext()
 
   const { saveNodeName } = useLoad()
   const { getParentILink } = useLinks()
   const { addInHierarchy } = useHierarchy()
   const { addLastOpened } = useLastOpened()
+  const { getDefaultNamespace } = useNamespaces()
 
   const createNewNote = (options?: NewNoteOptions) => {
-    const childNodepath = options?.parent !== undefined ? getUntitledKey(options?.parent) : getUntitledDraftKey()
+    const childNodepath = options?.parent !== undefined ? getUntitledKey(options?.parent.path) : getUntitledDraftKey()
+    const defaultNamespace = getDefaultNamespace()
 
-    const newNotePath = options?.path || childNodepath
+    const namespacePath = options?.namespace && options?.namespace !== defaultNamespace?.id ? DRAFT_NODE : childNodepath
+
+    const newNotePath = options?.path || namespacePath
 
     const uniquePath = checkValidILink({
       notePath: newNotePath,
       openedNotePath: options?.openedNotePath,
-      showAlert: false
+      showAlert: false,
+      namespace: options?.parent?.namespace ?? options?.namespace
     })
 
-    const parentNote = getParentILink(uniquePath)
+    // Use namespace of parent if namespace not provided
+    const parentNote = getParentILink(uniquePath, options?.parent?.namespace ?? options?.namespace)
     const parentNoteId = parentNote?.nodeid
 
     const nodeMetadata = getMetadata(parentNoteId)
@@ -52,11 +70,15 @@ export const useCreateNewNote = () => {
       options?.noteContent ||
       (nodeMetadata?.templateID && parentNote?.path !== 'Drafts' && getSnippet(nodeMetadata.templateID)?.content)
 
+    // TODO: Get default namespace name here
+    const namespace = options?.namespace ?? parentNote?.namespace ?? defaultNamespace?.id
+
     const node = addILink({
       ilink: newNotePath,
       nodeid: options?.noteId,
       openedNotePath: options?.openedNotePath,
-      showAlert: false
+      showAlert: false,
+      namespace
     })
 
     if (node === undefined) {
@@ -65,22 +87,24 @@ export const useCreateNewNote = () => {
       return undefined
     }
 
-    // mog('NODE CREATED IS HERE', { node })
-
     addInHierarchy({
       noteId: node.nodeid,
       notePath: node.path,
       parentNoteId,
-      noteContent
+      noteContent,
+      namespace: node.namespace
+    }).then(() => {
+      saveNodeName(useEditorStore.getState().node.nodeid)
+
+      addLastOpened(node.nodeid)
     })
-    saveNodeName(useEditorStore.getState().node.nodeid)
-
-    addLastOpened(node.nodeid)
-
     if (!options?.noRedirect) {
       push(node.nodeid, { withLoading: false, fetch: false })
-    }
 
+      if (!spotlightContext) {
+        goTo(ROUTE_PATHS.node, NavigationType.push, node.nodeid)
+      }
+    }
     return node
   }
 

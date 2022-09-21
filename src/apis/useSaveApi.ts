@@ -11,6 +11,7 @@ import { getTagsFromContent } from '@utils/lib/content'
 import toast from 'react-hot-toast'
 
 import { client } from '@workduck-io/dwindle'
+import { allNamespacesHierarchyParser } from '@workduck-io/mex-utils'
 
 import { defaultContent } from '../data/Defaults/baseData'
 import { DEFAULT_NAMESPACE, WORKSPACE_HEADER } from '../data/Defaults/defaults'
@@ -20,16 +21,20 @@ import '../services/apiClient/apiClient'
 import { useAuthStore } from '../services/auth/useAuth'
 import { isRequestedWithin } from '../store/useApiStore'
 import { useContentStore } from '../store/useContentStore'
-import { ILink, NodeEditorContent } from '../types/Types'
+import { ILink, MIcon, NodeEditorContent } from '../types/Types'
 import { mog } from '../utils/lib/helper'
 import { extractMetadata } from '../utils/lib/metadata'
 import { deserializeContent, serializeContent } from '../utils/lib/serialize'
 import { apiURLs } from './routes'
+import { generateNamespaceId } from '@data/Defaults/idPrefixes'
+import { useSearch } from '@hooks/useSearch'
 
 const API_CACHE_LOG = `\nAPI has been requested before, cancelling.\n`
 
 export const useApi = () => {
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  //
+  const { updateDocument } = useSearch()
   const getWorkspaceId = useAuthStore((store) => store.getWorkspaceId)
   const getMetadata = useContentStore((store) => store.getMetadata)
   const setMetadata = useContentStore((store) => store.setMetadata)
@@ -37,7 +42,10 @@ export const useApi = () => {
   const { getTitleFromNoteId, updateILinks } = useLinks()
   const { getSharedNode } = useNodes()
   const { addLastOpened } = useLastOpened()
+  const addInArchive = useDataStore((store) => store.addInArchive)
   const setILinks = useDataStore((store) => store.setIlinks)
+  const setNamespaces = useDataStore((s) => s.setNamespaces)
+  const setArchive = useDataStore((state) => state.setArchive)
   const initSnippets = useSnippetStore((store) => store.initSnippets)
 
   const { updateFromContent } = useUpdater()
@@ -54,6 +62,7 @@ export const useApi = () => {
 
   const saveNewNodeAPI = async (
     noteId: string,
+    namespace: string,
     options?: {
       path: string
       parentNoteId: string
@@ -64,7 +73,7 @@ export const useApi = () => {
       id: noteId,
       title: getTitleFromNoteId(noteId),
       referenceID: options?.parentNoteId,
-      namespaceIdentifier: DEFAULT_NAMESPACE,
+      namespaceID: namespace,
       type: 'NodeRequest',
       tags: getTagsFromContent(options.content),
       data: serializeContent(options.content, noteId)
@@ -95,6 +104,7 @@ export const useApi = () => {
 
   const bulkSaveNodes = async (
     noteId: string,
+    namespace: string,
     options: {
       path: string
       content: NodeEditorContent
@@ -102,10 +112,11 @@ export const useApi = () => {
   ) => {
     const reqData = {
       nodePath: {
-        path: options.path
+        path: options.path,
+        namespaceID: namespace
       },
       title: getTitleFromNoteId(noteId),
-      namespaceIdentifier: DEFAULT_NAMESPACE,
+      namespaceID: namespace,
       type: 'NodeBulkRequest',
       tags: getTagsFromContent(options.content),
       data: serializeContent(options.content, noteId)
@@ -118,14 +129,23 @@ export const useApi = () => {
         headers: workspaceHeaders()
       })
       .then((d: any) => {
-        const { addedPaths, removedPaths, node } = d.data
-        const addedILinks = hierarchyParser(addedPaths)
-        const removedILinks = hierarchyParser(removedPaths)
+        // mog('bulkSaveNodes', d)
+        const { changedPaths, node } = d.data
+        const addedILinks = []
+        const removedILinks = []
+        changedPaths.forEach((nsObject) => {
+          Object.entries(nsObject).forEach(([nsId, addedRemovedPathObj]: any) => {
+            const nsAddedILinks = hierarchyParser(addedRemovedPathObj.addedPaths, nsId)
+            const nsRemovedILinks = hierarchyParser(addedRemovedPathObj.removedPaths, nsId)
+
+            addedILinks.push(...nsAddedILinks)
+            removedILinks.push(...nsRemovedILinks)
+          })
+        })
+        updateILinks(addedILinks, removedILinks)
         setMetadata(noteId, extractMetadata(node))
 
-        mog('create new request', { d })
         // * set the new hierarchy in the tree
-        updateILinks(addedILinks, removedILinks)
         addLastOpened(noteId)
 
         return d.data
@@ -138,12 +158,19 @@ export const useApi = () => {
    * Saves data in the backend
    * Also updates the incoming data in the store
    */
-  const saveDataAPI = async (nodeid: string, content: any[], isShared = false, title?: string, templateID?: string) => {
+  const saveDataAPI = async (
+    nodeid: string,
+    namespace: string,
+    content: any[],
+    isShared = false,
+    title?: string,
+    templateID?: string
+  ) => {
     const reqData = {
       id: nodeid,
       type: 'NodeRequest',
       title: title || getTitleFromNoteId(nodeid),
-      namespaceIdentifier: DEFAULT_NAMESPACE,
+      namespaceID: namespace,
       tags: getTagsFromContent(content),
       data: serializeContent(content ?? defaultContent.content, nodeid),
       // Because we have to send templateID with every node save call so that it doesn't get unset
@@ -218,8 +245,8 @@ export const useApi = () => {
   }
 
   const refactorNotes = async (
-    existingNodePath: { path: string; namespaceId?: string },
-    newNodePath: { path: string; namespaceId?: string },
+    existingNodePath: { path: string; namespaceID?: string },
+    newNodePath: { path: string; namespaceID?: string },
     nodeId: string
   ) => {
     const reqData = {
@@ -285,7 +312,6 @@ export const useApi = () => {
       return
     }
 
-    // console.warn('\n\n\n\nAPI has not been requested before, requesting\n\n\n\n')
     const res = await client
       .get(url, {
         headers: workspaceHeaders()
@@ -310,32 +336,61 @@ export const useApi = () => {
 
   const getNodesByWorkspace = async (): Promise<ILink[]> => {
     const data = await client
-      .get(apiURLs.getHierarchy(), {
+      .get(apiURLs.namespaces.getHierarchy, {
         headers: workspaceHeaders()
       })
-      .then((d) => {
+      .then(async (d) => {
         if (d.data) {
-          const hierarchy = d.data.hierarchy || []
+          const hierarchy = d.data.hierarchy || {}
           const nodesMetadata = d.data.nodesMetadata || {}
-          const nodes = hierarchyParser(hierarchy).map((ilink) => ({
-            ...ilink,
-            createdAt: nodesMetadata[ilink.nodeid]?.createdAt || Infinity,
-            updatedAt: nodesMetadata[ilink.nodeid]?.updatedAt || Infinity
-          }))
+
+          const parsedHierarchies = allNamespacesHierarchyParser(hierarchy)
+
+          // We create the list of nodes with their respective namespaces
+          // And the details of the namespaces from parsed data
+          const { nodes, namespaces } = Object.entries(parsedHierarchies).reduce(
+            (p, [namespaceid, namespaceData]) => {
+              return {
+                namespaces: [
+                  ...p.namespaces,
+                  {
+                    id: namespaceid,
+                    name: namespaceData.name
+                  }
+                ],
+                nodes: [
+                  ...p.nodes,
+                  ...namespaceData.nodeHierarchy.map((ilink) => ({
+                    ...ilink,
+                    namespace: namespaceid,
+                    createdAt: nodesMetadata[ilink.nodeid]?.createdAt || Infinity,
+                    updatedAt: nodesMetadata[ilink.nodeid]?.updatedAt || Infinity
+                  }))
+                ]
+              }
+            },
+            { nodes: [], namespaces: [] }
+          )
 
           if (nodes && nodes.length > 0) {
             const localILinks = useDataStore.getState().ilinks
             const { toUpdateLocal } = iLinksToUpdate(localILinks, nodes)
 
-            runBatch(toUpdateLocal.map((ilink) => getDataAPI(ilink.nodeid)))
-
+            await runBatch(toUpdateLocal.map((ilink) => getDataAPI(ilink.nodeid)))
             // ipcRenderer.send(IpcAction.UPDATE_ILINKS, { ilinks: nodes }) // * Synced
           }
 
+          // setNamespaces(namespaces)
           setILinks(nodes)
+
+          // mog('Name the spaces', { namespaces, nodes })
 
           return nodes
         }
+      })
+      .catch((e) => {
+        mog('Error fetching namespaces', { e })
+        return []
       })
 
     return data
@@ -504,6 +559,137 @@ export const useApi = () => {
     return resp
   }
 
+  const getAllNamespaces = async () => {
+    const namespaces = await client
+      .get(apiURLs.namespaces.getAll, {
+        headers: workspaceHeaders()
+      })
+      .then((d) => {
+        mog('namespaces all', d.data)
+        return d.data.map((item: any) => ({
+          ns: {
+            id: item.id,
+            name: item.name,
+            icon: item.namespaceMetadata?.icon ?? undefined,
+            createdAt: item.createdAt,
+            updatedAt: item.updatedAt
+          },
+          archiveHierarchy: item.archivedNodeHierarchyInformation
+        }))
+      })
+      .catch((e) => {
+        mog('Save error', e)
+        return undefined
+      })
+
+    if (namespaces) {
+      setNamespaces(namespaces.map((n) => n.ns))
+      namespaces.map((n) => {
+        const archivedNotes = hierarchyParser(n.archiveHierarchy, n.ns.id, {
+          withParentNodeId: true,
+          allowDuplicates: true
+        })
+
+        if (archivedNotes && archivedNotes.length > 0) {
+          const localILinks = useDataStore.getState().archive
+          const { toUpdateLocal } = iLinksToUpdate(localILinks, archivedNotes)
+
+          mog('toUpdateLocal', { n, toUpdateLocal, archivedNotes })
+
+          runBatch(
+            toUpdateLocal.map((ilink) =>
+              getDataAPI(ilink.nodeid, false, false, false).then((data) => {
+                mog('toUpdateLocal', { ilink, data })
+                setContent(ilink.nodeid, data.content, data.metadata)
+                updateDocument('archive', ilink.nodeid, data.content)
+              })
+            )
+          ).then(() => {
+            addInArchive(archivedNotes)
+          })
+        }
+      })
+    }
+  }
+
+  const createNewNamespace = async (name: string) => {
+    try {
+      const res = await client
+        .post(
+          apiURLs.namespaces.create,
+          {
+            type: 'NamespaceRequest',
+            name,
+            id: generateNamespaceId(),
+            metadata: {
+              iconUrl: 'heroicons-outline:view-grid'
+            }
+          },
+          {
+            headers: workspaceHeaders()
+          }
+        )
+        .then((d) => ({
+          id: d?.data?.id,
+          name: d?.data?.name,
+          iconUrl: d?.data?.metadata?.iconUrl,
+          createdAt: d?.data?.createdAt,
+          updatedAt: d?.data?.updatedAt
+        }))
+
+      mog('We created a namespace', { res })
+
+      return res
+    } catch (err) {
+      toast('Unable to Create New Namespace')
+    }
+  }
+
+  const changeNamespaceName = async (id: string, name: string) => {
+    try {
+      const res = await client
+        .patch(
+          apiURLs.namespaces.update,
+          {
+            type: 'NamespaceRequest',
+            id,
+            name
+          },
+          {
+            headers: workspaceHeaders()
+          }
+        )
+        .then(() => true)
+      return res
+    } catch (err) {
+      throw new Error('Unable to update namespace')
+    }
+  }
+
+  const changeNamespaceIcon = async (id: string, name: string, icon: MIcon) => {
+    try {
+      const res = await client
+        .patch(
+          apiURLs.namespaces.update,
+          {
+            type: 'NamespaceRequest',
+            id,
+            name,
+            metadata: {
+              icon
+            }
+          },
+          {
+            headers: workspaceHeaders()
+          }
+        )
+        .then(() => icon)
+      return res
+    } catch (err) {
+      throw new Error('Unable to update namespace icon')
+    }
+  }
+
   return {
     saveDataAPI,
     getDataAPI,
@@ -522,7 +708,11 @@ export const useApi = () => {
     getGoogleAuthUrl,
     saveView,
     deleteView,
-    getAllViews
+    getAllViews,
+    getAllNamespaces,
+    changeNamespaceName,
+    changeNamespaceIcon,
+    createNewNamespace
   }
 }
 

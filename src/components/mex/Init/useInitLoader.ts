@@ -24,7 +24,7 @@ export const useInitLoader = () => {
 
   const { initActionPerfomerClient } = useActionsPerfomerClient()
 
-  const { getNodesByWorkspace, getAllSnippetsByWorkspace } = useApi()
+  const { getNodesByWorkspace, getAllSnippetsByWorkspace, getAllNamespaces } = useApi()
   const { getArchiveNotesHierarchy } = useArchive()
   const { getGroupsToView } = useActions()
   const { logout } = useAuthentication()
@@ -43,7 +43,13 @@ export const useInitLoader = () => {
     initActionPerfomerClient(useAuthStore.getState().userDetails?.userID)
     setShowLoader(true)
     try {
-      await runBatch<any>([getNodesByWorkspace(), getAllSnippetsByWorkspace(), getGroupsToView(), initPortals()])
+      await runBatch<any>([
+        getNodesByWorkspace(),
+        getAllSnippetsByWorkspace(),
+        getAllNamespaces(),
+        getGroupsToView(),
+        initPortals()
+      ])
 
       const baseNode = updateBaseNode()
       loadNode(baseNode?.nodeid, { savePrev: false, fetch: false })

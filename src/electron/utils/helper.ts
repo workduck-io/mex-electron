@@ -2,9 +2,8 @@ import { IpcAction } from '@data/IpcAction'
 import Toast from '@electron/Toast'
 import { windows } from '@electron/main'
 import MenuBuilder from '@electron/menu'
-import { mog } from '@utils/lib/helper'
 import { sanitizeHtml } from '@utils/sanitizeHtml'
-import { session, app, BrowserWindow, screen } from 'electron'
+import { session, BrowserWindow, screen } from 'electron'
 
 import { windowManager } from '../WindowManager'
 import { SelectionType, getSelectedTextSync, getSelectedText } from './getSelectedText'
@@ -111,18 +110,20 @@ export const createNoteWindow = (dataForPreviewWindow: { from: AppType; data: an
       ? import.meta.env.VITE_NOTE_WINDOW_DEV_SERVER_URL
       : new URL('dist/note.html', 'file://' + __dirname).toString()
 
-  app.dock.show()
   windowManager.createWindow(dataForPreviewWindow?.data?.noteId, {
     windowConstructorOptions: PINNED_NOTES_WINDOW_OPTIONS,
     loadURL: { url: noteWindow },
     onClose: () => {
       windowManager.sendToWindow(AppType.MEX, IpcAction.UNPIN_NOTE, { noteId: dataForPreviewWindow?.data?.noteId })
     },
-    debug: false,
+    handleCloseManually: (noteWindow => {
+      noteWindow?.webContents?.send(IpcAction.SAVE_AND_QUIT, { noteId: dataForPreviewWindow?.data?.noteId })
+    }),
+    deleteOnClose: true,
     alwaysOnTop: true,
     onLoad: (window) => {
       if (dataForPreviewWindow) {
-        const { from, data } = dataForPreviewWindow
+        const { data } = dataForPreviewWindow
         window?.webContents?.send(IpcAction.PIN_NOTE_WINDOW, data)
       }
     }
@@ -139,6 +140,9 @@ export const createMexWindow = (onLoad?: (window: BrowserWindow) => void) => {
   const ref = windowManager.createWindow(AppType.MEX, {
     windowConstructorOptions: MEX_WINDOW_OPTIONS,
     loadURL: { url: mexURL },
+    handleCloseManually: (window) => {
+      window.webContents.send(IpcAction.SAVE_AND_QUIT)
+    },
     onLoad: (window) => {
       if (onLoad) onLoad(window)
     },
@@ -188,9 +192,10 @@ export const createAllWindows = (d: any) => {
   const spotlightWindowRef = createSpotLighWindow()
 
   windows.toast = new Toast(spotlightWindowRef)
-  if (process.platform === 'darwin') {
-    app.dock.show()
-  }
+
+  // if (process.platform === 'darwin') {
+  //   app.dock.show()
+  // }
 }
 
 export const closeWindow = () => {

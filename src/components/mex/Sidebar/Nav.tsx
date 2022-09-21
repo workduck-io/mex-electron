@@ -1,14 +1,9 @@
 import WDLogo from '@components/spotlight/Search/Logo'
-import { getRandomQAContent } from '@data/Defaults/baseData'
 import { SidebarToggles, TrafficLightBG } from './logo'
 import useNavlinks, { GetIcon } from '@data/links'
-import { useCreateNewNote } from '@hooks/useCreateNewNote'
 import useLayout from '@hooks/useLayout'
-import { useKeyListener } from '@hooks/useShortcutListener'
-import addCircleLine from '@iconify/icons-ri/add-circle-line'
 import searchLine from '@iconify/icons-ri/search-line'
 import settings4Line from '@iconify/icons-ri/settings-4-line'
-import { Icon } from '@iconify/react'
 import useDataStore from '@store/useDataStore'
 import { useHelpStore } from '@store/useHelpStore'
 import { useLayoutStore } from '@store/useLayoutStore'
@@ -17,7 +12,6 @@ import { useEditorStore } from '@store/useEditorStore'
 import {
   ComingSoon,
   Count,
-  CreateNewButton,
   EndLinkContainer,
   Link,
   MainLinkContainer,
@@ -29,59 +23,57 @@ import {
   SideNav
 } from '@style/Nav'
 import { useSingleton } from '@tippyjs/react'
-import { NavigationType, ROUTE_PATHS, useRouting } from '@views/routes/urls'
-import React, { useEffect } from 'react'
-import { tinykeys } from '@workduck-io/tinykeys'
+import { ROUTE_PATHS } from '@views/routes/urls'
+import React from 'react'
 import NavigationCluster from './NavigationCluster'
 import SidebarTabs from '@ui/sidebar/Sidebar'
 import { useSidebarTransition } from './Transition'
 import { NavTooltip, TitleWithShortcut } from '@workduck-io/mex-components'
 
-const CreateNewNote: React.FC<{ target: any }> = ({ target }) => {
-  const { goTo } = useRouting()
-  const { createNewNote } = useCreateNewNote()
-  const shortcuts = useHelpStore((store) => store.shortcuts)
+// const CreateNewNote: React.FC<{ target: any }> = ({ target }) => {
+//   const { goTo } = useRouting()
+//   const { createNewNote } = useCreateNewNote()
+//   const shortcuts = useHelpStore((store) => store.shortcuts)
 
-  const onNewNote: React.MouseEventHandler<HTMLDivElement> = (e) => {
-    e.preventDefault()
-    createNoteWithQABlock()
-  }
+//   const onNewNote: React.MouseEventHandler<HTMLDivElement> = (e) => {
+//     e.preventDefault()
+//     createNoteWithQABlock()
+//   }
 
-  const createNoteWithQABlock = () => {
-    const qaContent = getRandomQAContent()
-    const note = createNewNote({ noteContent: qaContent })
+//   const createNoteWithQABlock = () => {
+//     const qaContent = getRandomQAContent()
+//     const note = createNewNote({ noteContent: qaContent })
 
-    goTo(ROUTE_PATHS.node, NavigationType.push, note?.nodeid)
-  }
+//     goTo(ROUTE_PATHS.node, NavigationType.push, note?.nodeid)
+//   }
 
-  const { shortcutHandler } = useKeyListener()
+//   // const { shortcutHandler } = useKeyListener()
 
-  useEffect(() => {
-    const unsubscribe = tinykeys(window, {
-      [shortcuts.newNode.keystrokes]: (event) => {
-        event.preventDefault()
-        shortcutHandler(shortcuts.newNode, () => {
-          createNoteWithQABlock()
-        })
-      }
-    })
-    return () => {
-      unsubscribe()
-    }
-  }, [shortcuts])
+// useEffect(() => {
+//   const unsubscribe = tinykeys(window, {
+//     [shortcuts.newNode.keystrokes]: (event) => {
+//       event.preventDefault()
+//       shortcutHandler(shortcuts.newNode, () => {
+//         createNoteWithQABlock()
+//       })
+//     }
+//   })
+//   return () => {
+//     unsubscribe()
+//   }
 
-  return (
-    <NavTooltip
-      key={shortcuts.newNode.title}
-      singleton={target}
-      content={<TitleWithShortcut title="New Note" shortcut={shortcuts.newNode.keystrokes} />}
-    >
-      <CreateNewButton onClick={onNewNote}>
-        <Icon icon={addCircleLine} />
-      </CreateNewButton>
-    </NavTooltip>
-  )
-}
+//   return (
+//     <NavTooltip
+//       key={shortcuts.newNode.title}
+//       singleton={target}
+//       content={<TitleWithShortcut title="New Note" shortcut={shortcuts.newNode.keystrokes} />}
+//     >
+//       <CreateNewButton onClick={onNewNote}>
+//         <Icon icon={addCircleLine} />
+//       </CreateNewButton>
+//     </NavTooltip>
+//   )
+// }
 
 const NavHeader: React.FC<{ target: any }> = ({ target }) => {
   const { getLinks } = useNavlinks()
@@ -92,7 +84,7 @@ const NavHeader: React.FC<{ target: any }> = ({ target }) => {
   return (
     <MainLinkContainer onMouseUp={(e) => e.stopPropagation()}>
       <NavigationCluster />
-      <CreateNewNote target={target} />
+      {/* <CreateNewNote target={target} /> */}
       <NavTooltip
         key={ROUTE_PATHS.search}
         singleton={target}

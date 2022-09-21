@@ -9,6 +9,7 @@ import { useEditorBuffer } from './useEditorBuffer'
 import { AppType } from './useInitialize'
 import { useLinks } from './useLinks'
 import useLoad from './useLoad'
+import { useNamespaces } from './useNamespaces'
 
 // import { NodeEditorContent } from '../editor/Store/Types'
 // import { useEditorStore } from '../editor/Store/EditorStore'
@@ -40,10 +41,12 @@ const useEditorActions = () => {
   const setAlreadyErrored = useEditorErrorStore((s) => s.setAlreadyErrored)
   const setErrorState = useEditorErrorStore((s) => s.setErrorState)
   const { getNodeidFromPath } = useLinks()
+  const { getDefaultNamespace } = useNamespaces()
 
   const resetEditor = (appType: AppType = AppType.MEX) => {
     let nodeIdToLoad = node.nodeid
-    const basenode_nodeId = getNodeidFromPath(baseNodePath)
+    const defaultNamespace = getDefaultNamespace()
+    const basenode_nodeId = getNodeidFromPath(baseNodePath, defaultNamespace.id)
     // mog('resetEditor', { nodeIdToLoad, node, prevNode })
     const loadNodeL = (nodeIdToLoad: string) => {
       clearBuffer()

@@ -35,6 +35,8 @@ const useDataStore = create<DataStoreState>(
 
       archive: [],
 
+      namespaces: [],
+
       initialized: true,
       // Load initial data in the store
       initializeDataStore: (initData) => {
@@ -44,6 +46,17 @@ const useDataStore = create<DataStoreState>(
           initialized: true
         })
       },
+
+      addNamespace: (namespace) => {
+        set({ namespaces: [...get().namespaces, namespace] })
+      },
+
+      setNamespaces: (namespaces) => set({ namespaces }),
+      // removeNamespace: (id) => {
+      //   const ns = get().namespaces
+      //   delete ns[id]
+      //   set({namespaces: ns})
+      // },
 
       // Add a new tag to the store
       addTag: (tag) => {
@@ -65,22 +78,24 @@ const useDataStore = create<DataStoreState>(
         - not allowed with reserved keywords
    */
 
-      addILink: ({ ilink, nodeid, openedNotePath, archived, showAlert }) => {
-        const uniquePath = get().checkValidILink({ notePath: ilink, openedNotePath, showAlert })
+      addILink: ({ ilink, namespace, nodeid, openedNotePath, archived, showAlert }) => {
+        const uniquePath = get().checkValidILink({ notePath: ilink, openedNotePath, namespace, showAlert })
+        // mog('Unique Path', { uniquePath })
 
         const ilinks = get().ilinks
-        const linksStrings = ilinks.map((l) => l.path)
+        const linksStrings = ilinks.filter((l) => l.namespace === namespace).map((l) => l.path)
 
         const parents = getAllParentIds(uniquePath) // includes link of child
         const newLinks = parents.filter((l) => !linksStrings.includes(l)) // only create links for non existing
 
         const newILinks = newLinks.map((l) => ({
           nodeid: nodeid && l === uniquePath ? nodeid : generateNodeUID(),
+          namespace,
           path: l,
           icon: getNodeIcon(l)
         }))
 
-        const newLink = newILinks.find((l) => l.path === uniquePath)
+        const newLink = newILinks.find((l) => l.path === uniquePath && l.namespace === namespace)
 
         const userILinks = archived ? ilinks.map((val) => (val.path === uniquePath ? { ...val, nodeid } : val)) : ilinks
         const createdILinks = [...userILinks, ...newILinks]
@@ -94,7 +109,7 @@ const useDataStore = create<DataStoreState>(
         return
       },
 
-      checkValidILink: ({ notePath, openedNotePath, showAlert }) => {
+      checkValidILink: ({ notePath, openedNotePath, showAlert, namespace }) => {
         const { key, isChild } = withoutContinuousDelimiter(notePath)
 
         // * If `notePath` starts with '.', than create note under 'opened note'.
@@ -102,12 +117,11 @@ const useDataStore = create<DataStoreState>(
           notePath = isChild && openedNotePath ? `${openedNotePath}${key}` : key
         }
 
-        const ilinks = get().ilinks
+        const iLinksOfNamespace = namespace ? get().ilinks.filter((link) => link.namespace === namespace) : get().ilinks
+        // mog('ILINKS OF NOTE ARE', { iLinksOfNamespace, notePath, namespace })
 
-        const linksStrings = ilinks.map((l) => l.path)
+        const linksStrings = iLinksOfNamespace.map((l) => l.path)
         const reservedOrUnique = getUniquePath(notePath, linksStrings, showAlert)
-
-        mog('RESERVED', { reservedOrUnique })
 
         if (!reservedOrUnique) {
           throw Error(`ERROR-RESERVED: PATH (${notePath}) IS RESERVED. YOU DUMB`)
@@ -118,7 +132,7 @@ const useDataStore = create<DataStoreState>(
 
       setIlinks: (ilinks) => {
         set(
-          produce(draft => {
+          produce((draft) => {
             draft.ilinks = ilinks
           })
         )
@@ -235,7 +249,9 @@ const useDataStore = create<DataStoreState>(
       clear: () => set({ baseNodeId: 'doc' }),
 
       addInArchive: (archive) => {
-        const userArchive = [...get().archive, ...archive]
+        const prevArchive = get().archive
+        const prevNodeids = prevArchive.map((a) => a.nodeid)
+        const userArchive = [...prevArchive, ...archive.filter((a) => !prevNodeids.includes(a.nodeid))]
         set({ archive: userArchive })
       },
 

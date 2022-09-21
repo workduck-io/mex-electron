@@ -7,6 +7,7 @@ import { NodeEditorContent } from '../types/Types'
 import { getContent } from '../utils/helpers'
 import { areEqual } from '../utils/lib/hash'
 import { mog } from '../utils/lib/helper'
+import { useNamespaces } from './useNamespaces'
 import { useNodes } from './useNodes'
 import { useSaveData } from './useSaveData'
 import { useSnippets } from './useSnippets'
@@ -34,6 +35,7 @@ export const useEditorBuffer = () => {
   const clearBuffer = useBufferStore((s) => s.clear)
   const { saveData } = useSaveData()
   const { isSharedNode } = useNodes()
+  const { getNamespaceOfNodeid } = useNamespaces()
 
   const { saveEditorValueAndUpdateStores } = useDataSaverFromContent()
 
@@ -54,9 +56,10 @@ export const useEditorBuffer = () => {
           const content = getContent(nodeid)
           const res = areEqual(content.content, val)
           const isShared = isSharedNode(nodeid)
+          const namespace = getNamespaceOfNodeid(nodeid)
           // const mT = measureTime(() => areEqual(content.content, val))
           if (!res) {
-            saveEditorValueAndUpdateStores(nodeid, val, { saveApi: true, isShared })
+            saveEditorValueAndUpdateStores(nodeid, namespace.id, val, { saveApi: true, isShared })
           }
           return !res
         })
@@ -64,11 +67,30 @@ export const useEditorBuffer = () => {
       if (explicitSave !== false && (saved || explicitSave)) {
         saveData()
       }
+
       clearBuffer()
     }
   }
 
-  return { addOrUpdateValBuffer, saveAndClearBuffer, getBuffer, getBufferVal, clearBuffer }
+  const saveNoteBuffer = async (noteId: string): Promise<boolean> => {
+    const buffer = useBufferStore.getState().buffer?.[noteId]
+    const content = getContent(noteId)?.content
+
+    if (content) {
+      const res = areEqual(content, buffer)
+      if (!res) {
+        const namespace = getNamespaceOfNodeid(noteId)
+        try {
+          await saveEditorValueAndUpdateStores(noteId, namespace.id, buffer, { saveApi: true, })
+          return true
+        } catch (err) {
+          mog("Unable to save content", { err })
+        }
+      }
+    }
+  }
+
+  return { addOrUpdateValBuffer, saveNoteBuffer, saveAndClearBuffer, getBuffer, getBufferVal, clearBuffer }
 }
 
 export const getLatestContent = (nodeid: string): NodeEditorContent | undefined =>

@@ -1,7 +1,8 @@
 import { IS_DEV } from '@data/Defaults/dev_'
 import { IpcAction } from '@data/IpcAction'
+import { AppType } from '@hooks/useInitialize'
 import { mog } from '@utils/lib/helper'
-import { BrowserWindow, shell } from 'electron'
+import { app, BrowserWindow, shell } from 'electron'
 
 import { WindowOptions } from '../types/window.types'
 
@@ -40,6 +41,7 @@ class WindowManager {
         window.focus()
         window.show()
       }
+
     })
 
     window.on('blur', () => {
@@ -48,14 +50,21 @@ class WindowManager {
     })
 
     window.on('close', (event) => {
-      if (options?.onClose) options?.onClose(window)
-      const closeIfDeveloping = IS_DEV || options?.deleteOnClose
+      const { handleCloseManually, deleteOnClose } = options
+      if (options?.onClose) options.onClose(window)
 
-      if (closeIfDeveloping === false) event.preventDefault()
-      this.deleteWindow(windowId, closeIfDeveloping)
+      if ((deleteOnClose === false && handleCloseManually) && !IS_DEV) {
+        handleCloseManually(window)
+        event.preventDefault()
+        window.hide()
+      }
     })
 
-    if (options?.debug && IS_DEV) window.webContents.openDevTools({ mode: 'right' })
+    window.on('closed', () => {
+      this.cleanUp(windowId)
+    })
+
+    if (IS_DEV) window.webContents.openDevTools({ mode: 'right' })
 
     window.webContents?.on('new-window', (event, url) => {
       event.preventDefault()
@@ -65,6 +74,9 @@ class WindowManager {
     if (options.alwaysOnTop) {
       window.setAlwaysOnTop(true, 'modal-panel', 100)
       window.setVisibleOnAllWorkspaces(true, { visibleOnFullScreen: true })
+
+      if (!app.dock.isVisible())
+        app.dock.show()
     }
 
     return window
@@ -73,9 +85,27 @@ class WindowManager {
   public getWindow = (windowId: string): BrowserWindow => {
     const browserWindowId = this.windowRef?.[windowId]
     try {
-      return BrowserWindow.fromId(browserWindowId)
+      if (browserWindowId)
+        return BrowserWindow.fromId(browserWindowId)
     } catch (err) {
       mog('Unable to get Window from ID', { err: err.toString() })
+    }
+  }
+
+  public closeAllWindows = () => {
+    const allWindows = this.windowRef
+
+    if (allWindows) {
+      Object.keys(allWindows).forEach(windowId => this.deleteWindow(windowId))
+    }
+  }
+
+  public hideAllWindows = (excludeWindows: Array<string> = [AppType.SPOTLIGHT]) => {
+    const allWindows = this.windowRef
+
+    if (allWindows) {
+      const windowsToClose = Object.keys(allWindows).filter(windowId => !excludeWindows.includes(windowId))
+      windowsToClose.forEach(windowId => this.getWindow(windowId)?.minimize())
     }
   }
 
@@ -85,14 +115,21 @@ class WindowManager {
     if (window) window.webContents.send(ipcType, data)
   }
 
+  public cleanUp = (windowId: string) => {
+    const { [windowId]: refId, ...windows } = this.windowRef
+    this.windowRef = windows
+  }
+
   public deleteWindow = (windowId: string, areYouSure = true) => {
     const window = this.getWindow(windowId)
 
     if (areYouSure) {
-      const { [windowId]: refId, ...windows } = this.windowRef
-      this.windowRef = windows
-      window?.close()
-    } else window?.hide()
+      this.cleanUp(windowId)
+
+      window?.destroy()
+    } else {
+      window?.hide()
+    }
   }
 }
 

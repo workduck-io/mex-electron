@@ -1,5 +1,5 @@
 import { ELEMENT_PARAGRAPH } from '@udecode/plate'
-import { getRandomQAContent } from '@data/Defaults/baseData'
+import { defaultContent } from '@data/Defaults/baseData'
 import { generateSnippetId } from '@data/Defaults/idPrefixes'
 import { IconifyIcon } from '@iconify/react'
 import generateName from 'project-name-generator'
@@ -8,6 +8,12 @@ import { useCreateNewNote } from './useCreateNewNote'
 import { useUpdater } from './useUpdater'
 import { useSnippetStore } from '@store/useSnippetStore'
 import { useSnippets } from './useSnippets'
+import { useNamespaces } from './useNamespaces'
+import { useUserPreferenceStore } from '@store/userPreferenceStore'
+import { useLayoutStore } from '@store/useLayoutStore'
+import toast from 'react-hot-toast'
+import InteractiveToast from '@ui/components/InteractiveToast'
+import React from 'react'
 
 interface CreateNewMenuItem {
   id: string
@@ -16,25 +22,44 @@ interface CreateNewMenuItem {
   onSelect: () => void
 }
 
-// TODO: Add ordering and filtering based on Path
-interface CreateNewMenuConfig {
-  // If passed, and the path matches/starts with this path
-  // The menu item is moved above
-  path?: string
-}
-
 export const useCreateNewMenu = () => {
   const { goTo } = useRouting()
   const { createNewNote } = useCreateNewNote()
   const loadSnippet = useSnippetStore((store) => store.loadSnippet)
   const { addSnippet } = useSnippets()
   const { updater } = useUpdater()
+  const { addDefaultNewNamespace, getDefaultNamespaceId } = useNamespaces()
+  const currentSpace = useUserPreferenceStore((store) => store.activeNamespace)
+  const changeSpace = useUserPreferenceStore((store) => store.setActiveNamespace)
+  const expandSidebar = useLayoutStore((store) => store.expandSidebar)
 
-  const createNoteWithQABlock = () => {
-    const qaContent = getRandomQAContent()
-    const note = createNewNote({ noteContent: qaContent })
+  const createNewNamespace = () => {
+    addDefaultNewNamespace()
+      .then((ns) => {
+        if (ns) changeSpace(ns.id)
+        return ns
+      })
+      .then((ns) => {
+        toast.custom((t) => (
+          <InteractiveToast
+            tid={t.id}
+            message={`Created new space: ${ns?.name}`}
+            actionName="Open"
+            onClick={() => {
+              if (ns) changeSpace(ns.id)
+              expandSidebar()
+            }}
+          />
+        ))
+      })
+  }
 
-    goTo(ROUTE_PATHS.node, NavigationType.push, note?.nodeid)
+  const createNewNoteInNamespace = (namespaceId: string) => {
+    const note = createNewNote({ namespace: namespaceId, noteContent: defaultContent.content })
+
+    if (note) {
+      goTo(ROUTE_PATHS.node, NavigationType.push, note?.nodeid)
+    }
   }
 
   const onCreateNewSnippet = () => {
@@ -54,13 +79,21 @@ export const useCreateNewMenu = () => {
 
     goTo(ROUTE_PATHS.snippet, NavigationType.push, snippetId, { title: snippetName })
   }
-  const getCreateNewMenuItems = (path: string): CreateNewMenuItem[] => {
+
+  const getCreateNewMenuItems = (_path: string): CreateNewMenuItem[] => {
     return [
       {
         id: 'new-note',
         label: 'New Note',
         onSelect: () => {
-          createNoteWithQABlock()
+          createNewNoteInNamespace(currentSpace || getDefaultNamespaceId())
+        }
+      },
+      {
+        id: 'new-space',
+        label: 'New Space',
+        onSelect: () => {
+          createNewNamespace()
         }
       },
       {

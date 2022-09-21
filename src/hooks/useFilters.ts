@@ -1,3 +1,4 @@
+import { MIcon } from '../types/Types'
 import create from 'zustand'
 
 import { getAllParentIds, isElder } from '../components/mex/Sidebar/treeUtils'
@@ -6,6 +7,7 @@ import { GenericSearchResult, idxKey } from '../types/search'
 import { mog } from '../utils/lib/helper'
 import { useGenericFilterFunctions } from './useFilterFunctions'
 import { useLinks } from './useLinks'
+import { useNamespaces } from './useNamespaces'
 import { useTags } from './useTags'
 
 /*
@@ -15,7 +17,7 @@ import { useTags } from './useTags'
 - Sorting [:?]
 */
 
-export type FilterKey = 'note' | 'tag' | 'date' | 'state' | 'has' | 'mention'
+export type FilterKey = 'note' | 'tag' | 'date' | 'state' | 'has' | 'mention' | 'space'
 
 export interface SearchFilter<Item> {
   key: FilterKey
@@ -24,7 +26,7 @@ export interface SearchFilter<Item> {
   // Value to filter with
   value: string
   // filter: (item: Item) => boolean | number -> Replaced by FilterFunctions
-  icon?: string
+  icon?: MIcon
   // No. of items that match this filter
   count?: number
   // sort: 'asc' | 'desc'
@@ -64,7 +66,8 @@ export const useFilters = <Item>() => {
   ) => void
   const { getTags } = useTags()
 
-  const { getPathFromNodeid } = useLinks()
+  const { getPathFromNodeid, getILinkFromNodeid } = useLinks()
+  const { getNamespace } = useNamespaces()
   const filterFunctions = useGenericFilterFunctions()
   // setFilters: (filters: SearchFilter<any>[]) => void
   const addFilter = (filter: SearchFilter<Item>) => {
@@ -119,7 +122,7 @@ export const useFilters = <Item>() => {
             ...p,
             {
               key: 'tag',
-              icon: 'ri:hashtag',
+              icon: { type: 'ICON', value: 'ri:hashtag' },
               id: `tag_filter_${tag}`,
               label: tag,
               count: rank as number,
@@ -138,10 +141,10 @@ export const useFilters = <Item>() => {
     return tagsFilter
   }
 
-  const generateNodeFilters = <T extends { id: string }>(items: T[]) => {
-    // Known
+  const generateNodeFilters = (items: GenericSearchResult[]) => {
     const currentFilters_ = currentFilters as unknown as SearchFilter<GenericSearchResult>[]
     const filteredItems = currentFilters_.length > 0 ? applyFilters(items, currentFilters_, filterFunctions) : items
+
     const rankedPaths = filteredItems.reduce((acc, item) => {
       const path = getPathFromNodeid(item.id, true)
       const allPaths = getAllParentIds(path)
@@ -163,7 +166,7 @@ export const useFilters = <Item>() => {
         acc.push({
           key: 'note',
           id: `node_${path}`,
-          icon: 'ri:file-list-2-line',
+          icon: { type: 'ICON', value: 'ri:file-list-2-line' },
           value: path,
           label: path,
           count: rank as number
@@ -181,10 +184,58 @@ export const useFilters = <Item>() => {
     return nodeFilters
   }
 
+  const generateNamespaceFilters = <T extends { id: string }>(items: T[]) => {
+    // Known
+    const currentFilters_ = currentFilters as unknown as SearchFilter<GenericSearchResult>[]
+    const filteredItems = currentFilters_.length > 0 ? applyFilters(items, currentFilters_, filterFunctions) : items
+
+    const rankedNamespaces = filteredItems.reduce((acc, item) => {
+      const node = getILinkFromNodeid(item.id, true)
+      const namespace = node?.namespace
+
+      if (namespace) {
+        if (!acc[namespace]) {
+          acc[namespace] = 1
+        } else {
+          acc[namespace] += 1
+        }
+      }
+
+      return acc
+    }, {} as { [namespace: string]: number })
+
+    const namespaceFilters = Object.entries(rankedNamespaces).reduce((acc, c) => {
+      const [namespaceID, rank] = c
+      const namespace = getNamespace(namespaceID)
+      if (rank >= 1 && namespace) {
+        // mog('path', { path, rank })
+        acc.push({
+          key: 'space',
+          id: `namespace_${namespace}`,
+          // Use Namespace icon
+          icon: namespace.icon ?? { type: 'ICON', value: 'heroicons-outline:view-grid' },
+          value: namespaceID,
+          label: namespace.name,
+          count: rank as number
+          // filter: (item: GenericSearchResult) => {
+          //   const itemPath = getPathFromNodeid(item.id)
+          //   mog('itemPath being filtered', { item, itemPath, path })
+          //   return isElder(itemPath, path) || itemPath === path
+          // }
+        })
+      }
+      return acc
+    }, [] as SearchFilter<GenericSearchResult>[])
+
+    // mog('nodeFilters', { nodeFilters })
+    return namespaceFilters
+  }
+
   const generateNodeSearchFilters = (items: GenericSearchResult[]) => {
     const nodeFilters = generateNodeFilters(items)
     const tagFilters = generateTagFilters(items)
-    return [...nodeFilters, ...tagFilters]
+    const namespaceFilters = generateNamespaceFilters(items)
+    return [...nodeFilters, ...tagFilters, ...namespaceFilters]
   }
 
   return {

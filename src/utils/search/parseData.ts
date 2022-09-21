@@ -11,7 +11,6 @@ import {
 } from '@udecode/plate'
 import { ELEMENT_EXCALIDRAW } from '@udecode/plate-excalidraw'
 import { insertId } from '@utils/lib/content'
-import { mog } from '@utils/lib/helper'
 import { textChildren } from '@utils/lib/smallContent'
 import { diskIndex, indexNames } from '../../data/search'
 import { ELEMENT_INLINE_BLOCK } from '../../editor/Components/InlineBlock/types'

@@ -83,7 +83,7 @@ export const useAnalysis = () => {
   // mog('Setting up IPC for Buffer', { node })
   useEffect(() => {
     const parentNodePath = getParentNodePath(node.path)
-    const parentNodeId = getNodeidFromPath(parentNodePath)
+    const parentNodeId = getNodeidFromPath(parentNodePath, node.namespace)
     const parentMetadata = getContent(parentNodeId)?.metadata
 
     const bufferContent = getBufferVal(node.nodeid)

@@ -10,6 +10,8 @@ export const ItemShortcutContainer = styled.div`
 
 export const RowTitle = styled.div`
   ${MainFont};
+  gap: 0.25rem;
+  display: flex;
   text-overflow: ellipsis;
   white-space: nowrap;
   overflow-x: hidden;

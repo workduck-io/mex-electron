@@ -47,8 +47,10 @@ export enum KEYBOARD_KEYS {
   Enter = 'Enter',
   ArrowUp = 'ArrowUp',
   ArrowDown = 'ArrowDown',
+  ArrowLeft = 'ArrowLeft',
+  ArrowRight = 'ArrowRight',
   Escape = 'Escape',
-  Space = 'Space'
+  Space = 'Space',
 }
 
 const List = ({
@@ -69,7 +71,8 @@ const List = ({
     activeItem,
     setSearch,
     selection,
-    setActiveIndex
+    setActiveIndex,
+    selectedNamespace
   } = useSpotlightContext()
   const parentRef = useRef(null)
   const nodeContent = useSpotlightEditorStore((s) => s.nodeContent)
@@ -213,9 +216,9 @@ const List = ({
       if (event.key === KEYBOARD_KEYS.Enter && normalMode) {
         event.preventDefault()
         const currentActiveItem = data[activeIndex]
-
+        const isPinnedNote = currentActiveItem.category === CategoryType.pinned
         const isNoteCategory =
-          currentActiveItem?.category === CategoryType.backlink || currentActiveItem.category === CategoryType.pinned
+          currentActiveItem?.category === CategoryType.backlink || isPinnedNote
         // * If current item is ILINK
         if (isNoteCategory && !activeItem.active) {
           // mog('Matched with node')
@@ -230,7 +233,8 @@ const List = ({
                 saveIt({
                   path: nodePath,
                   beforeSave: ({ path, noteId, noteContent }) => {
-                    createNewNote({ path, noteId, noteContent })
+                    // mog('Create new note save', { path, noteId, noteContent, namespace: selectedNamespace })
+                    createNewNote({ path, noteId, noteContent, namespace: selectedNamespace })
                     saveData()
                   },
                   saveAndClose: true,
@@ -247,6 +251,10 @@ const List = ({
                   })
                   setSelection(undefined)
                 }
+
+                if (isPinnedNote) {
+                  appNotifierWindow(IpcAction.SHOW_PINNED_NOTE_WINDOW, AppType.SPOTLIGHT, { noteId: node.nodeid })
+                }
               }
 
               setSearch({ value: '', type: CategoryType.search })
@@ -255,6 +263,8 @@ const List = ({
             if (currentActiveItem?.type === QuickLinkType.snippet) {
               handleCopySnippet(currentActiveItem.id, true)
             }
+
+
           } else {
             if (currentActiveItem.type === QuickLinkType.snippet) {
               handleCopySnippet(currentActiveItem.id, false)
@@ -262,7 +272,7 @@ const List = ({
             } else {
               let nodePath = node.path
 
-              if (currentActiveItem?.category === CategoryType.pinned) {
+              if (isPinnedNote) {
                 if (selection) {
                   const isNewTask = isParent(nodePath, BASE_TASKS_PATH)
                   saveIt({
@@ -272,9 +282,10 @@ const List = ({
                     removeHighlight: true,
                     isNewTask
                   })
-
-                  appNotifierWindow(IpcAction.SHOW_PINNED_NOTE_WINDOW, AppType.SPOTLIGHT, { noteId: node.nodeid })
                 }
+
+                appNotifierWindow(IpcAction.SHOW_PINNED_NOTE_WINDOW, AppType.SPOTLIGHT, { noteId: node.nodeid })
+
                 return
               }
 
@@ -289,7 +300,12 @@ const List = ({
                 nodePath = search.value ? text : title ? `Drafts.${title}` : node.path
 
                 // TODO: Create new note with specified 'nodeid' and 'path'.
-                createNewNote({ path: nodePath, noteId: node.nodeid })
+                // mog('Create new note with specified nodeid and path', {
+                //   nodeid: node.nodeid,
+                //   path: nodePath,
+                //   selectedNamespace
+                // })
+                createNewNote({ path: nodePath, noteId: node.nodeid, namespace: selectedNamespace })
               }
             }
           }
@@ -358,7 +374,7 @@ const List = ({
     }
 
     return () => window.removeEventListener('keydown', handler)
-  }, [data, activeIndex, node, nodeContent, normalMode, selection, selectedItem?.item, search])
+  }, [data, activeIndex, selectedNamespace, node, nodeContent, normalMode, selection, selectedItem?.item, search])
 
   useEffect(() => {
     setActiveIndex(0)
@@ -370,16 +386,18 @@ const List = ({
     const isNote = currentActiveItem?.type === QuickLinkType.backlink
 
     if (isNote && !activeItem.active) {
-      if (currentActiveItem?.category === CategoryType.pinned && selection) {
-        const notePath = node.path
-        const isNewTask = isParent(notePath, BASE_TASKS_PATH)
-        saveIt({
-          path: notePath,
-          saveAndClose: true,
-          saveToFile: false,
-          removeHighlight: true,
-          isNewTask
-        })
+      if (currentActiveItem?.category === CategoryType.pinned) {
+        if (selection) {
+          const notePath = node.path
+          const isNewTask = isParent(notePath, BASE_TASKS_PATH)
+          saveIt({
+            path: notePath,
+            saveAndClose: true,
+            saveToFile: false,
+            removeHighlight: true,
+            isNewTask
+          })
+        }
         appNotifierWindow(IpcAction.SHOW_PINNED_NOTE_WINDOW, AppType.SPOTLIGHT, { noteId: node.nodeid })
 
         return
@@ -393,7 +411,12 @@ const List = ({
         const nodePath = search.value ? text : node.path
 
         // TODO: Create new note with specified 'nodeid' and 'path'.
-        createNewNote({ path: nodePath, noteId: node.nodeid })
+        // mog('Create new note with specified nodeid and path', {
+        //   nodeid: node.nodeid,
+        //   path: nodePath,
+        //   selectedNamespace
+        // })
+        createNewNote({ path: nodePath, noteId: node.nodeid, namespace: selectedNamespace })
       }
     } else if (currentActiveItem?.type === QuickLinkType.snippet && !activeItem.active) {
       handleCopySnippet(currentActiveItem.id, true)

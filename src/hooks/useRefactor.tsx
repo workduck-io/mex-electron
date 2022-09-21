@@ -1,21 +1,38 @@
-import { useApi } from '@apis/useSaveApi'
 import React from 'react'
-import { linkInRefactor } from '../components/mex/Refactor/doesLinkRemain'
-import { useRefactorStore } from '../components/mex/Refactor/Refactor'
-import { getAllParentIds } from '../components/mex/Sidebar/treeUtils'
-import { generateNodeUID } from '../data/Defaults/idPrefixes'
-import useAnalytics from '../services/analytics'
-import { CustomEvents } from '../services/analytics/events'
+
+import { useApi } from '@apis/useSaveApi'
+
+// import { useRefactorStore } from '../components/mex/Refactor/Refactor'
+// import { linkInRefactor } from '../components/mex/Refactor/doesLinkRemain'
+// import { getAllParentIds } from '../components/mex/Sidebar/treeUtils'
+// import { generateNodeUID } from '../data/Defaults/idPrefixes'
+// import useAnalytics from '../services/analytics'
+// import { CustomEvents } from '../services/analytics/events'
 import useDataStore from '../store/useDataStore'
 import { NodeLink } from '../types/relations'
 import { mog } from '../utils/lib/helper'
-import { getNodeIcon } from '../utils/lib/icons'
+// import { getNodeIcon } from '../utils/lib/icons'
 import { getUniquePath, isMatch } from '../utils/lib/paths'
 import { useEditorBuffer } from './useEditorBuffer'
+import { hierarchyParser } from './useHierarchy'
 import { useLinks } from './useLinks'
 
+interface RefactorPath {
+  path: string
+  namespaceID?: string
+}
+
+interface NamespaceChangedPaths {
+  removedPaths: string[]
+  addedPaths: string[]
+}
+
+interface RefactorResponse {
+  changedPaths: Array<Record<string, NamespaceChangedPaths>>
+}
+
 export const useRefactor = () => {
-  const ilinks = useDataStore((state) => state.ilinks)
+  // const ilinks = useDataStore((state) => state.ilinks)
 
   // const historyStack = useHistoryStore((state) => state.stack)
   // const updateHistory = useHistoryStore((state) => state.update)
@@ -34,13 +51,13 @@ export const useRefactor = () => {
   execRefactor will apply the refactor action.
   */
 
-  const setILinks = useDataStore((state) => state.setIlinks)
-  const setBaseNodeId = useDataStore((store) => store.setBaseNodeId)
-  const { trackEvent } = useAnalytics()
+  // const setILinks = useDataStore((state) => state.setIlinks)
+  // const setBaseNodeId = useDataStore((store) => store.setBaseNodeId)
+  // const { trackEvent } = useAnalytics()
 
   // const { q, saveQ } = useSaveQ()
   const { saveAndClearBuffer } = useEditorBuffer()
-  const { getNodeidFromPath } = useLinks()
+  const { getNodeidFromPath, updateILinks } = useLinks()
   const { refactorNotes } = useApi()
 
   /*
@@ -91,95 +108,113 @@ export const useRefactor = () => {
     return refactored
   }
 
-  const execRefactorAsync = async (from: string, to: string, clearBuffer = true) => {
+  const execRefactorAsync = async (from: RefactorPath, to: RefactorPath, clearBuffer = true) => {
     mog('FROM < TO', { from, to })
-    const nodeId = getNodeidFromPath(from)
+    const nodeId = getNodeidFromPath(from.path, from.namespaceID)
 
     const res = await refactorNotes(
-      { path: from.split('.').join('#') },
-      { path: to.split('.').join('#') },
+      { path: from.path.split('.').join('#'), namespaceID: from.namespaceID },
+      { path: to.path.split('.').join('#'), namespaceID: to.namespaceID ?? from.namespaceID },
       nodeId
-    ).then((response) => {
-      return response
+    ).then((response: RefactorResponse) => {
+      const addedILinks = []
+      const removedILinks = []
+
+      response.changedPaths.forEach((nsObject) => {
+        Object.entries(nsObject).forEach(([nsId, addedRemovedPathObj]) => {
+          const nsAddedILinks = hierarchyParser(addedRemovedPathObj.addedPaths, nsId)
+          const nsRemovedILinks = hierarchyParser(addedRemovedPathObj.removedPaths, nsId)
+
+          addedILinks.push(...nsAddedILinks)
+          removedILinks.push(...nsRemovedILinks)
+        })
+      })
+      mog('AfterRefactor', { addedILinks, removedILinks })
+      const refactored = updateILinks(addedILinks, removedILinks)
+      return refactored
     })
 
     return res
   }
 
-  const execRefactor = (from: string, to: string, clearBuffer = true) => {
-    trackEvent(CustomEvents.REFACTOR, { 'mex-from': from, 'mex-to': to })
-    const refactored = getMockRefactor(from, to, clearBuffer)
+  // DO NOT DELETE
+  // TODO: REVERT REFACTOR IF API CALL FAILS
 
-    mog('execRefactor', { from, to, refactored })
+  // const execRefactor = (from: string, to: string, clearBuffer = true) => {
+  //   trackEvent(CustomEvents.REFACTOR, { 'mex-from': from, 'mex-to': to })
+  //   const refactored = getMockRefactor(from, to, clearBuffer)
 
-    // Generate the new links
-    const ilinks = useDataStore.getState().ilinks
+  //   mog('execRefactor', { from, to, refactored })
 
-    const newIlinks = ilinks.map((i) => {
-      for (const ref of refactored) {
-        if (ref.from === i.path) {
-          return {
-            ...i,
-            path: ref.to,
-            icon: getNodeIcon(ref.to)
-          }
-        }
-      }
-      return i
-    })
+  //   // Generate the new links
+  //   const ilinks = useDataStore.getState().ilinks
 
-    // mog('execRefactor', { from, to, newIlinks })
-    const isInNewlinks = (l: string) => {
-      const ft = newIlinks.filter((i) => i.path === l)
-      return ft.length > 0
-    }
+  //   const newIlinks = ilinks.map((i) => {
+  //     for (const ref of refactored) {
+  //       if (ref.from === i.path) {
+  //         return {
+  //           ...i,
+  //           path: ref.to,
+  //           icon: getNodeIcon(ref.to)
+  //         }
+  //       }
+  //     }
+  //     return i
+  //   })
 
-    const newParents = refactored
-      .map((r) => getAllParentIds(r.to))
-      .flat()
-      .filter((x) => !isInNewlinks(x))
+  //   // mog('execRefactor', { from, to, newIlinks })
+  //   const isInNewlinks = (l: string) => {
+  //     const ft = newIlinks.filter((i) => i.path === l)
+  //     return ft.length > 0
+  //   }
 
-    const newParentIlinks = newParents.map((p) => ({
-      path: p,
-      nodeid: generateNodeUID(),
-      icon: getNodeIcon(p),
-      createdAt: Infinity
-    }))
+  //   const newParents = refactored
+  //     .map((r) => getAllParentIds(r.to))
+  //     .flat()
+  //     .filter((x) => !isInNewlinks(x))
 
-    const newlyGeneratedILinks = [...newIlinks, ...newParentIlinks]
+  //   const newParentIlinks = newParents.map((p) => ({
+  //     path: p,
+  //     nodeid: generateNodeUID(),
+  //     icon: getNodeIcon(p),
+  //     createdAt: Infinity
+  //   }))
 
-    mog('newLy generated id', { newlyGeneratedILinks })
+  //   const newlyGeneratedILinks = [...newIlinks, ...newParentIlinks]
 
-    setILinks(newlyGeneratedILinks)
+  //   mog('newLy generated id', { newlyGeneratedILinks })
 
-    const baseId = linkInRefactor(useDataStore.getState().baseNodeId, refactored)
-    if (baseId !== false) {
-      setBaseNodeId(baseId.to)
-    }
+  //   setILinks(newlyGeneratedILinks)
 
-    // mog('baseId', { from, to, baseId, refactored })
-    return refactored
-  }
+  //   const baseId = linkInRefactor(useDataStore.getState().baseNodeId, refactored)
+  //   if (baseId !== false) {
+  //     setBaseNodeId(baseId.to)
+  //   }
 
-  return { getMockRefactor, execRefactorAsync, execRefactor }
+  //   // mog('baseId', { from, to, baseId, refactored })
+  //   return refactored
+  // }
+
+  return { getMockRefactor, execRefactorAsync }
 }
 
 /* eslint-disable @typescript-eslint/no-explicit-any */
 
+// DO NOT DELETE
 // Used to wrap a class component to provide hooks
-export const withRefactor = (Component: any) => {
-  return function C2(props: any) {
-    const { getMockRefactor, execRefactor } = useRefactor()
+// export const withRefactor = (Component: any) => {
+//   return function C2(props: any) {
+//     const { getMockRefactor, execRefactor } = useRefactor()
 
-    const prefillRefactorModal = useRefactorStore((state) => state.prefillModal)
+//     const prefillRefactorModal = useRefactorStore((state) => state.prefillModal)
 
-    return (
-      <Component
-        getMockRefactor={getMockRefactor}
-        execRefactor={execRefactor}
-        prefillRefactorModal={prefillRefactorModal}
-        {...props}
-      />
-    ) // eslint-disable-line react/jsx-props-no-spreading
-  }
-}
+//     return (
+//       <Component
+//         getMockRefactor={getMockRefactor}
+//         execRefactor={execRefactor}
+//         prefillRefactorModal={prefillRefactorModal}
+//         {...props}
+//       />
+//     ) // eslint-disable-line react/jsx-props-no-spreading
+//   }
+// }

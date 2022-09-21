@@ -1,4 +1,6 @@
+import NamespaceTag from '@components/mex/NamespaceTag'
 import { useDelete } from '@hooks/useDelete'
+import { useNamespaces } from '@hooks/useNamespaces'
 import trashIcon from '@iconify/icons-codicon/trash'
 import fileList2Line from '@iconify/icons-ri/file-list-2-line'
 import { Icon } from '@iconify/react'
@@ -67,6 +69,7 @@ const Archive = () => {
 
   const archive = useDataStore((store) => store.archive)
   const contents = useContentStore((store) => store.contents)
+  const { getNamespace } = useNamespaces()
 
   const { goTo } = useRouting()
   // const { loadNode } = useLoad()
@@ -155,6 +158,7 @@ const Archive = () => {
     const node = archive.find((node) => node.nodeid === item.id)
     const id = `${item.id}_ResultFor_ArchiveSearch`
     const icon = fileList2Line
+    const namespace = getNamespace(node.namespace)
     if (!item || !node) return null
 
     if (props.view === View.Card) {
@@ -163,6 +167,7 @@ const Archive = () => {
           <ResultHeader>
             <ResultTitle>{node.path}</ResultTitle>
             <ActionContainer>
+              {namespace && <NamespaceTag namespace={namespace} />}
               {/* <StyledIcon
                 fontSize={32}
                 color={theme.colors.primary}
@@ -196,7 +201,10 @@ const Archive = () => {
           <ResultRow active={item.matchField?.includes('title')} selected={props.selected}>
             <Icon icon={icon} />
             <ResultMain>
-              <ResultTitle>{node.path}</ResultTitle>
+              <ResultTitle>
+                {node.path}
+                {namespace && <NamespaceTag namespace={namespace} />}
+              </ResultTitle>
               <ResultDesc>{convertContentToRawText(content, ' ')}</ResultDesc>
             </ResultMain>
           </ResultRow>
@@ -214,12 +222,14 @@ const Archive = () => {
     if (!node) return null
     const con = contents[item.id]
     const content = con ? con.content : defaultContent.content
+    const namespace = getNamespace(node.namespace)
     if (item) {
       return (
         <SplitSearchPreviewWrapper id={`splitArchiveSearchPreview_for_${item.id}`}>
           <Title>
             {node.path}
 
+            {namespace && <NamespaceTag namespace={namespace} />}
             <ActionContainer>
               <StyledIcon
                 fontSize={32}

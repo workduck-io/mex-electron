@@ -168,7 +168,8 @@ const useEditorPluginConfig = (editorId: string, options?: PluginOptionType) => 
       inline_block: {
         slateElementType: ELEMENT_INLINE_BLOCK,
         newItemHandler: (path, openedNotePath?) => {
-          const note = createNewNote({ path, openedNotePath, noRedirect: true })
+          const openedNode = useDataStore.getState().ilinks.find((l) => l.path === openedNotePath)
+          const note = createNewNote({ path, openedNotePath, noRedirect: true, namespace: openedNode?.namespace })
           return note?.nodeid
         },
         renderElement: ILinkComboboxItem
@@ -185,11 +186,11 @@ const useEditorPluginConfig = (editorId: string, options?: PluginOptionType) => 
         ? {
             slateElementType: ELEMENT_MENTION,
             onItemInsert: (alias) => {
-              mog('Inserted new item', { alias })
+              // mog('Inserted new item', { alias })
               grantUserAccessOnMention(alias, nodeid)
             },
             newItemHandler: (newAlias) => {
-              mog('ELEMENT_MENTIONS', { newAlias, spotlightCtx })
+              // mog('ELEMENT_MENTIONS', { newAlias, spotlightCtx })
               prefillShareModal('invite', { alias: newAlias, fromEditor: true })
               return newAlias
             },
@@ -205,7 +206,8 @@ const useEditorPluginConfig = (editorId: string, options?: PluginOptionType) => 
         slateElementType: 'internal',
         newItemHandler: (path, openedNotePath?) => {
           mog('new item here is', { path, openedNotePath })
-          const note = createNewNote({ path, openedNotePath, noRedirect: true })
+          const openedNode = useDataStore.getState().ilinks.find((l) => l.path === openedNotePath)
+          const note = createNewNote({ path, openedNotePath, noRedirect: true, namespace: openedNode?.namespace })
           return note?.nodeid
         },
         renderElement: SlashComboboxItem
@@ -216,7 +218,9 @@ const useEditorPluginConfig = (editorId: string, options?: PluginOptionType) => 
         slateElementType: ELEMENT_ILINK,
         newItemHandler: (path, openedNotePath?) => {
           mog('new item here is', { path, openedNotePath })
-          const note = createNewNote({ path, openedNotePath, noRedirect: true })
+          // TODO: check for path in combination with namespace
+          const openedNode = useDataStore.getState().ilinks.find((l) => l.path === openedNotePath)
+          const note = createNewNote({ path, openedNotePath, noRedirect: true, namespace: openedNode?.namespace })
           return note?.nodeid
         },
         renderElement: ILinkComboboxItem

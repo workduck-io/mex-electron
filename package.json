@@ -1,7 +1,7 @@
 {
   "name": "mex-alpha",
   "productName": "Mex Alpha",
-  "version": "0.15.1-alpha.2",
+  "version": "0.16.0-alpha.1",
   "description": "Mex it to flex it",
   "main": "dist/main.cjs",
   "scripts": {
@@ -92,7 +92,7 @@
     "@atlaskit/tree": "^8.6.0",
     "@excalidraw/excalidraw-next": "0.8.0-69b6fbb",
     "@floating-ui/react-dom-interactions": "^0.9.3",
-    "@radix-ui/react-context-menu": "^0.1.6",
+    "@radix-ui/react-context-menu": "^1.0.0",
     "@sentry/electron": "^2.5.4",
     "@testing-library/react": "^12.0.0",
     "@types/react-datepicker": "^4.3.4",
@@ -104,7 +104,8 @@
     "@workduck-io/action-request-helper": "^0.1.6",
     "@workduck-io/dwindle": "^0.0.19",
     "@workduck-io/flexsearch": "^0.7.22",
-    "@workduck-io/mex-components": "^0.0.11",
+    "@workduck-io/mex-components": "^0.0.15",
+    "@workduck-io/mex-utils": "^0.0.5",
     "@workduck-io/tinykeys": "1.5.0",
     "active-win-universal": "^7.6.2",
     "axios": "^0.21.1",

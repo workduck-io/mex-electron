@@ -9,7 +9,7 @@ import {
   useInteractions,
   useHover,
   useRole,
-  useDismiss,
+  useDismiss
 } from '@floating-ui/react-dom-interactions'
 import { mergeRefs } from 'react-merge-refs'
 import { TooltipWrapper } from './Tooltip.style'
@@ -50,7 +50,6 @@ export const Tooltip = ({ children, content, delay = 500, offsetPx = 5, placemen
     useDismiss(context)
   ])
 
-  // Preserve the consumer's ref
   const ref = useMemo(() => mergeRefs([reference, (children as any).ref]), [reference, children])
 
   return (

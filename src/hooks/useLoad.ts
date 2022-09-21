@@ -18,13 +18,14 @@ import { useRefactor } from './useRefactor'
 import { getAllParentIds, getParentNodePath, SEPARATOR } from '@components/mex/Sidebar/treeUtils'
 import { useAnalysisStore } from '@store/useAnalysis'
 import { checkIfUntitledDraftNode } from '@utils/lib/strings'
-import { getPathFromNodeIdHookless } from './useLinks'
+import { getLinkFromNodeIdHookless, getPathFromNodeIdHookless } from './useLinks'
 import { DRAFT_PREFIX } from '@data/Defaults/idPrefixes'
 import { useBlockHighlightStore } from '@editor/Actions/useFocusBlock'
 import { useTreeStore } from '@store/useTreeStore'
 import { useFetchShareData } from './useFetchShareData'
 import { useAuthStore } from '@services/auth/useAuth'
 import { useLastOpened } from './useLastOpened'
+import { useUserPreferenceStore } from '@store/userPreferenceStore'
 
 export interface LoadNodeOptions {
   savePrev?: boolean
@@ -56,6 +57,7 @@ const useLoad = () => {
   const setHighlights = useBlockHighlightStore((store) => store.setHighlightedBlockIds)
   const { fetchSharedNodeUsers } = useFetchShareData()
   const { debouncedAddLastOpened } = useLastOpened()
+  const changeSpace = useUserPreferenceStore((store) => store.setActiveNamespace)
 
   const setLoadingNodeid = useEditorStore((store) => store.setLoadingNodeid)
   // const { push } = useNavigation()
@@ -64,7 +66,7 @@ const useLoad = () => {
 
   // const { saveNodeAPIandFs } = useDataSaverFromContent()
   const { saveAndClearBuffer } = useEditorBuffer()
-  const { execRefactor } = useRefactor()
+  const { execRefactorAsync } = useRefactor()
   // const { saveQ } = useSaveQ()
 
   const saveNodeName = (nodeId: string, title?: string) => {
@@ -73,7 +75,8 @@ const useLoad = () => {
     mog('SAVE NODE NAME', { draftNodeTitle })
     if (!draftNodeTitle) return
 
-    const nodePath = getPathFromNodeIdHookless(nodeId)
+    const node = getLinkFromNodeIdHookless(nodeId)
+    const { path: nodePath, namespace } = node
     const isUntitled = checkIfUntitledDraftNode(nodePath)
 
     if (!isUntitled) return
@@ -83,7 +86,19 @@ const useLoad = () => {
 
     if (newNodePath !== nodePath)
       try {
-        execRefactor(nodePath, newNodePath, false)
+        execRefactorAsync(
+          {
+            path: nodePath,
+            namespaceID: namespace
+          },
+          {
+            path: newNodePath,
+            namespaceID: namespace
+          },
+          false
+        )
+
+        // execRefactor(nodePath, newNodePath, false)
         loadNode(nodeId, { fetch: false })
       } catch (err) {
         toast('Unable to rename node')
@@ -103,12 +118,14 @@ const useLoad = () => {
 
     const UID = respectiveLink?.nodeid ?? archiveLink?.nodeid ?? sharedLink?.nodeid ?? nodeid
     const text = respectiveLink?.path ?? archiveLink?.path ?? sharedLink?.path
+    const namespace = respectiveLink?.namespace ?? archiveLink?.namespace ?? sharedLink?.namespace
 
     const node = {
       title: text,
       id: text,
       nodeid: UID,
-      path: text
+      path: text,
+      namespace
     }
 
     return node
@@ -144,7 +161,7 @@ const useLoad = () => {
     const sharedNodes = useDataStore.getState().sharedNodes
     const isShared = !!sharedNodes.find((i) => i.nodeid === node.nodeid)
     setFetchingContent(true)
-    saveDataAPI(node.nodeid, content, isShared)
+    saveDataAPI(node.nodeid, node.namespace, content, isShared)
       .then((data) => {
         if (data) {
           // const { data, metadata, version } = res
@@ -266,6 +283,8 @@ const useLoad = () => {
 
     debouncedAddLastOpened(nodeid)
 
+    mog('Loading that here', { node })
+    changeSpace(node.namespace)
     loadNodeEditor(node)
   }
 

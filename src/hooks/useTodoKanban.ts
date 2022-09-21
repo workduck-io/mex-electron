@@ -14,6 +14,8 @@ import { mog } from '../utils/lib/helper'
 import { useSearchExtra } from './useSearch'
 import { useTaskFilterFunctions } from './useFilterFunctions'
 import { useMentions } from './useMentions'
+import { useTags } from './useTags'
+import { useNamespaces } from './useNamespaces'
 
 export interface TodoKanbanCard extends KanbanCard {
   todo: TodoType
@@ -55,11 +57,13 @@ export const useTodoKanban = () => {
   const setFilters = useKanbanFilterStore((s) => s.setFilters)
   const updateTodo = useTodoStore((s) => s.updateTodoOfNode)
 
-  const { getPathFromNodeid } = useLinks()
+  const { getPathFromNodeid, getILinkFromNodeid } = useLinks()
   const { isInArchive } = useNodes()
   const { getSearchExtra } = useSearchExtra()
   const { getUserFromUserid } = useMentions()
+  const { getTags } = useTags()
   const taskFilterFunctions = useTaskFilterFunctions()
+  const { getNamespace } = useNamespaces()
 
   const changeStatus = (todo: TodoType, newStatus: TodoStatus) => {
     updateTodo(todo.nodeid, { ...todo, metadata: { ...todo.metadata, status: newStatus } })
@@ -77,8 +81,10 @@ export const useTodoKanban = () => {
 
     board.columns.forEach((column) => {
       column.cards.forEach((card) => {
+        // Use tags of the node instead of tags
+        const tags = getTags(card.todo.nodeid)
         todoNodes.push(card.todo.nodeid)
-        todoTags.push(...(card.todo.tags ?? []))
+        todoTags.push(...(tags ?? []))
         todoMentions.push(...(card.todo.mentions ?? []))
       })
     })
@@ -102,19 +108,12 @@ export const useTodoKanban = () => {
     const nodeFilters = Object.entries(rankedPaths).reduce((acc, c) => {
       const [path, rank] = c
       if (rank >= 1) {
-        // mog('path', { path, rank })
         acc.push({
           key: 'note',
           id: `node_${path}`,
-          icon: 'ri:file-list-2-line',
+          icon: { type: 'ICON', value: 'ri-file-list-line' },
           label: path,
           value: path
-          // filter: (item: TodoType) => {
-          //   const itemPath = getPathFromNodeid(item.nodeid)
-          //   if (!itemPath) return false
-          //   // mog('itemPath being filtered', { item, itemPath, path })
-          //   return isElder(itemPath, path) || itemPath === path
-          // }
         })
       }
       return acc
@@ -135,7 +134,7 @@ export const useTodoKanban = () => {
         acc.push({
           key: 'tag',
           id: `tag_${tag}`,
-          icon: 'ri:hashtag',
+          icon: { type: 'ICON', value: 'ri:hashtag' },
           label: tag,
           value: tag
         })
@@ -158,7 +157,8 @@ export const useTodoKanban = () => {
         acc.push({
           key: 'mention',
           id: `mention_${mention}`,
-          icon: 'ri:at-line',
+          icon: { type: 'ICON', value: 'ri:at-line' },
+          // 'ri:at-line',
           label: getUserFromUserid(mention)?.alias ?? mention,
           value: mention
         })
@@ -166,8 +166,40 @@ export const useTodoKanban = () => {
       return acc
     }, [] as SearchFilter<TodoType>[])
 
-    const allFilters = [...nodeFilters, ...tagFilters, ...mentionFilters]
-    mog('nodeFilters', { board, todoTags, rankedTags, rankedPaths, nodeFilters })
+    // Namespace Filters
+    const rankedNamespaces = todoNodes.reduce((acc, item) => {
+      const node = getILinkFromNodeid(item)
+      if (!node) return acc
+      const namespace = node.namespace
+      // const allPaths = getAllParentIds(path)
+      // const allPaths =
+      if (acc[namespace]) {
+        acc[namespace] += 1
+      } else {
+        acc[namespace] = 1
+      }
+      return acc
+    }, {} as { [path: string]: number })
+
+    const namespaceFilters = Object.entries(rankedNamespaces).reduce((acc, c) => {
+      const [namespaceID, rank] = c
+      const namespace = getNamespace(namespaceID)
+      if (rank >= 1 && namespace) {
+        acc.push({
+          key: 'space',
+          id: `node_${namespaceID}`,
+          icon: namespace.icon ?? { type: 'ICON', value: 'heroicons-outline:view-grid' },
+          // 'heroicons-outline:view-grid',
+          label: namespace.name,
+          value: namespaceID,
+          count: rank
+        })
+      }
+      return acc
+    }, [] as SearchFilter<TodoType>[])
+
+    const allFilters = [...nodeFilters, ...tagFilters, ...mentionFilters, ...namespaceFilters]
+    mog('allFilters for tasks', { board, todoTags, rankedTags, rankedPaths, nodeFilters })
     return allFilters
   }
 
@@ -216,7 +248,7 @@ export const useTodoKanban = () => {
         })
         .forEach((todo) => {
           todoBoard.columns
-            .find((column) => column.id === todo.metadata.status)
+            .find((column) => column.id === todo?.metadata?.status)
             ?.cards.push({
               id: `KANBAN_ID_${todo.nodeid}_${todo.id}`,
               todo: todo
@@ -229,7 +261,7 @@ export const useTodoKanban = () => {
 
     todoBoard.columns.forEach((column) => {
       column.cards.sort((a, b) => {
-        if (TodoRanks[a.todo.metadata.priority] < TodoRanks[b.todo.metadata.priority]) return 1
+        if (TodoRanks[a.todo?.metadata?.priority] < TodoRanks[b.todo?.metadata?.priority]) return 1
         else return -1
       })
     })

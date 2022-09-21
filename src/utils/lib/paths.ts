@@ -1,4 +1,4 @@
-import { ILink } from '../../types/Types'
+import { ILink, SingleNamespace } from '../../types/Types'
 import toast from 'react-hot-toast'
 import {
   getAllParentIds,
@@ -23,6 +23,23 @@ const RESERVED_PATHS: string[] = [
   'sync',
   'root'
 ]
+
+export const RESERVED_NAMESPACES = {
+  default: 'Personal',
+  shared: 'Shared'
+}
+
+export const SHARED_NAMESPACE: SingleNamespace = {
+  id: 'NAMESPACE_shared',
+  name: RESERVED_NAMESPACES.shared,
+  createdAt: 0,
+  updatedAt: 0,
+  icon: { type: 'ICON', value: 'mex:shared-note' }
+}
+
+export const getNewNamespaceName = (num: number): string => {
+  return `Space ${num}`
+}
 
 export const getPathNum = (path: string) => {
   const numMatch = path.match(/\d+$/)
@@ -67,10 +84,13 @@ export const getUniquePath = (
   }
 
   // Is path is already present (Clash)
+  // mog('GET UNIQUE PATH', { path, paths })
+
   if (paths.includes(path)) {
     let newPath = getPathNum(path)
     while (paths.includes(newPath)) {
       newPath = getPathNum(newPath)
+      mog('NEW PATH', { newPath })
     }
     if (showNotification) toast('Path clashed with existing, incremented a numeric suffix')
     return { unique: newPath }
@@ -165,7 +185,7 @@ export const getPartialTreeGroups = <T>(
   // const itemsInsertedInParent: T[] =
   const toGroupItems = [...itemArrayGrouped] //.reverse()
   const groupedItems: PartialTreeItem<T>[] = []
-  toGroupItems.forEach((item, index) => {
+  toGroupItems.forEach((item) => {
     const path = getPath(item)
     const parentPath = getParentFromPath(path)
     if (parentPath) {

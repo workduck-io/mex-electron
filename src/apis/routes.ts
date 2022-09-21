@@ -41,7 +41,7 @@ export const API_URL = config.constants.MEX_BACKEND_BASE_URL
 export const apiURLs = {
   //node
   saveNode: `${API_URL}/node`,
-  bulkSaveNodes: `${API_URL}/node/bulkCreate`,
+  bulkSaveNodes: `${API_URL}/node/bulk`,
   getNode: (nodeid: string) => `${API_URL}/node/${nodeid}`,
 
   // * User Preference
@@ -62,6 +62,7 @@ export const apiURLs = {
 
   // Archive
   archiveNodes: () => `${API_URL}/node/archive/middleware`,
+  archiveInNamesapce: (namespaceId: string) => `${API_URL}/node/archive/${namespaceId}`,
   deleteArchiveNodes: () => `${API_URL}/node/archive/delete`,
   getArchivedNodes: (workspaceId: string) => `${API_URL}/node/archive/${workspaceId}`,
   getArchiveNotesHierarchy: () => `${API_URL}/workspace/hierarchy/archived`,
@@ -85,6 +86,17 @@ export const apiURLs = {
   getNodesByWorkspace: (workspaceId: string) => `${API_URL}/node/workspace/${workspaceId}/namespace/NAMESPACE1`,
   getHierarchy: () => `${API_URL}/workspace/hierarchy?getMetadata=true`,
   refactor: `${API_URL}/node/refactor`,
+
+  namespaces: {
+    getHierarchy: `${API_URL}/namespace/all/hierarchy?getMetadata=true`,
+    get: (id: string) => `${API_URL}/namespace/${id}`,
+    getAll: `${API_URL}/namespace/all`,
+    create: `${API_URL}/namespace`, // POST
+    update: `${API_URL}/namespace`, // POST
+    makePublic: (id: string) => `${API_URL}/namespace/makePublic/${id}`,
+    makePrivate: (id: string) => `${API_URL}/namespace/makePrivate/${id}`,
+    getPublic: (id: string) => `${API_URL}/namespace/public/${id}`
+  },
 
   // Share options
   makeNotePublic: (uid: string) => `${API_URL}/node/makePublic/${uid}`,

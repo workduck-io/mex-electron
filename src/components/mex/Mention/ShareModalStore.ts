@@ -27,6 +27,15 @@ export interface EmailOption {
 
 export interface InviteModalData {
   alias: string
+  email: string
+  access: {
+    value: AccessLevel | 'NONE'
+    label: string
+  }
+}
+
+export interface MultiInviteModalData {
+  alias: string
   email: EmailOption[]
   access: {
     value: AccessLevel | 'NONE'

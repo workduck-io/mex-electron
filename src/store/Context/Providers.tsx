@@ -4,7 +4,7 @@ import { ThemeProvider } from 'styled-components'
 // import useThemeStore from '../../store/useThemeStore'
 import { useUserPreferenceStore } from '@store/userPreferenceStore'
 
-const Providers: React.FC = ({ children }) => {
+const Providers: React.FC<{ children: React.ReactNode }> = ({ children }) => {
   const theme = useUserPreferenceStore((state) => state.theme)
   // const [theme] = React.useState<'dark' | 'light'>('dark');
 

@@ -70,11 +70,11 @@ class Toast {
     // console.log({ bounds })
     const maxHeight = (bounds.height * 2) / 3
     if (size.height <= maxHeight) {
-      this.window.setSize(size.width, size.height, animate)
+      this.window?.setSize(size.width, size.height, animate)
     } else {
-      this.window.setSize(size.width, maxHeight, animate)
+      this.window?.setSize(size.width, maxHeight, animate)
     }
-    this.window.setPosition(
+    this.window?.setPosition(
       bounds.x + bounds.width - REMINDERS_DIMENSIONS.width - REMINDERS_DIMENSIONS.offset,
       bounds.y + REMINDERS_DIMENSIONS.offset
     )
@@ -127,7 +127,7 @@ class Toast {
   }
 
   public hide() {
-    this.window.setSize(TOAST_DIMENSIONS.width, TOAST_DIMENSIONS.height)
+    this.window?.setSize(TOAST_DIMENSIONS.width, TOAST_DIMENSIONS.height)
     this.window && this.window?.hide()
   }
 

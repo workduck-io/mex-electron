@@ -102,7 +102,7 @@ export const TreeGraph = (props: TreeGraphProps) => {
       if (nodes.length === 1) {
         const node = graphData.nodes.filter((n: any) => n.id === nodes[0])[0]
         if (!node.path.startsWith('SERVICE')) {
-          const nodeid = getNodeidFromPath(node.path)
+          const nodeid = getNodeidFromPath(node.path, node.namespace)
           push(nodeid)
         }
       }

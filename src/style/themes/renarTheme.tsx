@@ -1,5 +1,6 @@
 import { generateTheme } from '../themeGenerator'
 export const renarTheme = generateTheme({
+  type: 'dark',
   // Colors
   primary: '#c31575',
   secondary: '#748EFF',

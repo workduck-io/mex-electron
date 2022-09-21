@@ -48,7 +48,7 @@ export const useFilteredContent = (filter: FilterContentType) => {
 }
 
 export const filterIncompleteTodos = (todo: TodoType) => {
-  if (todo.metadata.status === TodoStatus.completed) {
+  if (todo?.metadata?.status === TodoStatus.completed) {
     return false
   }
   return true

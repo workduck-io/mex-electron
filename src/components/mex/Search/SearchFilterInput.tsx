@@ -19,6 +19,7 @@ import {
   StyledInputWrapper,
   FilterComboboxToggle
 } from '../NodeSelect/NodeSelect.styles'
+import IconDisplay from '@ui/components/IconPicker/IconDisplay'
 
 interface SearchFilterInputProps<Item> {
   filterKey: FilterKey
@@ -79,7 +80,7 @@ const SearchFilterInput = <Item,>({
                   // updateResults()
                 }}
               >
-                {f.icon ? <Icon icon={f.icon} /> : null}
+                {f.icon ? <IconDisplay icon={f.icon} /> : null}
                 {f.label}
                 {f.count && <SearchFilterCount>{f.count}</SearchFilterCount>}
               </SearchFilterStyled>
@@ -88,14 +89,14 @@ const SearchFilterInput = <Item,>({
         )}
       </FilterComboboxToggle>
       <StyledCombobox {...getComboboxProps()}>
-        <SearchFilterInputWrapper>
+        <SearchFilterInputWrapper isOverlay>
           <Input
             {...getInputProps()}
             onFocus={() => openMenu()}
             placeholder={placeholder ?? `Apply Filter...`}
             className={`FilterInput`}
           />
-          <StyledMenu {...getMenuProps()} isOpen={isOpen}>
+          <StyledMenu {...getMenuProps()} isOpen={isOpen} isOverlay>
             {isOpen &&
               inputItems.map((item, index) => (
                 <Suggestion

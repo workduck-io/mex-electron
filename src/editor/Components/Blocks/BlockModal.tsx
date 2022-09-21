@@ -6,6 +6,7 @@ import { QuickLink, WrappedNodeSelect } from '@components/mex/NodeSelect/NodeSel
 import { useLinks } from '@hooks/useLinks'
 import useBlockStore from '@store/useBlockStore'
 import { useDataSaverFromContent } from '../Saver'
+import { useNamespaces } from '@hooks/useNamespaces'
 
 const BlockModal = () => {
   const blocksFromStore = useBlockStore((store) => store.blocks)
@@ -15,6 +16,7 @@ const BlockModal = () => {
   const { createNewNote } = useCreateNewNote()
   const { saveEditorValueAndUpdateStores } = useDataSaverFromContent()
   const { getNodeidFromPath } = useLinks()
+  const { getDefaultNamespaceId } = useNamespaces()
 
   const { getContentWithNewBlocks, deleteSelectedBlock } = useEditorBlockSelection()
 
@@ -25,16 +27,17 @@ const BlockModal = () => {
   const onNodeCreate = (quickLink: QuickLink): void => {
     const editorBlocks = deleteSelectedBlock()
     const blocksContent = getContentWithNewBlocks(quickLink.value, editorBlocks, false)
-    createNewNote({ path: quickLink.value, noteContent: blocksContent })
+    createNewNote({ path: quickLink.value, noteContent: blocksContent, namespace: quickLink.namespace })
     setIsModalOpen(undefined)
   }
 
   const onNodeSelect = (quickLink: QuickLink) => {
-    const nodeid = getNodeidFromPath(quickLink.value)
+    const nodeid = getNodeidFromPath(quickLink.value, quickLink.namespace)
     const editorBlocks = deleteSelectedBlock()
     const content = getContentWithNewBlocks(nodeid, editorBlocks)
+    const namespace = quickLink.namespace ?? getDefaultNamespaceId()
 
-    saveEditorValueAndUpdateStores(nodeid, content)
+    saveEditorValueAndUpdateStores(nodeid, namespace, content)
     setIsModalOpen(undefined)
   }
 

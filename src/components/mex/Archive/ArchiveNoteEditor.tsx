@@ -1,5 +1,6 @@
 import arrowLeftLine from '@iconify/icons-ri/arrow-left-line'
 import { ROUTE_PATHS, useRouting } from '@views/routes/urls'
+import useDataStore from '@store/useDataStore'
 import { EditorWrapper, NodeInfo, NoteTitle, StyledEditor } from '@style/Editor'
 import React, { useMemo } from 'react'
 import Editor from '@editor/Editor'
@@ -16,6 +17,8 @@ import useArchive from '@hooks/useArchive'
 import { useDelete } from '@hooks/useDelete'
 import toast from 'react-hot-toast'
 import { IconButton } from '@workduck-io/mex-components'
+import { useNamespaces } from '@hooks/useNamespaces'
+import NamespaceTag from '../NamespaceTag'
 
 const ArchiveNoteEditor = () => {
   const match = useMatch(`${ROUTE_PATHS.archive}/:nodeid`)
@@ -24,6 +27,7 @@ const ArchiveNoteEditor = () => {
   const { getMockDelete } = useDelete()
   const { removeArchiveData } = useArchive()
   const { getTitleFromNoteId } = useLinks()
+  const { getNamespaceIcon, getNamespace } = useNamespaces()
 
   const onBackClick = () => {
     goBack()
@@ -39,17 +43,23 @@ const ArchiveNoteEditor = () => {
     }
   }
 
-  const note = useMemo(() => {
+  const { note, namespace } = useMemo(() => {
     const nodeId = match.params.nodeid
     if (nodeId) {
       const content = getContent(nodeId)?.content
       const title = getTitleFromNoteId(nodeId, { includeArchived: true })
-      return { content, title, nodeId }
+      const archive = useDataStore.getState().archive
+      const archiveNode = archive.find((n) => n.nodeid === nodeId)
+      const namespace = getNamespace(archiveNode.namespace)
+      return { note: { content, title, nodeId }, namespace }
     }
 
     return {
-      title: 'No Title',
-      content: defaultContent.content
+      note: {
+        title: 'No Title',
+        content: defaultContent.content
+      },
+      namespace: undefined
     }
   }, [match.params])
 
@@ -67,6 +77,7 @@ const ArchiveNoteEditor = () => {
         <FlexGap>
           <MexIcon noHover height={24} width={24} icon={archiveIcon} />
           <NoteTitle>{note.title}</NoteTitle>
+          {namespace && <NamespaceTag namespace={namespace} />}
         </FlexGap>
         <IconButton
           transparent={false}

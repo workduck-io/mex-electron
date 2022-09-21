@@ -14,6 +14,7 @@ import { ProfileIcon } from './UserPage'
 import { CardShadow, HoverSubtleGlow } from './helpers'
 import { size } from './responsive'
 import { BodyFont, MainFont } from './spotlight/global'
+import { StyledNamespaceTag } from '@components/mex/NamespaceTag/styled'
 
 interface ResultProps {
   selected?: boolean
@@ -281,6 +282,9 @@ export const ResultMain = styled.div`
 export const ResultTitle = styled.div`
   ${MainFont};
   ${SearchTransition}
+  display: flex;
+  gap: ${({ theme }) => theme.spacing.tiny};
+
   color: ${({ theme }) => theme.colors.text.default};
 `
 
@@ -519,8 +523,19 @@ export const SplitSearchPreviewWrapper = styled.div`
     cursor: pointer;
     .title,
     ${TitleText} {
+      display: flex;
+      align-items: center;
+      gap: ${({ theme }) => theme.spacing.small};
       padding: 0.75rem 0;
       flex-grow: 1;
+      ${StyledNamespaceTag} {
+        font-size: 1rem;
+        font-weight: 500;
+        svg {
+          width: 1rem;
+          height: 1rem;
+        }
+      }
     }
     & > svg {
       color: ${({ theme }) => theme.colors.primary};

@@ -203,7 +203,7 @@ const CreateReminderModal = () => {
     const newValue = quickLink.value
     if (newValue) {
       // mog('newValue', { newValue, quickLink })
-      setNodeId(getNodeidFromPath(newValue))
+      setNodeId(getNodeidFromPath(newValue, quickLink.namespace))
     }
   }
   const { trackEvent } = useAnalytics()
@@ -266,7 +266,12 @@ const CreateReminderModal = () => {
         <WrappedNodeSelect
           placeholder="Reminder for node"
           disabled={modalValue.blockContent !== undefined}
-          defaultValue={useEditorStore.getState().node.id ?? ''}
+          defaultValue={
+            useEditorStore.getState().node && {
+              path: useEditorStore.getState().node.path,
+              namespace: useEditorStore.getState().node.namespace
+            }
+          }
           disallowReserved
           highlightWhenSelected
           iconHighlight={modalValue.nodeid !== undefined}

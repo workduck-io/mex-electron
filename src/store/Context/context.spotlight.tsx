@@ -30,6 +30,8 @@ type SpotlightContextType = {
   setActiveIndex: any
   setActiveItem: any
   activeItem: ActiveItem
+  selectedNamespace: string | undefined
+  setSelectedNamespace: (val: string) => void
 }
 
 const SpotlightContext = createContext<SpotlightContextType>(undefined!)
@@ -41,6 +43,7 @@ export const SpotlightProvider: React.FC = ({ children }: any) => {
   const [searchResults, setSearchResults] = useState<Array<ListItemType>>([])
   const [activeIndex, setActiveIndex] = useState<number>(0)
   const [activeItem, setActiveItem] = useState<ActiveItem>({ item: undefined, active: false })
+  const [selectedNamespace, setSelectedNamespace] = useState<string | undefined>(undefined)
 
   const value = {
     search,
@@ -52,7 +55,9 @@ export const SpotlightProvider: React.FC = ({ children }: any) => {
     activeItem,
     searchResults,
     setSearchResults,
-    setActiveItem
+    setActiveItem,
+    selectedNamespace,
+    setSelectedNamespace
   }
 
   return <SpotlightContext.Provider value={value}>{children}</SpotlightContext.Provider>

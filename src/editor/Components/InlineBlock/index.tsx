@@ -26,6 +26,9 @@ import {
   StyledInlineBlockPreview
 } from './styled'
 import { ROUTE_PATHS, useRouting, NavigationType } from '@views/routes/urls'
+import { useNamespaces } from '@hooks/useNamespaces'
+import { useMatch } from 'react-router-dom'
+import NamespaceTag from '@components/mex/NamespaceTag'
 
 const StyledArchiveText = styled.text`
   border-radius: ${({ theme }) => theme.borderRadius.small};
@@ -38,11 +41,13 @@ const InlineBlock = (props: any) => {
   const { goTo } = useRouting()
   const { getPathFromNodeid } = useLinks()
   const { getNodeType } = useNodes()
+  const { getNamespaceOfNode, getNamespaceIconForNode } = useNamespaces()
   const getContent = useContentStore((store) => store.getContent)
   const path = useMemo(() => getPathFromNodeid(props.element.value, true), [props.element.value])
   const nodeid = props.element.value
   const blockId = props.element.blockId
   const nodeType = getNodeType(nodeid)
+  const match = useMatch(`${ROUTE_PATHS.node}/:nodeid`)
 
   const spotlightCtx = useSpotlightContext()
   const noteCtx = useNoteContext()
@@ -73,6 +78,11 @@ const InlineBlock = (props: any) => {
 
   const selected = useSelected()
 
+  const currentMainNode = match?.params?.nodeid
+  const namespace = getNamespaceOfNode(props.element?.value)
+  const currentNodeNamespace = getNamespaceOfNode(currentMainNode)
+  const showNamespace = namespace?.id !== currentNodeNamespace?.id
+
   mog('InlineBlock', { nodeid, selected, content, nodeType, path })
 
   return (
@@ -84,6 +94,7 @@ const InlineBlock = (props: any) => {
               <InlineBlockHeading>{blockId ? 'Within:' : 'From:'}</InlineBlockHeading>
               {nodeType === NodeType.SHARED && <SharedNodeIcon />}
               <InlineBlockText>{path}</InlineBlockText>
+              {showNamespace && <NamespaceTag separator namespace={namespace} />}
             </InlineFlex>
           )}
           {

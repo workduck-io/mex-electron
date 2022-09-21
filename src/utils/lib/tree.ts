@@ -112,6 +112,7 @@ const insertInNested = (iNode: BaseTreeNode, nestedTree: BaseTreeNode[]) => {
 export interface FlatItem {
   id: string
   nodeid: string
+  namespace?: string
   parentNodeId?: string
   tasks?: number
   reminders?: number
@@ -266,7 +267,7 @@ export const generateTree = (
   sort?: (a: BaseTreeNode, b: BaseTreeNode) => number
 ): TreeData => {
   // tree should be sorted
-  mog('FLAT TREE', { treeFlat })
+  // mog('GenerateTree ', { treeFlat })
   const unsortedBaseNestedTree = getBaseNestedTree(treeFlat)
   const baseNestedTree = sort ? unsortedBaseNestedTree.sort(sort) : sortTreeWithPriority(unsortedBaseNestedTree)
   const nestedTree: TreeData = {
@@ -302,6 +303,7 @@ export const generateTree = (
           nodeid: n.nodeid,
           path: n.id,
           mex_icon: n.icon,
+          namespace: n.namespace,
           stub: n.stub,
           tasks: nestedItem.tasks,
           reminders: nestedItem.reminders,
@@ -329,6 +331,7 @@ export const generateTree = (
             nodeid: n.nodeid,
             path: n.id,
             mex_icon: n.icon,
+            namespace: n.namespace,
             stub: n.stub,
             tasks: nestedItem.tasks,
             reminders: nestedItem.reminders,

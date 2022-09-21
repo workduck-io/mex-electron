@@ -144,7 +144,7 @@ const useReminderFilters = () => {
         value: nodeid,
         // filter: (reminder) => reminder.nodeid === nodeid,
         count: nodeCounts[nodeid],
-        icon: 'ri:file-list-line'
+        icon: { type: 'ICON', value: 'ri:file-list-line' }
       })
     })
 
@@ -162,7 +162,7 @@ const useReminderFilters = () => {
           key: 'state',
           id: state,
           label: state,
-          icon: reminderStateIcons[state],
+          icon: { type: 'ICON', value: reminderStateIcons[state] },
           count,
           value: state
           // filter: (reminder: Reminder) => getReminderState(reminder) === state
@@ -175,7 +175,8 @@ const useReminderFilters = () => {
         key: 'has',
         id: 'block_todo',
         label: 'Task',
-        icon: 'ri:ri-task-line',
+        icon: { type: 'ICON', value: 'ri:task-line' },
+        //'ri:ri-task-line',
         count: todoRemindersLen,
         value: 'block_todo'
         // filter: (reminder: Reminder) => reminder.todoid !== undefined

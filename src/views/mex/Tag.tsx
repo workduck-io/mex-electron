@@ -1,3 +1,5 @@
+import NamespaceTag from '@components/mex/NamespaceTag'
+import { useNamespaces } from '@hooks/useNamespaces'
 import React from 'react'
 
 import { useParams } from 'react-router-dom'
@@ -33,10 +35,11 @@ const Tag = () => {
   const { tag } = useParams<{ tag: string }>()
   // const tagsCache = useDataStore((store) => store.tagsCache)
   const { getNodesAndCleanCacheForTag } = useTags()
-  const { getPathFromNodeid } = useLinks()
+  const { getILinkFromNodeid } = useLinks()
   const { nodes } = getNodesAndCleanCacheForTag(tag)
   const { goTo } = useRouting()
   const { loadNode } = useLoad()
+  const { getNamespace } = useNamespaces()
 
   const transition = useTransition(nodes, {
     // sort: (a, b) => (a.score > b.score ? -1 : 0),
@@ -60,8 +63,9 @@ const Tag = () => {
         <Results view={View.Card}>
           {transition((styles, nodeid, _t, _i) => {
             const con = contents[nodeid]
-            const path = getPathFromNodeid(nodeid, true)
+            const node = getILinkFromNodeid(nodeid, true)
             const content = con ? con.content : defaultContent.content
+            const namespace = getNamespace(node?.namespace)
             return (
               <Result
                 onClick={(ev) => {
@@ -73,7 +77,8 @@ const Tag = () => {
                 key={`tag_res_prev_${tag}_${nodeid}${_i}`}
               >
                 <ResultHeader>
-                  <ResultTitle>{path}</ResultTitle>
+                  <ResultTitle>{node?.path}</ResultTitle>
+                  <NamespaceTag namespace={namespace} />
                 </ResultHeader>
                 <SearchPreviewWrapper>
                   <EditorPreviewRenderer content={content} editorId={`${nodeid}_editor_${tag}_preview`} />

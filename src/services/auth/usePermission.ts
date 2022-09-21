@@ -8,6 +8,7 @@ import useDataStore from '@store/useDataStore'
 import { iLinksToUpdate } from '@utils/hierarchy'
 import { runBatch } from '@utils/lib/batchPromise'
 import { useApi } from '@apis/useSaveApi'
+import { SHARED_NAMESPACE } from '@utils/lib/paths'
 
 interface SharedNodesPreset {
   status: 'success'
@@ -112,7 +113,8 @@ export const usePermission = () => {
                   owner: n.ownerID,
                   sharedBy: n.granterID,
                   createdAt: metadata.createdAt,
-                  updatedAt: metadata.updatedAt
+                  updatedAt: metadata.updatedAt,
+                  namespace: SHARED_NAMESPACE.id
                 }
               }
             } catch (e) {
@@ -124,7 +126,8 @@ export const usePermission = () => {
               nodeid: n.nodeID,
               currentUserAccess: n.accessType,
               owner: n.ownerID,
-              sharedBy: n.grantedID
+              sharedBy: n.grantedID,
+              namespace: SHARED_NAMESPACE.id
             }
           })
 

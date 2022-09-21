@@ -1,8 +1,9 @@
 import { ILink } from '../../../types/Types'
 import { NodeLink } from '../../../types/relations'
+import { mog } from '@workduck-io/mex-utils'
 
-export const doesLinkRemain = (id: string, refactored: ILink[]): boolean => {
-  return refactored.map((r) => r.path).indexOf(id) === -1
+export const doesLinkRemain = (nodeid: string, refactored: ILink[]): boolean => {
+  return refactored.map((r) => r.nodeid).indexOf(nodeid) !== -1
 }
 
 export const linkInRefactor = (id: string, refactored: NodeLink[]): false | NodeLink => {

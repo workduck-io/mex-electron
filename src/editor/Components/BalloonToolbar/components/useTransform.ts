@@ -29,6 +29,7 @@ import { ELEMENT_SYNC_BLOCK } from '../../SyncBlock'
 
 export const useTransform = () => {
   const addSnippet = useSnippetStore((s) => s.addSnippet)
+  const node = useEditorStore((s) => s.node)
   const { updateSnippet } = useSnippets()
   const { createNewNote } = useCreateNewNote()
   const { updater } = useUpdater()
@@ -191,7 +192,12 @@ export const useTransform = () => {
       const parentPath = useEditorStore.getState().node.title
       const path = parentPath + SEPARATOR + (isInline ? getSlug(selText) : getSlug(text))
 
-      const note = createNewNote({ path, noteContent: putContent ? value : defaultContent.content, noRedirect: true })
+      const note = createNewNote({
+        path,
+        noteContent: putContent ? value : defaultContent.content,
+        namespace: node?.namespace,
+        noRedirect: true
+      })
 
       replaceSelectionWithLink(editor, note?.nodeid, isInline)
       // mog('Replace Selection with node We are here', {

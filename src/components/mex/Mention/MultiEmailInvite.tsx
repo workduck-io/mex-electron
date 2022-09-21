@@ -15,7 +15,7 @@ import { Controller, useForm } from 'react-hook-form'
 import { AccessLevel, DefaultPermission, DefaultPermissionValue, permissionOptions } from '../../../types/mentions'
 import { ModalControls, ModalHeader } from '../Refactor/styles'
 import { InviteFormFieldset, InviteFormWrapper, MultipleInviteWrapper } from './ShareModal.styles'
-import { InviteModalData, useShareModalStore } from './ShareModalStore'
+import { MultiInviteModalData, useShareModalStore } from './ShareModalStore'
 
 export const MultiEmailInviteModalContent = ({ disabled }: { disabled?: boolean }) => {
   const addInvitedUser = useMentionStore((state) => state.addInvitedUser)
@@ -34,11 +34,11 @@ export const MultiEmailInviteModalContent = ({ disabled }: { disabled?: boolean 
     control,
     reset,
     formState: { errors, isSubmitting }
-  } = useForm<InviteModalData>()
+  } = useForm<MultiInviteModalData>()
 
   const nodeid = useMemo(() => modalData?.nodeid ?? node?.nodeid, [modalData.nodeid, node])
 
-  const onSubmit = async (data: InviteModalData) => {
+  const onSubmit = async (data: MultiInviteModalData) => {
     mog('data', data)
 
     if (nodeid) {

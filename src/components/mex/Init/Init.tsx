@@ -20,6 +20,7 @@ import { useInitLoader } from './useInitLoader'
 import { useIpcListenerOnInit } from './useIpcListenerOnInit'
 import { useNavigator } from './useNavigator'
 import { useFileSaveBuffer } from '@hooks/useFileSaveBuffer'
+import { addIconsToIconify } from '@components/icons/Icons'
 
 const Init = () => {
   const { goTo } = useRouting()
@@ -76,6 +77,7 @@ const Init = () => {
       } else {
         setUnAuthenticated()
       }
+      addIconsToIconify()
     }
 
     initUserAndApp()

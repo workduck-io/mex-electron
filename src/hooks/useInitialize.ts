@@ -8,6 +8,7 @@ import useTodoStore from '../store/useTodoStore'
 import { FileData } from '../types/data'
 import { createNodeWithUid } from '../utils/lib/helper'
 import useLoad from './useLoad'
+import { useNamespaces } from './useNamespaces'
 import { useSlashCommands } from './useSlashCommands'
 import { useViewStore } from './useTaskViews'
 
@@ -27,6 +28,7 @@ export const useInitialize = () => {
   const initSnippets = useSnippetStore((state) => state.initSnippets)
   const { generateSlashCommands } = useSlashCommands()
   const { loadNodeProps } = useLoad()
+  const { getDefaultNamespaceId } = useNamespaces()
 
   const update = (data: FileData) => {
     const {
@@ -80,9 +82,10 @@ export const useInitialize = () => {
     // mog('INIT data', { data })
     update(data)
     const keyToLoad = initNodeId || '@'
+    const defaultNamespaceId = getDefaultNamespaceId()
 
     if (initFor === AppType.SPOTLIGHT) {
-      loadNodeProps(createNodeWithUid(keyToLoad))
+      loadNodeProps(createNodeWithUid(keyToLoad, defaultNamespaceId))
     }
   }
 

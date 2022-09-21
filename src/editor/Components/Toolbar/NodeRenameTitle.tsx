@@ -1,21 +1,22 @@
-import { QuickLink, WrappedNodeSelect } from '../../../components/mex/NodeSelect/NodeSelect'
-import React, { useEffect, useState } from 'react'
+import React, { useEffect, useMemo, useState } from 'react'
 
-import { Input } from '../../../style/Form'
-import { StyledInputWrapper } from '../../../components/mex/NodeSelect/NodeSelect.styles'
 import Tippy from '@tippyjs/react'
-import { doesLinkRemain } from '../../../components/mex/Refactor/doesLinkRemain'
-import { isMatch, isReserved } from '../../../utils/lib/paths'
-import { mog } from '../../../utils/lib/helper'
 import styled from 'styled-components'
-import { useEditorStore } from '../../../store/useEditorStore'
+
+import { Button } from '@workduck-io/mex-components'
+
+import { QuickLink, WrappedNodeSelect } from '../../../components/mex/NodeSelect/NodeSelect'
+import { StyledInputWrapper } from '../../../components/mex/NodeSelect/NodeSelect.styles'
+import { doesLinkRemain } from '../../../components/mex/Refactor/doesLinkRemain'
 import { useLinks } from '../../../hooks/useLinks'
 import { useNavigation } from '../../../hooks/useNavigation'
 import { useRefactor } from '../../../hooks/useRefactor'
-import { useRenameStore } from '../../../store/useRenameStore'
 import { useAnalysisStore } from '../../../store/useAnalysis'
-import { hierarchyParser } from '@hooks/useHierarchy'
-import { Button } from '@workduck-io/mex-components'
+import { useEditorStore } from '../../../store/useEditorStore'
+import { useRenameStore } from '../../../store/useRenameStore'
+import { Input } from '../../../style/Form'
+import { mog } from '../../../utils/lib/helper'
+import { isMatch, isReserved } from '../../../utils/lib/paths'
 
 const Wrapper = styled.div`
   position: relative;
@@ -72,6 +73,7 @@ const NodeRenameTitle = () => {
 
   // const focus = useRenameStore((store) => store.focus)
   const to = useRenameStore((store) => store.to)
+  const toNS = useRenameStore((store) => store.toNS)
   // const from = useRenameStore((store) => store.from)
   const mockRefactored = useRenameStore((store) => store.mockRefactored)
   const nodeTitle = useAnalysisStore((state) => state.analysis.title)
@@ -82,14 +84,23 @@ const NodeRenameTitle = () => {
   const setMockRefactored = useRenameStore((store) => store.setMockRefactored)
   const modalReset = useRenameStore((store) => store.closeModal)
   const setTo = useRenameStore((store) => store.setTo)
-  const nodeFrom = useEditorStore((store) => store.node.id ?? '')
+  const editorNode = useEditorStore((store) => store.node)
+  // const nodeFrom = useEditorStore((store) => store.node.id ?? '')
+  const { namespace: nodeFromNS } = useEditorStore((store) => store.node)
   const setFrom = useRenameStore((store) => store.setFrom)
   const [editable, setEditable] = useState(false)
   // const inpRef = useRef<HTMLInputElement>()
   //
+  const nodeFrom = useMemo(
+    () => ({
+      path: editorNode.path,
+      namespaceID: editorNode.namespace
+    }),
+    [editorNode]
+  )
 
   useEffect(() => {
-    if (nodeFrom && isReserved(nodeFrom)) {
+    if (nodeFrom && isReserved(nodeFrom.path)) {
       mog('ISRESERVED', { nodeFrom })
     }
   }, [nodeFrom])
@@ -100,13 +111,13 @@ const NodeRenameTitle = () => {
 
   const handleToChange = (newValue: QuickLink) => {
     if (newValue.value) {
-      setTo(newValue.value)
+      setTo({ path: newValue.value, namespaceID: newValue.namespace })
     }
   }
 
   const handleToCreate = (inputValue: QuickLink) => {
     if (inputValue.value) {
-      setTo(inputValue.value)
+      setTo({ path: inputValue.value, namespaceID: inputValue.namespace })
     }
   }
 
@@ -120,25 +131,15 @@ const NodeRenameTitle = () => {
       return
     }
     if (to && nodeFrom) {
-      const res = await execRefactorAsync(nodeFrom, to)
+      const refactored = await execRefactorAsync(nodeFrom, { path: to, namespaceID: nodeFromNS })
 
-      const { addedPaths, removedPaths } = res
-      const addedILinks = hierarchyParser(addedPaths)
-      const removedILinks = hierarchyParser(removedPaths)
-
-      mog('RESULT OF Renaming', { addedILinks, removedILinks })
-
-      // // * set the new hierarchy in the tree
-      const refactored = updateILinks(addedILinks, removedILinks)
-
-      const path = useEditorStore.getState().node.id
       const nodeid = useEditorStore.getState().node.nodeid
       setEditable(false)
 
-      if (doesLinkRemain(path, refactored)) {
+      if (doesLinkRemain(nodeid, refactored)) {
         push(nodeid)
-      } else if (res.length > 0) {
-        const nodeid = getNodeidFromPath(res[0].to)
+      } else if (refactored.length > 0) {
+        const nodeid = refactored[0].nodeid
         push(nodeid)
       }
     }
@@ -164,9 +165,9 @@ const NodeRenameTitle = () => {
 
   return (
     <Wrapper>
-      {isReserved(nodeFrom) ? (
+      {isReserved(nodeFrom.path) ? (
         <Tippy theme="mex" placement="bottom-start" content="Reserved Node">
-          <TitleStatic>{nodeTitle?.length > 0 ? nodeTitle : nodeFrom}</TitleStatic>
+          <TitleStatic>{nodeTitle?.length > 0 ? nodeTitle : nodeFrom.path}</TitleStatic>
         </Tippy>
       ) : editable ? (
         <WrappedNodeSelect
@@ -174,10 +175,10 @@ const NodeRenameTitle = () => {
           name="NodeRenameTitleSelect"
           createAtTop
           disallowReserved
-          disallowMatch={(path) => isMatch(path, nodeFrom)}
+          disallowMatch={(path) => isMatch(path, nodeFrom.path)}
           disallowClash
           autoFocus
-          defaultValue={to ?? nodeFrom}
+          defaultValue={to ? { path: to, namespace: toNS } : { path: nodeFrom.path, namespace: nodeFrom.namespaceID }}
           handleSelectItem={handleToChange}
           handleCreateItem={handleToCreate}
         />
@@ -189,7 +190,7 @@ const NodeRenameTitle = () => {
               setEditable(true)
             }}
           >
-            {nodeTitle?.length > 0 ? nodeTitle : nodeFrom}
+            {nodeTitle?.length > 0 ? nodeTitle : nodeFrom.path}
           </TitleStatic>
         </Tippy>
       )}

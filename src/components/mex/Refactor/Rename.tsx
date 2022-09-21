@@ -1,22 +1,24 @@
-import { hierarchyParser } from '@hooks/useHierarchy'
+import React, { useEffect } from 'react'
+
 import arrowRightLine from '@iconify/icons-ri/arrow-right-line'
 import { Icon } from '@iconify/react'
+import { useLayoutStore } from '@store/useLayoutStore'
 import { mog } from '@utils/lib/helper'
-import { Button, DisplayShortcut } from '@workduck-io/mex-components'
-import React, { useEffect } from 'react'
 import Modal from 'react-modal'
+
+import { Button, DisplayShortcut } from '@workduck-io/mex-components'
 import { tinykeys } from '@workduck-io/tinykeys'
-import { useLinks } from '../../../hooks/useLinks'
+
 import { useNavigation } from '../../../hooks/useNavigation'
 import { useRefactor } from '../../../hooks/useRefactor'
 import { useSaveData } from '../../../hooks/useSaveData'
 import { useEditorStore } from '../../../store/useEditorStore'
-import { useQStore } from '../../../store/useQStore'
 import { useRenameStore } from '../../../store/useRenameStore'
 import { isMatch, isReserved } from '../../../utils/lib/paths'
 import { QuickLink, WrappedNodeSelect } from '../NodeSelect/NodeSelect'
 import { doesLinkRemain } from './doesLinkRemain'
 import { ArrowIcon, MockRefactorMap, ModalControls, ModalHeader, MRMHead, MRMRow } from './styles'
+import { useUserPreferenceStore } from '@store/userPreferenceStore'
 
 const Rename = () => {
   const { execRefactorAsync, getMockRefactor } = useRefactor()
@@ -27,34 +29,39 @@ const Rename = () => {
   const to = useRenameStore((store) => store.to)
   const from = useRenameStore((store) => store.from)
 
+  const fromNS = useRenameStore((store) => store.fromNS)
+  const toNS = useRenameStore((store) => store.toNS)
+
   const mockRefactored = useRenameStore((store) => store.mockRefactored)
   const closeModal = useRenameStore((store) => store.closeModal)
   const setMockRefactored = useRenameStore((store) => store.setMockRefactored)
   const setTo = useRenameStore((store) => store.setTo)
   const setFrom = useRenameStore((store) => store.setFrom)
-  const { updateILinks } = useLinks()
-
-  const { getNodeidFromPath } = useLinks()
-  const q = useQStore((s) => s.q)
+  const currentSpace = useUserPreferenceStore((store) => store.activeNamespace)
 
   const handleFromChange = (quickLink: QuickLink) => {
     const newValue = quickLink.value
+    const newNS = quickLink.namespace
     if (newValue) {
-      setFrom(newValue)
+      setFrom({ path: newValue, namespaceID: newNS })
     }
   }
 
   const handleToChange = (quickLink: QuickLink) => {
     const newValue = quickLink.value
+    const newNS = quickLink.namespace ?? currentSpace
     if (newValue) {
-      setTo(newValue)
+      mog('setTo newNS', { newValue, newNS, quickLink })
+      setTo({ path: newValue, namespaceID: newNS })
     }
   }
 
   const handleToCreate = (quickLink: QuickLink) => {
     const inputValue = quickLink.value
+    const newNS = quickLink.namespace ?? currentSpace
     if (inputValue) {
-      setTo(inputValue)
+      mog('setTo newNS', { inputValue, newNS, quickLink })
+      setTo({ path: inputValue, namespaceID: newNS })
     }
   }
 
@@ -65,7 +72,7 @@ const Rename = () => {
       // mog('To, from in rename', { to, from })
       setMockRefactored(getMockRefactor(from, to))
     }
-  }, [to, from, q])
+  }, [to, from])
 
   useEffect(() => {
     const unsubscribe = tinykeys(window, {
@@ -83,16 +90,9 @@ const Rename = () => {
 
   const handleRefactor = async () => {
     if (to && from && !isReserved(from) && !isReserved(from)) {
-      const res = await execRefactorAsync(from, to)
+      const refactored = await execRefactorAsync({ path: from, namespaceID: fromNS }, { path: to, namespaceID: toNS })
 
-      const { addedPaths, removedPaths } = res
-      const addedILinks = hierarchyParser(addedPaths)
-      const removedILinks = hierarchyParser(removedPaths)
-
-      mog('RESULT OF Renaming', { addedILinks, removedILinks })
-
-      // // * set the new hierarchy in the tree
-      const refactored = updateILinks(addedILinks, removedILinks)
+      mog('RESULT OF Renaming', { refactored })
 
       saveData()
 
@@ -101,13 +101,16 @@ const Rename = () => {
       //   setBaseNodeId(baseId.to)
       // }
 
-      const path = useEditorStore.getState().node.path
       const nodeid = useEditorStore.getState().node.nodeid
 
-      if (doesLinkRemain(path, refactored)) {
+      if (doesLinkRemain(nodeid, refactored)) {
         push(nodeid, { savePrev: false })
-      } else if (res.length > 0) {
-        const nodeid = getNodeidFromPath(res[0].to)
+      }
+
+      // What is this code? Isn't res an object, what does res[0] refer to?
+      // res == result == refactored
+      else if (refactored.length > 0) {
+        const nodeid = refactored[0].nodeid
         push(nodeid, { savePrev: false })
       }
     }
@@ -118,12 +121,18 @@ const Rename = () => {
   // mog('RenameComponent', { mockRefactored, to, from, ilinks: useDataStore.getState().ilinks })
 
   return (
+    // eslint-disable-next-line
+    // @ts-ignore
     <Modal className="ModalContent" overlayClassName="ModalOverlay" onRequestClose={closeModal} isOpen={open}>
       <ModalHeader>Rename</ModalHeader>
 
       <WrappedNodeSelect
         placeholder="Rename node from..."
-        defaultValue={from ?? useEditorStore.getState().node.id}
+        defaultValue={
+          from
+            ? { path: from, namespace: fromNS }
+            : { path: useEditorStore.getState().node.path, namespace: useEditorStore.getState().node.namespace }
+        }
         disallowReserved
         highlightWhenSelected
         iconHighlight={from !== undefined}
@@ -134,7 +143,7 @@ const Rename = () => {
         placeholder="Rename node to..."
         autoFocus={to === undefined}
         menuOpen={to === undefined}
-        defaultValue={to}
+        defaultValue={to && { path: to, namespace: toNS }}
         disallowClash
         disallowMatch={(path) => isMatch(path, from)}
         createAtTop

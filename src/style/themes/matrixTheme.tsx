@@ -1,6 +1,7 @@
 import { generateTheme } from '../themeGenerator'
 
 export const matrixTheme = generateTheme({
+  type: 'dark',
   // Colors
   primary: '#31d181',
   secondary: '#937cfc',

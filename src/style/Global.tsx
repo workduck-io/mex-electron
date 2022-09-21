@@ -18,7 +18,7 @@ const GlobalStyle = createGlobalStyle`
     opacity: 0.5;
   }
 
-  html { 
+  html {
     font-size: 14px;
   }
 
@@ -92,6 +92,10 @@ const GlobalStyle = createGlobalStyle`
 
   button {
     border: none;
+  }
+
+  #floating-picker-root {
+    z-index: 100000;
   }
 
   ${({ theme }) => theme.custom && customStyles[theme.custom]}

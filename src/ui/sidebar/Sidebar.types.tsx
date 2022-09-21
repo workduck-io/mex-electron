@@ -1,6 +1,6 @@
 import { DesignItem } from '../../types/design'
 import { LastOpenedState } from '../../types/userPreference'
-import { ILink, Tag } from '../../types/Types'
+import { ILink, MIcon, Tag } from '../../types/Types'
 import { IconifyIcon } from '@iconify/react'
 import { PollActions } from '@store/useApiStore'
 
@@ -38,7 +38,7 @@ export interface SidebarSpace {
   /**
    * Icon of the space
    */
-  icon: string | IconifyIcon
+  icon: MIcon
 
   /**
    * Label of the space

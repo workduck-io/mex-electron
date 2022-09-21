@@ -31,7 +31,7 @@ import syncStores from '@store/syncStore/synced'
 
 const GlobalListener = memo(() => {
   const [temp, setTemp] = useState<any>()
-  const { setSelection } = useSpotlightContext()
+  const { setSelection, selectedNamespace } = useSpotlightContext()
   const setSpotlightTrigger = useSpotlightSettingsStore((state) => state.setSpotlightTrigger)
 
   const showSource = useSpotlightSettingsStore((state) => state.showSource)
@@ -122,7 +122,7 @@ const GlobalListener = memo(() => {
         const isNodePresent = ilinks.find((ilink) => ilink.nodeid === node.nodeid)
 
         if (!isNodePresent) {
-          createNewNote({ path: node.path, noteId: node.nodeid })
+          createNewNote({ path: node.path, noteId: node.nodeid, namespace: selectedNamespace })
         }
 
         addRecent(node.nodeid)

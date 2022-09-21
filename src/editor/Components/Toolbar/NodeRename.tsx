@@ -1,17 +1,18 @@
-import { useRefactorStore } from '@components/mex/Refactor/Refactor'
+import React, { useEffect, useMemo, useRef, useState } from 'react'
+
 import { getNameFromPath, getParentFromPath, SEPARATOR } from '@components/mex/Sidebar/treeUtils'
-import { hierarchyParser } from '@hooks/useHierarchy'
+import { useNodes } from '@hooks/useNodes'
 import { useKeyListener } from '@hooks/useShortcutListener'
 import useDataStore from '@store/useDataStore'
 import { useHelpStore } from '@store/useHelpStore'
 import Tippy from '@tippyjs/react'
 import { getPlateEditorRef, selectEditor } from '@udecode/plate'
-import { Button, DisplayShortcut } from '@workduck-io/mex-components'
-import React, { useEffect, useMemo, useRef, useState } from 'react'
 import toast from 'react-hot-toast'
+
+import { Button, DisplayShortcut } from '@workduck-io/mex-components'
 import { tinykeys } from '@workduck-io/tinykeys'
+
 import { doesLinkRemain } from '../../../components/mex/Refactor/doesLinkRemain'
-import { useLinks } from '../../../hooks/useLinks'
 import { useNavigation } from '../../../hooks/useNavigation'
 import { useRefactor } from '../../../hooks/useRefactor'
 import { useAnalysisStore } from '../../../store/useAnalysis'
@@ -20,22 +21,19 @@ import { useRenameStore } from '../../../store/useRenameStore'
 import { Input } from '../../../style/Form'
 import { isClash, isMatch, isReserved } from '../../../utils/lib/paths'
 import { ButtonWrapper, TitleStatic, Wrapper } from './NodeRename.style'
-import { useNodes } from '@hooks/useNodes'
+import { mog } from '@workduck-io/mex-utils'
 
 const NodeRenameOnlyTitle = () => {
-  const { getNodeidFromPath } = useLinks()
   const { execRefactorAsync, getMockRefactor } = useRefactor()
 
-  // const focus = useRenameStore((store) => store.focus)
   const to = useRenameStore((store) => store.to)
   const ilinks = useDataStore((store) => store.ilinks)
   const nodeTitle = useAnalysisStore((state) => state.analysis.title)
 
   const { push } = useNavigation()
-  const { updateILinks } = useLinks()
   const setMockRefactored = useRenameStore((store) => store.setMockRefactored)
   const modalReset = useRenameStore((store) => store.closeModal)
-  const nodeFrom = useEditorStore((store) => store.node.path ?? '')
+  const { path: nodeFrom, namespace: nodeFromNS } = useEditorStore((store) => store.node)
   const setFrom = useRenameStore((store) => store.setFrom)
   const [editable, setEditable] = useState(false)
   const [newTitle, setNewTitle] = useState(getNameFromPath(nodeFrom))
@@ -74,13 +72,12 @@ const NodeRenameOnlyTitle = () => {
         event.preventDefault()
         // TODO: Fix the shortcut handler (not working after the shortcut is renamed)
         shortcutHandler(shortcuts.showRename, () => {
-          console.log({ event })
           setEditable(true)
-          inpRef.current.focus()
+          inpRef.current?.focus()
         })
       }
     })
-    // console.log(shortcuts.showRename)
+
     return () => {
       unsubscribe()
     }
@@ -133,29 +130,27 @@ const NodeRenameOnlyTitle = () => {
     if (newTitle && nodeFrom) {
       let newPath = newTitle
       if (parent) newPath = `${parent}${SEPARATOR}${newTitle}`
-      setFrom(nodeFrom)
+      setFrom({ path: nodeFrom, namespaceID: nodeFromNS })
 
-      const res = await execRefactorAsync(nodeFrom, newPath)
+      const refactored = await execRefactorAsync(
+        { path: nodeFrom, namespaceID: nodeFromNS },
+        { path: newPath, namespaceID: nodeFromNS }
+      )
 
-      const { addedPaths, removedPaths } = res
-      const addedILinks = hierarchyParser(addedPaths)
-      const removedILinks = hierarchyParser(removedPaths)
-
-      // // * set the new hierarchy in the tree
-      const refactored = updateILinks(addedILinks, removedILinks)
       updateBaseNode()
 
       const path = useEditorStore.getState().node.id
       const nodeid = useEditorStore.getState().node.nodeid
       setEditable(false)
 
-      if (doesLinkRemain(path, refactored)) {
-        push(nodeid)
-      } else if (res.length > 0) {
-        const nodeid = getNodeidFromPath(res[0].to)
+      if (doesLinkRemain(nodeid, refactored)) {
         push(nodeid)
       }
-
+      // What is this code? Isn't res an object, what does res[0] refer to?
+      else if (refactored.length > 0) {
+        const nodeid = refactored[0].nodeid
+        push(nodeid, { savePrev: false })
+      }
       reset()
 
       const editorRef = getPlateEditorRef()

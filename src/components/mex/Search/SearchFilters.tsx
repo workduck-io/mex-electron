@@ -29,7 +29,8 @@ interface SearchFiltersProps<Item> {
 const filterIcons: Partial<{ [key in FilterKey]: string }> = {
   note: 'ri:file-list-2-line',
   tag: 'ri:hashtag',
-  mention: 'ri:at-line'
+  mention: 'ri:at-line',
+  space: 'heroicons-outline:view-grid'
 }
 
 const getGroupedFilters = <Item,>(filters: SearchFilter<Item>[], currentFilters: SearchFilter<Item>[]) => {

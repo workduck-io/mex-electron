@@ -48,7 +48,7 @@ export const getCreateableOnSelect = (onSelectItem: OnSelectItem, onNewItem: OnN
   const creatableOnSelect = (editor: any, selectVal: IComboboxItem | string, elementType?: string, tab?: boolean) => {
     const items = useComboboxStore.getState().items
     const editorNoteId = cleanEditorId(editor?.id)
-    const currentNodeKey = useDataStore.getState().ilinks.find(l => l.nodeid === editorNoteId)?.path
+    const currentNodeKey = useDataStore.getState().ilinks.find((l) => l.nodeid === editorNoteId)?.path
     const itemIndex = useComboboxStore.getState().itemIndex
 
     const item = items[itemIndex]
@@ -63,6 +63,7 @@ export const getCreateableOnSelect = (onSelectItem: OnSelectItem, onNewItem: OnN
           onSelectItem(editor, { key: String(items.length), text: res }, elementType, tab)
         }
       } else {
+        // mog('getCreatableInSelect using OnSelectItem', { item, selectVal, creatable })
         onSelectItem(editor, item, elementType, tab)
       }
     } else if (selectVal && creatable) {
