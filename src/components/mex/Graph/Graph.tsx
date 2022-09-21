@@ -1,21 +1,17 @@
-import { ForceGraph2D, ForceGraph3D } from 'react-force-graph'
+import { useLayoutStore } from '@store/useLayoutStore'
+import { IconButton } from '@workduck-io/mex-components'
+import { mog } from '@workduck-io/mex-utils'
 import equal from 'fast-deep-equal'
 import React, { useEffect, useRef, useState } from 'react'
-import Graph from 'react-vis-network-graph'
-import { getTitleFromPath, useLinks } from '../../../hooks/useLinks'
-import { useNavigation } from '../../../hooks/useNavigation'
+import { ForceGraph3D } from 'react-force-graph'
+import { useTheme } from 'styled-components'
+import { getTitleFromPath } from '../../../hooks/useLinks'
 import { useGraphStore } from '../../../store/useGraphStore'
 import { InfobarFull, InfobarTools } from '../../../style/infobar'
 import Switch from '../Forms/Switch'
+import { CSS2DObject, CSS2DRenderer } from './CSS2Drenderer'
 import { GraphWrapper } from './Graph.styles'
 import NodePreview from './NodePreview'
-import SpriteText from 'three-spritetext'
-import { useTheme } from 'styled-components'
-import { CSS2DObject, CSS2DRenderer } from './CSS2Drenderer'
-import THREE from 'three'
-import { mog } from '@workduck-io/mex-utils'
-import { IconButton } from '@workduck-io/mex-components'
-import more2Fill from '@iconify/icons-ri/more-2-fill'
 
 /* eslint-disable @typescript-eslint/no-explicit-any */
 const options = {
@@ -57,8 +53,6 @@ interface TreeGraphProps {
 
 export const TreeGraph = (props: TreeGraphProps) => {
   const { graphData } = props
-  const { push } = useNavigation()
-  const { getNodeidFromPath } = useLinks()
 
   const showTools = useGraphStore((state) => state.showTools)
 
@@ -68,6 +62,7 @@ export const TreeGraph = (props: TreeGraphProps) => {
   const setSelectedNode = useGraphStore((state) => state.setSelectedNode)
   const fullscreen = useGraphStore((state) => state.fullscreen)
   const toggleFullscreen = useGraphStore((state) => state.toggleFullscreen)
+  const rhSidebar = useLayoutStore((state) => state.rhSidebar)
 
   const showLocal = useGraphStore((state) => state.showLocal)
   const toggleLocal = useGraphStore((state) => state.toggleLocal)
@@ -98,49 +93,6 @@ export const TreeGraph = (props: TreeGraphProps) => {
 
   const wrapperRef = React.useRef<HTMLDivElement>(null)
 
-  const { graph } = state
-  console.log('Graph', { graph })
-  const events = {
-    click: ({ nodes }: any) => {
-      if (nodes.length === 1) {
-        const node = graphData.nodes.filter((n: any) => n.id === nodes[0])[0]
-        if (!node.path.startsWith('SERVICE')) {
-          setSelectedNode(node)
-          setNodePreview(true)
-        }
-      } else {
-        setNodePreview(false)
-        setSelectedNode(undefined)
-      }
-    },
-    doubleClick: ({ nodes }: any) => {
-      setNodePreview(false)
-      setSelectedNode(undefined)
-
-      if (nodes.length === 1) {
-        const node = graphData.nodes.filter((n: any) => n.id === nodes[0])[0]
-        if (!node.path.startsWith('SERVICE')) {
-          const nodeid = getNodeidFromPath(node.path, node.namespace)
-          push(nodeid)
-        }
-      }
-    }
-    // select: (selectProps: any): void => {
-    //   if (selectProps.nodes.length === 1) {
-    //     const selectId = selectProps.nodes[0]
-    //     const selectNode = graphData.nodes.filter((n: any) => n.id === selectId)
-
-    //     // console.log('Selected node', selectNode, selectId, graphData)
-
-    //     // if (network) {
-    //     //   network._callbacks.$select[0]({ nodes: selectNode })
-    //     // }
-
-    //     //
-    //   }
-    // }
-  }
-
   useEffect(() => {
     if (wrapperRef.current) {
       setState((prevState) => ({
@@ -151,7 +103,7 @@ export const TreeGraph = (props: TreeGraphProps) => {
         }
       }))
     }
-  }, [wrapperRef.current, fullscreen])
+  }, [wrapperRef.current, fullscreen, rhSidebar])
 
   const fgRef = useRef<any>(null)
 
@@ -217,8 +169,6 @@ export const TreeGraph = (props: TreeGraphProps) => {
           width={state.dimensions.width}
           height={state.dimensions.height}
           extraRenderers={extraRenderers as any}
-          // width={window.innerWidth}
-          // height='calc(100vh - 15.5rem)'
           backgroundColor={theme.colors.background.sidebar}
           graphData={state.graph}
           nodeColor={(node: any) => (node.id === selectedNode?.id ? theme.colors.primary : node.color.background)}
@@ -234,44 +184,16 @@ export const TreeGraph = (props: TreeGraphProps) => {
             }
             return new CSS2DObject(nodeEl)
           }}
-          linkOpacity={0.3}
-          linkWidth={(link: any) =>
-            link.source === selectedNode?.id || link.target === selectedNode?.id ? 0.5 : undefined
-          }
+          linkDirectionalArrowLength={showLocal ? 1.5 : undefined}
+          linkDirectionalArrowRelPos={showLocal ? 0.5 : undefined}
+          linkCurvature={showLocal ? 0.25 : undefined}
           linkColor={(link: any) =>
             link.source === selectedNode?.id || link.target === selectedNode?.id ? theme.colors.primary : link.color
           }
           ref={fgRef}
           onNodeClick={handleClick}
           nodeThreeObjectExtend={true}
-          // nodeThreeObject={(node) => {
-          //   const sprite = new SpriteText(getTitleFromPath(node.path).slice(0, 20))
-          //   sprite.color = node.color.font
-          //   sprite.backgroundColor = node.color.background
-          //   sprite.padding = 2
-          //   sprite.borderRadius = 2
-          //   sprite.textHeight = 8
-          //   return sprite
-          // }}
         />
-        {/*
-        <ForceGraph2D
-          nodeLabel="path"
-          nodeCanvasObject={(node, ctx) => nodePaint(node as any, getColor(node.id), ctx)}
-          graphData={{ nodes: graph.nodes, links: graph.edges }}
-
-        />
-
-            <Graph
-          graph={graph}
-          options={options}
-          events={events}
-          className="MEXnodeGraphSide"
-          style={{ height: '100%' }}
-          getNetwork={(p: any) => {
-            setNetwork(p)
-          }}
-        /> */}
       </GraphWrapper>
       {/* <NodeServices /> */}
     </InfobarFull>

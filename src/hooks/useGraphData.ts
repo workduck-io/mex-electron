@@ -48,7 +48,7 @@ export const useGraphData = () => {
   const currentNamespace = getNamespace(currentNamespaceID)
 
   /**
-   * If show local then include all namespaces
+   * If show local then include nodes from all namespaces
    */
   const links = ilinks.filter((l) => showLocal || l.namespace === currentNamespaceID)
   const nodes = links.map((node, id): GraphNode => {
@@ -93,8 +93,24 @@ export const useGraphData = () => {
     nodes.push({
       id: 0,
       path: currentNamespace?.name ?? 'Space',
-      // label: 'root',
-      ...getNodeStyles(0, theme)
+      ...getNodeStyles(0, theme),
+      color: {
+        border: theme.colors.gray[8],
+        font: theme.colors.secondary,
+        background: theme.colors.secondary,
+        // TODO: Update these values when highlight and hover are implemented
+        highlight: {
+          border: '',
+          background: ''
+        },
+        hover: {
+          border: '',
+          background: ''
+        }
+      },
+      font: {
+        color: theme.colors.secondary
+      }
     })
 
     return {
