@@ -22,6 +22,7 @@ import { useLocation, useMatch } from 'react-router-dom'
 import { useRefactorStore } from '../Refactor/Refactor'
 import { RenderTreeItem } from './TreeItem'
 import { getNameFromPath, SEPARATOR } from './treeUtils'
+import { useRefactor } from '@hooks/useRefactor'
 
 // import { complexTree } from '../mockdata/complexTree'
 
@@ -43,6 +44,7 @@ const Tree = ({ initTree, selectedItemId }: TreeProps) => {
   const expandNode = useTreeStore((state) => state.expandNode)
   const collapseNode = useTreeStore((state) => state.collapseNode)
   const prefillModal = useRefactorStore((state) => state.prefillModal)
+  const { execRefactorAsync } = useRefactor()
   const { goTo } = useRouting()
 
   const match = useMatch(`${ROUTE_PATHS.node}/:nodeid`)
@@ -145,10 +147,8 @@ const Tree = ({ initTree, selectedItemId }: TreeProps) => {
 
     draggedRef.current = null
 
-    prefillModal(
-      { path: from, namespaceID: nsID },
-      { path: to, namespaceID: nsID }
-    )
+    // prefillModal({ path: from, namespaceID: nsID }, { path: to, namespaceID: nsID })
+    execRefactorAsync({ path: from, namespaceID: nsID }, { path: to, namespaceID: nsID })
     // changeTree(newTree)
   }
 

@@ -157,6 +157,7 @@ export const TreeContextMenu = ({ item }: TreeContextMenuProps) => {
     <>
       <ContextMenuPrimitive.Portal>
         <ContextMenuContent>
+          {/* Fix after refactor modal proper state transfer to ModalStore
           <ContextMenuItem
             onSelect={(args) => {
               handleRefactor(item)
@@ -164,7 +165,7 @@ export const TreeContextMenu = ({ item }: TreeContextMenuProps) => {
           >
             <Icon icon={editLine} />
             Refactor
-          </ContextMenuItem>
+          </ContextMenuItem> */}
           <ContextMenuItem
             onSelect={(args) => {
               handleCreateChild(item)
