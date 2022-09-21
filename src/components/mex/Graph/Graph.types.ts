@@ -1,8 +1,10 @@
 export interface GraphNode {
   id: number
   path: string
-  label: string
+  nodeid?: string
+  // label: string
   color: {
+    font: string
     border: string
     background: string
     highlight: {
@@ -14,17 +16,20 @@ export interface GraphNode {
       background: string
     }
   }
+  group?: string
   font?: {
     color?: string
     face?: string
     size?: string
   }
-  size?: number
+  // val?: number
+  // size?: number
 }
 
 export interface GraphEdge {
-  to: number
-  from: number
-  color?: string
-  physics?: boolean
+  source: number
+  target: number
+  color: string
+  // value?: number
+  // physics?: boolean
 }

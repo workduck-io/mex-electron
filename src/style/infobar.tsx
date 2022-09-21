@@ -135,6 +135,12 @@ export const InfobarMedium = styled.div`
   }
 `
 
+export const InfobarButtons = styled.div`
+  display: flex;
+  align-items: center;
+  gap: ${({ theme }) => theme.spacing.small};
+`
+
 export const InfobarTools = styled.div`
   display: flex;
   align-items: center;

@@ -64,6 +64,8 @@ const useLoad = () => {
   // const clearLoadingNodeid = useEditorStore((store) => store.clearLoadingNodeid)
   const expandNodes = useTreeStore((store) => store.expandNodes)
 
+  const quitFullscreenGraph = useGraphStore((store) => store.quitFullscreen)
+
   // const { saveNodeAPIandFs } = useDataSaverFromContent()
   const { saveAndClearBuffer } = useEditorBuffer()
   const { execRefactorAsync } = useRefactor()
@@ -250,6 +252,7 @@ const useLoad = () => {
 
     setLoadingNodeid(nodeid)
 
+    quitFullscreenGraph()
     setNodePreview(false)
     setSuggestions([])
     if (infobar.mode === 'suggestions') toggleSuggestedNodes()
