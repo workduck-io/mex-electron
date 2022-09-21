@@ -41,13 +41,13 @@ import { GenericSearchResult } from '../../types/search'
 // import { mog } from '../../utils/lib/helper'
 import { convertContentToRawText } from '../../utils/search/parseData'
 import { NavigationType, ROUTE_PATHS, useRouting } from '../routes/urls'
+import { runBatch } from '@workduck-io/mex-utils'
 
 export type SnippetsProps = {
   title?: string
 }
 
 const Snippets = () => {
-  const { getAllSnippetsByWorkspace } = useApi()
   const snippets = useSnippetStore((store) => store.snippets)
   const { addSnippet, deleteSnippet, getSnippet, getSnippets, updateSnippet } = useSnippets()
   const api = useApi()
@@ -252,26 +252,20 @@ const Snippets = () => {
   }
 
   useEffect(() => {
-    getAllSnippetsByWorkspace()
     const snippets = getSnippets()
     const unfetchedSnippets = snippets.filter((snippet) => snippet.content.length === 0)
 
-    try {
-      Promise.allSettled(
-        unfetchedSnippets.map(
-          async (item) =>
-            await api.getSnippetById(item.id).then((response) => {
-              updateSnippet(response as Snippet)
-            })
-        )
-      )
-    } catch (err) {
+    const requests = unfetchedSnippets.map(async item => await api.getSnippetById(item.id).then((response) => {
+      updateSnippet(response as Snippet)
+    }))
+
+    runBatch(requests).catch(err => {
       mog('Failed to fetch snippets', { err })
-    }
+    })
+
   }, [])
 
   // mog('Snippets', { initialSnippets })
-
   return (
     <SnippetsSearchContainer>
       <MainHeader>

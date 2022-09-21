@@ -40,9 +40,11 @@ const appEventListeners = () => {
     if (!mexRef) createMexWindow()
     if (!spotlightRef) createSpotLighWindow()
 
+    app?.focus()
     app?.show()
-    mexRef?.show()
+
     mexRef?.focus()
+    mexRef?.show()
   })
 
   app.on('window-all-closed', () => {
