@@ -36,6 +36,7 @@ const Header = styled.div`
   margin: ${({ theme }) => theme.spacing.small};
   font-size: 1.25rem;
   color: ${({ theme }) => theme.colors.primary};
+  cursor: pointer;
 `
 
 export const Content = styled.div`

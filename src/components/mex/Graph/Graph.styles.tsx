@@ -41,12 +41,12 @@ export const GraphWrapper = styled.div<{ fullscreen?: boolean }>`
       }
       ${Container} {
         width: 25vw;
-        height: 100%;
+        height: 93%;
         z-index: 200;
         top: 6rem;
         right: 0;
         ${Content} {
-          height: calc(100% - 16rem);
+          height: 100%;
         }
       }
     `}
