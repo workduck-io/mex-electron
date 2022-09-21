@@ -197,7 +197,7 @@ export const useGraphData = () => {
   services.forEach((service) => newNodes.push(service))
    */
 
-  mog('newNodes', { newNodes, edges, nodeLinks })
+  // mog('newNodes', { newNodes, edges, nodeLinks })
 
   nodeLinks.forEach((l) => {
     const source = getNodeNumId(l.to, newNodes)
