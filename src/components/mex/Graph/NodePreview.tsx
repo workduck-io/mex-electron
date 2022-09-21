@@ -1,7 +1,9 @@
+import useLoad from '@hooks/useLoad'
 import editIcon from '@iconify/icons-bx/bx-edit-alt'
 import timeIcon from '@iconify/icons-bx/bx-time-five'
 import { Icon } from '@iconify/react'
 import { useUserService } from '@services/auth/useUserService'
+import { NavigationType, ROUTE_PATHS, useRouting } from '@views/routes/urls'
 import { transparentize } from 'polished'
 import React, { useEffect, useState } from 'react'
 import styled from 'styled-components'
@@ -71,9 +73,10 @@ const SmallText = styled.div`
 
 const NodePreview = ({ node, fullscreen }: { node: ILink; fullscreen: boolean }) => {
   const getContent = useContentStore((store) => store.getContent)
-  const { getNodeidFromPath } = useLinks()
   const nodeid = node?.nodeid
   const content = getContent(nodeid)
+  const { loadNode } = useLoad()
+  const { goTo } = useRouting()
 
   const { getUserDetailsUserId } = useUserService()
   const [alias, setAlias] = useState<string | undefined>()
@@ -89,9 +92,22 @@ const NodePreview = ({ node, fullscreen }: { node: ILink; fullscreen: boolean })
 
   const time = content?.metadata?.updatedAt
 
+  const onOpenItem = () => {
+    if (!node || !node.nodeid) return
+    loadNode(node.nodeid)
+    goTo(ROUTE_PATHS.node, NavigationType.push, node.nodeid)
+  }
+
+  const onDoubleClick = (e: React.MouseEvent<HTMLElement>) => {
+    e.preventDefault()
+    if (e.detail === 2) {
+      onOpenItem()
+    }
+  }
+
   return (
     <Container>
-      <Header>{node?.path}</Header>
+      <Header onMouseUp={(e) => onDoubleClick(e)}>{node?.path}</Header>
       <MetaDeta>
         {content?.metadata?.lastEditedBy && (
           <Flex>
