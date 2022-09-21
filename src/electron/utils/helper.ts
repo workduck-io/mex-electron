@@ -4,7 +4,7 @@ import { windows } from '@electron/main'
 import MenuBuilder from '@electron/menu'
 import { mog } from '@utils/lib/helper'
 import { sanitizeHtml } from '@utils/sanitizeHtml'
-import { session, app, BrowserWindow, screen } from 'electron'
+import { session, app, BrowserWindow, screen, BrowserWindowConstructorOptions } from 'electron'
 
 import { windowManager } from '../WindowManager'
 import { SelectionType, getSelectedTextSync, getSelectedText } from './getSelectedText'
@@ -35,6 +35,7 @@ const PINNED_NOTES_WINDOW_OPTIONS = {
   minHeight: 400,
   vibrancy: 'popover' as any,
   maximizable: false,
+  autoHideMenuBar: true,
   titleBarStyle: 'hidden' as const,
   trafficLightPosition: { x: 20, y: 20 },
   webPreferences: {
@@ -193,9 +194,10 @@ export const createAllWindows = (d: any) => {
   const spotlightWindowRef = createSpotLighWindow()
 
   windows.toast = new Toast(spotlightWindowRef)
-  if (process.platform === 'darwin') {
-    app.dock.show()
-  }
+
+  // if (process.platform === 'darwin') {
+  //   app.dock.show()
+  // }
 }
 
 export const closeWindow = () => {

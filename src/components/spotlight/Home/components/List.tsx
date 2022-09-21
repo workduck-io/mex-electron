@@ -216,9 +216,9 @@ const List = ({
       if (event.key === KEYBOARD_KEYS.Enter && normalMode) {
         event.preventDefault()
         const currentActiveItem = data[activeIndex]
-
+        const isPinnedNote = currentActiveItem.category === CategoryType.pinned
         const isNoteCategory =
-          currentActiveItem?.category === CategoryType.backlink || currentActiveItem.category === CategoryType.pinned
+          currentActiveItem?.category === CategoryType.backlink || isPinnedNote
         // * If current item is ILINK
         if (isNoteCategory && !activeItem.active) {
           // mog('Matched with node')
@@ -251,6 +251,10 @@ const List = ({
                   })
                   setSelection(undefined)
                 }
+
+                if (isPinnedNote) {
+                  appNotifierWindow(IpcAction.SHOW_PINNED_NOTE_WINDOW, AppType.SPOTLIGHT, { noteId: node.nodeid })
+                }
               }
 
               setSearch({ value: '', type: CategoryType.search })
@@ -259,6 +263,8 @@ const List = ({
             if (currentActiveItem?.type === QuickLinkType.snippet) {
               handleCopySnippet(currentActiveItem.id, true)
             }
+
+
           } else {
             if (currentActiveItem.type === QuickLinkType.snippet) {
               handleCopySnippet(currentActiveItem.id, false)
@@ -266,7 +272,7 @@ const List = ({
             } else {
               let nodePath = node.path
 
-              if (currentActiveItem?.category === CategoryType.pinned) {
+              if (isPinnedNote) {
                 if (selection) {
                   const isNewTask = isParent(nodePath, BASE_TASKS_PATH)
                   saveIt({
@@ -276,9 +282,10 @@ const List = ({
                     removeHighlight: true,
                     isNewTask
                   })
-
-                  appNotifierWindow(IpcAction.SHOW_PINNED_NOTE_WINDOW, AppType.SPOTLIGHT, { noteId: node.nodeid })
                 }
+
+                appNotifierWindow(IpcAction.SHOW_PINNED_NOTE_WINDOW, AppType.SPOTLIGHT, { noteId: node.nodeid })
+
                 return
               }
 
@@ -379,16 +386,18 @@ const List = ({
     const isNote = currentActiveItem?.type === QuickLinkType.backlink
 
     if (isNote && !activeItem.active) {
-      if (currentActiveItem?.category === CategoryType.pinned && selection) {
-        const notePath = node.path
-        const isNewTask = isParent(notePath, BASE_TASKS_PATH)
-        saveIt({
-          path: notePath,
-          saveAndClose: true,
-          saveToFile: false,
-          removeHighlight: true,
-          isNewTask
-        })
+      if (currentActiveItem?.category === CategoryType.pinned) {
+        if (selection) {
+          const notePath = node.path
+          const isNewTask = isParent(notePath, BASE_TASKS_PATH)
+          saveIt({
+            path: notePath,
+            saveAndClose: true,
+            saveToFile: false,
+            removeHighlight: true,
+            isNewTask
+          })
+        }
         appNotifierWindow(IpcAction.SHOW_PINNED_NOTE_WINDOW, AppType.SPOTLIGHT, { noteId: node.nodeid })
 
         return
