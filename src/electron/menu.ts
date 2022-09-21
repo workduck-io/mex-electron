@@ -80,7 +80,9 @@ export default class MenuBuilder {
         {
           label: 'Hide Mex',
           accelerator: 'Command+H',
-          selector: 'hide:'
+          click: () => {
+            windowManager.hideAllWindows()
+          }
         },
         {
           label: 'Hide Others',
@@ -115,6 +117,7 @@ export default class MenuBuilder {
         }
       ]
     }
+
     const subMenuViewDev: MenuItemConstructorOptions = {
       label: 'View',
       submenu: [

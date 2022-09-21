@@ -1,9 +1,6 @@
 import React, { useMemo } from 'react'
 
-import { RelativeTime } from '@components/mex/RelativeTime'
 import { getNameFromPath } from '@components/mex/Sidebar/treeUtils'
-import { ProjectTimeStyled } from '@components/spotlight/ActionStage/Project/ProjectTime'
-import { useContentStore } from '@store/useContentStore'
 import useDataStore from '@store/useDataStore'
 import { useNamespaces } from '@hooks/useNamespaces'
 
@@ -17,7 +14,6 @@ type NoteHeaderType = {
 const Header = ({ noteId }: NoteHeaderType) => {
   const ilinks = useDataStore((store) => store.ilinks)
   const archive = useDataStore((store) => store.archive)
-  const metadata = useContentStore((store) => store.contents?.[noteId]?.metadata)
   const { getNamespaceOfNode } = useNamespaces()
   const namespace = getNamespaceOfNode(noteId)
 

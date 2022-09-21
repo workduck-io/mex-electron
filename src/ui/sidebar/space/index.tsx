@@ -20,7 +20,7 @@ export const SidebarSpaceComponent = ({ space, style }: AnimatedProps<SidebarSpa
             <MexTree items={space?.list?.items} spaceId={space?.id} filterText="Filter Notes" />
           ),
           flat: space?.list?.type === 'flat' && <space.list.renderItems />
-        }[space.list.type]
+        }[space?.list?.type]
       }
     </SingleSpace>
   )

@@ -88,6 +88,7 @@ const createTray = () => {
       accelerator: 'Command+Q',
       click: () => {
         windowManager.sendToWindow(AppType.MEX, IpcAction.SAVE_AND_EXIT)
+        windowManager.closeAllWindows()
         app.quit()
       }
     }

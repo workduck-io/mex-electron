@@ -1,5 +1,6 @@
 import { IS_DEV } from '@data/Defaults/dev_'
 import { IpcAction } from '@data/IpcAction'
+import { AppType } from '@hooks/useInitialize'
 import { mog } from '@utils/lib/helper'
 import { app, BrowserWindow, shell } from 'electron'
 
@@ -40,6 +41,7 @@ class WindowManager {
         window.focus()
         window.show()
       }
+
     })
 
     window.on('blur', () => {
@@ -73,9 +75,8 @@ class WindowManager {
       window.setAlwaysOnTop(true, 'modal-panel', 100)
       window.setVisibleOnAllWorkspaces(true, { visibleOnFullScreen: true })
 
-      if (!app.dock.isVisible) {
+      if (!app.dock.isVisible())
         app.dock.show()
-      }
     }
 
     return window
@@ -84,9 +85,27 @@ class WindowManager {
   public getWindow = (windowId: string): BrowserWindow => {
     const browserWindowId = this.windowRef?.[windowId]
     try {
-      return BrowserWindow.fromId(browserWindowId)
+      if (browserWindowId)
+        return BrowserWindow.fromId(browserWindowId)
     } catch (err) {
       mog('Unable to get Window from ID', { err: err.toString() })
+    }
+  }
+
+  public closeAllWindows = () => {
+    const allWindows = this.windowRef
+
+    if (allWindows) {
+      Object.keys(allWindows).forEach(windowId => this.deleteWindow(windowId))
+    }
+  }
+
+  public hideAllWindows = (excludeWindows: Array<string> = [AppType.SPOTLIGHT]) => {
+    const allWindows = this.windowRef
+
+    if (allWindows) {
+      const windowsToClose = Object.keys(allWindows).filter(windowId => !excludeWindows.includes(windowId))
+      windowsToClose.forEach(windowId => this.getWindow(windowId)?.minimize())
     }
   }
 
