@@ -1,6 +1,8 @@
+import { generateNamespaceId } from '@data/Defaults/idPrefixes'
 import { hierarchyParser } from '@hooks/useHierarchy'
 import { useLastOpened } from '@hooks/useLastOpened'
 import { useNodes } from '@hooks/useNodes'
+import { useSearch } from '@hooks/useSearch'
 import { View } from '@hooks/useTaskViews'
 import { useUpdater } from '@hooks/useUpdater'
 import useDataStore from '@store/useDataStore'
@@ -26,15 +28,13 @@ import { mog } from '../utils/lib/helper'
 import { extractMetadata } from '../utils/lib/metadata'
 import { deserializeContent, serializeContent } from '../utils/lib/serialize'
 import { apiURLs } from './routes'
-import { generateNamespaceId } from '@data/Defaults/idPrefixes'
-import { useSearch } from '@hooks/useSearch'
 
 const API_CACHE_LOG = `\nAPI has been requested before, cancelling.\n`
 
 export const useApi = () => {
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   //
-  const { updateDocument } = useSearch()
+  const { updateDocument, removeDocument } = useSearch()
   const getWorkspaceId = useAuthStore((store) => store.getWorkspaceId)
   const getMetadata = useContentStore((store) => store.getMetadata)
   const setMetadata = useContentStore((store) => store.setMetadata)
@@ -45,9 +45,8 @@ export const useApi = () => {
   const addInArchive = useDataStore((store) => store.addInArchive)
   const setILinks = useDataStore((store) => store.setIlinks)
   const setNamespaces = useDataStore((s) => s.setNamespaces)
-  const setArchive = useDataStore((state) => state.setArchive)
   const initSnippets = useSnippetStore((store) => store.initSnippets)
-
+  const updateSnippet = useSnippetStore((store) => store.updateSnippet)
   const { updateFromContent } = useUpdater()
 
   const workspaceHeaders = () => ({
@@ -448,11 +447,12 @@ export const useApi = () => {
       })
       .then((d) => {
         const snippets = useSnippetStore.getState().snippets
+
         const newSnippets = d.filter((snippet) => {
           const existSnippet = snippets.find((s) => s.id === snippet.snippetID)
           return existSnippet === undefined
         })
-        mog('newSnippets', { newSnippets, snippets })
+
         initSnippets([
           ...snippets,
           ...newSnippets.map((item) => ({
@@ -463,6 +463,35 @@ export const useApi = () => {
             content: []
           }))
         ])
+
+        return newSnippets
+      })
+      .then(async (newSnippets) => {
+        mog('Snippets', { newSnippets })
+        const requests = newSnippets?.map(async (item) =>
+          getSnippetById(item.snippetID).then(async (snippet) => {
+            if (snippet) {
+              updateSnippet(snippet.id, snippet)
+              const tags = snippet.template ? ['template'] : ['snippet']
+              const idxName = snippet.template ? 'template' : 'snippet'
+              mog('Update snippet', { snippet, tags })
+
+              if (snippet.template) {
+                await removeDocument('snippet', snippet.id)
+              } else {
+                await removeDocument('template', snippet.id)
+              }
+
+              await updateDocument(idxName, snippet.id, snippet.content, snippet.title, tags)
+            }
+          })
+        )
+
+        if (requests?.length > 0) {
+          runBatch(requests).catch((err) => {
+            mog('Failed to fetch snippets', { err })
+          })
+        }
       })
 
     return data

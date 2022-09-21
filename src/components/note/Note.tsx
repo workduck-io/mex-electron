@@ -50,10 +50,9 @@ const Note: React.FC<{ noteId: string }> = ({ noteId }) => {
       saveAndClearBuffer()
     })
 
-    ipcRenderer.on(IpcAction.SAVE_AND_QUIT, () => {
-      saveNoteBuffer(noteId).then(d => {
-        ipcRenderer.send(IpcAction.CLOSE_WINDOW, { data: { windowId: noteId } })
-      })
+    ipcRenderer.on(IpcAction.SAVE_AND_QUIT, async () => {
+      await saveNoteBuffer(noteId)
+      ipcRenderer.send(IpcAction.CLOSE_WINDOW, { data: { windowId: noteId } })
     })
 
     const unsubscribe = tinykeys(window, {

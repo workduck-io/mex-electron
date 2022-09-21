@@ -1,3 +1,5 @@
+import { useEffect } from 'react'
+
 import { useApi } from '@apis/useSaveApi'
 import { useActionsPerfomerClient } from '@components/spotlight/Actions/useActionPerformer'
 import useActions from '@components/spotlight/Actions/useActions'
@@ -11,7 +13,6 @@ import { useLayoutStore } from '@store/useLayoutStore'
 import { runBatch } from '@utils/lib/batchPromise'
 import { mog } from '@utils/lib/helper'
 import { useRouting, ROUTE_PATHS, NavigationType } from '@views/routes/urls'
-import { useEffect } from 'react'
 import toast from 'react-hot-toast'
 
 export const useInitLoader = () => {
@@ -43,7 +44,7 @@ export const useInitLoader = () => {
     initActionPerfomerClient(useAuthStore.getState().userDetails?.userID)
     setShowLoader(true)
     try {
-      await runBatch<any>([
+      const res = await runBatch<any>([
         getNodesByWorkspace(),
         getAllSnippetsByWorkspace(),
         getAllNamespaces(),
