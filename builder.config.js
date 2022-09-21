@@ -66,8 +66,12 @@ const configuration = {
     },
     target: [
       {
+        target: 'zip',
+        arch: ['x64', 'arm64']
+      },
+      {
         target: 'dmg',
-        arch: ['x64']
+        arch: ['x64', 'arm64']
       }
     ]
   },
