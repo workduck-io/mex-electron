@@ -5,7 +5,6 @@ import { RESERVED_NAMESPACES } from '@utils/lib/paths'
 
 import { SingleNamespace } from '../../../types/Types'
 import { NamespaceText, StyledNamespaceTag } from './styled'
-import IconDisplay from '@ui/components/IconPicker/IconDisplay'
 
 type NamespaceTag = {
   namespace: SingleNamespace

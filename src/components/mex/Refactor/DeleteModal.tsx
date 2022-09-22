@@ -7,7 +7,6 @@ import { useLocation } from 'react-router-dom'
 import create from 'zustand'
 
 import { Button, DisplayShortcut } from '@workduck-io/mex-components'
-import { mog } from '@workduck-io/mex-utils'
 import { tinykeys } from '@workduck-io/tinykeys'
 
 import { useDelete } from '../../../hooks/useDelete'
@@ -20,7 +19,6 @@ import { NavigationType, ROUTE_PATHS, useRouting } from '../../../views/routes/u
 import { QuickLink, WrappedNodeSelect } from '../NodeSelect/NodeSelect'
 import { DeleteIcon, MockRefactorMap, ModalControls, ModalHeader, MRMHead, MRMRow } from './styles'
 import { RefactorPath } from './types'
-import { mog } from '@workduck-io/mex-utils'
 
 interface DeleteStoreState {
   open: boolean
