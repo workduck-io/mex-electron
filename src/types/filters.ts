@@ -1,5 +1,3 @@
-import { MIcon } from './Types'
-
 export type FilterType =
   | 'note' // Does item belong to note
   | 'tag' // Does item have tag
@@ -19,7 +17,6 @@ export interface FilterValue {
   id: string
   label: string
   value: string
-  icon?: MIcon
 }
 
 export interface Filter {

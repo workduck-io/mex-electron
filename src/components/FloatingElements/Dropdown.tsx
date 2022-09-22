@@ -23,16 +23,18 @@ import {
 } from '@floating-ui/react-dom-interactions'
 import cx from 'classnames'
 import { mergeRefs } from 'react-merge-refs'
+import { MenuItemWrapper, MenuWrapper, RootMenuWrapper } from './Dropdown.style'
 
-export const MenuItem = forwardRef<HTMLButtonElement, { label: string; disabled?: boolean }>(
-  ({ label, disabled, ...props }, ref) => {
-    return (
-      <button {...props} ref={ref} role="menuitem" disabled={disabled}>
-        {label}
-      </button>
-    )
-  }
-)
+export const MenuItem = forwardRef<
+  HTMLButtonElement,
+  { label: string; disabled?: boolean; onClick?: (e: React.MouseEvent<HTMLButtonElement>) => void }
+>(({ label, disabled, ...props }, ref) => {
+  return (
+    <MenuItemWrapper {...props} ref={ref} role="menuitem" disabled={disabled}>
+      {label}
+    </MenuItemWrapper>
+  )
+})
 
 MenuItem.displayName = 'MenuItem'
 
@@ -40,10 +42,11 @@ interface Props {
   label?: string
   nested?: boolean
   children?: React.ReactNode
+  values?: React.ReactNode
 }
 
 export const MenuComponent = forwardRef<any, Props & React.HTMLProps<HTMLButtonElement>>(
-  ({ children, label, ...props }, ref) => {
+  ({ children, label, values, ...props }, ref) => {
     const [open, setOpen] = useState(false)
     const [activeIndex, setActiveIndex] = useState<number | null>(null)
     const [allowHover, setAllowHover] = useState(false)
@@ -140,7 +143,7 @@ export const MenuComponent = forwardRef<any, Props & React.HTMLProps<HTMLButtonE
 
     return (
       <FloatingNode id={nodeId}>
-        <button
+        <RootMenuWrapper
           {...getReferenceProps({
             ...props,
             ref: mergedReferenceRef,
@@ -165,7 +168,8 @@ export const MenuComponent = forwardRef<any, Props & React.HTMLProps<HTMLButtonE
           })}
         >
           {label} {nested && <span style={{ marginLeft: 10 }}>➔</span>}
-        </button>
+          {values && values}
+        </RootMenuWrapper>
         <FloatingPortal>
           {open && (
             <FloatingFocusManager
@@ -178,7 +182,7 @@ export const MenuComponent = forwardRef<any, Props & React.HTMLProps<HTMLButtonE
               // is an alternative.
               order={['reference', 'content']}
             >
-              <div
+              <MenuWrapper
                 {...getFloatingProps({
                   className: 'Menu',
                   ref: floating,
@@ -208,6 +212,7 @@ export const MenuComponent = forwardRef<any, Props & React.HTMLProps<HTMLButtonE
                           listItemsRef.current[index] = node
                         },
                         onClick() {
+                          child.props.onClick?.()
                           tree?.events.emit('click')
                         },
                         // By default `focusItemOnHover` uses `mousemove` to sync focus,
@@ -222,7 +227,7 @@ export const MenuComponent = forwardRef<any, Props & React.HTMLProps<HTMLButtonE
                       })
                     )
                 )}
-              </div>
+              </MenuWrapper>
             </FloatingFocusManager>
           )}
         </FloatingPortal>

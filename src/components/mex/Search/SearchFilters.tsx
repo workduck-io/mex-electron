@@ -1,6 +1,8 @@
 import filter2Line from '@iconify/icons-ri/filter-2-line'
 import filterOffLine from '@iconify/icons-ri/filter-off-line'
 import { Icon } from '@iconify/react'
+import { FilterValue } from '../../../types/filters'
+import FilterRender from '@ui/components/Filters/Filter'
 import { Infobox, ToolbarTooltip } from '@workduck-io/mex-components'
 import { startCase } from 'lodash'
 import { nanoid } from 'nanoid'
@@ -78,6 +80,18 @@ const getGroupedFilters = <Item,>(filters: SearchFilter<Item>[], currentFilters:
   return { filtersByKey, randomId }
 }
 
+const testValues: FilterValue[] = ['test', 'test2', 'test3'].map((value) => ({
+  id: value,
+  label: value,
+  value
+}))
+
+const valueOptions: FilterValue[] = ['a test', 'b test2', 'c test3', 'f test4', 'e test5', 'd test6'].map((value) => ({
+  id: value,
+  label: value,
+  value
+}))
+
 const SearchFilters = <Item,>({
   filters,
   currentFilters,
@@ -118,6 +132,12 @@ const SearchFilters = <Item,>({
         <Infobox text={SearchFiltersHelp} />
       </SearchFilterLabel>
       <SearchFiltersWrapper>
+        <FilterRender
+          filter={{ type: 'note', values: testValues, join: 'any' }}
+          options={valueOptions}
+          onChangeFilter={(f) => mog('FilterChanged', { f })}
+          onRemoveFilter={(f) => mog('FilterRemoved', { f })}
+        />
         {Object.entries(filtersByKey)
           .sort(([key1], [key2]) => startCase(key1).localeCompare(startCase(key2)))
           .map(([k, filter]) => {
