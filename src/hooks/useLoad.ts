@@ -1,31 +1,31 @@
-import { ILink, NodeEditorContent } from '../types/Types'
 import { NodeProperties, useEditorStore } from '@store/useEditorStore'
 import { mog, updateEmptyBlockTypes } from '@utils/lib/helper'
+import { ILink, NodeEditorContent } from '../types/Types'
 
-import { ELEMENT_PARAGRAPH } from '@udecode/plate-paragraph'
-import { USE_API } from '@data/Defaults/dev_'
-import { getContent } from '@utils/helpers'
-import toast from 'react-hot-toast'
 import { useApi } from '@apis/useSaveApi'
-import { useContentStore } from '@store/useContentStore'
-import useDataStore from '@store/useDataStore'
-import { useBufferStore, useEditorBuffer } from './useEditorBuffer'
-import { useGraphStore } from '@store/useGraphStore'
-import useSuggestionStore from '@store/useSuggestionStore'
-import useToggleElements from './useToggleElements'
-import { useLayoutStore } from '@store/useLayoutStore'
-import { useRefactor } from './useRefactor'
 import { getAllParentIds, getParentNodePath, SEPARATOR } from '@components/mex/Sidebar/treeUtils'
-import { useAnalysisStore } from '@store/useAnalysis'
-import { checkIfUntitledDraftNode } from '@utils/lib/strings'
-import { getLinkFromNodeIdHookless, getPathFromNodeIdHookless } from './useLinks'
+import { USE_API } from '@data/Defaults/dev_'
 import { DRAFT_PREFIX } from '@data/Defaults/idPrefixes'
 import { useBlockHighlightStore } from '@editor/Actions/useFocusBlock'
-import { useTreeStore } from '@store/useTreeStore'
-import { useFetchShareData } from './useFetchShareData'
 import { useAuthStore } from '@services/auth/useAuth'
-import { useLastOpened } from './useLastOpened'
+import { useAnalysisStore } from '@store/useAnalysis'
+import { useContentStore } from '@store/useContentStore'
+import useDataStore from '@store/useDataStore'
+import { useGraphStore } from '@store/useGraphStore'
+import { useLayoutStore } from '@store/useLayoutStore'
 import { useUserPreferenceStore } from '@store/userPreferenceStore'
+import useSuggestionStore from '@store/useSuggestionStore'
+import { useTreeStore } from '@store/useTreeStore'
+import { ELEMENT_PARAGRAPH } from '@udecode/plate-paragraph'
+import { getContent } from '@utils/helpers'
+import { checkIfUntitledDraftNode } from '@utils/lib/strings'
+import toast from 'react-hot-toast'
+import { useBufferStore, useEditorBuffer } from './useEditorBuffer'
+import { useFetchShareData } from './useFetchShareData'
+import { useLastOpened } from './useLastOpened'
+import { getLinkFromNodeIdHookless } from './useLinks'
+import { useRefactor } from './useRefactor'
+import useToggleElements from './useToggleElements'
 
 export interface LoadNodeOptions {
   savePrev?: boolean
@@ -49,7 +49,6 @@ const useLoad = () => {
   const setFetchingContent = useEditorStore((store) => store.setFetchingContent)
   const setContent = useContentStore((store) => store.setContent)
   const setNodePreview = useGraphStore((store) => store.setNodePreview)
-  const setSelectedNode = useGraphStore((store) => store.setSelectedNode)
   const { getDataAPI, saveDataAPI } = useApi()
   const setSuggestions = useSuggestionStore((store) => store.setSuggestions)
   const { toggleSuggestedNodes } = useToggleElements()
@@ -257,7 +256,7 @@ const useLoad = () => {
     setSuggestions([])
     if (infobar.mode === 'suggestions') toggleSuggestedNodes()
 
-    setSelectedNode(undefined)
+    // setSelectedNode(undefined)
 
     if (options.savePrev) {
       saveNodeName(currentNodeId)
