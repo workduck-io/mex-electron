@@ -1,8 +1,18 @@
 import { Filter, FilterJoin, FilterType, FilterValue } from '../../../types/filters'
 import React from 'react'
 import { capitalize, mog } from '@workduck-io/mex-utils'
-import { FilterJoinDiv, FilterValueDiv, FilterWrapper, FilterRemoveButton, FilterTypeDiv } from './Filter.style'
+import closeLine from '@iconify/icons-ri/close-line'
+import {
+  FilterJoinDiv,
+  FilterValueDiv,
+  FilterWrapper,
+  FilterRemoveButton,
+  FilterTypeDiv,
+  GenericFlex
+} from './Filter.style'
 import { Menu, MenuItem } from '@components/FloatingElements/Dropdown'
+import { Icon } from '@iconify/react'
+import { FilterTypeIcons } from '@utils/lib/icons'
 
 interface FilterProps {
   filter: Filter
@@ -18,7 +28,6 @@ const JoinOptions = ['all', 'any', 'notAny', 'none'].map((join) => ({
 
 /**
  * Renders a filter
- * Icon for the filter type and the respective values has to be set
  */
 const FilterRender = ({ filter, onChangeFilter, options, onRemoveFilter }: FilterProps) => {
   // mog('Filter', { filter, options })
@@ -33,17 +42,27 @@ const FilterRender = ({ filter, onChangeFilter, options, onRemoveFilter }: Filte
   return (
     <FilterWrapper>
       {/* Cannot change filter type */}
+      <FilterTypeDiv>
+        <Icon icon={FilterTypeIcons[filter.type]} />
+        {capitalize(filter.type)}
+      </FilterTypeDiv>
 
-      <FilterTypeDiv>{capitalize(filter.type)}</FilterTypeDiv>
       {/*
         Can change the filter join
         Join options are always all, any, notAny, none
       */}
+      <Menu values={<FilterJoinDiv>{capitalize(filter.join)}</FilterJoinDiv>}>
+        {JoinOptions.map((option) => (
+          <MenuItem key={option.value} onClick={() => onChangeJoin(option.value)} label={option.label} />
+        ))}
+      </Menu>
+
       <Menu
         allowSearch
         searchPlaceholder="Search Notes"
         values={
           <>
+            {/* Conditionally render values if value is an array otherwise simple */}
             {Array.isArray(filter.values) ? (
               filter.values.map((value) => <FilterValueDiv key={value.id}>{value.label}</FilterValueDiv>)
             ) : (
@@ -55,44 +74,11 @@ const FilterRender = ({ filter, onChangeFilter, options, onRemoveFilter }: Filte
         {options.map((option) => (
           <MenuItem key={option.id} onClick={() => onChangeValues(option)} label={option.label} />
         ))}
-        {/*
-        <MenuItem
-          label="Undo"
-          onClick={() => {
-            console.log('what are we now')
-          }}
-        />
-        <MenuItem
-          label="Redo"
-          onClick={() => {
-            console.log('what are we now just wind')
-          }}
-        />
-        <MenuItem label="Cut" disabled />
-        <Menu label="Copy as">
-          <MenuItem label="Text" />
-          <MenuItem label="Video" />
-          <Menu label="Image">
-            <MenuItem label=".png" />
-            <MenuItem label=".jpg" />
-            <MenuItem label=".svg" />
-            <MenuItem label=".gif" />
-          </Menu>
-          <MenuItem label="Audio" />
-        </Menu>
-        <Menu label="Share">
-          <MenuItem label="Mail" />
-          <MenuItem label="Instagram" />
-        </Menu>
-        */}
       </Menu>
-      <Menu values={<FilterJoinDiv>{capitalize(filter.join)}</FilterJoinDiv>}>
-        {JoinOptions.map((option) => (
-          <MenuItem key={option.value} onClick={() => onChangeJoin(option.value)} label={option.label} />
-        ))}
-      </Menu>
-      {/* Conditionally render values if value is an array otherwise simple */}
-      <FilterRemoveButton onClick={() => onRemoveFilter(filter)}>x</FilterRemoveButton>
+
+      <FilterRemoveButton onClick={() => onRemoveFilter(filter)}>
+        <Icon height={16} icon={closeLine} />
+      </FilterRemoveButton>
     </FilterWrapper>
   )
 }

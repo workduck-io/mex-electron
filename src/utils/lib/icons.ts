@@ -12,3 +12,13 @@ export const getNodeIcon = (path: string) => {
 }
 
 export const DefaultNodeIcon = 'ri:file-list-2-line'
+
+export const FilterTypeIcons = {
+  note: 'ri:file-list-2-line',
+  tag: 'ri:hashtag',
+  space: 'heroicons-outline:view-grid',
+  mention: 'ri:at-line',
+  date: 'ri:calendar-2-line',
+  state: 'ri:checkbox-circle-line',
+  has: 'ri:checkbox-circle-line'
+}

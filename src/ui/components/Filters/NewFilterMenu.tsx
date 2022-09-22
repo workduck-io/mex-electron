@@ -1,22 +1,24 @@
 import React from 'react'
+import filter2Line from '@iconify/icons-ri/filter-2-line'
 import { Menu, MenuItem } from '@components/FloatingElements/Dropdown'
 import { FilterType, FilterValue } from '../../../types/filters'
 import { capitalize, mog } from '@workduck-io/mex-utils'
 import { duplicateTimes } from '@utils/lib/helper'
+import { Icon } from '@iconify/react'
+import { FilterTypeDiv, GenericFlex, GenericSection } from './Filter.style'
+import { FilterTypeIcons } from '@utils/lib/icons'
 
-const valueOptions: FilterValue[] = duplicateTimes(
-  ['a test', 'b test 2', 'c test 3', 'f test 4', 'e test 5', 'd test 6'],
-  20
-).map((value, i) => ({
-  id: `${value}_${i}`,
-  label: `${value}_${i}`,
-  value
-}))
+const valueOptions = (k: string): FilterValue[] =>
+  duplicateTimes([`${k} Test 1`, `${k} Test 2`, `${k} Test 3`, `${k} Test 4`, `${k} Test 5`], 20).map((value, i) => ({
+    id: `${value}_${i}`,
+    label: `${value}_${i}`,
+    value
+  }))
 
 const TypeOptions = ['note', 'tag', 'mention', 'space'].map((type) => ({
   label: capitalize(type),
   value: type as FilterType,
-  options: valueOptions
+  options: valueOptions(type)
 }))
 
 const NewFilterMenu = () => {
@@ -25,17 +27,32 @@ const NewFilterMenu = () => {
   }
 
   return (
-    <div>
-      <Menu label="Filter">
-        {TypeOptions.map((option) => (
-          <Menu key={option.value} label={option.label} allowSearch searchPlaceholder={`Search ${option.label}`}>
-            {option.options.map((op) => (
-              <MenuItem key={op.id} onClick={() => onAddNewFilter(option.value, op)} label={op.label} />
-            ))}
-          </Menu>
-        ))}
-      </Menu>
-    </div>
+    <Menu
+      values={
+        <GenericSection>
+          <Icon icon={filter2Line} />
+          Filter
+        </GenericSection>
+      }
+    >
+      {TypeOptions.map((option) => (
+        <Menu
+          key={option.value}
+          values={
+            <GenericFlex>
+              <Icon icon={FilterTypeIcons[option.value]} />
+              {option.label}
+            </GenericFlex>
+          }
+          allowSearch
+          searchPlaceholder={`Search ${option.label}`}
+        >
+          {option.options.map((op) => (
+            <MenuItem key={op.id} onClick={() => onAddNewFilter(option.value, op)} label={op.label} />
+          ))}
+        </Menu>
+      ))}
+    </Menu>
   )
 }
 

@@ -1,4 +1,14 @@
-import React, { Children, cloneElement, forwardRef, isValidElement, useEffect, useMemo, useRef, useState } from 'react'
+import React, {
+  Children,
+  cloneElement,
+  forwardRef,
+  isValidElement,
+  useCallback,
+  useEffect,
+  useMemo,
+  useRef,
+  useState
+} from 'react'
 import { fuzzySearch } from '@utils/lib/fuzzySearch'
 import { debounce } from 'lodash'
 import {
@@ -8,7 +18,7 @@ import {
   shift,
   useListNavigation,
   useHover,
-  useTypeahead,
+  // useTypeahead,
   useInteractions,
   useRole,
   useClick,
@@ -89,10 +99,11 @@ export const MenuComponent = forwardRef<any, Props & React.HTMLProps<HTMLButtonE
       whileElementsMounted: autoUpdate
     })
 
-    const resetSearch = () => {
+    const resetSearch = useCallback(() => {
+      mog('resetSearch')
       setSearch('')
       setFilteredChildren(children)
-    }
+    }, [children])
 
     const { getReferenceProps, getFloatingProps, getItemProps } = useInteractions([
       useHover(context, {
@@ -106,20 +117,7 @@ export const MenuComponent = forwardRef<any, Props & React.HTMLProps<HTMLButtonE
         ignoreMouse: nested
       }),
       useRole(context, { role: 'menu' }),
-      useDismiss({
-        ...context,
-        onOpenChange: (open) => {
-          if (!open) {
-            // mog('closing')
-            resetSearch()
-          } else {
-            if (inputRef.current) {
-              inputRef.current.focus()
-            }
-          }
-          setOpen(open)
-        }
-      }),
+      useDismiss(context),
       useListNavigation(context, {
         listRef: listItemsRef,
         activeIndex,
@@ -133,6 +131,16 @@ export const MenuComponent = forwardRef<any, Props & React.HTMLProps<HTMLButtonE
       //   activeIndex
       // })
     ])
+
+    useEffect(() => {
+      if (!open) {
+        allowSearch && resetSearch()
+      } else {
+        if (inputRef.current) {
+          inputRef.current.focus()
+        }
+      }
+    }, [open, inputRef, allowSearch, resetSearch])
 
     // Event emitter allows you to communicate across tree components.
     // This effect closes all menus when an item gets clicked anywhere
@@ -230,8 +238,8 @@ export const MenuComponent = forwardRef<any, Props & React.HTMLProps<HTMLButtonE
                 })
           })}
         >
-          {label} {nested && <span style={{ marginLeft: 10 }}>➔</span>}
-          {values && values}
+          {label} {values && values}
+          {nested && <Icon style={{ marginLeft: 10 }} icon="ri:arrow-right-s-line" />}
         </RootMenuWrapper>
         <FloatingPortal>
           {open && (

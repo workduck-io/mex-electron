@@ -1,3 +1,4 @@
+import { ScrollStyles } from '@style/helpers'
 import styled, { css } from 'styled-components'
 
 const MenuItemStyles = css`
@@ -51,14 +52,15 @@ export const RootMenuWrapper = styled.button`
 `
 
 export const MenuWrapper = styled.div`
-  background: ${({ theme }) => theme.colors.gray[9]};
+  background: ${({ theme }) => theme.colors.gray[8]};
   padding: 4px;
-  border: 1px solid ${({ theme }) => theme.colors.gray[8]};
-  border-radius: 6px;
-  box-shadow: 2px 4px 12px rgba(0, 0, 0, 0.1);
+  border: 1px solid ${({ theme }) => theme.colors.gray[7]};
+  border-radius: ${({ theme }) => theme.borderRadius.small};
+  box-shadow: 2px 4px 12px rgba(0, 0, 0, 0.4);
   outline: 0;
   max-height: 300px;
   overflow-y: auto;
+  ${({ theme }) => ScrollStyles(theme.colors.gray[10])}
 `
 
 export const MenuItemWrapper = styled.button`
