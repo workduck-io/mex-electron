@@ -16,8 +16,9 @@ import {
   SearchFiltersWrapper,
   SearchFilterWrapper
 } from '../../../style/Search'
-import { mog } from '../../../utils/lib/helper'
+import { duplicateTimes, mog } from '../../../utils/lib/helper'
 import SearchFilterInput from './SearchFilterInput'
+import NewFilterMenu from '@ui/components/Filters/NewFilterMenu'
 
 interface SearchFiltersProps<Item> {
   result?: any
@@ -86,9 +87,12 @@ const testValues: FilterValue[] = ['test', 'test2', 'test3'].map((value) => ({
   value
 }))
 
-const valueOptions: FilterValue[] = ['a test', 'b test2', 'c test3', 'f test4', 'e test5', 'd test6'].map((value) => ({
-  id: value,
-  label: value,
+const valueOptions: FilterValue[] = duplicateTimes(
+  ['a test', 'b test2', 'c test3', 'f test4', 'e test5', 'd test6'],
+  20
+).map((value, i) => ({
+  id: `${value}_${i}`,
+  label: `${value}_${i}`,
   value
 }))
 
@@ -105,7 +109,7 @@ const SearchFilters = <Item,>({
     [filters, currentFilters, result]
   )
 
-  mog('SearchFilters', { filters, currentFilters, filtersByKey })
+  // mog('SearchFilters', { filters, currentFilters, filtersByKey })
 
   const toggleForFilter = (filter: SearchFilter<Item>) => {
     if (currentFilters.find((currentFilter) => currentFilter.id === filter.id)) {
@@ -132,6 +136,7 @@ const SearchFilters = <Item,>({
         <Infobox text={SearchFiltersHelp} />
       </SearchFilterLabel>
       <SearchFiltersWrapper>
+        <NewFilterMenu />
         <FilterRender
           filter={{ type: 'note', values: testValues, join: 'any' }}
           options={valueOptions}

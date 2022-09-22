@@ -40,6 +40,8 @@ const FilterRender = ({ filter, onChangeFilter, options, onRemoveFilter }: Filte
         Join options are always all, any, notAny, none
       */}
       <Menu
+        allowSearch
+        searchPlaceholder="Search Notes"
         values={
           <>
             {Array.isArray(filter.values) ? (

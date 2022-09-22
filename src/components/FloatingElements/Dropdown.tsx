@@ -1,4 +1,6 @@
 import React, { Children, cloneElement, forwardRef, isValidElement, useEffect, useMemo, useRef, useState } from 'react'
+import { fuzzySearch } from '@utils/lib/fuzzySearch'
+import { debounce } from 'lodash'
 import {
   useFloating,
   offset,
@@ -24,6 +26,11 @@ import {
 import cx from 'classnames'
 import { mergeRefs } from 'react-merge-refs'
 import { MenuItemWrapper, MenuWrapper, RootMenuWrapper } from './Dropdown.style'
+import { SidebarListFilter } from '@components/mex/Sidebar/SidebarList.style'
+import { Icon } from '@iconify/react'
+import { Input } from '@style/Form'
+import searchLine from '@iconify/icons-ri/search-line'
+import { mog } from '@workduck-io/mex-utils'
 
 export const MenuItem = forwardRef<
   HTMLButtonElement,
@@ -43,18 +50,30 @@ interface Props {
   nested?: boolean
   children?: React.ReactNode
   values?: React.ReactNode
+  allowSearch?: boolean
+  searchPlaceholder?: string
 }
 
 export const MenuComponent = forwardRef<any, Props & React.HTMLProps<HTMLButtonElement>>(
-  ({ children, label, values, ...props }, ref) => {
+  ({ children, label, values, allowSearch, searchPlaceholder, ...props }, ref) => {
     const [open, setOpen] = useState(false)
     const [activeIndex, setActiveIndex] = useState<number | null>(null)
     const [allowHover, setAllowHover] = useState(false)
+    const [search, setSearch] = useState('')
+    const [filteredChildren, setFilteredChildren] = useState<React.ReactNode>(children)
+
+    const inputRef = React.useRef<HTMLInputElement>(null)
 
     const listItemsRef = useRef<Array<HTMLButtonElement | null>>([])
-    const listContentRef = useRef(
-      Children.map(children, (child) => (isValidElement(child) ? child.props.label : null)) as Array<string | null>
-    )
+    // const listContentRef = useRef(
+    //   Children.map(filteredChildren, (child) => (isValidElement(child) ? child.props.label : null)) as Array<
+    //     string | null
+    //   >
+    // )
+
+    const onSearchChange: React.ChangeEventHandler<HTMLInputElement> = (e) => {
+      setSearch(e.target.value)
+    }
 
     const tree = useFloatingTree()
     const nodeId = useFloatingNodeId()
@@ -70,6 +89,11 @@ export const MenuComponent = forwardRef<any, Props & React.HTMLProps<HTMLButtonE
       whileElementsMounted: autoUpdate
     })
 
+    const resetSearch = () => {
+      setSearch('')
+      setFilteredChildren(children)
+    }
+
     const { getReferenceProps, getFloatingProps, getItemProps } = useInteractions([
       useHover(context, {
         handleClose: safePolygon({ restMs: 25 }),
@@ -82,18 +106,32 @@ export const MenuComponent = forwardRef<any, Props & React.HTMLProps<HTMLButtonE
         ignoreMouse: nested
       }),
       useRole(context, { role: 'menu' }),
-      useDismiss(context),
+      useDismiss({
+        ...context,
+        onOpenChange: (open) => {
+          if (!open) {
+            // mog('closing')
+            resetSearch()
+          } else {
+            if (inputRef.current) {
+              inputRef.current.focus()
+            }
+          }
+          setOpen(open)
+        }
+      }),
       useListNavigation(context, {
         listRef: listItemsRef,
         activeIndex,
         nested,
         onNavigate: setActiveIndex
-      }),
-      useTypeahead(context, {
-        listRef: listContentRef,
-        onMatch: open ? setActiveIndex : undefined,
-        activeIndex
       })
+      // Typeahead disabled as it conflicts with search input
+      // useTypeahead(context, {
+      //   listRef: listContentRef,
+      //   onMatch: open ? setActiveIndex : undefined,
+      //   activeIndex
+      // })
     ])
 
     // Event emitter allows you to communicate across tree components.
@@ -102,6 +140,7 @@ export const MenuComponent = forwardRef<any, Props & React.HTMLProps<HTMLButtonE
     useEffect(() => {
       function onTreeClick() {
         setOpen(false)
+        resetSearch()
 
         if (parentId === null) {
           refs.reference.current?.focus()
@@ -139,6 +178,29 @@ export const MenuComponent = forwardRef<any, Props & React.HTMLProps<HTMLButtonE
       }
     }, [allowHover])
 
+    // Search through the children labels and filter out any that don't match
+    useEffect(() => {
+      if (allowSearch) {
+        if (search && search !== '') {
+          const childs = Children.map(children, (child) => (isValidElement(child) ? child.props.label : null)) as Array<
+            string | null
+          >
+          // mog('Search', { search, childs })
+          const filtered = fuzzySearch(childs, search, (item) => item)
+          // mog('Search', { search, filtered })
+          const newChildren = Children.map(children, (child) => {
+            if (isValidElement(child) && filtered.includes(child.props.label)) {
+              return child
+            }
+          })
+          setFilteredChildren(newChildren)
+        }
+        if (search === '') {
+          setFilteredChildren(children)
+        }
+      }
+    }, [search, allowSearch, children])
+
     const mergedReferenceRef = useMemo(() => mergeRefs([ref, reference]), [reference, ref])
 
     return (
@@ -159,6 +221,7 @@ export const MenuComponent = forwardRef<any, Props & React.HTMLProps<HTMLButtonE
                     // Prevent more than one menu from being open.
                     if (event.key === 'ArrowUp' || event.key === 'ArrowDown') {
                       setOpen(false)
+                      resetSearch()
                     }
                   }
                 }
@@ -194,12 +257,23 @@ export const MenuComponent = forwardRef<any, Props & React.HTMLProps<HTMLButtonE
                   onKeyDown(event) {
                     if (event.key === 'Tab') {
                       setOpen(false)
+                      resetSearch()
                     }
                   }
                 })}
               >
+                {allowSearch && children && (
+                  <SidebarListFilter noMargin>
+                    <Icon icon={searchLine} />
+                    <Input
+                      placeholder={searchPlaceholder ?? 'Filter items'}
+                      onChange={debounce((e) => onSearchChange(e), 250)}
+                      ref={inputRef}
+                    />
+                  </SidebarListFilter>
+                )}
                 {Children.map(
-                  children,
+                  filteredChildren,
                   (child, index) =>
                     isValidElement(child) &&
                     cloneElement(

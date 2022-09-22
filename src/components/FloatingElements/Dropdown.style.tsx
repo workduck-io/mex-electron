@@ -6,8 +6,7 @@ const MenuItemStyles = css`
   width: 100%;
   background: transparent;
   border: none;
-  border-radius: 4px;
-  font-size: 16px;
+  border-radius: ${({ theme }) => theme.borderRadius.small};
   text-align: left;
   line-height: 1.5;
   min-width: 110px;
@@ -37,9 +36,8 @@ export const RootMenuWrapper = styled.button`
   gap: ${({ theme }) => theme.spacing.tiny};
   padding: ${({ theme }) => theme.spacing.tiny} ${({ theme }) => theme.spacing.small};
   border: none;
-  font-size: 16px;
   background: none;
-  border-radius: 6px;
+  border-radius: ${({ theme }) => theme.borderRadius.small};
   color: ${({ theme }) => theme.colors.text.default};
 
   &.MenuItem {
@@ -59,6 +57,8 @@ export const MenuWrapper = styled.div`
   border-radius: 6px;
   box-shadow: 2px 4px 12px rgba(0, 0, 0, 0.1);
   outline: 0;
+  max-height: 300px;
+  overflow-y: auto;
 `
 
 export const MenuItemWrapper = styled.button`
