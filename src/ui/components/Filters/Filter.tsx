@@ -42,7 +42,7 @@ const getJoinOptionsForType = (type: FilterType) => {
     case 'tag':
       return JoinOptions
     case 'space':
-      return JoinOptions.filter((join) => join.value !== 'all')
+      return JoinOptions.filter((join) => join.value !== 'all' && join.value !== 'notAny')
     case 'mention':
       return JoinOptions
     default:
@@ -140,7 +140,10 @@ const FilterRender = ({ filter, onChangeFilter, options, onRemoveFilter }: Filte
         }
       >
         {options
-          .sort((a, b) => (a.count && b.count ? a.count - b.count : 0))
+          // Sort by the number of matches
+          .sort((a, b) => (a.count && b.count ? b.count - a.count : 0))
+          // Sort whether the value is selected
+          .sort((a, b) => (isValueSelected(a) ? -1 : 1))
           .map((option) => (
             <MenuItem
               key={option.id}

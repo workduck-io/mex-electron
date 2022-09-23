@@ -3,6 +3,7 @@ import { MIcon } from '../../types/Types'
 import { FilterJoin, FilterJoinArray, FilterType } from '../../types/filters'
 import { mog } from '@workduck-io/mex-utils'
 import { useNamespaces } from '@hooks/useNamespaces'
+import { SHARED_NAMESPACE } from '@utils/lib/paths'
 
 export const getFilterJoinIcon = (join: FilterJoin): MIcon => {
   // mog('getTagFilterValueIcon', { join })
@@ -33,8 +34,10 @@ export const useFilterIcons = () => {
         const namespace = namespaces.find((n) => n.id === value)
         if (namespace) {
           return getNamespaceIcon(namespace)
+        } else if (value === SHARED_NAMESPACE.id) {
+          return { type: 'ICON', value: 'ri:share-line' }
         }
-        return { type: 'ICON', value: 'ri:folder-2-line' }
+        return { type: 'ICON', value: 'heroicons-outline:view-grid' }
       }
 
       case 'note': {
