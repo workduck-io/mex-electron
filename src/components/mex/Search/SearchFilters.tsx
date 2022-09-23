@@ -1,7 +1,7 @@
 import filter2Line from '@iconify/icons-ri/filter-2-line'
 import filterOffLine from '@iconify/icons-ri/filter-off-line'
 import { Icon } from '@iconify/react'
-import { FilterValue } from '../../../types/filters'
+import { Filter, Filters, FilterValue } from '../../../types/filters'
 import FilterRender from '@ui/components/Filters/Filter'
 import { Infobox, ToolbarTooltip } from '@workduck-io/mex-components'
 import { startCase } from 'lodash'
@@ -20,100 +20,103 @@ import { duplicateTimes, mog } from '../../../utils/lib/helper'
 import SearchFilterInput from './SearchFilterInput'
 import NewFilterMenu from '@ui/components/Filters/NewFilterMenu'
 
-interface SearchFiltersProps<Item> {
+interface SearchFiltersProps {
   result?: any
-  filters: SearchFilter<Item>[]
-  currentFilters: SearchFilter<Item>[]
-  addCurrentFilter: (filter: SearchFilter<Item>) => void
-  removeCurrentFilter: (filter: SearchFilter<Item>) => void
+  filters: Filters
+  currentFilters: Filter[]
+  addCurrentFilter: (filter: Filter) => void
+  removeCurrentFilter: (filter: Filter) => void
+  changeCurrentFilter: (filter: Filter) => void
   resetCurrentFilters: () => void
 }
 
-const filterIcons: Partial<{ [key in FilterKey]: string }> = {
-  note: 'ri:file-list-2-line',
-  tag: 'ri:hashtag',
-  mention: 'ri:at-line',
-  space: 'heroicons-outline:view-grid'
-}
+// const filterIcons: Partial<{ [key in FilterKey]: string }> = {
+//   note: 'ri:file-list-2-line',
+//   tag: 'ri:hashtag',
+//   mention: 'ri:at-line',
+//   space: 'heroicons-outline:view-grid'
+// }
 
-const getGroupedFilters = <Item,>(filters: SearchFilter<Item>[], currentFilters: SearchFilter<Item>[]) => {
-  const randomId = nanoid()
-  // Remove current filters from filters
-  const suggestedFilters = filters.filter(
-    (filter) => !currentFilters.find((currentFilter) => currentFilter.id === filter.id)
-  )
+// const getGroupedFilters = <Item,>(filters: SearchFilter<Item>[], currentFilters: SearchFilter<Item>[]) => {
+//   const randomId = nanoid()
+//   // Remove current filters from filters
+//   const suggestedFilters = filters.filter(
+//     (filter) => !currentFilters.find((currentFilter) => currentFilter.id === filter.id)
+//   )
 
-  const filtersByKey: Partial<{
-    [key in FilterKey]: {
-      current: SearchFilter<Item>[]
-      suggested: SearchFilter<Item>[]
-    }
-  }> = {}
+//   const filtersByKey: Partial<{
+//     [key in FilterKey]: {
+//       current: SearchFilter<Item>[]
+//       suggested: SearchFilter<Item>[]
+//     }
+//   }> = {}
 
-  suggestedFilters.forEach((filter) => {
-    const key = filter.key as FilterKey
-    if (!filtersByKey[key]) {
-      filtersByKey[key] = {
-        current: [],
-        suggested: []
-      }
-    }
-    filtersByKey[key].suggested.push(filter)
-  })
+//   suggestedFilters.forEach((filter) => {
+//     const key = filter.key as FilterKey
+//     if (!filtersByKey[key]) {
+//       filtersByKey[key] = {
+//         current: [],
+//         suggested: []
+//       }
+//     }
+//     filtersByKey[key].suggested.push(filter)
+//   })
 
-  currentFilters.forEach((filter) => {
-    const key = filter.key as FilterKey
-    if (!filtersByKey[key]) {
-      filtersByKey[key] = {
-        current: [],
-        suggested: []
-      }
-    }
-    filtersByKey[key].current.push(filter)
-  })
+//   currentFilters.forEach((filter) => {
+//     const key = filter.key as FilterKey
+//     if (!filtersByKey[key]) {
+//       filtersByKey[key] = {
+//         current: [],
+//         suggested: []
+//       }
+//     }
+//     filtersByKey[key].current.push(filter)
+//   })
 
-  // Object.entries(filtersByKey).forEach(([key, { current, suggested }]) => {
-  //   if (suggested.length > 5) {
-  //     filtersByKey[key].suggested = suggested.slice(0, 5)
-  //   }
-  // })
+//   // Object.entries(filtersByKey).forEach(([key, { current, suggested }]) => {
+//   //   if (suggested.length > 5) {
+//   //     filtersByKey[key].suggested = suggested.slice(0, 5)
+//   //   }
+//   // })
 
-  return { filtersByKey, randomId }
-}
+//   return { filtersByKey, randomId }
+// }
 
-const valueOptions: FilterValue[] = duplicateTimes(
-  ['a test', 'b test2', 'c test3', 'f test4', 'e test5', 'd test6'],
-  20
-).map((value, i) => ({
-  id: `${value}_${i}`,
-  label: `${value}_${i}`,
-  value
-}))
+// const valueOptions: FilterValue[] = duplicateTimes(
+//   ['a test', 'b test2', 'c test3', 'f test4', 'e test5', 'd test6'],
+//   20
+// ).map((value, i) => ({
+//   id: `${value}_${i}`,
+//   label: `${value}_${i}`,
+//   value
+// }))
 
-const SearchFilters = <Item,>({
+const SearchFilters = ({
   filters,
   currentFilters,
   addCurrentFilter,
+  changeCurrentFilter,
   result,
   removeCurrentFilter,
   resetCurrentFilters
-}: SearchFiltersProps<Item>) => {
-  const { filtersByKey, randomId } = useMemo(
-    () => getGroupedFilters(filters, currentFilters),
-    [filters, currentFilters, result]
-  )
+}: SearchFiltersProps) => {
+  // const { filtersByKey, randomId } = useMemo(
+  //   () => getGroupedFilters(filters, currentFilters),
+  //   [filters, currentFilters, result]
+  // )
 
   // mog('SearchFilters', { filters, currentFilters, filtersByKey })
 
-  const toggleForFilter = (filter: SearchFilter<Item>) => {
-    if (currentFilters.find((currentFilter) => currentFilter.id === filter.id)) {
-      // mog('removeCurrentFilter', { filter })
-      removeCurrentFilter(filter)
-    } else {
-      // mog('addCurrentFilter', { filter })
-      addCurrentFilter(filter)
-    }
-  }
+  // const toggleForFilter = (filter: SearchFilter<Item>) => {
+  //   if (currentFilters.find((currentFilter) => currentFilter.id === filter.id)) {
+  //     // mog('removeCurrentFilter', { filter })
+  //     removeCurrentFilter(filter)
+  //   } else {
+  //     // mog('addCurrentFilter', { filter })
+  //     addCurrentFilter(filter)
+  //   }
+  // }
+  mog('SearchFilters', { filters, currentFilters })
 
   return (
     <SearchFilterWrapper>
@@ -130,21 +133,17 @@ const SearchFilters = <Item,>({
         <Infobox text={SearchFiltersHelp} />
       </SearchFilterLabel>
       <SearchFiltersWrapper>
-        <NewFilterMenu addFilter={(f) => console.log(f)} />
-        <FilterRender
-          filter={{
-            id: 'testFilterX',
-            type: 'note',
-            multiple: true,
-            values: [],
-            // valueOptions.slice(0, 2),
-            join: 'any'
-          }}
-          options={valueOptions}
-          onChangeFilter={(f) => mog('FilterChanged', { f })}
-          onRemoveFilter={(f) => mog('FilterRemoved', { f })}
-        />
-        {Object.entries(filtersByKey)
+        <NewFilterMenu filters={filters} addFilter={(f) => addCurrentFilter(f)} />
+        {currentFilters.map((filter) => (
+          <FilterRender
+            key={filter.id}
+            filter={filter}
+            options={filters.find((f) => f.type === filter.type)?.options}
+            onChangeFilter={(f) => changeCurrentFilter(f)}
+            onRemoveFilter={(f) => removeCurrentFilter(f)}
+          />
+        ))}
+        {/* Object.entries(filtersByKey)
           .sort(([key1], [key2]) => startCase(key1).localeCompare(startCase(key2)))
           .map(([k, filter]) => {
             return (
@@ -163,7 +162,7 @@ const SearchFilters = <Item,>({
                 />
               </SearchFilterList>
             )
-          })}
+          })*/}
       </SearchFiltersWrapper>
     </SearchFilterWrapper>
   )

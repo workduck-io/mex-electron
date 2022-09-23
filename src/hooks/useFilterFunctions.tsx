@@ -1,30 +1,71 @@
 import { isElder } from '@components/mex/Sidebar/treeUtils'
 import { getReminderState } from '@services/reminders/reminders'
 import useDataStore from '@store/useDataStore'
+import { FilterFunction, Filter, SearchFilterFunctions, FilterJoin } from '../types/filters'
 import { mog } from '@workduck-io/mex-utils'
 import { useLinks } from './useLinks'
 
+const joinNewRes = (acc: boolean, curRes: boolean, join: FilterJoin) => {
+  if (join === 'all') {
+    return acc && curRes
+  } else if (join === 'any') {
+    return acc || curRes
+  } else if (join === 'notAny') {
+    return acc || !curRes
+  } else if (join === 'none') {
+    return acc && !curRes
+  }
+}
+
 export const useGenericFilterFunctions = () => {
   const { getPathFromNodeid, getILinkFromNodeid } = useLinks()
-  return {
-    note: (item, value) => {
-      // return true
+  const filterFunctions: SearchFilterFunctions = {
+    note: (item: any, f: Filter) => {
+      const { values, type, join } = f
+
+      const val = Array.isArray(values) ? values : [values]
       const itemPath = getPathFromNodeid(item.id)
+
+      const res = val.reduce((acc, v) => {
+        // Merge with respect to join
+        const curRes = isElder(itemPath, v.value) || itemPath === v.value
+        return joinNewRes(acc, curRes, join)
+      }, false)
+
+      // const itemPath = getPathFromNodeid(item.id)
       // mog('itemPath being filtered', { item, itemPath, path })
-      return isElder(itemPath, value) || itemPath === value
+      return res
     },
-    tag: (item, value) => {
+
+    tag: (item: any, f: Filter) => {
       const tagsCache = useDataStore.getState().tagsCache
-      const tags = tagsCache[value]
-      return tags && tags.nodes.includes(item.id)
+      const { values, type, join } = f
+      const val = Array.isArray(values) ? values : [values]
+
+      const res = val.reduce((acc, v) => {
+        const curRes = tagsCache[v.value]?.nodes?.includes(item.id)
+        return joinNewRes(acc, curRes, join)
+      }, false)
+
+      // const tags = tagsCache[value]
+      return res
     },
-    space: (item, value) => {
+
+    space: (item: any, f: Filter) => {
       // mog('namespace', { item, value })
+      const { values, type, join } = f
+      const val = Array.isArray(values) ? values : [values]
       const iLink = getILinkFromNodeid(item.id)
-      const namespace = iLink?.namespace
-      return namespace === value
+
+      const res = val.reduce((acc, v) => {
+        const curRes = iLink?.namespace === v.value
+        return joinNewRes(acc, curRes, join)
+      }, false)
+      // const namespace = iLink?.namespace
+      return res
     }
   }
+  return filterFunctions
 }
 
 export const reminderFilterFunctions = {

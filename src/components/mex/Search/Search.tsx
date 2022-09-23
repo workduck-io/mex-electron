@@ -96,6 +96,7 @@ const Search = () => {
     removeCurrentFilter,
     filters,
     currentFilters,
+    changeCurrentFilter,
     resetCurrentFilters
   } = useFilters<GenericSearchResult>()
 
@@ -288,6 +289,7 @@ const Search = () => {
         addCurrentFilter={addCurrentFilter}
         removeCurrentFilter={removeCurrentFilter}
         resetCurrentFilters={resetCurrentFilters}
+        changeCurrentFilter={changeCurrentFilter}
         filters={filters}
         currentFilters={currentFilters}
       />

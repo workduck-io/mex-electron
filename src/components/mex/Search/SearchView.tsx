@@ -53,15 +53,6 @@ export interface RenderItemProps<Item> extends Partial<RenderSplitProps> {
 interface IndexGroups {
   [key: string]: idxKey[]
 }
-// export interface SearchViewStoreState<Item> extends SearchViewState<Item> {
-//   setSelected: (selected: number) => void
-//   setResult: (result: Item[], searchTerm: string) => void
-//   setView: (view: View) => void
-//   clearSearch: () => void
-// }
-
-// export const useSearchStore = <Item, Slice>(selector: (state: SearchViewStoreState<Item>) => Slice) =>
-//   useSearchStoreBase(selector)
 
 interface SearchOptions {
   /**
@@ -203,9 +194,12 @@ const SearchView = <Item,>({
     searchTerm: '',
     result: []
   })
+
+  // For filters
   const { applyCurrentFilters, resetCurrentFilters } = useFilters<Item>()
-  const currentFilters = useFilterStore((store) => store.currentFilters) as SearchFilter<Item>[]
-  const filters = useFilterStore((store) => store.filters) as SearchFilter<Item>[]
+  const currentFilters = useFilterStore((store) => store.currentFilters)
+  const filters = useFilterStore((store) => store.filters)
+
   const idxKeys = useFilterStore((store) => store.indexes) as idxKey[]
   const [view, setView] = useState<View>(options?.view)
   const setIndexes = useFilterStore((store) => store.setIndexes)

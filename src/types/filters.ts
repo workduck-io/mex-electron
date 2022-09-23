@@ -21,24 +21,48 @@ export const FilterJoinArray = [
 export type FilterJoin = typeof FilterJoinArray[number]
 
 export interface FilterValue {
+  /** Unique id of filter value */
   id: string
+
   label: string
+
+  /** Value of the filter, usually the id for the type of the filter */
   value: string
+
+  /** The number of items that match this value */
+  count?: number
 }
 
 export interface Filter {
-  // Unique id for the filter
+  /** Unique id for the filter */
   id: string
 
-  // What is the type of the filter
+  /** The type of the filter */
   type: FilterType
 
-  // How to join this filters values
+  /** How to join this filters values */
   join: FilterJoin
 
+  /** Whether there can be multiple values selected */
   multiple: boolean
 
-  // Either single or multiple values
-  // No values in both multi and single are represented by empty array
+  /**
+   * The values of the filter
+   * No values in both multi and single are represented by empty array
+   */
   values: FilterValue[] | FilterValue
 }
+
+export interface FilterTypeWithOptions {
+  type: FilterType
+  label: string
+  options: FilterValue[]
+}
+
+export type Filters = Array<FilterTypeWithOptions>
+
+export type FilterFunction = <Item>(item: Item, filter: Filter) => boolean | number
+
+export type SearchFilterFunctions = Partial<{
+  [key in FilterType]: FilterFunction
+}>

@@ -43,27 +43,32 @@ import searchLine from '@iconify/icons-ri/search-line'
 import { mog } from '@workduck-io/mex-utils'
 import { MIcon } from '../../types/Types'
 import IconDisplay from '@ui/components/IconPicker/IconDisplay'
+import { GenericFlex } from '@ui/components/Filters/Filter.style'
 
 export const MenuItem = forwardRef<
   HTMLButtonElement,
   {
     label: string
     icon: MIcon
+    count?: number
     multiSelect?: boolean
     selected?: boolean
     disabled?: boolean
     onClick?: (e: React.MouseEvent<HTMLButtonElement>) => void
   }
->(({ label, disabled, icon, multiSelect, selected, ...props }, ref) => {
+>(({ label, disabled, count, icon, multiSelect, selected, ...props }, ref) => {
   return (
     <MenuItemWrapper {...props} ref={ref} role="menuitem" disabled={disabled}>
-      {multiSelect && (
-        <MultiSelectIcon selected={selected}>
-          {selected ? <Icon icon="ri:checkbox-fill" /> : <Icon icon="ri:checkbox-blank-line" />}
-        </MultiSelectIcon>
-      )}
-      <IconDisplay icon={icon} />
-      {label}
+      <GenericFlex>
+        {multiSelect && (
+          <MultiSelectIcon selected={selected}>
+            {selected ? <Icon icon="ri:checkbox-fill" /> : <Icon icon="ri:checkbox-blank-line" />}
+          </MultiSelectIcon>
+        )}
+        <IconDisplay icon={icon} />
+        {label}
+      </GenericFlex>
+      {count && <GenericFlex>{count}</GenericFlex>}
     </MenuItemWrapper>
   )
 })

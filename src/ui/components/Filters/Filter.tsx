@@ -38,7 +38,7 @@ const JoinOptions = ['all', 'any', 'notAny', 'none'].map((join) => ({
 const getJoinOptionsForType = (type: FilterType) => {
   switch (type) {
     case 'note':
-      return JoinOptions.filter((join) => join.value !== 'all')
+      return JoinOptions
     case 'tag':
       return JoinOptions
     case 'space':
@@ -139,16 +139,19 @@ const FilterRender = ({ filter, onChangeFilter, options, onRemoveFilter }: Filte
           </>
         }
       >
-        {options.map((option) => (
-          <MenuItem
-            key={option.id}
-            icon={getFilterValueIcon(filter.type, option.value)}
-            onClick={() => onChangeValues(option)}
-            label={option.label}
-            selected={isValueSelected(option)}
-            multiSelect
-          />
-        ))}
+        {options
+          .sort((a, b) => (a.count && b.count ? a.count - b.count : 0))
+          .map((option) => (
+            <MenuItem
+              key={option.id}
+              icon={getFilterValueIcon(filter.type, option.value)}
+              onClick={() => onChangeValues(option)}
+              label={option.label}
+              selected={isValueSelected(option)}
+              count={option.count}
+              multiSelect
+            />
+          ))}
       </Menu>
 
       <FilterRemoveButton onClick={() => onRemoveFilter(filter)}>

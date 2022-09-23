@@ -1,7 +1,7 @@
 import React from 'react'
 import filter2Line from '@iconify/icons-ri/filter-2-line'
 import { Menu, MenuItem } from '@components/FloatingElements/Dropdown'
-import { Filter, FilterType, FilterValue } from '../../../types/filters'
+import { Filter, Filters, FilterType, FilterValue } from '../../../types/filters'
 import { capitalize, mog } from '@workduck-io/mex-utils'
 import { duplicateTimes } from '@utils/lib/helper'
 import { Icon } from '@iconify/react'
@@ -10,24 +10,12 @@ import { FilterTypeIcons } from '@utils/lib/icons'
 import { useFilterIcons } from '@hooks/ui/useFilterValueIcons'
 import { generateFilterId } from '@data/Defaults/idPrefixes'
 
-const valueOptions = (k: string): FilterValue[] =>
-  duplicateTimes([`${k} Test 1`, `${k} Test 2`, `${k} Test 3`, `${k} Test 4`, `${k} Test 5`], 20).map((value, i) => ({
-    id: `${value}_${i}`,
-    label: `${value}_${i}`,
-    value
-  }))
-
-const TypeOptions = ['note', 'tag', 'mention', 'space'].map((type) => ({
-  label: capitalize(type),
-  value: type as FilterType,
-  options: valueOptions(type)
-}))
-
 interface NewFilterMenuProps {
+  filters: Filters
   addFilter: (filter: Filter) => void
 }
 
-const NewFilterMenu = ({ addFilter }: NewFilterMenuProps) => {
+const NewFilterMenu = ({ addFilter, filters }: NewFilterMenuProps) => {
   const { getFilterValueIcon } = useFilterIcons()
   const onAddNewFilter = (type: FilterType, value: FilterValue) => {
     mog('onAddNewFilter', { type, value })
@@ -42,6 +30,8 @@ const NewFilterMenu = ({ addFilter }: NewFilterMenuProps) => {
     addFilter(newFilter)
   }
 
+  mog('NewFilterMenu', { filters })
+
   return (
     <Menu
       values={
@@ -51,12 +41,12 @@ const NewFilterMenu = ({ addFilter }: NewFilterMenuProps) => {
         </GenericSection>
       }
     >
-      {TypeOptions.map((option) => (
+      {filters.map((option) => (
         <Menu
-          key={option.value}
+          key={option.type}
           values={
             <GenericFlex>
-              <Icon icon={FilterTypeIcons[option.value]} />
+              <Icon icon={FilterTypeIcons[option.type]} />
               {option.label}
             </GenericFlex>
           }
@@ -66,9 +56,10 @@ const NewFilterMenu = ({ addFilter }: NewFilterMenuProps) => {
           {option.options.map((op) => (
             <MenuItem
               key={op.id}
-              icon={getFilterValueIcon(option.value, op.value)}
-              onClick={() => onAddNewFilter(option.value, op)}
+              icon={getFilterValueIcon(option.type, op.value)}
+              onClick={() => onAddNewFilter(option.type, op)}
               label={op.label}
+              count={op.count}
             />
           ))}
         </Menu>
@@ -78,3 +69,18 @@ const NewFilterMenu = ({ addFilter }: NewFilterMenuProps) => {
 }
 
 export default NewFilterMenu
+
+//////// Testing things
+//
+// const valueOptions = (k: string): FilterValue[] =>
+//   duplicateTimes([`${k} Test 1`, `${k} Test 2`, `${k} Test 3`, `${k} Test 4`, `${k} Test 5`], 20).map((value, i) => ({
+//     id: `${value}_${i}`,
+//     label: `${value}_${i}`,
+//     value
+//   }))
+//
+// const TypeOptions = ['note', 'tag', 'mention', 'space'].map((type) => ({
+//   label: capitalize(type),
+//   value: type as FilterType,
+//   options: valueOptions(type)
+// }))

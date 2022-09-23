@@ -9,6 +9,7 @@ import { useGenericFilterFunctions } from './useFilterFunctions'
 import { useLinks } from './useLinks'
 import { useNamespaces } from './useNamespaces'
 import { useTags } from './useTags'
+import { Filter, Filters, FilterType, FilterTypeWithOptions, SearchFilterFunctions } from '../types/filters'
 
 /*
 - Date
@@ -19,7 +20,7 @@ import { useTags } from './useTags'
 
 export type FilterKey = 'note' | 'tag' | 'date' | 'state' | 'has' | 'mention' | 'space'
 
-export interface SearchFilter<Item> {
+export interface SearchFilter {
   key: FilterKey
   id: string
   label: string
@@ -32,20 +33,16 @@ export interface SearchFilter<Item> {
   // sort: 'asc' | 'desc'
 }
 
-export type SearchFilterFunctions<Item> = Partial<{
-  [key in FilterKey]: (item: Item, value: string) => boolean | number
-}>
-
-export interface FilterStore<Item> {
-  filters: SearchFilter<Item>[]
-  currentFilters: SearchFilter<Item>[]
+export interface FilterStore {
+  filters: Filters
+  currentFilters: Filter[]
   indexes?: idxKey[]
   setIndexes?: (indexes: idxKey[]) => void
-  setFilters: (filters: SearchFilter<Item>[]) => void
-  setCurrentFilters: (currentFilters: SearchFilter<Item>[]) => void
+  setFilters: (filters: Filters) => void
+  setCurrentFilters: (currentFilters: Filter[]) => void
 }
 
-export const useFilterStoreBase = create<FilterStore<any>>((set) => ({
+export const useFilterStoreBase = create<FilterStore>((set) => ({
   filters: [],
   currentFilters: [],
   indexes: ['node', 'shared'],
@@ -54,36 +51,36 @@ export const useFilterStoreBase = create<FilterStore<any>>((set) => ({
   setIndexes: (indexes) => set((state) => ({ ...state, indexes }))
 }))
 
-export const useFilterStore = <Item, Slice>(selector: (state: FilterStore<Item>) => Slice) =>
-  useFilterStoreBase(selector)
+export const useFilterStore = <Slice>(selector: (state: FilterStore) => Slice) => useFilterStoreBase(selector)
 
 export const useFilters = <Item>() => {
-  const filters = useFilterStore((state) => state.filters) as SearchFilter<Item>[]
-  const setFilters = useFilterStore((state) => state.setFilters) as (filters: SearchFilter<Item>[]) => void
-  const currentFilters = useFilterStore((state) => state.currentFilters) as SearchFilter<Item>[]
-  const setCurrentFilters = useFilterStore((state) => state.setCurrentFilters) as (
-    currentFilters: SearchFilter<Item>[]
-  ) => void
+  const filters = useFilterStore((state) => state.filters)
+  const setFilters = useFilterStore((state) => state.setFilters)
+  const currentFilters = useFilterStore((state) => state.currentFilters)
+  const setCurrentFilters = useFilterStore((state) => state.setCurrentFilters)
+
   const { getTags } = useTags()
 
   const { getPathFromNodeid, getILinkFromNodeid } = useLinks()
   const { getNamespace } = useNamespaces()
   const filterFunctions = useGenericFilterFunctions()
   // setFilters: (filters: SearchFilter<any>[]) => void
-  const addFilter = (filter: SearchFilter<Item>) => {
-    setFilters([...filters, filter])
-  }
 
   const resetFilters = () => {
     setFilters([])
   }
 
-  const addCurrentFilter = (filter: SearchFilter<Item>) => {
+  const addCurrentFilter = (filter: Filter) => {
+    mog('addCurrentFilter', { filter })
     setCurrentFilters([...currentFilters, filter])
   }
 
-  const removeCurrentFilter = (filter: SearchFilter<Item>) => {
+  const removeCurrentFilter = (filter: Filter) => {
     setCurrentFilters(currentFilters.filter((f) => f.id !== filter.id))
+  }
+
+  const changeCurrentFilter = (filter: Filter) => {
+    setCurrentFilters(currentFilters.map((f) => (f.id === filter.id ? filter : f)))
   }
 
   const applyCurrentFilters = (items: Item[]) => {
@@ -97,8 +94,7 @@ export const useFilters = <Item>() => {
   const generateTagFilters = (items: GenericSearchResult[]) => {
     // const tagsCache = useDataStore.getState().tagsCache
     // OK
-    const currentFilters_ = currentFilters as unknown as SearchFilter<GenericSearchResult>[]
-    const filteredItems = currentFilters_.length > 0 ? applyFilters(items, currentFilters_, filterFunctions) : items
+    const filteredItems = currentFilters.length > 0 ? applyFilters(items, currentFilters, filterFunctions) : items
 
     const rankedTags = filteredItems.reduce((acc, item) => {
       const tags = getTags(item.id)
@@ -114,36 +110,37 @@ export const useFilters = <Item>() => {
       return acc
     }, {} as { [tag: string]: number })
 
-    const tagsFilter: SearchFilter<GenericSearchResult>[] = Object.entries(rankedTags).reduce(
-      (p: SearchFilter<GenericSearchResult>[], [tag, rank]) => {
+    const tagsFilter: FilterTypeWithOptions = Object.entries(rankedTags).reduce(
+      (p: FilterTypeWithOptions, [tag, rank]) => {
         // const tags = tagsCache[tag]
-        if (rank >= 1)
-          return [
+        if (rank >= 0)
+          return {
             ...p,
-            {
-              key: 'tag',
-              icon: { type: 'ICON', value: 'ri:hashtag' },
-              id: `tag_filter_${tag}`,
-              label: tag,
-              count: rank as number,
-              value: tag
-              // filter: (item: GenericSearchResult) => {
-              //   return tags && tags.nodes.includes(item.id)
-              // }
-            }
-          ]
+            options: [
+              ...p.options,
+              {
+                id: `tag_filter_${tag}`,
+                label: tag,
+                count: rank as number,
+                value: tag
+              }
+            ]
+          }
         else return p
       },
-      []
+      {
+        type: 'tag',
+        label: 'Tags',
+        options: []
+      }
     )
 
-    // mog('tagsFilter', { tagsCache, currentFilters_, rankedTags, tagsFilter })
+    mog('tagsFilter', { rankedTags, tagsFilter })
     return tagsFilter
   }
 
   const generateNodeFilters = (items: GenericSearchResult[]) => {
-    const currentFilters_ = currentFilters as unknown as SearchFilter<GenericSearchResult>[]
-    const filteredItems = currentFilters_.length > 0 ? applyFilters(items, currentFilters_, filterFunctions) : items
+    const filteredItems = currentFilters.length > 0 ? applyFilters(items, currentFilters, filterFunctions) : items
 
     const rankedPaths = filteredItems.reduce((acc, item) => {
       const path = getPathFromNodeid(item.id, true)
@@ -159,26 +156,26 @@ export const useFilters = <Item>() => {
       return acc
     }, {} as { [path: string]: number })
 
-    const nodeFilters = Object.entries(rankedPaths).reduce((acc, c) => {
-      const [path, rank] = c
-      if (rank > 1) {
-        // mog('path', { path, rank })
-        acc.push({
-          key: 'note',
-          id: `node_${path}`,
-          icon: { type: 'ICON', value: 'ri:file-list-2-line' },
-          value: path,
-          label: path,
-          count: rank as number
-          // filter: (item: GenericSearchResult) => {
-          //   const itemPath = getPathFromNodeid(item.id)
-          //   mog('itemPath being filtered', { item, itemPath, path })
-          //   return isElder(itemPath, path) || itemPath === path
-          // }
-        })
-      }
-      return acc
-    }, [] as SearchFilter<GenericSearchResult>[])
+    const nodeFilters: FilterTypeWithOptions = Object.entries(rankedPaths).reduce(
+      (acc: FilterTypeWithOptions, c) => {
+        const [path, rank] = c
+        if (rank >= 0) {
+          // mog('path', { path, rank })
+          acc.options.push({
+            id: `node_${path}`,
+            value: path,
+            label: path,
+            count: rank as number
+          })
+        }
+        return acc
+      },
+      {
+        type: 'note',
+        label: 'Notes',
+        options: []
+      } as FilterTypeWithOptions
+    )
 
     // mog('nodeFilters', { nodeFilters })
     return nodeFilters
@@ -186,8 +183,7 @@ export const useFilters = <Item>() => {
 
   const generateNamespaceFilters = <T extends { id: string }>(items: T[]) => {
     // Known
-    const currentFilters_ = currentFilters as unknown as SearchFilter<GenericSearchResult>[]
-    const filteredItems = currentFilters_.length > 0 ? applyFilters(items, currentFilters_, filterFunctions) : items
+    const filteredItems = currentFilters.length > 0 ? applyFilters(items, currentFilters, filterFunctions) : items
 
     const rankedNamespaces = filteredItems.reduce((acc, item) => {
       const node = getILinkFromNodeid(item.id, true)
@@ -204,28 +200,28 @@ export const useFilters = <Item>() => {
       return acc
     }, {} as { [namespace: string]: number })
 
-    const namespaceFilters = Object.entries(rankedNamespaces).reduce((acc, c) => {
-      const [namespaceID, rank] = c
-      const namespace = getNamespace(namespaceID)
-      if (rank >= 1 && namespace) {
-        // mog('path', { path, rank })
-        acc.push({
-          key: 'space',
-          id: `namespace_${namespace}`,
-          // Use Namespace icon
-          icon: namespace.icon ?? { type: 'ICON', value: 'heroicons-outline:view-grid' },
-          value: namespaceID,
-          label: namespace.name,
-          count: rank as number
-          // filter: (item: GenericSearchResult) => {
-          //   const itemPath = getPathFromNodeid(item.id)
-          //   mog('itemPath being filtered', { item, itemPath, path })
-          //   return isElder(itemPath, path) || itemPath === path
-          // }
-        })
-      }
-      return acc
-    }, [] as SearchFilter<GenericSearchResult>[])
+    const namespaceFilters = Object.entries(rankedNamespaces).reduce(
+      (acc, c) => {
+        const [namespaceID, rank] = c
+        const namespace = getNamespace(namespaceID)
+        if (rank >= 0 && namespace) {
+          // mog('path', { path, rank })
+          acc.options.push({
+            id: `namespace_${namespace.id}`,
+            // Use Namespace icon
+            value: namespaceID,
+            label: namespace.name,
+            count: rank as number
+          })
+        }
+        return acc
+      },
+      {
+        type: 'space',
+        label: 'Spaces',
+        options: []
+      } as FilterTypeWithOptions
+    )
 
     // mog('nodeFilters', { nodeFilters })
     return namespaceFilters
@@ -235,11 +231,10 @@ export const useFilters = <Item>() => {
     const nodeFilters = generateNodeFilters(items)
     const tagFilters = generateTagFilters(items)
     const namespaceFilters = generateNamespaceFilters(items)
-    return [...nodeFilters, ...tagFilters, ...namespaceFilters]
+    return [nodeFilters, tagFilters, namespaceFilters]
   }
 
   return {
-    addFilter,
     filters,
     resetFilters,
     applyCurrentFilters,
@@ -247,6 +242,7 @@ export const useFilters = <Item>() => {
     generateNodeFilters,
     generateTagFilters,
     addCurrentFilter,
+    changeCurrentFilter,
     currentFilters,
     removeCurrentFilter,
     generateNodeSearchFilters,
@@ -256,11 +252,12 @@ export const useFilters = <Item>() => {
 
 export const applyFilters = <Item>(
   items: Item[],
-  filters: SearchFilter<Item>[],
-  filterFunctions: SearchFilterFunctions<Item>
+  filters: Filter[],
+  filterFunctions: SearchFilterFunctions
 ): Item[] => {
+  // TODO: Insert the global any and all filters match condition here
   const filtered = filters.reduce((acc, filter) => {
-    return acc.filter((i) => filterFunctions[filter.key](i, filter.value))
+    return acc.filter((i) => filterFunctions[filter.type](i, filter))
   }, items)
 
   mog('applyFilters', { items, filters, filtered })

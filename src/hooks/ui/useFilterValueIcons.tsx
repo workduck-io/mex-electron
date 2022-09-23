@@ -2,9 +2,10 @@ import useDataStore from '@store/useDataStore'
 import { MIcon } from '../../types/Types'
 import { FilterJoin, FilterJoinArray, FilterType } from '../../types/filters'
 import { mog } from '@workduck-io/mex-utils'
+import { useNamespaces } from '@hooks/useNamespaces'
 
 export const getFilterJoinIcon = (join: FilterJoin): MIcon => {
-  mog('getTagFilterValueIcon', { join })
+  // mog('getTagFilterValueIcon', { join })
   switch (join) {
     case 'all':
       return { type: 'ICON', value: 'material-symbols:join-inner' }
@@ -23,13 +24,15 @@ export const getFilterJoinIcon = (join: FilterJoin): MIcon => {
 export const useFilterIcons = () => {
   const ilinks = useDataStore((state) => state.ilinks)
   const namespaces = useDataStore((state) => state.namespaces)
+  const { getNamespaceIcon } = useNamespaces()
 
   const getFilterValueIcon = (type: FilterType, value: string): MIcon => {
+    // mog('getFilterValueIcon', { type, value })
     switch (type) {
       case 'space': {
         const namespace = namespaces.find((n) => n.id === value)
         if (namespace) {
-          return namespace.icon
+          return getNamespaceIcon(namespace)
         }
         return { type: 'ICON', value: 'ri:folder-2-line' }
       }

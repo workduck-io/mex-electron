@@ -66,8 +66,6 @@ export const MenuWrapper = styled.div`
 
 export const MenuItemWrapper = styled.button`
   ${MenuItemStyles}
-  justify-content: flex-start;
-  gap: ${({ theme }) => theme.spacing.tiny};
 `
 
 export const MultiSelectIcon = styled.div<{ selected?: boolean }>`
