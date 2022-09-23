@@ -37,7 +37,7 @@ import {
 
 interface TaskHeaderProps {
   currentView?: View<any>
-  currentFilters: SearchFilter<any>[]
+  currentFilters: SearchFilter[]
   cardSelected: boolean
 }
 

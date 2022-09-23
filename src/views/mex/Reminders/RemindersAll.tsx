@@ -2,6 +2,7 @@ import Board from '@asseinfo/react-kanban'
 import { reminderFilterFunctions } from '@hooks/useFilterFunctions'
 import addCircleLine from '@iconify/icons-ri/add-circle-line'
 import { Icon } from '@iconify/react'
+import { Filter, Filters, FilterTypeWithOptions } from '../../../types/filters'
 import { Button } from '@workduck-io/mex-components'
 import React, { useMemo } from 'react'
 import create from 'zustand'
@@ -26,11 +27,11 @@ import { Reminder } from '../../../types/reminders'
 import { mog } from '../../../utils/lib/helper'
 import { AllRemindersWrapper, ReminderBoardStyled, ReminderColumnHeader } from './RemindersAll.style'
 
-interface AllReminderFilterStore extends FilterStore<Reminder> {
+interface AllReminderFilterStore extends FilterStore {
   board: ReminderBoard
   setBoard: (board: ReminderBoard) => void
-  addCurrentFilter: (filter: SearchFilter<Reminder>) => void
-  removeCurrentFilter: (filter: SearchFilter<Reminder>) => void
+  addCurrentFilter: (filter: Filter) => void
+  removeCurrentFilter: (filter: Filter) => void
   resetCurrentFilters: () => void
 }
 
@@ -55,12 +56,19 @@ export const useReminderFilter = create<AllReminderFilterStore>((set, get) => ({
 const useReminderFilters = () => {
   const { getPathFromNodeid } = useLinks()
   const { attachBlockData } = useReminders()
+  const setCurrentFilters = useReminderFilter((state) => state.setCurrentFilters)
 
-  const getRemindersBoard = (): { board: ReminderBoard; filters: SearchFilter<Reminder>[] } => {
+  const changeCurrentFilter = (filter: Filter) => {
+    const currentFilters = useReminderFilter.getState().currentFilters
+    setCurrentFilters(currentFilters.map((f) => (f.id === filter.id ? filter : f)))
+  }
+
+  const getRemindersBoard = (): { board: ReminderBoard; filters: Filters } => {
     const remindersBase = useReminderStore.getState().reminders
     const currentFilters = useReminderFilter.getState().currentFilters
 
-    mog('remindersBase', { remindersBase, currentFilters })
+    // mog('remindersBase', { remindersBase, currentFilters })
+
     const reminders = (
       currentFilters.length > 0
         ? remindersBase.filter((reminder) => {
@@ -68,7 +76,7 @@ const useReminderFilters = () => {
               (filter) => {
                 // const filterFunction = reminderFilterFunctions[ filter.key ]
                 // mog('filter', { filter, reminder })
-                return reminderFilterFunctions[filter.key](reminder, filter.value)
+                return reminderFilterFunctions[filter.type](reminder, filter)
               }
               // filter.filter(reminder)
             )
@@ -121,7 +129,7 @@ const useReminderFilters = () => {
   }
 
   const getReminderFilters = (reminders: Reminder[]) => {
-    const filters: SearchFilter<Reminder>[] = []
+    const filters: Filters = []
     const nodes = reminders
       .map((reminder) => reminder.nodeid)
       .filter((nodeid, index, self) => self.indexOf(nodeid) === index)
@@ -135,18 +143,21 @@ const useReminderFilters = () => {
       }
       return acc
     }, {} as { [nodeid: string]: number })
-    nodes.forEach((nodeid) => {
-      const path = getPathFromNodeid(nodeid)
-      filters.push({
-        key: 'note',
-        id: nodeid,
-        label: path,
-        value: nodeid,
-        // filter: (reminder) => reminder.nodeid === nodeid,
-        count: nodeCounts[nodeid],
-        icon: { type: 'ICON', value: 'ri:file-list-line' }
+
+    const nodeFilters: FilterTypeWithOptions = {
+      type: 'note',
+      label: 'Note',
+      options: nodes.map((nodeid) => {
+        const path = getPathFromNodeid(nodeid)
+        return {
+          id: nodeid,
+          label: path,
+          value: nodeid,
+          count: nodeCounts[nodeid]
+        }
       })
-    })
+    }
+    filters.push(nodeFilters)
 
     const allStates = { active: 0, snooze: 0, done: 0, missed: 0 }
 
@@ -155,10 +166,12 @@ const useReminderFilters = () => {
       allStates[status] += 1
     })
 
-    Object.entries(allStates)
-      .filter(([, count]) => count > 0)
-      .forEach(([state, count]) => {
-        filters.push({
+    const stateFilters: FilterTypeWithOptions = {
+      type: 'state',
+      label: 'State',
+      options: Object.entries(allStates)
+        .filter(([, count]) => count > 0)
+        .map(([state, count]) => ({
           key: 'state',
           id: state,
           label: state,
@@ -166,19 +179,25 @@ const useReminderFilters = () => {
           count,
           value: state
           // filter: (reminder: Reminder) => getReminderState(reminder) === state
-        })
-      })
+        }))
+    }
+
+    filters.push(stateFilters)
 
     const todoRemindersLen = reminders.filter((reminder) => reminder.todoid !== undefined).length
     if (todoRemindersLen > 0) {
       filters.push({
-        key: 'has',
-        id: 'block_todo',
-        label: 'Task',
-        icon: { type: 'ICON', value: 'ri:task-line' },
-        //'ri:ri-task-line',
-        count: todoRemindersLen,
-        value: 'block_todo'
+        type: 'has',
+        label: 'Has',
+        options: [
+          {
+            id: 'block_todo',
+            label: 'Task',
+            //'ri:ri-task-line',
+            count: todoRemindersLen,
+            value: 'block_todo'
+          }
+        ]
         // filter: (reminder: Reminder) => reminder.todoid !== undefined
       })
     }
@@ -192,7 +211,7 @@ const useReminderFilters = () => {
     const currentFilters = useReminderFilter.getState().currentFilters
     return reminders.filter((reminder) => {
       return currentFilters.every(
-        (filter) => reminderFilterFunctions[filter.key](reminder, filter.value)
+        (filter) => reminderFilterFunctions[filter.type](reminder, filter)
         // filter.filter(reminder)
       )
     })
@@ -201,6 +220,7 @@ const useReminderFilters = () => {
   return {
     getReminderFilters,
     getRemindersBoard,
+    changeCurrentFilter,
     applyFilters
   }
 }
@@ -216,7 +236,7 @@ const RemindersAll = () => {
   const armedReminders = useReminderStore((s) => s.armedReminders)
   // const setBoard = useReminderFilter((s) => s.setBoard)
   // const setFilters = useReminderFilter((s) => s.setFilters)
-  const { getRemindersBoard } = useReminderFilters()
+  const { getRemindersBoard, changeCurrentFilter } = useReminderFilters()
 
   const { board, filters } = useMemo(() => {
     const { board, filters } = getRemindersBoard()
@@ -273,6 +293,7 @@ const RemindersAll = () => {
           addCurrentFilter={addCurrentFilter}
           removeCurrentFilter={removeCurrentFilter}
           resetCurrentFilters={resetCurrentFilters}
+          changeCurrentFilter={changeCurrentFilter}
           filters={filters}
           currentFilters={currentFilters}
         />

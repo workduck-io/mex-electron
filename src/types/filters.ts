@@ -3,7 +3,11 @@ export const FilterTypeArray = [
   'tag', // Does item have tag
   'date', // Does item have date TODO: Use updated and created will need before after and range
   'state', // Does item have a specific
+
+  // TODO: Determine whether it will be a single select or not
   'has', // Does item have a specific data property
+  // For reminders, has is used to determine if the reminder has a todo attached
+
   'mention', // Does item mention a specific user
   'space' // Does item belong to a specific space
 ] as const

@@ -68,16 +68,37 @@ export const useGenericFilterFunctions = () => {
   return filterFunctions
 }
 
-export const reminderFilterFunctions = {
-  note: (item, value) => {
-    return item.nodeid === value
+export const reminderFilterFunctions: SearchFilterFunctions = {
+  note: (item, f) => {
+    const { values, type, join } = f
+    const val = Array.isArray(values) ? values : [values]
+    const res = val.reduce((acc, v) => {
+      const curRes = item.nodeid === v.value
+      return joinNewRes(acc, curRes, join)
+    }, false)
+    return res
   },
-  state: (item, value) => {
+
+  state: (item, f) => {
     const state = getReminderState(item)
-    return state === value
+    const { values, type, join } = f
+    const val = Array.isArray(values) ? values : [values]
+    const res = val.reduce((acc, v) => {
+      const curRes = state === v.value
+      return joinNewRes(acc, curRes, join)
+    }, false)
+    return res
   },
-  has: (item, value) => {
-    return item.todoid !== undefined
+
+  has: (item, f) => {
+    const { values, type, join } = f
+    const val = Array.isArray(values) ? values : [values]
+    const res = val.reduce((acc, v) => {
+      const curRes = item.todoid !== undefined
+      return joinNewRes(acc, curRes, join)
+    }, false)
+    return res
+    // return item.todoid !== undefined
   }
 }
 

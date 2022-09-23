@@ -25,8 +25,8 @@ interface TaskViewModalState {
   updateViewId?: string
   // If present, title, description will be cloned from the view with viewid
   cloneViewId?: string
-  filters: SearchFilter<any>[]
-  openModal: (args: { filters: SearchFilter<any>[]; updateViewId?: string; cloneViewId?: string }) => void
+  filters: SearchFilter[]
+  openModal: (args: { filters: SearchFilter[]; updateViewId?: string; cloneViewId?: string }) => void
   closeModal: () => void
 }
 

@@ -8,7 +8,7 @@ import { debounce } from 'lodash'
 
 import { tinykeys } from '@workduck-io/tinykeys'
 
-import { SearchFilter, useFilters, useFilterStore } from '../../../hooks/useFilters'
+import { useFilters, useFilterStore } from '../../../hooks/useFilters'
 import {
   InputWrapper,
   NoSearchResults,

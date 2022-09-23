@@ -21,17 +21,17 @@ import {
 } from '../NodeSelect/NodeSelect.styles'
 import IconDisplay from '@ui/components/IconPicker/IconDisplay'
 
-interface SearchFilterInputProps<Item> {
+interface SearchFilterInputProps {
   filterKey: FilterKey
-  items: SearchFilter<Item>[]
-  currentFilters: SearchFilter<Item>[]
-  onChange: (item: SearchFilter<Item>) => void
-  removeCurrentFilter: (filter: SearchFilter<Item>) => void
+  items: SearchFilter[]
+  currentFilters: SearchFilter[]
+  onChange: (item: SearchFilter) => void
+  removeCurrentFilter: (filter: SearchFilter) => void
   icon: string
   placeholder?: string
 }
 
-const SearchFilterInput = <Item,>({
+const SearchFilterInput = ({
   items,
   icon,
   removeCurrentFilter,
@@ -39,7 +39,7 @@ const SearchFilterInput = <Item,>({
   currentFilters,
   onChange,
   placeholder
-}: SearchFilterInputProps<Item>) => {
+}: SearchFilterInputProps) => {
   const [inputItems, setInputItems] = useState(items)
   const {
     isOpen,

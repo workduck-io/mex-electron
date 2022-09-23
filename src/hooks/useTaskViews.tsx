@@ -4,21 +4,21 @@ import { useEffect } from 'react'
 import create from 'zustand'
 import { SearchFilter } from './useFilters'
 
-export interface View<Item> {
+export interface View {
   title: string
   description?: string
   id: string
-  filters: SearchFilter<Item>[]
+  filters: SearchFilter[]
 }
 
-export interface ViewStore<Item> {
-  views: View<Item>[]
-  currentView: View<Item> | undefined
-  setCurrentView: (view: View<Item>) => void
-  setViews: (views: View<Item>[]) => void
-  addView: (view: View<Item>) => void
+export interface ViewStore {
+  views: View[]
+  currentView: View | undefined
+  setCurrentView: (view: View) => void
+  setViews: (views: View[]) => void
+  addView: (view: View) => void
   removeView: (id: string) => void
-  updateView: (view: View<Item>) => void
+  updateView: (view: View) => void
 }
 
 // export const useFilterStoreBase = create<FilterStore<any>>((set) => ({
@@ -30,7 +30,7 @@ export interface ViewStore<Item> {
 //   setIndexes: (indexes) => set((state) => ({ ...state, indexes }))
 // }))
 
-export const useViewStore = create<ViewStore<any>>((set) => ({
+export const useViewStore = create<ViewStore>((set) => ({
   views: [],
   currentView: undefined,
   setCurrentView: (view) =>
@@ -71,13 +71,13 @@ export const useTaskViews = () => {
     return views.find((v) => v.id === id)
   }
 
-  const addView = async (view: View<any>) => {
+  const addView = async (view: View) => {
     const resp = await saveView(view)
     mog('After Svaing that view', { resp })
     addViewStore(view)
   }
 
-  const updateView = async (view: View<any>) => {
+  const updateView = async (view: View) => {
     const resp = await saveView(view)
     mog('After update via saving that view', { resp })
     updateViewStore(view)
