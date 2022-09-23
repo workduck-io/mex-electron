@@ -52,6 +52,7 @@ const Tasks = () => {
     changePriority,
     getPureContent,
     addCurrentFilter,
+    changeCurrentFilter,
     removeCurrentFilter,
     resetCurrentFilters,
     setCurrentFilters,
@@ -352,6 +353,7 @@ const Tasks = () => {
           result={board}
           addCurrentFilter={addCurrentFilter}
           removeCurrentFilter={removeCurrentFilter}
+          changeCurrentFilter={changeCurrentFilter}
           resetCurrentFilters={resetCurrentFilters}
           filters={filters}
           currentFilters={currentFilters}

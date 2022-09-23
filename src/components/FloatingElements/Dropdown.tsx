@@ -57,6 +57,7 @@ export const MenuItem = forwardRef<
     onClick?: (e: React.MouseEvent<HTMLButtonElement>) => void
   }
 >(({ label, disabled, count, icon, multiSelect, selected, ...props }, ref) => {
+  // mog('MenuItem', { label, disabled, count, icon, multiSelect, selected, props })
   return (
     <MenuItemWrapper {...props} ref={ref} role="menuitem" disabled={disabled}>
       <GenericFlex>

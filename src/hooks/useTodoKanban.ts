@@ -16,6 +16,7 @@ import { useTaskFilterFunctions } from './useFilterFunctions'
 import { useMentions } from './useMentions'
 import { useTags } from './useTags'
 import { useNamespaces } from './useNamespaces'
+import { Filter, Filters, FilterTypeWithOptions } from '../types/filters'
 
 export interface TodoKanbanCard extends KanbanCard {
   todo: TodoType
@@ -41,13 +42,13 @@ export const getPureContent = (todo: TodoType) => {
   return defaultContent
 }
 
-export const useKanbanFilterStore = create<FilterStore<TodoType>>((set) => ({
+export const useKanbanFilterStore = create<FilterStore>((set) => ({
   currentFilters: [],
-  setCurrentFilters: (filters: SearchFilter<TodoType>[]) => set({ currentFilters: filters }),
+  setCurrentFilters: (filters: Filter[]) => set({ currentFilters: filters }),
   indexes: [],
   setIndexes: () => undefined,
   filters: [],
-  setFilters: (filters: SearchFilter<TodoType>[]) => set({ filters })
+  setFilters: (filters: Filters) => set({ filters })
 }))
 
 export const useTodoKanban = () => {
@@ -105,20 +106,25 @@ export const useTodoKanban = () => {
       return acc
     }, {} as { [path: string]: number })
 
-    const nodeFilters = Object.entries(rankedPaths).reduce((acc, c) => {
-      const [path, rank] = c
-      if (rank >= 1) {
-        acc.push({
-          key: 'note',
-          id: `node_${path}`,
-          icon: { type: 'ICON', value: 'ri-file-list-line' },
-          label: path,
-          value: path
-        })
-      }
-      return acc
-    }, [] as SearchFilter<TodoType>[])
-
+    const nodeFilters = Object.entries(rankedPaths).reduce(
+      (acc, c) => {
+        const [path, rank] = c
+        if (rank >= 0) {
+          acc.options.push({
+            id: `node_${path}`,
+            label: path,
+            value: path,
+            count: rank
+          })
+        }
+        return acc
+      },
+      {
+        type: 'note',
+        label: 'Notes',
+        options: []
+      } as FilterTypeWithOptions
+    )
     const rankedTags = todoTags.reduce((acc, tag) => {
       if (!acc[tag]) {
         acc[tag] = 1
@@ -128,19 +134,24 @@ export const useTodoKanban = () => {
       return acc
     }, {} as { [tag: string]: number })
 
-    const tagFilters = Object.entries(rankedTags).reduce((acc, c) => {
-      const [tag, rank] = c
-      if (rank >= 1) {
-        acc.push({
-          key: 'tag',
-          id: `tag_${tag}`,
-          icon: { type: 'ICON', value: 'ri:hashtag' },
-          label: tag,
-          value: tag
-        })
-      }
-      return acc
-    }, [] as SearchFilter<TodoType>[])
+    const tagFilters = Object.entries(rankedTags).reduce(
+      (acc, c) => {
+        const [tag, rank] = c
+        if (rank >= 0) {
+          acc.options.push({
+            id: `tag_${tag}`,
+            label: tag,
+            value: tag
+          })
+        }
+        return acc
+      },
+      {
+        type: 'tag',
+        label: 'Tags',
+        options: []
+      } as FilterTypeWithOptions
+    )
 
     const rankedMentions = todoMentions.reduce((acc, mention) => {
       if (!acc[mention]) {
@@ -151,20 +162,25 @@ export const useTodoKanban = () => {
       return acc
     }, {} as { [mention: string]: number })
 
-    const mentionFilters = Object.entries(rankedMentions).reduce((acc, c) => {
-      const [mention, rank] = c
-      if (rank >= 1) {
-        acc.push({
-          key: 'mention',
-          id: `mention_${mention}`,
-          icon: { type: 'ICON', value: 'ri:at-line' },
-          // 'ri:at-line',
-          label: getUserFromUserid(mention)?.alias ?? mention,
-          value: mention
-        })
-      }
-      return acc
-    }, [] as SearchFilter<TodoType>[])
+    const mentionFilters = Object.entries(rankedMentions).reduce(
+      (acc, c) => {
+        const [mention, rank] = c
+        if (rank >= 0) {
+          acc.options.push({
+            id: `mention_${mention}`,
+            label: getUserFromUserid(mention)?.alias ?? mention,
+            value: mention,
+            count: rank
+          })
+        }
+        return acc
+      },
+      {
+        type: 'mention',
+        label: 'Mentions',
+        options: []
+      } as FilterTypeWithOptions
+    )
 
     // Namespace Filters
     const rankedNamespaces = todoNodes.reduce((acc, item) => {
@@ -181,24 +197,29 @@ export const useTodoKanban = () => {
       return acc
     }, {} as { [path: string]: number })
 
-    const namespaceFilters = Object.entries(rankedNamespaces).reduce((acc, c) => {
-      const [namespaceID, rank] = c
-      const namespace = getNamespace(namespaceID)
-      if (rank >= 1 && namespace) {
-        acc.push({
-          key: 'space',
-          id: `node_${namespaceID}`,
-          icon: namespace.icon ?? { type: 'ICON', value: 'heroicons-outline:view-grid' },
-          // 'heroicons-outline:view-grid',
-          label: namespace.name,
-          value: namespaceID,
-          count: rank
-        })
-      }
-      return acc
-    }, [] as SearchFilter<TodoType>[])
+    const namespaceFilters = Object.entries(rankedNamespaces).reduce(
+      (acc, c) => {
+        const [namespaceID, rank] = c
+        const namespace = getNamespace(namespaceID)
+        if (rank >= 1 && namespace) {
+          acc.options.push({
+            id: `node_${namespaceID}`,
+            // 'heroicons-outline:view-grid',
+            label: namespace.name,
+            value: namespaceID,
+            count: rank
+          })
+        }
+        return acc
+      },
+      {
+        type: 'space',
+        label: 'Spaces',
+        options: []
+      } as FilterTypeWithOptions
+    )
 
-    const allFilters = [...nodeFilters, ...tagFilters, ...mentionFilters, ...namespaceFilters]
+    const allFilters = [nodeFilters, tagFilters, mentionFilters, namespaceFilters]
     mog('allFilters for tasks', { board, todoTags, rankedTags, rankedPaths, nodeFilters })
     return allFilters
   }
@@ -232,7 +253,7 @@ export const useTodoKanban = () => {
       todos
         .filter((todo) =>
           currentFilters.every(
-            (filter) => taskFilterFunctions[filter.key](todo, filter.value)
+            (filter) => taskFilterFunctions[filter.type](todo, filter)
             // filter.filter(todo)
           )
         )
@@ -278,12 +299,16 @@ export const useTodoKanban = () => {
     setFilters([])
   }
 
-  const addCurrentFilter = (filter: SearchFilter<TodoType>) => {
+  const addCurrentFilter = (filter: Filter) => {
     setCurrentFilters([...currentFilters, filter])
   }
 
-  const removeCurrentFilter = (filter: SearchFilter<TodoType>) => {
+  const removeCurrentFilter = (filter: Filter) => {
     setCurrentFilters(currentFilters.filter((f) => f.id !== filter.id))
+  }
+
+  const changeCurrentFilter = (filter: Filter) => {
+    setCurrentFilters(currentFilters.map((f) => (f.id === filter.id ? filter : f)))
   }
 
   const resetCurrentFilters = () => {
@@ -297,6 +322,7 @@ export const useTodoKanban = () => {
     changeStatus,
     addCurrentFilter,
     removeCurrentFilter,
+    changeCurrentFilter,
     resetCurrentFilters,
     resetFilters,
     filters,

@@ -81,35 +81,71 @@ export const reminderFilterFunctions = {
   }
 }
 
-export const useTaskFilterFunctions = () => {
+export const useTaskFilterFunctions = (): SearchFilterFunctions => {
   const { getPathFromNodeid, getILinkFromNodeid } = useLinks()
 
   return {
-    note: (item, value) => {
+    note: (item, f) => {
       // filter: (item: TodoType) => {
       const itemPath = getPathFromNodeid(item.nodeid)
       if (!itemPath) return false
+
+      const { values, type, join } = f
+      const val = Array.isArray(values) ? values : [values]
+
+      const res = val.reduce((acc, v) => {
+        // Merge with respect to join
+        const curRes = isElder(itemPath, v.value) || itemPath === v.value
+        return joinNewRes(acc, curRes, join)
+      }, false)
+
+      // const itemPath = getPathFromNodeid(item.id)
       // mog('itemPath being filtered', { item, itemPath, path })
-      return isElder(itemPath, value) || itemPath === value
-      // }
+      return res
     },
 
-    tag: (item, value) => {
+    tag: (item, f) => {
+      // const tagsCache = useDataStore.getState().tagsCache
+      // const tag = tagsCache[value]
+      // // Check if the note of task has the tag
+      // return tag && tag.nodes.includes(item.nodeid)
+
       const tagsCache = useDataStore.getState().tagsCache
-      const tag = tagsCache[value]
-      // Check if the note of task has the tag
-      return tag && tag.nodes.includes(item.nodeid)
+      const { values, type, join } = f
+      const val = Array.isArray(values) ? values : [values]
+
+      const res = val.reduce((acc, v) => {
+        const curRes = tagsCache[v.value]?.nodes?.includes(item.nodeid)
+        return joinNewRes(acc, curRes, join)
+      }, false)
+
+      // const tags = tagsCache[value]
+      return res
     },
 
-    mention: (item, value) => {
-      return item.mentions?.includes(value)
+    mention: (item, f) => {
+      const { values, type, join } = f
+      const val = Array.isArray(values) ? values : [values]
+
+      const res = val.reduce((acc, v) => {
+        const curRes = item.mentions?.includes(v.value)
+        return joinNewRes(acc, curRes, join)
+      }, false)
+
+      return res
     },
 
-    space: (item, value) => {
-      // mog('namespace', { item, value })
+    space: (item, f) => {
+      const { values, type, join } = f
+      const val = Array.isArray(values) ? values : [values]
       const iLink = getILinkFromNodeid(item.nodeid)
-      const namespace = iLink?.namespace
-      return namespace === value
+
+      const res = val.reduce((acc, v) => {
+        const curRes = iLink?.namespace === v.value
+        return joinNewRes(acc, curRes, join)
+      }, false)
+
+      return res
     }
   }
 }

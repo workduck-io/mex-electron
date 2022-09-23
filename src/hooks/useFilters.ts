@@ -94,9 +94,9 @@ export const useFilters = <Item>() => {
   const generateTagFilters = (items: GenericSearchResult[]) => {
     // const tagsCache = useDataStore.getState().tagsCache
     // OK
-    const filteredItems = currentFilters.length > 0 ? applyFilters(items, currentFilters, filterFunctions) : items
+    // const filteredItems = currentFilters.length > 0 ? applyFilters(items, currentFilters, filterFunctions) : items
 
-    const rankedTags = filteredItems.reduce((acc, item) => {
+    const rankedTags = items.reduce((acc, item) => {
       const tags = getTags(item.id)
       if (tags) {
         tags.forEach((tag) => {
@@ -140,9 +140,9 @@ export const useFilters = <Item>() => {
   }
 
   const generateNodeFilters = (items: GenericSearchResult[]) => {
-    const filteredItems = currentFilters.length > 0 ? applyFilters(items, currentFilters, filterFunctions) : items
+    // const filteredItems = currentFilters.length > 0 ? applyFilters(items, currentFilters, filterFunctions) : items
 
-    const rankedPaths = filteredItems.reduce((acc, item) => {
+    const rankedPaths = items.reduce((acc, item) => {
       const path = getPathFromNodeid(item.id, true)
       const allPaths = getAllParentIds(path)
       // const allPaths =
@@ -183,9 +183,9 @@ export const useFilters = <Item>() => {
 
   const generateNamespaceFilters = <T extends { id: string }>(items: T[]) => {
     // Known
-    const filteredItems = currentFilters.length > 0 ? applyFilters(items, currentFilters, filterFunctions) : items
+    // const filteredItems = currentFilters.length > 0 ? applyFilters(items, currentFilters, filterFunctions) : items
 
-    const rankedNamespaces = filteredItems.reduce((acc, item) => {
+    const rankedNamespaces = items.reduce((acc, item) => {
       const node = getILinkFromNodeid(item.id, true)
       const namespace = node?.namespace
 

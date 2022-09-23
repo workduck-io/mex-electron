@@ -61,7 +61,7 @@ export interface FilterTypeWithOptions {
 
 export type Filters = Array<FilterTypeWithOptions>
 
-export type FilterFunction = <Item>(item: Item, filter: Filter) => boolean | number
+export type FilterFunction = (item: any, filter: Filter) => boolean | number
 
 export type SearchFilterFunctions = Partial<{
   [key in FilterType]: FilterFunction
