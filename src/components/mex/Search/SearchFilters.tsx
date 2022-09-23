@@ -136,9 +136,9 @@ const SearchFilters = <Item,>({
         <Infobox text={SearchFiltersHelp} />
       </SearchFilterLabel>
       <SearchFiltersWrapper>
-        <NewFilterMenu />
+        <NewFilterMenu addFilter={(f) => console.log(f)} />
         <FilterRender
-          filter={{ type: 'note', values: testValues, join: 'any' }}
+          filter={{ id: 'testFilterX', type: 'note', values: valueOptions.slice(0, 2), join: 'any' }}
           options={valueOptions}
           onChangeFilter={(f) => mog('FilterChanged', { f })}
           onRemoveFilter={(f) => mog('FilterRemoved', { f })}

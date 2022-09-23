@@ -17,7 +17,7 @@ const IconDisplay = ({ icon, size }: IconDisplayProps) => {
           ICON: <Icon icon={icon.value} />,
           URL: <img src={icon.value} />
         }[icon.type]
-      }{' '}
+      }
     </IconWrapper>
   )
 }

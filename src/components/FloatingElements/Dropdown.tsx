@@ -35,19 +35,34 @@ import {
 } from '@floating-ui/react-dom-interactions'
 import cx from 'classnames'
 import { mergeRefs } from 'react-merge-refs'
-import { MenuItemWrapper, MenuWrapper, RootMenuWrapper } from './Dropdown.style'
+import { MenuItemWrapper, MenuWrapper, MultiSelectIcon, RootMenuWrapper } from './Dropdown.style'
 import { SidebarListFilter } from '@components/mex/Sidebar/SidebarList.style'
 import { Icon } from '@iconify/react'
 import { Input } from '@style/Form'
 import searchLine from '@iconify/icons-ri/search-line'
 import { mog } from '@workduck-io/mex-utils'
+import { MIcon } from '../../types/Types'
+import IconDisplay from '@ui/components/IconPicker/IconDisplay'
 
 export const MenuItem = forwardRef<
   HTMLButtonElement,
-  { label: string; disabled?: boolean; onClick?: (e: React.MouseEvent<HTMLButtonElement>) => void }
->(({ label, disabled, ...props }, ref) => {
+  {
+    label: string
+    icon: MIcon
+    multiSelect?: boolean
+    selected?: boolean
+    disabled?: boolean
+    onClick?: (e: React.MouseEvent<HTMLButtonElement>) => void
+  }
+>(({ label, disabled, icon, multiSelect, selected, ...props }, ref) => {
   return (
     <MenuItemWrapper {...props} ref={ref} role="menuitem" disabled={disabled}>
+      {multiSelect && (
+        <MultiSelectIcon selected={selected}>
+          {selected ? <Icon icon="ri:checkbox-fill" /> : <Icon icon="ri:checkbox-blank-line" />}
+        </MultiSelectIcon>
+      )}
+      <IconDisplay icon={icon} />
       {label}
     </MenuItemWrapper>
   )
@@ -62,10 +77,11 @@ interface Props {
   values?: React.ReactNode
   allowSearch?: boolean
   searchPlaceholder?: string
+  multiSelect?: boolean
 }
 
 export const MenuComponent = forwardRef<any, Props & React.HTMLProps<HTMLButtonElement>>(
-  ({ children, label, values, allowSearch, searchPlaceholder, ...props }, ref) => {
+  ({ children, label, values, multiSelect, allowSearch, searchPlaceholder, ...props }, ref) => {
     const [open, setOpen] = useState(false)
     const [activeIndex, setActiveIndex] = useState<number | null>(null)
     const [allowHover, setAllowHover] = useState(false)
@@ -112,7 +128,7 @@ export const MenuComponent = forwardRef<any, Props & React.HTMLProps<HTMLButtonE
         delay: { open: 75 }
       }),
       useClick(context, {
-        toggle: !nested,
+        toggle: !nested && !multiSelect,
         pointerDown: true,
         ignoreMouse: nested
       }),
@@ -147,8 +163,10 @@ export const MenuComponent = forwardRef<any, Props & React.HTMLProps<HTMLButtonE
     // in the tree.
     useEffect(() => {
       function onTreeClick() {
-        setOpen(false)
-        resetSearch()
+        if (!multiSelect) {
+          setOpen(false)
+          resetSearch()
+        }
 
         if (parentId === null) {
           refs.reference.current?.focus()

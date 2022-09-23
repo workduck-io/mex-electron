@@ -4,6 +4,7 @@ import styled, { css } from 'styled-components'
 const MenuItemStyles = css`
   display: flex;
   justify-content: space-between;
+  align-items: center;
   width: 100%;
   background: transparent;
   border: none;
@@ -65,4 +66,17 @@ export const MenuWrapper = styled.div`
 
 export const MenuItemWrapper = styled.button`
   ${MenuItemStyles}
+  justify-content: flex-start;
+  gap: ${({ theme }) => theme.spacing.tiny};
+`
+
+export const MultiSelectIcon = styled.div<{ selected?: boolean }>`
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin-right: ${({ theme }) => theme.spacing.small};
+  ${({ theme, selected }) =>
+    css`
+      color: ${selected ? theme.colors.primary : theme.colors.text.fade};
+    `}
 `

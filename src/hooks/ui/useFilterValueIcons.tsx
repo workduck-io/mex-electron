@@ -1,12 +1,30 @@
 import useDataStore from '@store/useDataStore'
 import { MIcon } from '../../types/Types'
-import { FilterType } from '../../types/filters'
+import { FilterJoin, FilterJoinArray, FilterType } from '../../types/filters'
+import { mog } from '@workduck-io/mex-utils'
 
-export const useFilterValueIcons = () => {
+export const getFilterJoinIcon = (join: FilterJoin): MIcon => {
+  mog('getTagFilterValueIcon', { join })
+  switch (join) {
+    case 'all':
+      return { type: 'ICON', value: 'material-symbols:join-inner' }
+    case 'any':
+      return { type: 'ICON', value: 'material-symbols:join-full' }
+    case 'notAny':
+      return { type: 'ICON', value: 'material-symbols:join-outline' }
+    case 'none':
+      return { type: 'ICON', value: 'carbon:join-outer' }
+
+    default:
+      return { type: 'ICON', value: 'material-symbols:join-outline' }
+  }
+}
+
+export const useFilterIcons = () => {
   const ilinks = useDataStore((state) => state.ilinks)
   const namespaces = useDataStore((state) => state.namespaces)
 
-  const getTagFilterValueIcon = (type: FilterType, value: string): MIcon => {
+  const getFilterValueIcon = (type: FilterType, value: string): MIcon => {
     switch (type) {
       case 'space': {
         const namespace = namespaces.find((n) => n.id === value)
@@ -38,8 +56,12 @@ export const useFilterValueIcons = () => {
 
       case 'has':
         return { type: 'ICON', value: 'ri:checkbox-circle-line' }
+
+      default: {
+        return { type: 'ICON', value: 'ri:filter-3-line' }
+      }
     }
   }
 
-  return { getTagFilterValueIcon }
+  return { getFilterValueIcon }
 }

@@ -6,6 +6,7 @@ export const IconSelector = styled.button`
   background: transparent;
   padding: ${({ theme }) => theme.spacing.tiny};
   border-radius: ${({ theme }) => theme.borderRadius.small};
+  color: ${({ theme }) => theme.colors.text.default};
 
   :hover {
     background: ${({ theme }) => theme.colors.gray[8]};
@@ -16,7 +17,7 @@ export const IconWrapper = styled.div<{ size?: number }>`
   display: flex;
   align-items: center;
   justify-content: center;
-  color: ${({ theme }) => theme.colors.text.default};
+  color: inherit;
 
   ${({ size }) => {
     const calcSize = size ? `${size}px` : '1rem'
