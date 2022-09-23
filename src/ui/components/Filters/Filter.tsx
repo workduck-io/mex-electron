@@ -23,8 +23,15 @@ interface FilterProps {
   onRemoveFilter: (filter: Filter) => void
 }
 
+const JoinLabels = {
+  any: 'Any of',
+  all: 'All of',
+  none: 'None of',
+  notAny: 'Not Any of'
+}
+
 const JoinOptions = ['all', 'any', 'notAny', 'none'].map((join) => ({
-  label: capitalize(join),
+  label: JoinLabels[join],
   value: join as FilterJoin
 }))
 
@@ -48,13 +55,22 @@ const getJoinOptionsForType = (type: FilterType) => {
  */
 const FilterRender = ({ filter, onChangeFilter, options, onRemoveFilter }: FilterProps) => {
   const { getFilterValueIcon } = useFilterIcons()
-  // mog('Filter', { filter, options })
+
   const onChangeJoin = (join: FilterJoin) => {
     onChangeFilter({ ...filter, join })
   }
 
-  const onChangeValues = (values: FilterValue | FilterValue[]) => {
-    onChangeFilter({ ...filter, values })
+  const onChangeValues = (value: FilterValue) => {
+    // const isSelected
+    const isSelected = isValueSelected(value)
+    if (!isSelected) {
+      const newValues = Array.isArray(filter.values) ? [...filter.values, value] : [value]
+      onChangeFilter({ ...filter, values: newValues })
+    } else {
+      // If it is single select, then remove all values and use []
+      const newValues = Array.isArray(filter.values) ? filter.values.filter((v) => v.id !== value.id) : []
+      onChangeFilter({ ...filter, values: newValues })
+    }
   }
 
   const isValueSelected = (value: FilterValue) => {
@@ -82,7 +98,7 @@ const FilterRender = ({ filter, onChangeFilter, options, onRemoveFilter }: Filte
         values={
           <FilterJoinDiv>
             <IconDisplay icon={getFilterJoinIcon(filter.join)} />
-            {capitalize(filter.join)}
+            {JoinLabels[filter.join]}
           </FilterJoinDiv>
         }
       >
@@ -104,12 +120,16 @@ const FilterRender = ({ filter, onChangeFilter, options, onRemoveFilter }: Filte
           <>
             {/* Conditionally render values if value is an array otherwise simple */}
             {Array.isArray(filter.values) ? (
-              filter.values.map((value) => (
-                <FilterValueDiv key={value.id}>
-                  <IconDisplay icon={getFilterValueIcon(filter.type, value.value)} />
-                  {value.label}
-                </FilterValueDiv>
-              ))
+              filter.values.length > 0 ? (
+                filter.values.map((value) => (
+                  <FilterValueDiv key={value.id}>
+                    <IconDisplay icon={getFilterValueIcon(filter.type, value.value)} />
+                    {value.label}
+                  </FilterValueDiv>
+                ))
+              ) : (
+                <FilterValueDiv>0 selected</FilterValueDiv>
+              )
             ) : (
               <FilterValueDiv>
                 <IconDisplay icon={getFilterValueIcon(filter.type, filter.values.value)} />

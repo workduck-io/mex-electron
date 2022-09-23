@@ -36,6 +36,9 @@ export interface Filter {
   // How to join this filters values
   join: FilterJoin
 
+  multiple: boolean
+
   // Either single or multiple values
+  // No values in both multi and single are represented by empty array
   values: FilterValue[] | FilterValue
 }

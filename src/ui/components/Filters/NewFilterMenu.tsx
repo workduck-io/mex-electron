@@ -23,13 +23,6 @@ const TypeOptions = ['note', 'tag', 'mention', 'space'].map((type) => ({
   options: valueOptions(type)
 }))
 
-const defaultJoinForType = {
-  note: 'any',
-  tag: 'any',
-  mention: 'any',
-  space: 'any'
-}
-
 interface NewFilterMenuProps {
   addFilter: (filter: Filter) => void
 }
@@ -41,7 +34,9 @@ const NewFilterMenu = ({ addFilter }: NewFilterMenuProps) => {
     const newFilter: Filter = {
       id: generateFilterId(),
       type,
-      join: defaultJoinForType[type],
+      multiple: true,
+      // Be default the newly added filter has 'any' join
+      join: 'any',
       values: [value]
     }
     addFilter(newFilter)

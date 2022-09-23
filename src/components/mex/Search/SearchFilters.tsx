@@ -81,12 +81,6 @@ const getGroupedFilters = <Item,>(filters: SearchFilter<Item>[], currentFilters:
   return { filtersByKey, randomId }
 }
 
-const testValues: FilterValue[] = ['test', 'test2', 'test3'].map((value) => ({
-  id: value,
-  label: value,
-  value
-}))
-
 const valueOptions: FilterValue[] = duplicateTimes(
   ['a test', 'b test2', 'c test3', 'f test4', 'e test5', 'd test6'],
   20
@@ -138,7 +132,14 @@ const SearchFilters = <Item,>({
       <SearchFiltersWrapper>
         <NewFilterMenu addFilter={(f) => console.log(f)} />
         <FilterRender
-          filter={{ id: 'testFilterX', type: 'note', values: valueOptions.slice(0, 2), join: 'any' }}
+          filter={{
+            id: 'testFilterX',
+            type: 'note',
+            multiple: true,
+            values: [],
+            // valueOptions.slice(0, 2),
+            join: 'any'
+          }}
           options={valueOptions}
           onChangeFilter={(f) => mog('FilterChanged', { f })}
           onRemoveFilter={(f) => mog('FilterRemoved', { f })}
