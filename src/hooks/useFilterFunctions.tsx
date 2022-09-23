@@ -29,16 +29,19 @@ const joinStartVal = (join: FilterJoin) => {
 }
 
 const joinReduce = (val: FilterValue[], join: FilterJoin, cond: (v: FilterValue) => boolean): boolean =>
-  val.reduce((acc, v) => {
-    // Merge with respect to join
-    const curRes = cond(v)
-    return joinNewRes(acc, curRes, join)
-  }, joinStartVal(join))
+  val.length > 0
+    ? val.reduce((acc, v) => {
+        const curRes = cond(v)
+        // Merge with respect to join
+        return joinNewRes(acc, curRes, join)
+      }, joinStartVal(join))
+    : true
 
 // Nice cool function
 // Apply the match condition and join the results according to FilterJoin
 const filterAndJoin = (filter: Filter, cond: (v: FilterValue) => boolean): boolean => {
   const { join, values } = filter
+  // Put single values in array
   const val = Array.isArray(values) ? values : [values]
   return joinReduce(val, join, cond)
 }

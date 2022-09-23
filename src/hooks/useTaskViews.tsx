@@ -8,6 +8,8 @@ export interface View {
   title: string
   description?: string
   id: string
+
+  // FIXME: This should use new Filter type
   filters: SearchFilter[]
 }
 
