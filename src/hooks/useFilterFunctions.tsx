@@ -1,8 +1,7 @@
 import { isElder } from '@components/mex/Sidebar/treeUtils'
 import { getReminderState } from '@services/reminders/reminders'
 import useDataStore from '@store/useDataStore'
-import { FilterFunction, Filter, SearchFilterFunctions, FilterJoin } from '../types/filters'
-import { mog } from '@workduck-io/mex-utils'
+import { Filter, FilterJoin, FilterValue, SearchFilterFunctions } from '../types/filters'
 import { useLinks } from './useLinks'
 
 const joinNewRes = (acc: boolean, curRes: boolean, join: FilterJoin) => {
@@ -17,51 +16,52 @@ const joinNewRes = (acc: boolean, curRes: boolean, join: FilterJoin) => {
   }
 }
 
+const joinStartVal = (join: FilterJoin) => {
+  if (join === 'all') {
+    return true
+  } else if (join === 'any') {
+    return false
+  } else if (join === 'notAny') {
+    return false
+  } else if (join === 'none') {
+    return true
+  }
+}
+
+const joinReduce = (val: FilterValue[], join: FilterJoin, cond: (v: FilterValue) => boolean): boolean =>
+  val.reduce((acc, v) => {
+    // Merge with respect to join
+    const curRes = cond(v)
+    return joinNewRes(acc, curRes, join)
+  }, joinStartVal(join))
+
+// Nice cool function
+// Apply the match condition and join the results according to FilterJoin
+const filterAndJoin = (filter: Filter, cond: (v: FilterValue) => boolean): boolean => {
+  const { join, values } = filter
+  const val = Array.isArray(values) ? values : [values]
+  return joinReduce(val, join, cond)
+}
+
 export const useGenericFilterFunctions = () => {
   const { getPathFromNodeid, getILinkFromNodeid } = useLinks()
   const filterFunctions: SearchFilterFunctions = {
     note: (item: any, f: Filter) => {
-      const { values, type, join } = f
-
-      const val = Array.isArray(values) ? values : [values]
       const itemPath = getPathFromNodeid(item.id)
-
-      const res = val.reduce((acc, v) => {
-        // Merge with respect to join
-        const curRes = isElder(itemPath, v.value) || itemPath === v.value
-        return joinNewRes(acc, curRes, join)
-      }, false)
-
-      // const itemPath = getPathFromNodeid(item.id)
-      // mog('itemPath being filtered', { item, itemPath, path })
+      const res = filterAndJoin(f, (v) => isElder(itemPath, v.value) || itemPath === v.value)
       return res
     },
 
     tag: (item: any, f: Filter) => {
       const tagsCache = useDataStore.getState().tagsCache
-      const { values, type, join } = f
-      const val = Array.isArray(values) ? values : [values]
-
-      const res = val.reduce((acc, v) => {
-        const curRes = tagsCache[v.value]?.nodes?.includes(item.id)
-        return joinNewRes(acc, curRes, join)
-      }, false)
-
-      // const tags = tagsCache[value]
+      const res = filterAndJoin(f, (v) => tagsCache[v.value]?.nodes.includes(item.id))
       return res
     },
 
     space: (item: any, f: Filter) => {
       // mog('namespace', { item, value })
-      const { values, type, join } = f
-      const val = Array.isArray(values) ? values : [values]
       const iLink = getILinkFromNodeid(item.id)
-
-      const res = val.reduce((acc, v) => {
-        const curRes = iLink?.namespace === v.value
-        return joinNewRes(acc, curRes, join)
-      }, false)
-      // const namespace = iLink?.namespace
+      const res = filterAndJoin(f, (v) => iLink?.namespace === v.value)
       return res
     }
   }
@@ -70,33 +70,18 @@ export const useGenericFilterFunctions = () => {
 
 export const reminderFilterFunctions: SearchFilterFunctions = {
   note: (item, f) => {
-    const { values, type, join } = f
-    const val = Array.isArray(values) ? values : [values]
-    const res = val.reduce((acc, v) => {
-      const curRes = item.nodeid === v.value
-      return joinNewRes(acc, curRes, join)
-    }, false)
+    const res = filterAndJoin(f, (v) => item.nodeid === v.value)
     return res
   },
 
   state: (item, f) => {
     const state = getReminderState(item)
-    const { values, type, join } = f
-    const val = Array.isArray(values) ? values : [values]
-    const res = val.reduce((acc, v) => {
-      const curRes = state === v.value
-      return joinNewRes(acc, curRes, join)
-    }, false)
+    const res = filterAndJoin(f, (v) => state === v.value)
     return res
   },
 
   has: (item, f) => {
-    const { values, type, join } = f
-    const val = Array.isArray(values) ? values : [values]
-    const res = val.reduce((acc, v) => {
-      const curRes = item.todoid !== undefined
-      return joinNewRes(acc, curRes, join)
-    }, false)
+    const res = filterAndJoin(f, (v) => item.todo !== undefined)
     return res
     // return item.todoid !== undefined
   }
@@ -111,61 +96,24 @@ export const useTaskFilterFunctions = (): SearchFilterFunctions => {
       const itemPath = getPathFromNodeid(item.nodeid)
       if (!itemPath) return false
 
-      const { values, type, join } = f
-      const val = Array.isArray(values) ? values : [values]
-
-      const res = val.reduce((acc, v) => {
-        // Merge with respect to join
-        const curRes = isElder(itemPath, v.value) || itemPath === v.value
-        return joinNewRes(acc, curRes, join)
-      }, false)
-
-      // const itemPath = getPathFromNodeid(item.id)
-      // mog('itemPath being filtered', { item, itemPath, path })
+      const res = filterAndJoin(f, (v) => isElder(itemPath, v.value) || itemPath === v.value)
       return res
     },
 
     tag: (item, f) => {
-      // const tagsCache = useDataStore.getState().tagsCache
-      // const tag = tagsCache[value]
-      // // Check if the note of task has the tag
-      // return tag && tag.nodes.includes(item.nodeid)
-
       const tagsCache = useDataStore.getState().tagsCache
-      const { values, type, join } = f
-      const val = Array.isArray(values) ? values : [values]
-
-      const res = val.reduce((acc, v) => {
-        const curRes = tagsCache[v.value]?.nodes?.includes(item.nodeid)
-        return joinNewRes(acc, curRes, join)
-      }, false)
-
-      // const tags = tagsCache[value]
+      const res = filterAndJoin(f, (v) => tagsCache[v.value]?.nodes?.includes(item.nodeid))
       return res
     },
 
     mention: (item, f) => {
-      const { values, type, join } = f
-      const val = Array.isArray(values) ? values : [values]
-
-      const res = val.reduce((acc, v) => {
-        const curRes = item.mentions?.includes(v.value)
-        return joinNewRes(acc, curRes, join)
-      }, false)
-
+      const res = filterAndJoin(f, (v) => item.mentions?.includes(v.value))
       return res
     },
 
     space: (item, f) => {
-      const { values, type, join } = f
-      const val = Array.isArray(values) ? values : [values]
       const iLink = getILinkFromNodeid(item.nodeid)
-
-      const res = val.reduce((acc, v) => {
-        const curRes = iLink?.namespace === v.value
-        return joinNewRes(acc, curRes, join)
-      }, false)
-
+      const res = filterAndJoin(f, (v) => iLink?.namespace === v.value)
       return res
     }
   }
