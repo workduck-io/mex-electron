@@ -10,9 +10,9 @@ const joinNewRes = (acc: boolean, curRes: boolean, join: FilterJoin) => {
   } else if (join === 'any') {
     return acc || curRes
   } else if (join === 'notAny') {
-    return acc || !curRes
+    return acc || curRes
   } else if (join === 'none') {
-    return acc && !curRes
+    return acc && curRes
   }
 }
 
@@ -28,13 +28,29 @@ const joinStartVal = (join: FilterJoin) => {
   }
 }
 
+const finalJoin = (join: FilterJoin, res: boolean) => {
+  if (join === 'all' || join === 'any') {
+    return res
+  }
+  if (join === 'notAny') {
+    return !res
+  }
+  if (join === 'none') {
+    return !res
+  }
+  return res
+}
+
 const joinReduce = (val: FilterValue[], join: FilterJoin, cond: (v: FilterValue) => boolean): boolean =>
   val.length > 0
-    ? val.reduce((acc, v) => {
-        const curRes = cond(v)
-        // Merge with respect to join
-        return joinNewRes(acc, curRes, join)
-      }, joinStartVal(join))
+    ? finalJoin(
+        join,
+        val.reduce((acc, v) => {
+          const curRes = cond(v)
+          // Merge with respect to join
+          return joinNewRes(acc, curRes, join)
+        }, joinStartVal(join))
+      )
     : true
 
 // Nice cool function
