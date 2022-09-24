@@ -35,7 +35,14 @@ import {
 } from '@floating-ui/react-dom-interactions'
 import cx from 'classnames'
 import { mergeRefs } from 'react-merge-refs'
-import { MenuItemCount, ItemLabel, MenuItemWrapper, MenuWrapper, MultiSelectIcon, RootMenuWrapper } from './Dropdown.style'
+import {
+  MenuItemCount,
+  ItemLabel,
+  MenuItemWrapper,
+  MenuWrapper,
+  MultiSelectIcon,
+  RootMenuWrapper
+} from './Dropdown.style'
 import { SidebarListFilter } from '@components/mex/Sidebar/SidebarList.style'
 import { Icon } from '@iconify/react'
 import { Input } from '@style/Form'
@@ -44,6 +51,7 @@ import { mog } from '@workduck-io/mex-utils'
 import { MIcon } from '../../types/Types'
 import IconDisplay from '@ui/components/IconPicker/IconDisplay'
 import { GenericFlex } from '@ui/components/Filters/Filter.style'
+import { MenuClassName, MenuItemClassName, RootMenuClassName } from './Dropdown.classes'
 
 export const MenuItem = forwardRef<
   HTMLButtonElement,
@@ -77,6 +85,7 @@ export const MenuItem = forwardRef<
 MenuItem.displayName = 'MenuItem'
 
 interface Props {
+  className?: string
   label?: string
   nested?: boolean
   children?: React.ReactNode
@@ -87,7 +96,7 @@ interface Props {
 }
 
 export const MenuComponent = forwardRef<any, Props & React.HTMLProps<HTMLButtonElement>>(
-  ({ children, label, values, multiSelect, allowSearch, searchPlaceholder, ...props }, ref) => {
+  ({ children, label, values, multiSelect, allowSearch, searchPlaceholder, className, ...props }, ref) => {
     const [open, setOpen] = useState(false)
     const [activeIndex, setActiveIndex] = useState<number | null>(null)
     const [allowHover, setAllowHover] = useState(false)
@@ -247,7 +256,7 @@ export const MenuComponent = forwardRef<any, Props & React.HTMLProps<HTMLButtonE
             },
             ...(nested
               ? {
-                  className: cx('MenuItem', { open }),
+                  className: cx(MenuItemClassName, { open }),
                   role: 'menuitem',
                   onKeyDown(event) {
                     // Prevent more than one menu from being open.
@@ -258,7 +267,7 @@ export const MenuComponent = forwardRef<any, Props & React.HTMLProps<HTMLButtonE
                   }
                 }
               : {
-                  className: cx('RootMenu', { open })
+                  className: cx(className ? className : '', RootMenuClassName, { open })
                 })
           })}
         >
@@ -279,7 +288,7 @@ export const MenuComponent = forwardRef<any, Props & React.HTMLProps<HTMLButtonE
             >
               <MenuWrapper
                 {...getFloatingProps({
-                  className: 'Menu',
+                  className: MenuClassName,
                   ref: floating,
                   style: {
                     position: strategy,
@@ -313,7 +322,7 @@ export const MenuComponent = forwardRef<any, Props & React.HTMLProps<HTMLButtonE
                       getItemProps({
                         tabIndex: -1,
                         role: 'menuitem',
-                        className: 'MenuItem',
+                        className: MenuItemClassName,
                         ref(node: HTMLButtonElement) {
                           listItemsRef.current[index] = node
                         },

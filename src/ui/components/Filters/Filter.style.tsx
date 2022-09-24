@@ -21,6 +21,10 @@ export const GenericSection = styled(GenericFlex)`
   padding: ${({ theme }) => theme.spacing.tiny} ${({ theme }) => theme.spacing.small};
 `
 
+export const FilterMenuDiv = styled(GenericFlex)`
+  gap: ${({ theme }) => theme.spacing.small};
+`
+
 export const FilterTypeDiv = styled(GenericSection)``
 
 export const FilterJoinDiv = styled(GenericFlex)`

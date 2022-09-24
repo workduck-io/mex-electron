@@ -323,7 +323,6 @@ const SearchView = <Item,>({
         enableShortcutHandler(() => {
           event.preventDefault()
           event.stopPropagation()
-
           resetCurrentFilters()
           if (inpRef.current) {
             if (inpRef.current.value !== '') {
@@ -333,10 +332,12 @@ const SearchView = <Item,>({
                 setSelected(-1)
               }
             } else {
-              onEscapeExit()
+              if (currentFilters.length === 0) {
+                onEscapeExit()
+              }
             }
           }
-        }, true)
+        })
       },
       // Tab: (event) => {
       //   enableShortcutHandler(() => {
@@ -380,7 +381,7 @@ const SearchView = <Item,>({
     return () => {
       unsubscribe()
     }
-  }, [result, selected, initialItems])
+  }, [result, currentFilters, selected, initialItems])
 
   const splitOptions = options?.splitOptions ?? {
     type: selected > -1 ? SplitType.SIDE : SplitType.NONE,

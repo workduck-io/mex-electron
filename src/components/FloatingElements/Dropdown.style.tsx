@@ -2,6 +2,7 @@ import { ScrollStyles } from '@style/helpers'
 import { GenericFlex } from '@ui/components/Filters/Filter.style'
 import { Ellipsis } from '@workduck-io/mex-components'
 import styled, { css } from 'styled-components'
+import { MenuItemClassName } from './Dropdown.classes'
 
 export const MenuItemCount = styled(GenericFlex)`
   color: ${({ theme }) => theme.colors.text.fade};
@@ -70,7 +71,7 @@ export const RootMenuWrapper = styled.button`
   border-radius: ${({ theme }) => theme.borderRadius.small};
   color: ${({ theme }) => theme.colors.text.default};
 
-  &.MenuItem {
+  &.${MenuItemClassName} {
     ${MenuItemStyles}
   }
 

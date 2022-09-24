@@ -4,17 +4,20 @@ import { Menu, MenuItem } from '@components/FloatingElements/Dropdown'
 import { Filter, Filters, FilterType, FilterValue } from '../../../types/filters'
 import { mog } from '@workduck-io/mex-utils'
 import { Icon } from '@iconify/react'
-import { GenericFlex, GenericSection } from './Filter.style'
+import { GenericFlex, FilterMenuDiv } from './Filter.style'
 import { FilterTypeIcons } from '@utils/lib/icons'
 import { useFilterIcons } from '@hooks/ui/useFilterValueIcons'
 import { generateFilterId } from '@data/Defaults/idPrefixes'
 import { useEnableShortcutHandler } from '@hooks/useShortcutListener'
 import { tinykeys } from '@workduck-io/tinykeys'
+import { DisplayShortcut } from '@workduck-io/mex-components'
 
 interface NewFilterMenuProps {
   filters: Filters
   addFilter: (filter: Filter) => void
 }
+
+const NewFilterClassName = 'new-filter-menu'
 
 const NewFilterMenu = ({ addFilter, filters }: NewFilterMenuProps) => {
   const { getFilterValueIcon } = useFilterIcons()
@@ -37,12 +40,22 @@ const NewFilterMenu = ({ addFilter, filters }: NewFilterMenuProps) => {
   useEffect(() => {
     const unsubscribe = tinykeys(window, {
       'Shift+F': (event) => {
-        enableShortcutHandler(() => {
-          mog('shortcut Opening filter menu', { event })
-          event.preventDefault()
-          event.stopPropagation()
-          mog('shortcut Opening filter menu', { event })
-        })
+        enableShortcutHandler(
+          () => {
+            event.preventDefault()
+            event.stopPropagation()
+            const newFilterMenus = document.getElementsByClassName(NewFilterClassName)
+            if (newFilterMenus.length > 0) {
+              // Open the first menu as there will be never more than one
+              const first = newFilterMenus[0] as HTMLElement
+              first.click()
+            }
+          },
+          {
+            skipLocal: false,
+            ignoreClasses: 'input'
+          }
+        )
       }
     })
     return () => {
@@ -52,11 +65,13 @@ const NewFilterMenu = ({ addFilter, filters }: NewFilterMenuProps) => {
 
   return (
     <Menu
+      className={NewFilterClassName}
       values={
-        <GenericSection>
+        <FilterMenuDiv>
           <Icon icon={filter2Line} />
           Filter
-        </GenericSection>
+          <DisplayShortcut shortcut={'Shift+F'} />
+        </FilterMenuDiv>
       }
     >
       {filters.map((option) => (

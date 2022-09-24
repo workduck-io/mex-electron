@@ -1,3 +1,4 @@
+import { MenuClassName, MenuItemClassName, RootMenuClassName } from '@components/FloatingElements/Dropdown.classes'
 import useMultipleEditors from '@store/useEditorsStore'
 import { useLayoutStore } from '@store/useLayoutStore'
 import useModalStore from '@store/useModalStore'
@@ -134,23 +135,41 @@ export const useKeyListener = () => {
 
 export default useShortcutListener
 
+const MEX_KEYBOARD_IGNORE_CLASSES = {
+  all: ['mex-search-input', 'FilterInput', MenuItemClassName, MenuClassName, RootMenuClassName],
+  input: ['mex-search-input', 'FilterInput'],
+  dropdown: [MenuItemClassName, MenuClassName, RootMenuClassName]
+}
+
+type IgnoreClasses = 'all' | 'input' | 'dropdown'
+interface LocalSkipOptions {
+  ignoreClasses?: IgnoreClasses
+  skipLocal?: boolean
+}
+
 export const useEnableShortcutHandler = () => {
   const isEditingPreview = useMultipleEditors((store) => store.isEditingAnyPreview)
 
-  const isOnSearchFilter = () => {
+  const isOnSearchFilter = (ignoreClasses?: IgnoreClasses) => {
+    const allIgnore: IgnoreClasses = ignoreClasses ?? 'all'
+    const classesToIgnore = MEX_KEYBOARD_IGNORE_CLASSES[allIgnore]
     const fElement = document.activeElement as HTMLElement
-    mog('fElement', {
-      hasClass: fElement.classList.contains('FilterInput') || fElement.classList.contains('mex-search-input'),
-      cl: fElement.classList,
-      tagName: fElement.tagName
-    })
-    return fElement && fElement.tagName === 'INPUT' && fElement.classList.contains('FilterInput')
+    // mog('fElement', {
+    //   hasClass: classesToIgnore.some((c) => fElement.classList.contains(c)),
+    //   cl: fElement.classList,
+    //   tagName: fElement.tagName
+    // })
+    return fElement && (fElement.tagName === 'INPUT' || classesToIgnore.some((c) => fElement.classList.contains(c)))
   }
 
-  const enableShortcutHandler = (callback: () => void, skipLocalChecks = false) => {
+  const enableShortcutHandler = (callback: () => void, options?: LocalSkipOptions) => {
+    const allOp = options ?? {
+      ignoreClasses: 'all',
+      skipLocal: false
+    }
     if (isEditingPreview() || !useMultipleEditors.getState().editors) return
 
-    if (!skipLocalChecks && isOnSearchFilter()) return
+    if (!allOp.skipLocal && isOnSearchFilter(allOp.ignoreClasses)) return
 
     callback()
   }
