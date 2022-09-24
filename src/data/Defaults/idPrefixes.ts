@@ -20,7 +20,8 @@ export const QUESTION_ID_PREFIX = 'WD_MEX_QUESTION'
 export const DRAFT_NODE = 'Untitled'
 export const REMINDER_ID_PREFIX = 'REMINDER'
 export const NAMESPACE_ID_PREFIX = 'NAMESPACE'
-export const TASK_VIEW_PREFIX = 'TASK_VIEW'
+export const TASK_VIEW_PREFIX = 'TASKVIEW'
+export const FILTER_ID_PREFIX = 'FILTER'
 
 export const HASH_SEPARATOR = '#'
 
@@ -36,9 +37,10 @@ export const generateTodoId = () => `${TODO_PREFIX}${ID_SEPARATOR}${nanoid()}`
 export const generateQuestionId = () => `${QUESTION_ID_PREFIX}${ID_SEPARATOR}${shortId()}`
 export const generateReminderId = () => `${REMINDER_ID_PREFIX}${ID_SEPARATOR}${shortId()}`
 export const generateTaskViewId = () => `${TASK_VIEW_PREFIX}${ID_SEPARATOR}${shortId()}`
+export const generateFilterId = () => `${FILTER_ID_PREFIX}${ID_SEPARATOR}${shortId()}`
 
 export const cleanString = (str: string) => {
   if (!str) return ''
-  
+
   return str.startsWith(`${DRAFT_PREFIX}${SEPARATOR}`) ? str.replace(`${DRAFT_PREFIX}${SEPARATOR}`, '') : str
 }

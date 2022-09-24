@@ -54,6 +54,11 @@ export const useApi = () => {
     Accept: 'application/json, text/plain, */*'
   })
 
+  const viewHeaders = () => ({
+    ...workspaceHeaders(),
+    'mex-api-ver': 'v2'
+  })
+
   /*
    * Saves data in the backend
    * Also updates the incoming data in the store
@@ -525,7 +530,7 @@ export const useApi = () => {
     return data
   }
 
-  const saveView = async (view: View<any>) => {
+  const saveView = async (view: View) => {
     // POST https://http-test.workduck.io/task/view
 
     const reqData = {
@@ -534,13 +539,14 @@ export const useApi = () => {
       // nodeId: string;
       properties: {
         title: view.title,
-        description: view.description
+        description: view.description,
+        globalJoin: view.globalJoin
       },
       entityId: view.id,
       filters: view.filters
     }
 
-    const resp = await client.post(apiURLs.view.saveView, reqData, { headers: workspaceHeaders() }).then((resp) => {
+    const resp = await client.post(apiURLs.view.saveView, reqData, { headers: viewHeaders() }).then((resp) => {
       mog('We saved that view', { resp })
       return resp.data
     })
@@ -551,7 +557,7 @@ export const useApi = () => {
   /**
    * Returns undefined when request is not made
    */
-  const getAllViews = async (): Promise<View<any>[] | undefined> => {
+  const getAllViews = async (): Promise<View[] | undefined> => {
     const url = apiURLs.view.getAllViews
 
     if (isRequestedWithin(5, url)) {
@@ -559,20 +565,27 @@ export const useApi = () => {
       return
     }
 
-    const resp = await client.get(url, { headers: workspaceHeaders() }).then((resp) => {
+    const resp = await client.get(url, { headers: viewHeaders() }).then((resp) => {
       // mog('We fetched them view', { resp })
       const views = resp.data
         .map((item: any) => {
+          // const itemCreated = new Date(item.created)
+          // const isExpired = itemCreated.getTime() - new Date(TaskViewExpiryTime).getTime() < 0
+          // mog('itemCreated', { item, itemCreated, isExpired })
+          // if (isExpired) {
+          //   return undefined
+          // }
           return item.entity === 'view'
             ? ({
                 title: item.properties.title,
                 description: item.properties.description,
                 filters: item.filters,
-                id: item.entityId
-              } as View<any>)
+                id: item.entityId,
+                globalJoin: item.properties.globalJoin ?? 'all'
+              } as View)
             : undefined
         })
-        .filter((v: undefined | View<any>) => !!v)
+        .filter((v: undefined | View) => !!v)
       return views
     })
 
@@ -580,7 +593,7 @@ export const useApi = () => {
   }
 
   const deleteView = async (viewid: string) => {
-    const resp = await client.delete(apiURLs.view.deleteView(viewid), { headers: workspaceHeaders() }).then((resp) => {
+    const resp = await client.delete(apiURLs.view.deleteView(viewid), { headers: viewHeaders() }).then((resp) => {
       mog('We saved that view', { resp })
       return resp.data
     })

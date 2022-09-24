@@ -8,7 +8,7 @@ import { debounce } from 'lodash'
 
 import { tinykeys } from '@workduck-io/tinykeys'
 
-import { SearchFilter, useFilters, useFilterStore } from '../../../hooks/useFilters'
+import { useFilters, useFilterStore } from '../../../hooks/useFilters'
 import {
   InputWrapper,
   NoSearchResults,
@@ -22,6 +22,7 @@ import { idxKey } from '../../../types/search'
 import SplitView, { RenderSplitProps, SplitOptions, SplitType } from '../../../ui/layout/splitView'
 import { mog } from '../../../utils/lib/helper'
 import ViewSelector, { View } from './ViewSelector'
+import { useEnableShortcutHandler } from '@hooks/useShortcutListener'
 
 interface SearchViewState<Item> {
   selected: number
@@ -53,15 +54,6 @@ export interface RenderItemProps<Item> extends Partial<RenderSplitProps> {
 interface IndexGroups {
   [key: string]: idxKey[]
 }
-// export interface SearchViewStoreState<Item> extends SearchViewState<Item> {
-//   setSelected: (selected: number) => void
-//   setResult: (result: Item[], searchTerm: string) => void
-//   setView: (view: View) => void
-//   clearSearch: () => void
-// }
-
-// export const useSearchStore = <Item, Slice>(selector: (state: SearchViewStoreState<Item>) => Slice) =>
-//   useSearchStoreBase(selector)
 
 interface SearchOptions {
   /**
@@ -203,14 +195,18 @@ const SearchView = <Item,>({
     searchTerm: '',
     result: []
   })
+
+  // For filters
   const { applyCurrentFilters, resetCurrentFilters } = useFilters<Item>()
-  const currentFilters = useFilterStore((store) => store.currentFilters) as SearchFilter<Item>[]
-  const filters = useFilterStore((store) => store.filters) as SearchFilter<Item>[]
+  const currentFilters = useFilterStore((store) => store.currentFilters)
+  const filters = useFilterStore((store) => store.filters)
+  const globalJoin = useFilterStore((store) => store.globalJoin)
+
   const idxKeys = useFilterStore((store) => store.indexes) as idxKey[]
   const [view, setView] = useState<View>(options?.view)
   const setIndexes = useFilterStore((store) => store.setIndexes)
   const setSelected = (selected: number) => setSS((s) => ({ ...s, selected }))
-  const isEditingPreview = useMultipleEditors((store) => store.isEditingAnyPreview)
+  const { enableShortcutHandler } = useEnableShortcutHandler()
 
   const setResult = (result: Item[], searchTerm: string) => {
     // mog('setresult', { result, searchTerm })
@@ -250,7 +246,7 @@ const SearchView = <Item,>({
       const initItems = Array.isArray(initialItems) ? initialItems : initialItems[curIndexGroup]
       const filtered = filterResults ? filterResults(initItems) : initItems
       // mog('ExecuteSearch - Initial', { newSearchTerm, currentFilters, filtered, initialItems, curIndexGroup })
-      if (filtered.length > 0) {
+      if (filtered.length > 0 || currentFilters.length > 0) {
         setResult(filtered, newSearchTerm)
       }
     } else {
@@ -274,7 +270,7 @@ const SearchView = <Item,>({
 
   useEffect(() => {
     updateResults()
-  }, [currentFilters, idxKeys])
+  }, [currentFilters, idxKeys, globalJoin])
 
   useEffect(() => {
     executeSearch(searchTerm)
@@ -321,27 +317,12 @@ const SearchView = <Item,>({
     executeSearch(inpSearchTerm)
   }
 
-  const isOnSearchFilter = () => {
-    const fElement = document.activeElement as HTMLElement
-    // mog('fElement', { hasClass: fElement.classList.contains('FilterInput') })
-    return fElement && fElement.tagName === 'INPUT' && fElement.classList.contains('FilterInput')
-  }
-
-  const enableShortcutHandler = (callback: () => void, skipLocalChecks = false) => {
-    if (isEditingPreview() || !useMultipleEditors.getState().editors) return
-
-    if (!skipLocalChecks && isOnSearchFilter()) return
-
-    callback()
-  }
-
   useEffect(() => {
     const unsubscribe = tinykeys(window, {
       Escape: (event) => {
         enableShortcutHandler(() => {
           event.preventDefault()
           event.stopPropagation()
-
           resetCurrentFilters()
           if (inpRef.current) {
             if (inpRef.current.value !== '') {
@@ -351,32 +332,32 @@ const SearchView = <Item,>({
                 setSelected(-1)
               }
             } else {
-              onEscapeExit()
+              if (currentFilters.length === 0) {
+                onEscapeExit()
+              }
             }
-          }
-        }, true)
-      },
-      Tab: (event) => {
-        enableShortcutHandler(() => {
-          // Blur the input if necessary (not needed currently)
-          // if (inputRef.current) inputRef.current.blur()
-          event.preventDefault()
-          if (event.shiftKey) {
-            selectPrev()
-          } else {
-            selectNext()
           }
         })
       },
+      // Tab: (event) => {
+      //   enableShortcutHandler(() => {
+      //     // Blur the input if necessary (not needed currently)
+      //     // if (inputRef.current) inputRef.current.blur()
+      //     event.preventDefault()
+      //     if (event.shiftKey) {
+      //       selectPrev()
+      //     } else {
+      //       selectNext()
+      //     }
+      //   })
+      // },
       ArrowDown: (event) => {
         // event.preventDefault()
         enableShortcutHandler(selectNext)
       },
 
       ArrowUp: (event) => {
-        enableShortcutHandler(() => {
-          selectPrev()
-        })
+        enableShortcutHandler(selectPrev)
       },
 
       Enter: (event) => {
@@ -400,7 +381,7 @@ const SearchView = <Item,>({
     return () => {
       unsubscribe()
     }
-  }, [result, selected, initialItems])
+  }, [result, currentFilters, selected, initialItems])
 
   const splitOptions = options?.splitOptions ?? {
     type: selected > -1 ? SplitType.SIDE : SplitType.NONE,
@@ -449,6 +430,7 @@ const SearchView = <Item,>({
             type="text"
             defaultValue={searchTerm}
             onChange={debounce((e) => onChange(e), 250)}
+            className="mex-search-input"
             onFocus={() => {
               if (inpRef.current) inpRef.current.select()
             }}

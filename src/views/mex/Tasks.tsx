@@ -23,6 +23,7 @@ import { StyledTasksKanban, TaskCard, TaskColumnHeader } from '../../style/Todo'
 import Todo from '../../ui/components/Todo'
 import { mog } from '../../utils/lib/helper'
 import { NavigationType, ROUTE_PATHS, useRouting } from '../routes/urls'
+import { useEnableShortcutHandler } from '@hooks/useShortcutListener'
 
 const Tasks = () => {
   const [selectedCard, setSelectedCard] = React.useState<TodoKanbanCard | null>(null)
@@ -32,6 +33,7 @@ const Tasks = () => {
   const match = useMatch(`${ROUTE_PATHS.tasks}/:viewid`)
   const currentView = useViewStore((store) => store.currentView)
   const setCurrentView = useViewStore((store) => store.setCurrentView)
+  const { enableShortcutHandler } = useEnableShortcutHandler()
 
   const { loadNode } = useLoad()
   const { goTo } = useRouting()
@@ -52,14 +54,17 @@ const Tasks = () => {
     changePriority,
     getPureContent,
     addCurrentFilter,
+    changeCurrentFilter,
     removeCurrentFilter,
     resetCurrentFilters,
     setCurrentFilters,
     filters,
-    currentFilters
+    currentFilters,
+    globalJoin,
+    setGlobalJoin
   } = useTodoKanban()
 
-  const board = useMemo(() => getTodoBoard(), [nodesTodo, currentFilters])
+  const board = useMemo(() => getTodoBoard(), [nodesTodo, globalJoin, currentFilters])
 
   const selectedRef = useRef<HTMLDivElement>(null)
   const handleCardMove = (card, source, destination) => {
@@ -211,53 +216,58 @@ const Tasks = () => {
     }
   }, [selectedCard])
 
-  const isOnSearchFilter = () => {
-    const fElement = document.activeElement as HTMLElement
-    // mog('fElement', { hasClass: fElement.classList.contains('FilterInput') })
-    return fElement && fElement.tagName === 'INPUT' && fElement.classList.contains('FilterInput')
-  }
-
   useEffect(() => {
     const unsubscribe = tinykeys(window, {
       Escape: (event) => {
-        event.preventDefault()
-        if (selectedCard || currentFilters.length > 0) {
-          setSelectedCard(null)
-          resetCurrentFilters()
-        } else {
-          const nodeid = nodeUID ?? lastOpened[0] ?? baseNodeId
-          loadNode(nodeid)
-          goTo(ROUTE_PATHS.node, NavigationType.push, nodeid)
-        }
+        enableShortcutHandler(() => {
+          event.preventDefault()
+          if (selectedCard || currentFilters.length > 0) {
+            setSelectedCard(null)
+            resetCurrentFilters()
+          } else {
+            const nodeid = nodeUID ?? lastOpened[0] ?? baseNodeId
+            loadNode(nodeid)
+            goTo(ROUTE_PATHS.node, NavigationType.push, nodeid)
+          }
+        })
       },
       'Shift+ArrowRight': (event) => {
-        event.preventDefault()
-        handleCardMoveNext()
+        enableShortcutHandler(() => {
+          event.preventDefault()
+          handleCardMoveNext()
+        })
       },
       'Shift+ArrowLeft': (event) => {
-        event.preventDefault()
-        handleCardMovePrev()
+        enableShortcutHandler(() => {
+          event.preventDefault()
+          handleCardMovePrev()
+        })
       },
       ArrowRight: (event) => {
-        event.preventDefault()
-        if (isOnSearchFilter()) return
-        selectNewCard('right')
+        enableShortcutHandler(() => {
+          event.preventDefault()
+          selectNewCard('right')
+        })
       },
+
       ArrowLeft: (event) => {
-        event.preventDefault()
-        if (isOnSearchFilter()) return
-        selectNewCard('left')
+        enableShortcutHandler(() => {
+          event.preventDefault()
+          selectNewCard('left')
+        })
       },
       ArrowDown: (event) => {
-        event.preventDefault()
-        if (isOnSearchFilter()) return
-        selectNewCard('down')
+        enableShortcutHandler(() => {
+          event.preventDefault()
+          selectNewCard('down')
+        })
       },
 
       ArrowUp: (event) => {
-        event.preventDefault()
-        if (isOnSearchFilter()) return
-        selectNewCard('up')
+        enableShortcutHandler(() => {
+          event.preventDefault()
+          selectNewCard('up')
+        })
       },
 
       '$mod+1': (event) => {
@@ -293,6 +303,7 @@ const Tasks = () => {
       // loadView(viewid)
       if (currentView) {
         setCurrentFilters(currentView.filters)
+        setGlobalJoin(currentView.globalJoin)
       }
       // goTo(ROUTE_PATHS.view, NavigationType.push, viewid)
     } else {
@@ -304,14 +315,14 @@ const Tasks = () => {
   const onDoubleClick = (event: React.MouseEvent<HTMLDivElement, MouseEvent>, nodeid: string) => {
     event.preventDefault()
     //double click
-    mog('double click', { event })
+    // mog('double click', { event })
     if (event.detail === 2) {
       push(nodeid)
       goTo(ROUTE_PATHS.node, NavigationType.push, nodeid)
     }
   }
 
-  mog('Tasks', { nodesTodo, board, selectedCard, match })
+  // mog('Tasks', { nodesTodo, board, selectedCard, match, currentFilters })
 
   const RenderCard = ({ id, todo }: { id: string; todo: TodoType }, { dragging }: { dragging: boolean }) => {
     const pC = getPureContent(todo)
@@ -347,14 +358,22 @@ const Tasks = () => {
   return (
     <PageContainer>
       <StyledTasksKanban sidebarExpanded={sidebar.show && sidebar.expanded && !overlaySidebar}>
-        <TaskHeader currentFilters={currentFilters} cardSelected={!!selectedCard} currentView={currentView} />
+        <TaskHeader
+          currentFilters={currentFilters}
+          cardSelected={!!selectedCard}
+          currentView={currentView}
+          globalJoin={globalJoin}
+        />
         <SearchFilters
           result={board}
           addCurrentFilter={addCurrentFilter}
           removeCurrentFilter={removeCurrentFilter}
+          changeCurrentFilter={changeCurrentFilter}
           resetCurrentFilters={resetCurrentFilters}
           filters={filters}
           currentFilters={currentFilters}
+          globalJoin={globalJoin}
+          setGlobalJoin={setGlobalJoin}
         />
         <Board
           renderColumnHeader={({ title }) => <TaskColumnHeader>{title}</TaskColumnHeader>}

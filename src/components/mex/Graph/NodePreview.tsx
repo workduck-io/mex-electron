@@ -8,7 +8,7 @@ import { transparentize } from 'polished'
 import React, { useEffect, useState } from 'react'
 import styled from 'styled-components'
 import EditorPreviewRenderer from '../../../editor/EditorPreviewRenderer'
-import { useLinks } from '../../../hooks/useLinks'
+import { getTitleFromPath, useLinks } from '../../../hooks/useLinks'
 import { useContentStore } from '../../../store/useContentStore'
 import { ILink } from '../../../types/Types'
 import { getRelativeTime } from '../../../utils/time'
@@ -108,7 +108,7 @@ const NodePreview = ({ node, fullscreen }: { node: ILink; fullscreen: boolean })
 
   return (
     <Container>
-      <Header onMouseUp={(e) => onDoubleClick(e)}>{node?.path}</Header>
+      <Header onMouseUp={(e) => onDoubleClick(e)}>{getTitleFromPath(node?.path)}</Header>
       <MetaDeta>
         {content?.metadata?.lastEditedBy && (
           <Flex>

@@ -293,4 +293,7 @@ export const ReminderUIGlobal = createGlobalStyle`
   body, html, #root {
     background-color: ${({ theme }) => theme.colors.gray[10]};
   }
+  body {
+    overflow: auto;
+  }
 `

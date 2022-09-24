@@ -5,7 +5,7 @@ import { insertId } from '../../utils/lib/content'
 /*
  * Only sets up reminder for the next 24 hours
  */
-const BASE_REMINDER_HEIGHT = 80
+const BASE_REMINDER_HEIGHT = 140
 const BASE_TITLE_HEIGHT = 20
 export const BASE_WIDTH = 500
 const BASE_PADDING = 12

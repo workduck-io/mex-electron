@@ -96,7 +96,10 @@ const Search = () => {
     removeCurrentFilter,
     filters,
     currentFilters,
-    resetCurrentFilters
+    changeCurrentFilter,
+    resetCurrentFilters,
+    globalJoin,
+    setGlobalJoin
   } = useFilters<GenericSearchResult>()
 
   const { queryIndexWithRanking } = useSearch()
@@ -288,8 +291,11 @@ const Search = () => {
         addCurrentFilter={addCurrentFilter}
         removeCurrentFilter={removeCurrentFilter}
         resetCurrentFilters={resetCurrentFilters}
+        changeCurrentFilter={changeCurrentFilter}
         filters={filters}
         currentFilters={currentFilters}
+        globalJoin={globalJoin}
+        setGlobalJoin={setGlobalJoin}
       />
     )
   }

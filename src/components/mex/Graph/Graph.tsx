@@ -146,35 +146,39 @@ export const TreeGraph = (props: TreeGraphProps) => {
           </InfobarTools>
         ) : null}
         {showNodePreview && <NodePreview node={selectedNode} fullscreen={fullscreen} />}
-        <ForceGraph3D
-          width={state.dimensions.width}
-          height={state.dimensions.height}
-          extraRenderers={extraRenderers as any}
-          backgroundColor={theme.colors.background.sidebar}
-          graphData={state.graph}
-          nodeColor={(node: any) => (node.id === selectedNode?.id ? theme.colors.primary : node.color.background)}
-          nodeThreeObject={(node: any) => {
-            const nodeEl = document.createElement('div')
-            nodeEl.textContent = getTitleFromPath(node.path).slice(0, 20)
-            nodeEl.style.color = node.color.font
-            nodeEl.style.backgroundColor = node.color.border
-            nodeEl.className = 'node-label'
-            if (selectedNode && selectedNode.id === node.id) {
-              nodeEl.style.color = theme.colors.text.oppositePrimary
-              nodeEl.style.backgroundColor = theme.colors.primary
+        {rhSidebar.show && rhSidebar.expanded ? (
+          <ForceGraph3D
+            width={state.dimensions.width}
+            height={state.dimensions.height}
+            extraRenderers={extraRenderers as any}
+            backgroundColor={theme.colors.background.sidebar}
+            graphData={state.graph}
+            nodeColor={(node: any) => (node.id === selectedNode?.id ? theme.colors.primary : node.color.background)}
+            nodeThreeObject={(node: any) => {
+              const nodeEl = document.createElement('div')
+              nodeEl.textContent = getTitleFromPath(node.path).slice(0, 20)
+              nodeEl.style.color = node.color.font
+              nodeEl.style.backgroundColor = node.color.border
+              nodeEl.className = 'node-label'
+              if (selectedNode && selectedNode.id === node.id) {
+                nodeEl.style.color = theme.colors.text.oppositePrimary
+                nodeEl.style.backgroundColor = theme.colors.primary
+              }
+              return new CSS2DObject(nodeEl)
+            }}
+            linkDirectionalArrowLength={showLocal ? 1.5 : undefined}
+            linkDirectionalArrowRelPos={showLocal ? 0.5 : undefined}
+            linkCurvature={showLocal ? 0.25 : undefined}
+            linkColor={(link: any) =>
+              link.source === selectedNode?.id || link.target === selectedNode?.id ? theme.colors.primary : link.color
             }
-            return new CSS2DObject(nodeEl)
-          }}
-          linkDirectionalArrowLength={showLocal ? 1.5 : undefined}
-          linkDirectionalArrowRelPos={showLocal ? 0.5 : undefined}
-          linkCurvature={showLocal ? 0.25 : undefined}
-          linkColor={(link: any) =>
-            link.source === selectedNode?.id || link.target === selectedNode?.id ? theme.colors.primary : link.color
-          }
-          ref={fgRef}
-          onNodeClick={handleClick}
-          nodeThreeObjectExtend={true}
-        />
+            ref={fgRef}
+            onNodeClick={handleClick}
+            nodeThreeObjectExtend={true}
+          />
+        ) : (
+          <></>
+        )}
       </GraphWrapper>
       {/* <NodeServices /> */}
     </InfobarFull>
