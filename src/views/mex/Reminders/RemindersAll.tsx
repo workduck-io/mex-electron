@@ -9,7 +9,7 @@ import create from 'zustand'
 import { useCreateReminderModal } from '../../../components/mex/Reminders/CreateReminderModal'
 import ReminderUI, { reminderStateIcons } from '../../../components/mex/Reminders/Reminder'
 import SearchFilters from '../../../components/mex/Search/SearchFilters'
-import { FilterStore, SearchFilter } from '../../../hooks/useFilters'
+import { FilterStore } from '../../../hooks/useFilters'
 import { useLinks } from '../../../hooks/useLinks'
 import {
   past,
@@ -121,7 +121,7 @@ const useReminderFilters = () => {
     }
 
     const newFilters = getReminderFilters([...upcomingReminders, ...pastReminders])
-    mog('NewFilters and Board', { newFilters, upcomingRemindersColumn, pastRemindersColumn })
+    // mog('NewFilters and Board', { newFilters, upcomingRemindersColumn, pastRemindersColumn })
     // setCurrentFilters(newFilters)
     return {
       board: {
@@ -205,7 +205,7 @@ const useReminderFilters = () => {
       })
     }
 
-    mog('Filters', { filters })
+    // mog('Filters', { filters })
 
     return filters
   }

@@ -1,23 +1,22 @@
-import { ELEMENT_TODO_LI } from '@udecode/plate'
-import { defaultContent } from '../data/Defaults/baseData'
 import useDataStore from '@store/useDataStore'
+import { ELEMENT_TODO_LI } from '@udecode/plate'
+import create from 'zustand'
+import { getAllParentIds } from '../components/mex/Sidebar/treeUtils'
+import { defaultContent } from '../data/Defaults/baseData'
 import { SNIPPET_PREFIX } from '../data/Defaults/idPrefixes'
 import { PriorityType, TodoRanks, TodoStatus, TodoStatusRanks, TodoType } from '../editor/Components/Todo/types'
-import create from 'zustand'
 import useTodoStore from '../store/useTodoStore'
-import { SearchFilter, FilterStore } from './useFilters'
-import { getAllParentIds, isElder } from '../components/mex/Sidebar/treeUtils'
-import { useLinks } from './useLinks'
-import { KanbanBoard, KanbanCard, KanbanColumn } from '../types/search'
-import { useNodes } from './useNodes'
-import { convertContentToRawText } from '../utils/search/parseData'
-import { mog } from '../utils/lib/helper'
-import { useSearchExtra } from './useSearch'
-import { useTaskFilterFunctions } from './useFilterFunctions'
-import { useMentions } from './useMentions'
-import { useTags } from './useTags'
-import { useNamespaces } from './useNamespaces'
 import { Filter, Filters, FilterTypeWithOptions, GlobalFilterJoin } from '../types/filters'
+import { KanbanBoard, KanbanCard, KanbanColumn } from '../types/search'
+import { mog } from '../utils/lib/helper'
+import { convertContentToRawText } from '../utils/search/parseData'
+import { useTaskFilterFunctions } from './useFilterFunctions'
+import { FilterStore } from './useFilters'
+import { useLinks } from './useLinks'
+import { useMentions } from './useMentions'
+import { useNodes } from './useNodes'
+import { useSearchExtra } from './useSearch'
+import { useTags } from './useTags'
 
 export interface TodoKanbanCard extends KanbanCard {
   todo: TodoType
@@ -264,9 +263,11 @@ export const useTodoKanban = () => {
       if (isInArchive(nodeid)) return
       todos
         .filter((todo) =>
-          globalJoin === 'all'
-            ? currentFilters.every((filter) => taskFilterFunctions[filter.type](todo, filter))
-            : currentFilters.some((filter) => taskFilterFunctions[filter.type](todo, filter))
+          currentFilters.length > 0
+            ? globalJoin === 'all'
+              ? currentFilters.every((filter) => taskFilterFunctions[filter.type](todo, filter))
+              : currentFilters.some((filter) => taskFilterFunctions[filter.type](todo, filter))
+            : true
         )
         .filter((todo) => {
           // TODO: Find a faster way to check for empty content // May not need to convert content to raw text
@@ -287,6 +288,8 @@ export const useTodoKanban = () => {
             })
         })
     })
+
+    // mog('getTodoBoard', { nodetodos, todoBoard })
 
     const todoFilters = generateTodoFilters(todoBoard)
     setFilters(todoFilters)

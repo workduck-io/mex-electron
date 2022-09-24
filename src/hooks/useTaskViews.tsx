@@ -1,5 +1,5 @@
 import { useApi } from '@apis/useSaveApi'
-import { Filter } from '../types/filters'
+import { Filter, GlobalFilterJoin } from '../types/filters'
 import { mog } from '@utils/lib/helper'
 import { useEffect } from 'react'
 import create from 'zustand'
@@ -11,6 +11,8 @@ export interface View {
 
   // FIXME: This should use new Filter type
   filters: Filter[]
+
+  globalJoin: GlobalFilterJoin
 }
 
 export interface ViewStore {

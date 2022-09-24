@@ -1,4 +1,4 @@
-import React from 'react'
+import React, { useEffect } from 'react'
 import filter2Line from '@iconify/icons-ri/filter-2-line'
 import { Menu, MenuItem } from '@components/FloatingElements/Dropdown'
 import { Filter, Filters, FilterType, FilterValue } from '../../../types/filters'
@@ -8,6 +8,8 @@ import { GenericFlex, GenericSection } from './Filter.style'
 import { FilterTypeIcons } from '@utils/lib/icons'
 import { useFilterIcons } from '@hooks/ui/useFilterValueIcons'
 import { generateFilterId } from '@data/Defaults/idPrefixes'
+import { useEnableShortcutHandler } from '@hooks/useShortcutListener'
+import { tinykeys } from '@workduck-io/tinykeys'
 
 interface NewFilterMenuProps {
   filters: Filters
@@ -16,6 +18,7 @@ interface NewFilterMenuProps {
 
 const NewFilterMenu = ({ addFilter, filters }: NewFilterMenuProps) => {
   const { getFilterValueIcon } = useFilterIcons()
+  const { enableShortcutHandler } = useEnableShortcutHandler()
   const onAddNewFilter = (type: FilterType, value: FilterValue) => {
     const newFilter: Filter = {
       id: generateFilterId(),
@@ -30,6 +33,22 @@ const NewFilterMenu = ({ addFilter, filters }: NewFilterMenuProps) => {
   }
 
   // mog('NewFilterMenu', { filters })
+
+  useEffect(() => {
+    const unsubscribe = tinykeys(window, {
+      'Shift+F': (event) => {
+        enableShortcutHandler(() => {
+          mog('shortcut Opening filter menu', { event })
+          event.preventDefault()
+          event.stopPropagation()
+          mog('shortcut Opening filter menu', { event })
+        })
+      }
+    })
+    return () => {
+      unsubscribe()
+    }
+  }, [])
 
   return (
     <Menu

@@ -40,3 +40,7 @@ export const FilterRemoveButton = styled(GenericSection)`
     color: ${({ theme }) => theme.colors.palette.red};
   }
 `
+
+export const FilterGlobalJoinWrapper = styled(GenericFlex)`
+  flex-shrink: 0;
+`

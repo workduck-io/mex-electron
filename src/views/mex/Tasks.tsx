@@ -296,6 +296,7 @@ const Tasks = () => {
       // loadView(viewid)
       if (currentView) {
         setCurrentFilters(currentView.filters)
+        setGlobalJoin(currentView.globalJoin)
       }
       // goTo(ROUTE_PATHS.view, NavigationType.push, viewid)
     } else {
@@ -350,7 +351,12 @@ const Tasks = () => {
   return (
     <PageContainer>
       <StyledTasksKanban sidebarExpanded={sidebar.show && sidebar.expanded && !overlaySidebar}>
-        <TaskHeader currentFilters={currentFilters} cardSelected={!!selectedCard} currentView={currentView} />
+        <TaskHeader
+          currentFilters={currentFilters}
+          cardSelected={!!selectedCard}
+          currentView={currentView}
+          globalJoin={globalJoin}
+        />
         <SearchFilters
           result={board}
           addCurrentFilter={addCurrentFilter}

@@ -22,6 +22,7 @@ import { idxKey } from '../../../types/search'
 import SplitView, { RenderSplitProps, SplitOptions, SplitType } from '../../../ui/layout/splitView'
 import { mog } from '../../../utils/lib/helper'
 import ViewSelector, { View } from './ViewSelector'
+import { useEnableShortcutHandler } from '@hooks/useShortcutListener'
 
 interface SearchViewState<Item> {
   selected: number
@@ -205,7 +206,7 @@ const SearchView = <Item,>({
   const [view, setView] = useState<View>(options?.view)
   const setIndexes = useFilterStore((store) => store.setIndexes)
   const setSelected = (selected: number) => setSS((s) => ({ ...s, selected }))
-  const isEditingPreview = useMultipleEditors((store) => store.isEditingAnyPreview)
+  const { enableShortcutHandler } = useEnableShortcutHandler()
 
   const setResult = (result: Item[], searchTerm: string) => {
     // mog('setresult', { result, searchTerm })
@@ -316,20 +317,6 @@ const SearchView = <Item,>({
     executeSearch(inpSearchTerm)
   }
 
-  const isOnSearchFilter = () => {
-    const fElement = document.activeElement as HTMLElement
-    // mog('fElement', { hasClass: fElement.classList.contains('FilterInput') })
-    return fElement && fElement.tagName === 'INPUT' && fElement.classList.contains('FilterInput')
-  }
-
-  const enableShortcutHandler = (callback: () => void, skipLocalChecks = false) => {
-    if (isEditingPreview() || !useMultipleEditors.getState().editors) return
-
-    if (!skipLocalChecks && isOnSearchFilter()) return
-
-    callback()
-  }
-
   useEffect(() => {
     const unsubscribe = tinykeys(window, {
       Escape: (event) => {
@@ -351,27 +338,25 @@ const SearchView = <Item,>({
           }
         }, true)
       },
-      Tab: (event) => {
-        enableShortcutHandler(() => {
-          // Blur the input if necessary (not needed currently)
-          // if (inputRef.current) inputRef.current.blur()
-          event.preventDefault()
-          if (event.shiftKey) {
-            selectPrev()
-          } else {
-            selectNext()
-          }
-        })
-      },
+      // Tab: (event) => {
+      //   enableShortcutHandler(() => {
+      //     // Blur the input if necessary (not needed currently)
+      //     // if (inputRef.current) inputRef.current.blur()
+      //     event.preventDefault()
+      //     if (event.shiftKey) {
+      //       selectPrev()
+      //     } else {
+      //       selectNext()
+      //     }
+      //   })
+      // },
       ArrowDown: (event) => {
         // event.preventDefault()
         enableShortcutHandler(selectNext)
       },
 
       ArrowUp: (event) => {
-        enableShortcutHandler(() => {
-          selectPrev()
-        })
+        enableShortcutHandler(selectPrev)
       },
 
       Enter: (event) => {
@@ -444,6 +429,7 @@ const SearchView = <Item,>({
             type="text"
             defaultValue={searchTerm}
             onChange={debounce((e) => onChange(e), 250)}
+            className="mex-search-input"
             onFocus={() => {
               if (inpRef.current) inpRef.current.select()
             }}

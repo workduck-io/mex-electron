@@ -1,45 +1,13 @@
-import { MIcon } from '../types/Types'
 import create from 'zustand'
 
-import { getAllParentIds, isElder } from '../components/mex/Sidebar/treeUtils'
-// import create from 'zustand'
+import { getAllParentIds } from '../components/mex/Sidebar/treeUtils'
+import useDataStore from '@store/useDataStore'
+import { Filter, Filters, FilterTypeWithOptions, GlobalFilterJoin, SearchFilterFunctions } from '../types/filters'
 import { GenericSearchResult, idxKey } from '../types/search'
 import { mog } from '../utils/lib/helper'
 import { useGenericFilterFunctions } from './useFilterFunctions'
 import { getTitleFromPath, useLinks } from './useLinks'
-import { useNamespaces } from './useNamespaces'
 import { useTags } from './useTags'
-import {
-  Filter,
-  Filters,
-  FilterType,
-  FilterTypeWithOptions,
-  GlobalFilterJoin,
-  SearchFilterFunctions
-} from '../types/filters'
-import useDataStore from '@store/useDataStore'
-
-/*
-- Date
-- Node level - Tag based
-- Show only relevant options - Filter options that are empty
-- Sorting [:?]
-*/
-
-export type FilterKey = 'note' | 'tag' | 'date' | 'state' | 'has' | 'mention' | 'space'
-
-export interface SearchFilter {
-  key: FilterKey
-  id: string
-  label: string
-  // Value to filter with
-  value: string
-  // filter: (item: Item) => boolean | number -> Replaced by FilterFunctions
-  icon?: MIcon
-  // No. of items that match this filter
-  count?: number
-  // sort: 'asc' | 'desc'
-}
 
 export interface FilterStore {
   filters: Filters
@@ -87,7 +55,7 @@ export const useFilters = <Item>() => {
   }
 
   const addCurrentFilter = (filter: Filter) => {
-    mog('addCurrentFilter', { filter })
+    // mog('addCurrentFilter', { filter })
     setCurrentFilters([...currentFilters, filter])
   }
 
@@ -152,7 +120,7 @@ export const useFilters = <Item>() => {
       }
     )
 
-    mog('tagsFilter', { rankedTags, tagsFilter })
+    // mog('tagsFilter', { rankedTags, tagsFilter })
     return tagsFilter
   }
 
@@ -173,7 +141,7 @@ export const useFilters = <Item>() => {
       return acc
     }, {} as { [path: string]: number })
 
-    mog('rankedPaths', { rankedPaths, ilinks })
+    // mog('rankedPaths', { rankedPaths, ilinks })
     const nodeFilters: FilterTypeWithOptions = ilinks.reduce(
       (acc: FilterTypeWithOptions, ilink) => {
         const rank = rankedPaths[ilink?.path] || 0
@@ -294,6 +262,6 @@ export const applyFilters = <Item>(
     return acc.filter((i) => filterFunctions[filter.type](i, filter))
   }, items)
 
-  mog('applyFilters', { items, filters, filtered })
+  // mog('applyFilters', { items, filters, filtered })
   return filtered
 }

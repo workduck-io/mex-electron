@@ -2,7 +2,6 @@ import checkboxLine from '@iconify/icons-ri/checkbox-line'
 import { useTaskViewModalStore } from '@components/mex/TaskViewModal'
 import stackLine from '@iconify/icons-ri/stack-line'
 import { TasksHelp } from '@data/Defaults/helpText'
-import { SearchFilter } from '@hooks/useFilters'
 import { useTaskViews, useViewStore, View } from '@hooks/useTaskViews'
 import trashIcon from '@iconify/icons-codicon/trash'
 import addCircleLine from '@iconify/icons-ri/add-circle-line'
@@ -34,15 +33,16 @@ import {
   DisplayShortcut,
   LoadingButton
 } from '@workduck-io/mex-components'
-import { Filter } from '../../../types/filters'
+import { Filter, GlobalFilterJoin } from '../../../types/filters'
 
 interface TaskHeaderProps {
   currentView?: View
   currentFilters: Filter[]
   cardSelected: boolean
+  globalJoin: GlobalFilterJoin
 }
 
-const TaskHeader = ({ currentView, currentFilters, cardSelected }: TaskHeaderProps) => {
+const TaskHeader = ({ currentView, currentFilters, cardSelected, globalJoin }: TaskHeaderProps) => {
   const openTaskViewModal = useTaskViewModalStore((store) => store.openModal)
   const setCurrentView = useViewStore((store) => store.setCurrentView)
   const { deleteView } = useTaskViews()
@@ -86,7 +86,8 @@ const TaskHeader = ({ currentView, currentFilters, cardSelected }: TaskHeaderPro
                   onClick={() =>
                     openTaskViewModal({
                       filters: currentFilters,
-                      updateViewId: currentView?.id
+                      updateViewId: currentView?.id,
+                      globalJoin
                     })
                   }
                   disabled={currentFilters.length === 0}
@@ -97,7 +98,13 @@ const TaskHeader = ({ currentView, currentFilters, cardSelected }: TaskHeaderPro
                 </Button>
                 <IconButton
                   title="Clone View"
-                  onClick={() => openTaskViewModal({ filters: currentView?.filters, cloneViewId: currentView?.id })}
+                  onClick={() =>
+                    openTaskViewModal({
+                      filters: currentView?.filters,
+                      cloneViewId: currentView?.id,
+                      globalJoin: currentView?.globalJoin
+                    })
+                  }
                   disabled={currentFilters.length === 0}
                   singleton={target}
                   icon={fileCopyLine}
@@ -114,7 +121,9 @@ const TaskHeader = ({ currentView, currentFilters, cardSelected }: TaskHeaderPro
                 </LoadingButton>
                 <IconButton
                   title="Create New View"
-                  onClick={() => openTaskViewModal({ filters: currentFilters, cloneViewId: currentView?.id })}
+                  onClick={() =>
+                    openTaskViewModal({ filters: currentFilters, cloneViewId: currentView?.id, globalJoin })
+                  }
                   disabled={currentFilters.length === 0}
                   singleton={target}
                   transparent={false}
@@ -127,7 +136,7 @@ const TaskHeader = ({ currentView, currentFilters, cardSelected }: TaskHeaderPro
           <>
             <Title>Tasks</Title>
             <Button
-              onClick={() => openTaskViewModal({ filters: currentFilters, cloneViewId: currentView?.id })}
+              onClick={() => openTaskViewModal({ filters: currentFilters, cloneViewId: currentView?.id, globalJoin })}
               disabled={currentFilters.length === 0}
             >
               <Icon icon={addCircleLine} />

@@ -1,3 +1,4 @@
+import useMultipleEditors from '@store/useEditorsStore'
 import { useLayoutStore } from '@store/useLayoutStore'
 import useModalStore from '@store/useModalStore'
 import { useEffect, useCallback, useMemo } from 'react'
@@ -132,3 +133,27 @@ export const useKeyListener = () => {
 }
 
 export default useShortcutListener
+
+export const useEnableShortcutHandler = () => {
+  const isEditingPreview = useMultipleEditors((store) => store.isEditingAnyPreview)
+
+  const isOnSearchFilter = () => {
+    const fElement = document.activeElement as HTMLElement
+    mog('fElement', {
+      hasClass: fElement.classList.contains('FilterInput') || fElement.classList.contains('mex-search-input'),
+      cl: fElement.classList,
+      tagName: fElement.tagName
+    })
+    return fElement && fElement.tagName === 'INPUT' && fElement.classList.contains('FilterInput')
+  }
+
+  const enableShortcutHandler = (callback: () => void, skipLocalChecks = false) => {
+    if (isEditingPreview() || !useMultipleEditors.getState().editors) return
+
+    if (!skipLocalChecks && isOnSearchFilter()) return
+
+    callback()
+  }
+
+  return { enableShortcutHandler }
+}

@@ -28,6 +28,7 @@ import { mog } from '../utils/lib/helper'
 import { extractMetadata } from '../utils/lib/metadata'
 import { deserializeContent, serializeContent } from '../utils/lib/serialize'
 import { apiURLs } from './routes'
+import { TaskViewExpiryTime } from '@data/transforms'
 
 const API_CACHE_LOG = `\nAPI has been requested before, cancelling.\n`
 
@@ -525,7 +526,7 @@ export const useApi = () => {
     return data
   }
 
-  const saveView = async (view: View<any>) => {
+  const saveView = async (view: View) => {
     // POST https://http-test.workduck.io/task/view
 
     const reqData = {
@@ -534,7 +535,8 @@ export const useApi = () => {
       // nodeId: string;
       properties: {
         title: view.title,
-        description: view.description
+        description: view.description,
+        globalJoin: view.globalJoin
       },
       entityId: view.id,
       filters: view.filters
@@ -551,7 +553,7 @@ export const useApi = () => {
   /**
    * Returns undefined when request is not made
    */
-  const getAllViews = async (): Promise<View<any>[] | undefined> => {
+  const getAllViews = async (): Promise<View[] | undefined> => {
     const url = apiURLs.view.getAllViews
 
     if (isRequestedWithin(5, url)) {
@@ -563,16 +565,23 @@ export const useApi = () => {
       // mog('We fetched them view', { resp })
       const views = resp.data
         .map((item: any) => {
+          const itemCreated = new Date(item.created)
+          const isExpired = itemCreated.getTime() - new Date(TaskViewExpiryTime).getTime() < 0
+          mog('itemCreated', { item, itemCreated, isExpired })
+          if (isExpired) {
+            return undefined
+          }
           return item.entity === 'view'
             ? ({
                 title: item.properties.title,
                 description: item.properties.description,
                 filters: item.filters,
-                id: item.entityId
-              } as View<any>)
+                id: item.entityId,
+                globalJoin: item.properties.globalJoin ?? 'all'
+              } as View)
             : undefined
         })
-        .filter((v: undefined | View<any>) => !!v)
+        .filter((v: undefined | View) => !!v)
       return views
     })
 

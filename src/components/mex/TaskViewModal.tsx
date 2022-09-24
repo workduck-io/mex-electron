@@ -1,12 +1,10 @@
 import { generateTaskViewId } from '@data/Defaults/idPrefixes'
-import { SearchFilter } from '@hooks/useFilters'
 import { useSaveData } from '@hooks/useSaveData'
 import { useTaskViews, useViewStore } from '@hooks/useTaskViews'
-import { Icon } from '@iconify/react'
 import { Label, TextAreaBlock } from '@style/Form'
-import { SearchFilterCount, SearchFilterListCurrent, SearchFilterStyled } from '@style/Search'
-import { Filter } from '../../types/filters'
-import IconDisplay from '@ui/components/IconPicker/IconDisplay'
+import { SearchFilterListCurrent } from '@style/Search'
+import { DisplayFilter } from '@ui/components/Filters/Filter'
+import { RenderGlobalJoin } from '@ui/components/Filters/GlobalJoinFilterMenu'
 import { mog } from '@utils/lib/helper'
 import { getPathNum } from '@utils/lib/paths'
 import { NavigationType, ROUTE_PATHS, useRouting } from '@views/routes/urls'
@@ -15,6 +13,7 @@ import React, { useMemo } from 'react'
 import { useForm } from 'react-hook-form'
 import Modal from 'react-modal'
 import create from 'zustand'
+import { Filter, GlobalFilterJoin } from '../../types/filters'
 import Input from './Forms/Input'
 import { ModalControls, ModalHeader } from './Refactor/styles'
 
@@ -27,7 +26,13 @@ interface TaskViewModalState {
   // If present, title, description will be cloned from the view with viewid
   cloneViewId?: string
   filters: Filter[]
-  openModal: (args: { filters: Filter[]; updateViewId?: string; cloneViewId?: string }) => void
+  globalJoin: GlobalFilterJoin
+  openModal: (args: {
+    filters: Filter[]
+    updateViewId?: string
+    cloneViewId?: string
+    globalJoin: GlobalFilterJoin
+  }) => void
   closeModal: () => void
 }
 
@@ -36,19 +41,22 @@ export const useTaskViewModalStore = create<TaskViewModalState>((set) => ({
   filters: [],
   updateViewId: undefined,
   cloneViewId: undefined,
-  openModal: ({ filters, updateViewId, cloneViewId }) =>
+  globalJoin: 'all',
+  openModal: ({ filters, updateViewId, cloneViewId, globalJoin }) =>
     set({
       open: true,
       filters,
       updateViewId,
-      cloneViewId
+      cloneViewId,
+      globalJoin
     }),
   closeModal: () => {
     set({
       open: false,
       filters: [],
       updateViewId: undefined,
-      cloneViewId: undefined
+      cloneViewId: undefined,
+      globalJoin: 'all'
     })
   }
 }))
@@ -63,6 +71,7 @@ const TaskViewModal = () => {
   const updateViewId = useTaskViewModalStore((store) => store.updateViewId)
   const cloneViewId = useTaskViewModalStore((store) => store.cloneViewId)
   const filters = useTaskViewModalStore((store) => store.filters)
+  const globalJoin = useTaskViewModalStore((store) => store.globalJoin)
 
   // const openModal = useTaskViewModalStore((store) => store.openModal)
   const closeModal = useTaskViewModalStore((store) => store.closeModal)
@@ -138,7 +147,8 @@ const TaskViewModal = () => {
         title: data.title,
         description: data.description,
         filters: filters,
-        id: generateTaskViewId()
+        id: generateTaskViewId(),
+        globalJoin
       }
       await addView(view)
       saveData()
@@ -184,13 +194,9 @@ const TaskViewModal = () => {
         {filters?.length > 0 && (
           <SearchFilterListCurrent>
             {filters.map((f) => (
-              <div key={f.id}>filter</div>
-              // <SearchFilterStyled selected key={`current_f_${f.id}`}>
-              //   {f.icon ? <IconDisplay icon={f.icon} /> : null}
-              //   {f.label}
-              //   {f.count && <SearchFilterCount>{f.count}</SearchFilterCount>}
-              // </SearchFilterStyled>
+              <DisplayFilter key={f.id} filter={f} />
             ))}
+            <RenderGlobalJoin globalJoin={globalJoin} />
           </SearchFilterListCurrent>
         )}
 

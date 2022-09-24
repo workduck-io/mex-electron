@@ -165,4 +165,51 @@ const FilterRender = ({ filter, onChangeFilter, options, onRemoveFilter }: Filte
   )
 }
 
+export const DisplayFilter = ({ filter }: { filter: Filter }) => {
+  const { getFilterValueIcon } = useFilterIcons()
+  return (
+    <FilterWrapper>
+      {/* Cannot change filter type */}
+      <FilterTypeDiv>
+        <Icon icon={FilterTypeIcons[filter.type]} />
+        {capitalize(filter.type)}
+      </FilterTypeDiv>
+
+      {/*
+        Can change the filter join
+        Join options are always all, any, notAny, none
+      */}
+      <GenericFlex>
+        <FilterJoinDiv>
+          <IconDisplay icon={getFilterJoinIcon(filter.join)} />
+          {JoinLabels[filter.join]}
+        </FilterJoinDiv>
+      </GenericFlex>
+
+      <GenericFlex>
+        <>
+          {/* Conditionally render values if value is an array otherwise simple */}
+          {Array.isArray(filter.values) ? (
+            filter.values.length > 0 ? (
+              filter.values.map((value) => (
+                <FilterValueDiv key={value.id}>
+                  <IconDisplay icon={getFilterValueIcon(filter.type, value.value)} />
+                  <ItemLabel>{value.label}</ItemLabel>
+                </FilterValueDiv>
+              ))
+            ) : (
+              <FilterValueDiv>0 selected</FilterValueDiv>
+            )
+          ) : (
+            <FilterValueDiv>
+              <IconDisplay icon={getFilterValueIcon(filter.type, filter.values.value)} />
+              {filter.values.label}
+            </FilterValueDiv>
+          )}
+        </>
+      </GenericFlex>
+    </FilterWrapper>
+  )
+}
+
 export default FilterRender
