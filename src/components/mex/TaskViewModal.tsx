@@ -5,6 +5,7 @@ import { useTaskViews, useViewStore } from '@hooks/useTaskViews'
 import { Icon } from '@iconify/react'
 import { Label, TextAreaBlock } from '@style/Form'
 import { SearchFilterCount, SearchFilterListCurrent, SearchFilterStyled } from '@style/Search'
+import { Filter } from '../../types/filters'
 import IconDisplay from '@ui/components/IconPicker/IconDisplay'
 import { mog } from '@utils/lib/helper'
 import { getPathNum } from '@utils/lib/paths'
@@ -25,8 +26,8 @@ interface TaskViewModalState {
   updateViewId?: string
   // If present, title, description will be cloned from the view with viewid
   cloneViewId?: string
-  filters: SearchFilter[]
-  openModal: (args: { filters: SearchFilter[]; updateViewId?: string; cloneViewId?: string }) => void
+  filters: Filter[]
+  openModal: (args: { filters: Filter[]; updateViewId?: string; cloneViewId?: string }) => void
   closeModal: () => void
 }
 
@@ -183,11 +184,12 @@ const TaskViewModal = () => {
         {filters?.length > 0 && (
           <SearchFilterListCurrent>
             {filters.map((f) => (
-              <SearchFilterStyled selected key={`current_f_${f.id}`}>
-                {f.icon ? <IconDisplay icon={f.icon} /> : null}
-                {f.label}
-                {f.count && <SearchFilterCount>{f.count}</SearchFilterCount>}
-              </SearchFilterStyled>
+              <div key={f.id}>filter</div>
+              // <SearchFilterStyled selected key={`current_f_${f.id}`}>
+              //   {f.icon ? <IconDisplay icon={f.icon} /> : null}
+              //   {f.label}
+              //   {f.count && <SearchFilterCount>{f.count}</SearchFilterCount>}
+              // </SearchFilterStyled>
             ))}
           </SearchFilterListCurrent>
         )}

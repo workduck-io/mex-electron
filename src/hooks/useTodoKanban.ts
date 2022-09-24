@@ -1,5 +1,6 @@
 import { ELEMENT_TODO_LI } from '@udecode/plate'
 import { defaultContent } from '../data/Defaults/baseData'
+import useDataStore from '@store/useDataStore'
 import { SNIPPET_PREFIX } from '../data/Defaults/idPrefixes'
 import { PriorityType, TodoRanks, TodoStatus, TodoStatusRanks, TodoType } from '../editor/Components/Todo/types'
 import create from 'zustand'
@@ -57,6 +58,9 @@ export const useTodoKanban = () => {
   const setCurrentFilters = useKanbanFilterStore((state) => state.setCurrentFilters)
   const setFilters = useKanbanFilterStore((s) => s.setFilters)
   const updateTodo = useTodoStore((s) => s.updateTodoOfNode)
+  const tags = useDataStore((state) => state.tags)
+  const ilinks = useDataStore((state) => state.ilinks)
+  const namespaces = useDataStore((state) => state.namespaces)
 
   const { getPathFromNodeid, getILinkFromNodeid } = useLinks()
   const { isInArchive } = useNodes()
@@ -64,7 +68,6 @@ export const useTodoKanban = () => {
   const { getUserFromUserid } = useMentions()
   const { getTags } = useTags()
   const taskFilterFunctions = useTaskFilterFunctions()
-  const { getNamespace } = useNamespaces()
 
   const changeStatus = (todo: TodoType, newStatus: TodoStatus) => {
     updateTodo(todo.nodeid, { ...todo, metadata: { ...todo.metadata, status: newStatus } })
@@ -106,12 +109,14 @@ export const useTodoKanban = () => {
       return acc
     }, {} as { [path: string]: number })
 
-    const nodeFilters = Object.entries(rankedPaths).reduce(
-      (acc, c) => {
-        const [path, rank] = c
+    const nodeFilters = ilinks.reduce(
+      (acc, ilink) => {
+        const rank = rankedPaths[ilink.path] ?? 0
+        const path = ilink.path
+        // const [path, rank] = ilink
         if (rank >= 0) {
           acc.options.push({
-            id: `node_${path}`,
+            id: `filter_node_${ilink.nodeid}`,
             label: path,
             value: path,
             count: rank
@@ -134,12 +139,14 @@ export const useTodoKanban = () => {
       return acc
     }, {} as { [tag: string]: number })
 
-    const tagFilters = Object.entries(rankedTags).reduce(
+    const tagFilters = tags.reduce(
       (acc, c) => {
-        const [tag, rank] = c
+        const rank = rankedTags[c.value] ?? 0
+        const tag = c.value
+        // const [tag, rank] = c
         if (rank >= 0) {
           acc.options.push({
-            id: `tag_${tag}`,
+            id: `filter_tag_${tag}`,
             label: tag,
             value: tag
           })
@@ -197,14 +204,13 @@ export const useTodoKanban = () => {
       return acc
     }, {} as { [path: string]: number })
 
-    const namespaceFilters = Object.entries(rankedNamespaces).reduce(
-      (acc, c) => {
-        const [namespaceID, rank] = c
-        const namespace = getNamespace(namespaceID)
+    const namespaceFilters = namespaces.reduce(
+      (acc, namespace) => {
+        const rank = rankedNamespaces[namespace.id] ?? 0
+        const namespaceID = namespace.id
         if (rank >= 1 && namespace) {
           acc.options.push({
-            id: `node_${namespaceID}`,
-            // 'heroicons-outline:view-grid',
+            id: `namespace_${namespaceID}`,
             label: namespace.name,
             value: namespaceID,
             count: rank

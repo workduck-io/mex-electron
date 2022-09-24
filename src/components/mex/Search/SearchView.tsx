@@ -244,7 +244,7 @@ const SearchView = <Item,>({
       const initItems = Array.isArray(initialItems) ? initialItems : initialItems[curIndexGroup]
       const filtered = filterResults ? filterResults(initItems) : initItems
       // mog('ExecuteSearch - Initial', { newSearchTerm, currentFilters, filtered, initialItems, curIndexGroup })
-      if (filtered.length > 0) {
+      if (filtered.length > 0 || currentFilters.length > 0) {
         setResult(filtered, newSearchTerm)
       }
     } else {

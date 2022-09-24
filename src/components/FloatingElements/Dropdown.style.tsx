@@ -1,5 +1,22 @@
 import { ScrollStyles } from '@style/helpers'
+import { GenericFlex } from '@ui/components/Filters/Filter.style'
+import { Ellipsis } from '@workduck-io/mex-components'
 import styled, { css } from 'styled-components'
+
+export const MenuItemCount = styled(GenericFlex)`
+  color: ${({ theme }) => theme.colors.text.fade};
+`
+
+export const MultiSelectIcon = styled.div<{ selected?: boolean }>`
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin-right: ${({ theme }) => theme.spacing.small};
+  ${({ theme, selected }) =>
+    css`
+      color: ${selected ? theme.colors.primary : theme.colors.text.fade};
+    `}
+`
 
 const MenuItemStyles = css`
   display: flex;
@@ -25,11 +42,22 @@ const MenuItemStyles = css`
   &:not([disabled]):active {
     background: ${({ theme }) => theme.colors.primary};
     color: ${({ theme }) => theme.colors.text.oppositePrimary};
+    ${MenuItemCount} {
+      color: ${({ theme }) => theme.colors.text.oppositePrimary};
+    }
+    ${MultiSelectIcon} {
+      color: ${({ theme }) => theme.colors.text.oppositePrimary};
+    }
   }
 
   &:disabled {
     color: ${({ theme }) => theme.colors.text.disabled};
   }
+`
+
+export const MenuItemLabel = styled.div`
+  ${Ellipsis}
+  max-width: 12rem;
 `
 
 export const RootMenuWrapper = styled.button`
@@ -66,15 +94,4 @@ export const MenuWrapper = styled.div`
 
 export const MenuItemWrapper = styled.button`
   ${MenuItemStyles}
-`
-
-export const MultiSelectIcon = styled.div<{ selected?: boolean }>`
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  margin-right: ${({ theme }) => theme.spacing.small};
-  ${({ theme, selected }) =>
-    css`
-      color: ${selected ? theme.colors.primary : theme.colors.text.fade};
-    `}
 `

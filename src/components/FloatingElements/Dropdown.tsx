@@ -35,7 +35,7 @@ import {
 } from '@floating-ui/react-dom-interactions'
 import cx from 'classnames'
 import { mergeRefs } from 'react-merge-refs'
-import { MenuItemWrapper, MenuWrapper, MultiSelectIcon, RootMenuWrapper } from './Dropdown.style'
+import { MenuItemCount, MenuItemLabel, MenuItemWrapper, MenuWrapper, MultiSelectIcon, RootMenuWrapper } from './Dropdown.style'
 import { SidebarListFilter } from '@components/mex/Sidebar/SidebarList.style'
 import { Icon } from '@iconify/react'
 import { Input } from '@style/Form'
@@ -67,9 +67,9 @@ export const MenuItem = forwardRef<
           </MultiSelectIcon>
         )}
         <IconDisplay icon={icon} />
-        {label}
+        <MenuItemLabel>{label}</MenuItemLabel>
       </GenericFlex>
-      {count && <GenericFlex>{count}</GenericFlex>}
+      {count && <MenuItemCount>{count}</MenuItemCount>}
     </MenuItemWrapper>
   )
 })

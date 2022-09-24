@@ -34,10 +34,11 @@ import {
   DisplayShortcut,
   LoadingButton
 } from '@workduck-io/mex-components'
+import { Filter } from '../../../types/filters'
 
 interface TaskHeaderProps {
-  currentView?: View<any>
-  currentFilters: SearchFilter[]
+  currentView?: View
+  currentFilters: Filter[]
   cardSelected: boolean
 }
 

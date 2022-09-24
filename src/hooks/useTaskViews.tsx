@@ -1,8 +1,8 @@
 import { useApi } from '@apis/useSaveApi'
+import { Filter } from '../types/filters'
 import { mog } from '@utils/lib/helper'
 import { useEffect } from 'react'
 import create from 'zustand'
-import { SearchFilter } from './useFilters'
 
 export interface View {
   title: string
@@ -10,7 +10,7 @@ export interface View {
   id: string
 
   // FIXME: This should use new Filter type
-  filters: SearchFilter[]
+  filters: Filter[]
 }
 
 export interface ViewStore {

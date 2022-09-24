@@ -312,7 +312,7 @@ const Tasks = () => {
     }
   }
 
-  mog('Tasks', { nodesTodo, board, selectedCard, match })
+  mog('Tasks', { nodesTodo, board, selectedCard, match, currentFilters })
 
   const RenderCard = ({ id, todo }: { id: string; todo: TodoType }, { dragging }: { dragging: boolean }) => {
     const pC = getPureContent(todo)

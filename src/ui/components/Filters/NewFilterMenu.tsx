@@ -2,10 +2,9 @@ import React from 'react'
 import filter2Line from '@iconify/icons-ri/filter-2-line'
 import { Menu, MenuItem } from '@components/FloatingElements/Dropdown'
 import { Filter, Filters, FilterType, FilterValue } from '../../../types/filters'
-import { capitalize, mog } from '@workduck-io/mex-utils'
-import { duplicateTimes } from '@utils/lib/helper'
+import { mog } from '@workduck-io/mex-utils'
 import { Icon } from '@iconify/react'
-import { FilterTypeDiv, GenericFlex, GenericSection } from './Filter.style'
+import { GenericFlex, GenericSection } from './Filter.style'
 import { FilterTypeIcons } from '@utils/lib/icons'
 import { useFilterIcons } from '@hooks/ui/useFilterValueIcons'
 import { generateFilterId } from '@data/Defaults/idPrefixes'
@@ -18,7 +17,6 @@ interface NewFilterMenuProps {
 const NewFilterMenu = ({ addFilter, filters }: NewFilterMenuProps) => {
   const { getFilterValueIcon } = useFilterIcons()
   const onAddNewFilter = (type: FilterType, value: FilterValue) => {
-    mog('onAddNewFilter', { type, value })
     const newFilter: Filter = {
       id: generateFilterId(),
       type,
@@ -27,6 +25,7 @@ const NewFilterMenu = ({ addFilter, filters }: NewFilterMenuProps) => {
       join: 'any',
       values: [value]
     }
+    mog('onAddNewFilter', { type, newFilter, value })
     addFilter(newFilter)
   }
 
@@ -53,15 +52,17 @@ const NewFilterMenu = ({ addFilter, filters }: NewFilterMenuProps) => {
           allowSearch
           searchPlaceholder={`Search ${option.label}`}
         >
-          {option.options.map((op) => (
-            <MenuItem
-              key={op.id}
-              icon={getFilterValueIcon(option.type, op.value)}
-              onClick={() => onAddNewFilter(option.type, op)}
-              label={op.label}
-              count={op.count}
-            />
-          ))}
+          {option.options
+            .sort((a, b) => (a.count !== undefined && b.count !== undefined ? b.count - a.count : 0))
+            .map((op) => (
+              <MenuItem
+                key={op.id}
+                icon={getFilterValueIcon(option.type, op.value)}
+                onClick={() => onAddNewFilter(option.type, op)}
+                label={op.label}
+                count={op.count}
+              />
+            ))}
         </Menu>
       ))}
     </Menu>

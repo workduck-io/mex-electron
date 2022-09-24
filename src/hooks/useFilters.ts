@@ -6,10 +6,11 @@ import { getAllParentIds, isElder } from '../components/mex/Sidebar/treeUtils'
 import { GenericSearchResult, idxKey } from '../types/search'
 import { mog } from '../utils/lib/helper'
 import { useGenericFilterFunctions } from './useFilterFunctions'
-import { useLinks } from './useLinks'
+import { getTitleFromPath, useLinks } from './useLinks'
 import { useNamespaces } from './useNamespaces'
 import { useTags } from './useTags'
 import { Filter, Filters, FilterType, FilterTypeWithOptions, SearchFilterFunctions } from '../types/filters'
+import useDataStore from '@store/useDataStore'
 
 /*
 - Date
@@ -58,11 +59,13 @@ export const useFilters = <Item>() => {
   const setFilters = useFilterStore((state) => state.setFilters)
   const currentFilters = useFilterStore((state) => state.currentFilters)
   const setCurrentFilters = useFilterStore((state) => state.setCurrentFilters)
+  const tags = useDataStore((state) => state.tags)
+  const ilinks = useDataStore((state) => state.ilinks)
+  const namespaces = useDataStore((state) => state.namespaces)
 
   const { getTags } = useTags()
 
   const { getPathFromNodeid, getILinkFromNodeid } = useLinks()
-  const { getNamespace } = useNamespaces()
   const filterFunctions = useGenericFilterFunctions()
   // setFilters: (filters: SearchFilter<any>[]) => void
 
@@ -110,19 +113,20 @@ export const useFilters = <Item>() => {
       return acc
     }, {} as { [tag: string]: number })
 
-    const tagsFilter: FilterTypeWithOptions = Object.entries(rankedTags).reduce(
-      (p: FilterTypeWithOptions, [tag, rank]) => {
+    const tagsFilter: FilterTypeWithOptions = tags.reduce(
+      (p: FilterTypeWithOptions, t) => {
         // const tags = tagsCache[tag]
-        if (rank >= 0)
+        const rank = rankedTags[t?.value] || 0
+        if (rank >= 0 && t?.value)
           return {
             ...p,
             options: [
               ...p.options,
               {
-                id: `tag_filter_${tag}`,
-                label: tag,
+                id: `tag_filter_${t.value}`,
+                label: t.value,
                 count: rank as number,
-                value: tag
+                value: t.value
               }
             ]
           }
@@ -156,15 +160,17 @@ export const useFilters = <Item>() => {
       return acc
     }, {} as { [path: string]: number })
 
-    const nodeFilters: FilterTypeWithOptions = Object.entries(rankedPaths).reduce(
-      (acc: FilterTypeWithOptions, c) => {
-        const [path, rank] = c
+    mog('rankedPaths', { rankedPaths, ilinks })
+    const nodeFilters: FilterTypeWithOptions = ilinks.reduce(
+      (acc: FilterTypeWithOptions, ilink) => {
+        const rank = rankedPaths[ilink?.path] || 0
+        // const [path, rank] = ilink
         if (rank >= 0) {
           // mog('path', { path, rank })
           acc.options.push({
-            id: `node_${path}`,
-            value: path,
-            label: path,
+            id: `node_${ilink.path}`,
+            value: ilink.path,
+            label: getTitleFromPath(ilink.path),
             count: rank as number
           })
         }
@@ -200,17 +206,17 @@ export const useFilters = <Item>() => {
       return acc
     }, {} as { [namespace: string]: number })
 
-    const namespaceFilters = Object.entries(rankedNamespaces).reduce(
-      (acc, c) => {
-        const [namespaceID, rank] = c
-        const namespace = getNamespace(namespaceID)
+    const namespaceFilters = namespaces.reduce(
+      (acc, namespace) => {
+        const rank = rankedNamespaces[namespace?.id] || 0
+        const namespaceID = namespace?.id
         if (rank >= 0 && namespace) {
           // mog('path', { path, rank })
           acc.options.push({
             id: `namespace_${namespace.id}`,
             // Use Namespace icon
             value: namespaceID,
-            label: namespace.name,
+            label: namespace?.name,
             count: rank as number
           })
         }
