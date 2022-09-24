@@ -28,7 +28,6 @@ import { mog } from '../utils/lib/helper'
 import { extractMetadata } from '../utils/lib/metadata'
 import { deserializeContent, serializeContent } from '../utils/lib/serialize'
 import { apiURLs } from './routes'
-import { TaskViewExpiryTime } from '@data/transforms'
 
 const API_CACHE_LOG = `\nAPI has been requested before, cancelling.\n`
 
@@ -570,12 +569,12 @@ export const useApi = () => {
       // mog('We fetched them view', { resp })
       const views = resp.data
         .map((item: any) => {
-          const itemCreated = new Date(item.created)
-          const isExpired = itemCreated.getTime() - new Date(TaskViewExpiryTime).getTime() < 0
-          mog('itemCreated', { item, itemCreated, isExpired })
-          if (isExpired) {
-            return undefined
-          }
+          // const itemCreated = new Date(item.created)
+          // const isExpired = itemCreated.getTime() - new Date(TaskViewExpiryTime).getTime() < 0
+          // mog('itemCreated', { item, itemCreated, isExpired })
+          // if (isExpired) {
+          //   return undefined
+          // }
           return item.entity === 'view'
             ? ({
                 title: item.properties.title,
