@@ -17,7 +17,7 @@ import { useTaskFilterFunctions } from './useFilterFunctions'
 import { useMentions } from './useMentions'
 import { useTags } from './useTags'
 import { useNamespaces } from './useNamespaces'
-import { Filter, Filters, FilterTypeWithOptions } from '../types/filters'
+import { Filter, Filters, FilterTypeWithOptions, GlobalFilterJoin } from '../types/filters'
 
 export interface TodoKanbanCard extends KanbanCard {
   todo: TodoType
@@ -46,6 +46,8 @@ export const getPureContent = (todo: TodoType) => {
 export const useKanbanFilterStore = create<FilterStore>((set) => ({
   currentFilters: [],
   setCurrentFilters: (filters: Filter[]) => set({ currentFilters: filters }),
+  globalJoin: 'all',
+  setGlobalJoin: (join: GlobalFilterJoin) => set({ globalJoin: join }),
   indexes: [],
   setIndexes: () => undefined,
   filters: [],
@@ -57,6 +59,9 @@ export const useTodoKanban = () => {
   const currentFilters = useKanbanFilterStore((state) => state.currentFilters)
   const setCurrentFilters = useKanbanFilterStore((state) => state.setCurrentFilters)
   const setFilters = useKanbanFilterStore((s) => s.setFilters)
+  const globalJoin = useKanbanFilterStore((state) => state.globalJoin)
+  const setGlobalJoin = useKanbanFilterStore((state) => state.setGlobalJoin)
+
   const updateTodo = useTodoStore((s) => s.updateTodoOfNode)
   const tags = useDataStore((state) => state.tags)
   const ilinks = useDataStore((state) => state.ilinks)
@@ -148,7 +153,8 @@ export const useTodoKanban = () => {
           acc.options.push({
             id: `filter_tag_${tag}`,
             label: tag,
-            value: tag
+            value: tag,
+            count: rank
           })
         }
         return acc
@@ -258,10 +264,9 @@ export const useTodoKanban = () => {
       if (isInArchive(nodeid)) return
       todos
         .filter((todo) =>
-          currentFilters.every(
-            (filter) => taskFilterFunctions[filter.type](todo, filter)
-            // filter.filter(todo)
-          )
+          globalJoin === 'all'
+            ? currentFilters.every((filter) => taskFilterFunctions[filter.type](todo, filter))
+            : currentFilters.some((filter) => taskFilterFunctions[filter.type](todo, filter))
         )
         .filter((todo) => {
           // TODO: Find a faster way to check for empty content // May not need to convert content to raw text
@@ -333,6 +338,8 @@ export const useTodoKanban = () => {
     resetFilters,
     filters,
     currentFilters,
-    setCurrentFilters
+    setCurrentFilters,
+    globalJoin,
+    setGlobalJoin
   }
 }

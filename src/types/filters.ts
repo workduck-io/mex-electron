@@ -22,7 +22,30 @@ export const FilterJoinArray = [
   'none' // None of the values should match (if some match, item passed, if all match item dropped)
 ] as const
 
+// How to join the values of a single filter
 export type FilterJoin = typeof FilterJoinArray[number]
+
+/** Filter join example
+ *
+ * For items A, B, C, D
+ * which match with f1, f2 applied as:
+ *
+ * A - f1
+ * B - f1 f2
+ * C - f2
+ * D - none
+ *
+ * All B - f1 && f2
+ * Any A, B, C - f1 || f2
+ * notAny D - !(f1 || f2)
+ * none A, C, D - !(f1 && f2)
+ *
+ */
+
+// How to join the all individual filters together (not the values)
+export type GlobalFilterJoin =
+  | 'all' // All filters should match
+  | 'any' // Any filter should match
 
 export interface FilterValue {
   /** Unique id of filter value */

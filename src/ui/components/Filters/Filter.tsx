@@ -15,6 +15,7 @@ import { Icon } from '@iconify/react'
 import { FilterTypeIcons } from '@utils/lib/icons'
 import { getFilterJoinIcon, useFilterIcons } from '@hooks/ui/useFilterValueIcons'
 import IconDisplay from '../IconPicker/IconDisplay'
+import { ItemLabel } from '@components/FloatingElements/Dropdown.style'
 
 interface FilterProps {
   filter: Filter
@@ -124,7 +125,7 @@ const FilterRender = ({ filter, onChangeFilter, options, onRemoveFilter }: Filte
                 filter.values.map((value) => (
                   <FilterValueDiv key={value.id}>
                     <IconDisplay icon={getFilterValueIcon(filter.type, value.value)} />
-                    {value.label}
+                    <ItemLabel>{value.label}</ItemLabel>
                   </FilterValueDiv>
                 ))
               ) : (

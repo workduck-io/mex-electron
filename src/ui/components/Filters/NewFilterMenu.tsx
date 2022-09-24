@@ -25,11 +25,11 @@ const NewFilterMenu = ({ addFilter, filters }: NewFilterMenuProps) => {
       join: 'any',
       values: [value]
     }
-    mog('onAddNewFilter', { type, newFilter, value })
+    // mog('onAddNewFilter', { type, newFilter, value })
     addFilter(newFilter)
   }
 
-  mog('NewFilterMenu', { filters })
+  // mog('NewFilterMenu', { filters })
 
   return (
     <Menu

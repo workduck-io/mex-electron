@@ -57,10 +57,12 @@ const Tasks = () => {
     resetCurrentFilters,
     setCurrentFilters,
     filters,
-    currentFilters
+    currentFilters,
+    globalJoin,
+    setGlobalJoin
   } = useTodoKanban()
 
-  const board = useMemo(() => getTodoBoard(), [nodesTodo, currentFilters])
+  const board = useMemo(() => getTodoBoard(), [nodesTodo, globalJoin, currentFilters])
 
   const selectedRef = useRef<HTMLDivElement>(null)
   const handleCardMove = (card, source, destination) => {
@@ -357,6 +359,8 @@ const Tasks = () => {
           resetCurrentFilters={resetCurrentFilters}
           filters={filters}
           currentFilters={currentFilters}
+          globalJoin={globalJoin}
+          setGlobalJoin={setGlobalJoin}
         />
         <Board
           renderColumnHeader={({ title }) => <TaskColumnHeader>{title}</TaskColumnHeader>}

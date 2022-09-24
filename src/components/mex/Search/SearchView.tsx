@@ -199,6 +199,7 @@ const SearchView = <Item,>({
   const { applyCurrentFilters, resetCurrentFilters } = useFilters<Item>()
   const currentFilters = useFilterStore((store) => store.currentFilters)
   const filters = useFilterStore((store) => store.filters)
+  const globalJoin = useFilterStore((store) => store.globalJoin)
 
   const idxKeys = useFilterStore((store) => store.indexes) as idxKey[]
   const [view, setView] = useState<View>(options?.view)
@@ -268,7 +269,7 @@ const SearchView = <Item,>({
 
   useEffect(() => {
     updateResults()
-  }, [currentFilters, idxKeys])
+  }, [currentFilters, idxKeys, globalJoin])
 
   useEffect(() => {
     executeSearch(searchTerm)

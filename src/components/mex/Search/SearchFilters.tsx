@@ -2,19 +2,22 @@ import filter2Line from '@iconify/icons-ri/filter-2-line'
 import filterOffLine from '@iconify/icons-ri/filter-off-line'
 import { Icon } from '@iconify/react'
 import FilterRender from '@ui/components/Filters/Filter'
+import GlobalJoinFilterMenu from '@ui/components/Filters/GlobalJoinFilterMenu'
 import NewFilterMenu from '@ui/components/Filters/NewFilterMenu'
 import { Infobox, ToolbarTooltip } from '@workduck-io/mex-components'
 import { nanoid } from 'nanoid'
 import React, { useMemo } from 'react'
 import { SearchFiltersHelp } from '../../../data/Defaults/helpText'
 import { SearchFilterCancel, SearchFilterLabel, SearchFiltersWrapper, SearchFilterWrapper } from '../../../style/Search'
-import { Filter, Filters } from '../../../types/filters'
+import { Filter, Filters, GlobalFilterJoin } from '../../../types/filters'
 import { mog } from '../../../utils/lib/helper'
 
 interface SearchFiltersProps {
   result?: any
   filters: Filters
   currentFilters: Filter[]
+  globalJoin: GlobalFilterJoin
+  setGlobalJoin: (join: GlobalFilterJoin) => void
   addCurrentFilter: (filter: Filter) => void
   removeCurrentFilter: (filter: Filter) => void
   changeCurrentFilter: (filter: Filter) => void
@@ -28,7 +31,9 @@ const SearchFilters = ({
   changeCurrentFilter,
   result,
   removeCurrentFilter,
-  resetCurrentFilters
+  resetCurrentFilters,
+  globalJoin,
+  setGlobalJoin
 }: SearchFiltersProps) => {
   const randomId = useMemo(() => nanoid(), [filters, currentFilters])
 
@@ -49,13 +54,7 @@ const SearchFilters = ({
         <Infobox text={SearchFiltersHelp} />
       </SearchFilterLabel>
       <SearchFiltersWrapper key={`Filters_${randomId}`}>
-        <NewFilterMenu
-          filters={filters}
-          addFilter={(f) => {
-            mog('addFilter in SearchFilters', { f })
-            addCurrentFilter(f)
-          }}
-        />
+        <NewFilterMenu filters={filters} addFilter={(f) => addCurrentFilter(f)} />
         {currentFilters.map((filter) => (
           <FilterRender
             key={filter.id}
@@ -66,6 +65,7 @@ const SearchFilters = ({
           />
         ))}
       </SearchFiltersWrapper>
+      <GlobalJoinFilterMenu globalJoin={globalJoin} setGlobalJoin={setGlobalJoin} />
     </SearchFilterWrapper>
   )
 }

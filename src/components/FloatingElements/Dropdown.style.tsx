@@ -55,7 +55,7 @@ const MenuItemStyles = css`
   }
 `
 
-export const MenuItemLabel = styled.div`
+export const ItemLabel = styled.div`
   ${Ellipsis}
   max-width: 12rem;
 `

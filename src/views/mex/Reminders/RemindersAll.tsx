@@ -42,6 +42,8 @@ export const useReminderFilter = create<AllReminderFilterStore>((set, get) => ({
   setCurrentFilters: (filters) => set({ currentFilters: filters }),
   filters: [],
   setFilters: (filters) => set({ filters }),
+  globalJoin: 'all',
+  setGlobalJoin: (join) => set({ globalJoin: join }),
   addCurrentFilter: (filter) => {
     set({ currentFilters: [...get().currentFilters, filter] })
   },
@@ -57,6 +59,7 @@ const useReminderFilters = () => {
   const { getPathFromNodeid } = useLinks()
   const { attachBlockData } = useReminders()
   const setCurrentFilters = useReminderFilter((state) => state.setCurrentFilters)
+  const globalJoin = useReminderFilter((state) => state.globalJoin)
 
   const changeCurrentFilter = (filter: Filter) => {
     const currentFilters = useReminderFilter.getState().currentFilters
@@ -210,10 +213,16 @@ const useReminderFilters = () => {
   const applyFilters = (reminders: Reminder[]) => {
     const currentFilters = useReminderFilter.getState().currentFilters
     return reminders.filter((reminder) => {
-      return currentFilters.every(
-        (filter) => reminderFilterFunctions[filter.type](reminder, filter)
-        // filter.filter(reminder)
-      )
+      if (globalJoin === 'all') {
+        return currentFilters.every(
+          (filter) => reminderFilterFunctions[filter.type](reminder, filter)
+          // filter.filter(reminder)
+        )
+      } else
+        return currentFilters.some(
+          (filter) => reminderFilterFunctions[filter.type](reminder, filter)
+          // filter.filter(reminder)
+        )
     })
   }
 
@@ -234,6 +243,10 @@ const RemindersAll = () => {
   // const filters = useReminderFilter((s) => s.currentFilters)
   const currentFilters = useReminderFilter((s) => s.currentFilters)
   const armedReminders = useReminderStore((s) => s.armedReminders)
+
+  const globalJoin = useReminderFilter((s) => s.globalJoin)
+  const setGlobalJoin = useReminderFilter((s) => s.setGlobalJoin)
+
   // const setBoard = useReminderFilter((s) => s.setBoard)
   // const setFilters = useReminderFilter((s) => s.setFilters)
   const { getRemindersBoard, changeCurrentFilter } = useReminderFilters()
@@ -243,7 +256,7 @@ const RemindersAll = () => {
     // setFilters(newFilters)
     // mog('Setting Board', { newFilters })
     return { board, filters }
-  }, [reminders, armedReminders, currentFilters])
+  }, [reminders, armedReminders, currentFilters, globalJoin])
 
   // useEffect(() => {
   //   const { board, filters } = getRemindersBoard()
@@ -296,6 +309,8 @@ const RemindersAll = () => {
           changeCurrentFilter={changeCurrentFilter}
           filters={filters}
           currentFilters={currentFilters}
+          globalJoin={globalJoin}
+          setGlobalJoin={setGlobalJoin}
         />
         <ReminderBoardStyled>
           <Board

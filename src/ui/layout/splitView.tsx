@@ -35,7 +35,7 @@ const SplitView = ({ RenderSplitPreview, children, splitOptions, id }: SplitView
   // * Custom hooks
 
   const springProps = useMemo(() => {
-    const style = { width: '0%' }
+    const style = { width: '0%', flexShrink: 0 }
 
     if (splitOptions.type === SplitType.FULL) {
       style.width = '100%'

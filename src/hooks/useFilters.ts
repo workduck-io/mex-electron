@@ -9,7 +9,14 @@ import { useGenericFilterFunctions } from './useFilterFunctions'
 import { getTitleFromPath, useLinks } from './useLinks'
 import { useNamespaces } from './useNamespaces'
 import { useTags } from './useTags'
-import { Filter, Filters, FilterType, FilterTypeWithOptions, SearchFilterFunctions } from '../types/filters'
+import {
+  Filter,
+  Filters,
+  FilterType,
+  FilterTypeWithOptions,
+  GlobalFilterJoin,
+  SearchFilterFunctions
+} from '../types/filters'
 import useDataStore from '@store/useDataStore'
 
 /*
@@ -37,9 +44,11 @@ export interface SearchFilter {
 export interface FilterStore {
   filters: Filters
   currentFilters: Filter[]
+  globalJoin: GlobalFilterJoin
   indexes?: idxKey[]
   setIndexes?: (indexes: idxKey[]) => void
   setFilters: (filters: Filters) => void
+  setGlobalJoin: (join: GlobalFilterJoin) => void
   setCurrentFilters: (currentFilters: Filter[]) => void
 }
 
@@ -47,7 +56,9 @@ export const useFilterStoreBase = create<FilterStore>((set) => ({
   filters: [],
   currentFilters: [],
   indexes: ['node', 'shared'],
+  globalJoin: 'all',
   setFilters: (filters) => set((state) => ({ ...state, filters })),
+  setGlobalJoin: (join) => set((state) => ({ ...state, globalJoin: join })),
   setCurrentFilters: (currentFilters) => set((state) => ({ ...state, currentFilters })),
   setIndexes: (indexes) => set((state) => ({ ...state, indexes }))
 }))
@@ -59,9 +70,11 @@ export const useFilters = <Item>() => {
   const setFilters = useFilterStore((state) => state.setFilters)
   const currentFilters = useFilterStore((state) => state.currentFilters)
   const setCurrentFilters = useFilterStore((state) => state.setCurrentFilters)
+  const setGlobalJoin = useFilterStore((state) => state.setGlobalJoin)
   const tags = useDataStore((state) => state.tags)
   const ilinks = useDataStore((state) => state.ilinks)
   const namespaces = useDataStore((state) => state.namespaces)
+  const globalJoin = useFilterStore((state) => state.globalJoin)
 
   const { getTags } = useTags()
 
@@ -87,7 +100,7 @@ export const useFilters = <Item>() => {
   }
 
   const applyCurrentFilters = (items: Item[]) => {
-    return applyFilters(items, currentFilters, filterFunctions)
+    return applyFilters(items, currentFilters, filterFunctions, globalJoin)
   }
 
   const resetCurrentFilters = () => {
@@ -252,16 +265,31 @@ export const useFilters = <Item>() => {
     currentFilters,
     removeCurrentFilter,
     generateNodeSearchFilters,
-    resetCurrentFilters
+    resetCurrentFilters,
+    globalJoin,
+    setGlobalJoin
   }
 }
 
 export const applyFilters = <Item>(
   items: Item[],
   filters: Filter[],
-  filterFunctions: SearchFilterFunctions
+  filterFunctions: SearchFilterFunctions,
+  globalFilterJoin: GlobalFilterJoin = 'all'
 ): Item[] => {
   // TODO: Insert the global any and all filters match condition here
+  if (filters.length === 0) return items
+
+  // For any
+  if (globalFilterJoin === 'any') {
+    return items.filter((item) => {
+      return filters.some((filter) => {
+        return filterFunctions[filter.type](item, filter)
+      })
+    })
+  }
+
+  // For all
   const filtered = filters.reduce((acc, filter) => {
     return acc.filter((i) => filterFunctions[filter.type](i, filter))
   }, items)
