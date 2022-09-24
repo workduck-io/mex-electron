@@ -20,7 +20,7 @@ export const QUESTION_ID_PREFIX = 'WD_MEX_QUESTION'
 export const DRAFT_NODE = 'Untitled'
 export const REMINDER_ID_PREFIX = 'REMINDER'
 export const NAMESPACE_ID_PREFIX = 'NAMESPACE'
-export const TASK_VIEW_PREFIX = 'TASK_VIEW'
+export const TASK_VIEW_PREFIX = 'TASKVIEW'
 export const FILTER_ID_PREFIX = 'FILTER'
 
 export const HASH_SEPARATOR = '#'

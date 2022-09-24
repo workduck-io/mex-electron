@@ -159,7 +159,8 @@ export const useEnableShortcutHandler = () => {
     //   cl: fElement.classList,
     //   tagName: fElement.tagName
     // })
-    return fElement && (fElement.tagName === 'INPUT' || classesToIgnore.some((c) => fElement.classList.contains(c)))
+    return fElement && (fElement.tagName === 'INPUT' || fElement.tagName === 'TEXTAREA'
+      || classesToIgnore.some((c) => fElement.classList.contains(c)))
   }
 
   const enableShortcutHandler = (callback: () => void, options?: LocalSkipOptions) => {

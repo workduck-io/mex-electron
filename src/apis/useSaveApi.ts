@@ -55,6 +55,11 @@ export const useApi = () => {
     Accept: 'application/json, text/plain, */*'
   })
 
+  const viewHeaders = () => ({
+    ...workspaceHeaders(),
+    'mex-api-ver': 'v2'
+  })
+
   /*
    * Saves data in the backend
    * Also updates the incoming data in the store
@@ -542,7 +547,7 @@ export const useApi = () => {
       filters: view.filters
     }
 
-    const resp = await client.post(apiURLs.view.saveView, reqData, { headers: workspaceHeaders() }).then((resp) => {
+    const resp = await client.post(apiURLs.view.saveView, reqData, { headers: viewHeaders() }).then((resp) => {
       mog('We saved that view', { resp })
       return resp.data
     })
@@ -561,7 +566,7 @@ export const useApi = () => {
       return
     }
 
-    const resp = await client.get(url, { headers: workspaceHeaders() }).then((resp) => {
+    const resp = await client.get(url, { headers: viewHeaders() }).then((resp) => {
       // mog('We fetched them view', { resp })
       const views = resp.data
         .map((item: any) => {
@@ -589,7 +594,7 @@ export const useApi = () => {
   }
 
   const deleteView = async (viewid: string) => {
-    const resp = await client.delete(apiURLs.view.deleteView(viewid), { headers: workspaceHeaders() }).then((resp) => {
+    const resp = await client.delete(apiURLs.view.deleteView(viewid), { headers: viewHeaders() }).then((resp) => {
       mog('We saved that view', { resp })
       return resp.data
     })
