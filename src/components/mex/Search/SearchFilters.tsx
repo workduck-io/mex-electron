@@ -38,6 +38,12 @@ const SearchFilters = ({
   const randomId = useMemo(() => nanoid(), [filters, currentFilters])
 
   // mog('SearchFilters', { filters, currentFilters, filtersByKey })
+  const removeLastFilter = () => {
+    if (currentFilters.length > 0) {
+      const lastFilter = currentFilters[currentFilters.length - 1]
+      removeCurrentFilter(lastFilter)
+    }
+  }
 
   return (
     <SearchFilterWrapper>
@@ -54,7 +60,7 @@ const SearchFilters = ({
         <Infobox text={SearchFiltersHelp} />
       </SearchFilterLabel>
       <SearchFiltersWrapper key={`Filters_${randomId}`}>
-        <NewFilterMenu filters={filters} addFilter={(f) => addCurrentFilter(f)} />
+        <NewFilterMenu filters={filters} addFilter={(f) => addCurrentFilter(f)} removeLastFilter={removeLastFilter} />
         {currentFilters.map((filter) => (
           <FilterRender
             key={filter.id}
