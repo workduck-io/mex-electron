@@ -4,15 +4,17 @@ import { AuthTokenData } from '../../types/auth'
 import { applyTransforms, requiresTransform } from '../../utils/dataTransform'
 import { app } from 'electron'
 import fs from 'fs'
+import { mog } from '@workduck-io/mex-utils'
 
 export const getFileData = (location: string) => {
   if (fs.existsSync(location)) {
     const stringData = fs.readFileSync(location, 'utf-8')
     const data = JSON.parse(stringData)
-    const writeToFile = requiresTransform(data)
+    const writeToFile = true 
 
     if (!writeToFile) return data
 
+    mog("APPLYING TRANSFORMATIONS ....")
     const { data: fileData } = applyTransforms(data, UpdateVersionTransforms)
     setDataAtLocation(fileData, location)
 

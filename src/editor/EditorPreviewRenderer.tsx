@@ -16,6 +16,7 @@ import { editorPreviewComponents } from './Components/components'
 import { MultiComboboxContainer } from './Components/multi-combobox/multiComboboxContainer'
 import generatePlugins from './Plugins/plugins'
 import useEditorPluginConfig from './Plugins/useEditorPluginConfig'
+import { mog } from '@workduck-io/mex-utils'
 
 interface EditorPreviewRendererProps {
   content?: any[] // eslint-disable-line @typescript-eslint/no-explicit-any
@@ -92,7 +93,7 @@ const EditorPreviewRenderer = ({
   useEffect(() => {
     const timeoutId = setTimeout(() => {
       if (blockId) {
-        // mog('editorPreviewRenderer', { blockId, editorId })
+        mog('editorPreviewRenderer', { blockId, editorId })
         focusBlock(blockId, editorId)
         setHighlights([blockId], 'preview')
       }

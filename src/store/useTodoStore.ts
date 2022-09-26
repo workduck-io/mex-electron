@@ -3,6 +3,8 @@ import { produce } from 'immer'
 import create from 'zustand'
 import { devtools } from 'zustand/middleware'
 
+import { mog } from '@workduck-io/mex-utils'
+
 import { defaultContent, getDefaultTodo } from '../data/Defaults/baseData'
 import { TodoType, TodoStatus, PriorityType, TodosType } from '../editor/Components/Todo/types'
 import { useReminderStore } from '../hooks/useReminders'
@@ -114,8 +116,11 @@ const useTodoStore = create<TodoStoreType>()(
     },
 
     getAllTodos: () => {
-      const allTodos = Object.entries(get().todos).reduce((acc, [nodeid, todos]) => {
-        const newTodos = todos.filter((todo) => {
+      const existingTodos = get().todos ?? []
+
+      const allTodos = Object.entries(existingTodos).reduce((acc, [nodeid, todos]) => {
+        mog('Todos', { todos, existingTodos })
+        const newTodos = todos?.filter((todo) => {
           // TODO: Find a faster way to check for empty content
           const text = convertContentToRawText(todo.content)?.trim()
           // mog('empty todo check', { text, nodeid, todo })
@@ -197,6 +202,7 @@ const useTodoStore = create<TodoStoreType>()(
       const newtodos = { ...todos, [nodeid]: nodeTodos }
       set({ todos: newtodos })
     },
+
     updatePriorityOfTodo: (nodeid, todoId, priority) => {
       // mog('updatePro', { nodeid, todoId, priority })
       if (!nodeid) return

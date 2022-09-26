@@ -28,6 +28,7 @@ const useTodoBufferStore = create<TodoBufferStore>()(
     update: (noteId, todo) => {
       const buffer = get().todosBuffer || {}
       const noteBuffer = buffer?.[noteId] || {}
+      
       set(produce(draft => {
         draft.todosBuffer[noteId] = { ...noteBuffer, [todo.entityId]: todo } 
       }))
@@ -46,7 +47,10 @@ const useTodoBufferStore = create<TodoBufferStore>()(
         }))
       }
     },
-    initializeTodosBuffer: (todosBuffer) => set({ todosBuffer }),
+    initializeTodosBuffer: (todosBuffer) =>{
+      mog(" ------ Initializing TODOs Buffer --------", { todosBuffer })
+      set({ todosBuffer })
+    }, 
     clear: () => set({ todosBuffer: {} })
   }))
 )

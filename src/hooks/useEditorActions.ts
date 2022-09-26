@@ -1,7 +1,5 @@
-import { usePlateEditorRef } from '@udecode/plate'
-import { mog } from '@utils/lib/helper'
-import { useEffect } from 'react'
 import create from 'zustand'
+
 import useDataStore from '../store/useDataStore'
 import { useEditorStore } from '../store/useEditorStore'
 import { NodeEditorContent } from '../types/Types'
@@ -78,14 +76,13 @@ const useEditorActions = () => {
 }
 
 export const useEditorChange = (editorId: string, content: NodeEditorContent, onChange?: any) => {
-  const editor = usePlateEditorRef(editorId)
-
-  useEffect(() => {
-    if (editor && content?.length > 0) {
-      editor.children = content
-      if (onChange) onChange(content)
-    }
-  }, [editorId, content])
+  // useEffect(() => {
+  //   const editor = getPlateEditorRef(editorId)
+  //   if (editor && content?.length > 0) {
+  //     editor.children = content
+  //     if (onChange) onChange(content)
+  //   }
+  // }, [content])
 }
 
 export default useEditorActions

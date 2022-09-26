@@ -4,7 +4,6 @@ import { generateTempId } from '@data/Defaults/idPrefixes'
 import { useSpotlightContext } from '@store/Context/context.spotlight'
 import { useContentStore } from '@store/useContentStore'
 import useDataStore from '@store/useDataStore'
-import { mog } from '@utils/lib/helper'
 import { format } from 'date-fns'
 
 import { NodeEditorContent } from '../types/Types'

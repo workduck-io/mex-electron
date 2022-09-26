@@ -7,16 +7,18 @@ import { useEditorBuffer } from '@hooks/useEditorBuffer'
 import { NoteProvider } from '@store/Context/context.note'
 import { useContentStore } from '@store/useContentStore'
 import useDataStore from '@store/useDataStore'
+import { PlateProvider } from '@udecode/plate'
 import { ipcRenderer } from 'electron'
 
-import { mog } from '@workduck-io/mex-utils'
 import { tinykeys } from '@workduck-io/tinykeys'
 
 import { NodeEditorContent } from '../../types/Types'
 import InfoBar from './InfoBar'
 import { EditorContainer, NoteBodyContainer } from './styled'
 
-const Note: React.FC<{ noteId: string }> = ({ noteId }) => {
+const Note: React.FC<{
+  noteId: string
+}> = ({ noteId }) => {
   const noteContentInfo = useContentStore((store) => store.contents?.[noteId])
   const archive = useDataStore((store) => store.archive)
 
@@ -70,17 +72,23 @@ const Note: React.FC<{ noteId: string }> = ({ noteId }) => {
       <EditorContainer>
         <InfoBar archived={archived} />
         <NoteProvider>
-          <Editor
-            showBalloonToolbar
-            onAutoSave={onAutoSave}
-            comboboxOptions={{ showPreview: false }}
-            onChange={onChangeSave}
-            content={noteContent}
-            options={{ exclude: { dnd: true } }}
-            padding="0.25rem"
-            readOnly={archived}
-            editorId={`${noteId}-Pinned-Note`}
-          />
+          <PlateProvider id={`${noteId}-Pinned-Note`}>
+            <Editor
+              showBalloonToolbar
+              onAutoSave={onAutoSave}
+              comboboxOptions={{
+                showPreview: false
+              }}
+              onChange={onChangeSave}
+              content={noteContent}
+              options={{
+                exclude: { dnd: true }
+              }}
+              padding="0.25rem"
+              readOnly={archived}
+              editorId={`${noteId}-Pinned-Note`}
+            />
+          </PlateProvider>
         </NoteProvider>
       </EditorContainer>
     </NoteBodyContainer>

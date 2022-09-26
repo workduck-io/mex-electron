@@ -18,6 +18,7 @@ import { useUpdater } from '@hooks/useUpdater'
 import { useEditorBuffer } from '@hooks/useEditorBuffer'
 import { tinykeys } from '@workduck-io/tinykeys'
 import { useNamespaces } from '@hooks/useNamespaces'
+import { PlateProvider } from '@udecode/plate'
 
 const CreateTodoModal = () => {
   const isOpen = useModalStore((store) => store.open === ModalsType.todo)
@@ -94,10 +95,12 @@ const CreateTodoModal = () => {
         saveAndClearBuffer()
         toast('Task created!')
       }
-    } catch (err) {
+    } 
+    catch (err) {
       toast('Error occured while creating Task')
       mog('Error occured while creating Task', { err })
-    } finally {
+    } 
+      finally {
       setIsLoading(false)
       setOpen(undefined)
     }
@@ -111,7 +114,7 @@ const CreateTodoModal = () => {
       isOpen={isOpen}
     >
       <ModalSection>
-        <ModalHeader>Add a New Task</ModalHeader>
+        <ModalHeader>New Task</ModalHeader>
         <NewTodoSection />
         <ModalControls>
           <Button large onClick={onRequestClose}>
@@ -151,10 +154,14 @@ const NewTodoSection = ({ onSelectNote }: { onSelectNote?: (item: QuickLink) => 
 
   if (!todo) return <></>
 
+  const todoEditorId = `${todo.nodeid}_task_${todo.entityId}`
+
   return (
-    <TaskEditorWrapper>
-      <TaskEditor editorId={todo.nodeid} content={todo.content} onChange={onEditorChange} />
-    </TaskEditorWrapper>
+    <PlateProvider id={todoEditorId}>
+      <TaskEditorWrapper>
+        <TaskEditor editorId={todoEditorId} content={todo.content} onChange={onEditorChange} />
+      </TaskEditorWrapper>
+    </PlateProvider>
   )
 }
 

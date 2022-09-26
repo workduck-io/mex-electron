@@ -5,7 +5,6 @@ import useTodoBufferStore from '@hooks/useTodoBufferStore'
 import { mog } from '@utils/lib/helper'
 
 import { getNextStatus, PriorityDataType, PriorityType, TodoStatus, TodoType } from '../../editor/Components/Todo/types'
-import useTodoStore from '../../store/useTodoStore'
 import { MexIcon } from '../../style/Layouts'
 import PrioritySelect from './Priority/PrioritySelect'
 import { CheckBoxWrapper, StyledTodoStatus, TodoContainer, TodoOptions, TodoText } from './Todo.style'
@@ -37,9 +36,15 @@ const Todo = React.forwardRef<any, TodoProps>((props, ref) => {
   const todosBuffer = useTodoBufferStore((store) => store.todosBuffer)
 
   const todo = useMemo(() => {
-    return controls && controls.getTodo
-      ? controls.getTodo(parentNodeId, todoid)
-      : getTodoFromStore(parentNodeId, todoid)
+    const isTodoPresent = controls && controls.getTodo
+
+    if (isTodoPresent) {
+      return controls.getTodo(parentNodeId, todoid)
+    }
+
+    const storedTodo = getTodoFromStore(parentNodeId, todoid)
+    mog('Stored todo', { storedTodo })
+    return storedTodo
   }, [parentNodeId, todoid, animate, todosBuffer])
 
   useEffect(() => {

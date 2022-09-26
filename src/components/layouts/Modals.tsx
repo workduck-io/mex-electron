@@ -2,6 +2,7 @@ import React from 'react'
 
 import FleetContainer from '@components/FleetContainer'
 import ShareModal from '@components/mex/Mention/ShareModal'
+import PreviewNoteModal from '@components/mex/PreviewNoteModal'
 import ReleaseNotesModal from '@components/mex/ReleaseNotes'
 import TaskViewModal from '@components/mex/TaskViewModal'
 import CreateTodoModal from '@components/mex/Tasks/CreateTodoModal'
@@ -37,6 +38,7 @@ const Modals = () => {
       <ReleaseNotesModal />
       <CreateReminderModal />
       <TaskViewModal />
+      <PreviewNoteModal />
       <CreateTodoModal />
       <TemplateModal />
       <FleetContainer />

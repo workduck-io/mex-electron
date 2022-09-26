@@ -1,29 +1,27 @@
 import BallonMarkToolbarButtons from '@editor/Components/EditorBalloonToolbar'
 import useEditorPluginConfig from '@editor/Plugins/useEditorPluginConfig'
 import { Plate } from '@udecode/plate'
-import React from 'react'
+import React, { useMemo } from 'react'
 import { useContextMenu } from 'react-contexify'
 import { getTodoPlugins } from './plugins'
 import { MultiComboboxContainer } from '@editor/Components/multi-combobox/multiComboboxContainer'
 import { MENU_ID } from '@editor/Components/EditorContextMenu'
 import { NodeEditorContent } from '../../../../types/Types'
-import { useEditorChange } from '@hooks/useEditorActions'
 import { debounce } from 'lodash'
-import { TaskEditorStyle } from './styled'
 
 type TaskEditorType = {
   editorId: string
   content: NodeEditorContent
-  onChange: (val: any) => void
+  readOnly?: boolean 
+  onChange?: (val: any) => void
 }
 
-const TaskEditor = ({ editorId, content, onChange }: TaskEditorType) => {
+const TaskEditor = ({ editorId, readOnly, content, onChange }: TaskEditorType) => {
   const { pluginConfigs, comboConfigData } = useEditorPluginConfig(editorId)
   const { show } = useContextMenu({ id: MENU_ID })
-  const basicPlugins = getTodoPlugins()
 
-  const pluginsWithCombobox = [
-    ...basicPlugins,
+  const pluginsWithCombobox = useMemo(() => [
+    ...getTodoPlugins(),
     {
       key: 'MULTI_COMBOBOX',
       handlers: {
@@ -34,9 +32,9 @@ const TaskEditor = ({ editorId, content, onChange }: TaskEditorType) => {
         onKeyDown: pluginConfigs.combobox.onKeyDown
       }
     }
-  ]
+  ], [readOnly])
 
-  useEditorChange(editorId, content, onChange)
+  // useEditorChange(editorId, content, onChange)
 
   const onDelayPerform = debounce(typeof onChange === 'function' ? onChange : () => undefined, 300)
 
@@ -44,19 +42,19 @@ const TaskEditor = ({ editorId, content, onChange }: TaskEditorType) => {
     onDelayPerform(val)
   }
 
+  const editableProps = useMemo(() => ({ placeholder: 'Add description...', readOnly, spellCheck: true, autoFocus: true}) , [readOnly])
+
   return (
-    <TaskEditorStyle>
-      <Plate
+        <Plate
         id={editorId}
         initialValue={content}
         plugins={pluginsWithCombobox}
         onChange={onChangeContent}
-        editableProps={{ placeholder: 'Add description...', spellCheck: true, autoFocus: true }}
+        editableProps={editableProps}
       >
         <BallonMarkToolbarButtons />
         <MultiComboboxContainer config={comboConfigData} />
       </Plate>
-    </TaskEditorStyle>
   )
 }
 

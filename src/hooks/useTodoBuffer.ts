@@ -1,14 +1,15 @@
-import useTodoBufferStore, { NoteTodoBufferType, TodoBufferType } from './useTodoBufferStore'
-import { isEmpty } from 'lodash'
-import useTodoStore, { createDefaultTodo } from '@store/useTodoStore'
-import useEntityAPIs from './useEntityAPIs'
-import { runBatch } from '@utils/lib/batchPromise'
 import { TodoType } from '@editor/Components/Todo/types'
-import { checkIsEqual } from '@utils/lib/objects'
-import { NodeEditorContent } from '../types/Types'
-import { serializeTodo } from '@utils/lib/serialize'
-import { mog } from '@utils/lib/helper'
+import useTodoStore, { createDefaultTodo } from '@store/useTodoStore'
+import { runBatch } from '@utils/lib/batchPromise'
 import { getMentionsFromContent, getTagsFromContent } from '@utils/lib/content'
+import { mog } from '@utils/lib/helper'
+import { checkIsEqual } from '@utils/lib/objects'
+import { serializeTodo } from '@utils/lib/serialize'
+import { isEmpty } from 'lodash'
+
+import { NodeEditorContent } from '../types/Types'
+import useEntityAPIs from './useEntityAPIs'
+import useTodoBufferStore, { NoteTodoBufferType, TodoBufferType } from './useTodoBufferStore'
 
 export const useTodoBuffer = () => {
   const { updateTodos } = useEntityAPIs()
@@ -29,10 +30,8 @@ export const useTodoBuffer = () => {
     Adds all Todo changes to Buffer. 
   */
   const addInBuffer = (noteId: string, todos: NodeEditorContent) => {
-    const existingTodos = getExistingTodos(noteId)
-
     const todoBuffer = todos.reduce((prev, todoContent) => {
-      const todo = existingTodos[todoContent.entityId] || createDefaultTodo(noteId, [todoContent]);
+      const todo = getNoteTodo(noteId, todoContent.entityId) || createDefaultTodo(noteId, [todoContent])
       const tags = getTagsFromContent([todoContent])
       const mentions = getMentionsFromContent([todoContent])
 
@@ -46,6 +45,8 @@ export const useTodoBuffer = () => {
           }
         }
     }, {})
+
+    mog('todos', { todos })
 
     setTodosBuffer(noteId, todoBuffer)
   }
@@ -62,7 +63,7 @@ export const useTodoBuffer = () => {
       const todosSaveRequests = []
 
       Object.entries(todosInBuffer).forEach(([noteId, todosBuffer]) => {
-        if (!isTodosBufferEmpty(noteId)) {
+        if (todosInBuffer[noteId]) {
           const existingTodo = getNodeTodos(noteId)?.reduce((prev, todo) => {
             if (todo.entityId) {
               return { ...prev, [todo.entityId]: todo }
@@ -73,7 +74,7 @@ export const useTodoBuffer = () => {
           const updatedTodos = getUpdatedTodos(existingTodo, todosBuffer)
           const serializedTodos = updatedTodos.map(serializeTodo)
 
-          if (serializeTodo?.length > 0) {
+          if (serializedTodos.length > 0) {
             const req = updateTodos(serializedTodos)
               .then((d) => {
                 if (isEmpty(d?.UnprocessedItems)) {
@@ -90,7 +91,9 @@ export const useTodoBuffer = () => {
         }
       })
 
-      if (todosSaveRequests.length > 0) await runBatch(todosSaveRequests)
+      if (todosSaveRequests.length > 0) {
+        await runBatch(todosSaveRequests)
+      }
     }
   }
 
@@ -115,13 +118,7 @@ export const useTodoBuffer = () => {
       const existingTodo = existing[entityId]
       if (existingTodo) {
         if (
-          !checkIsEqual(existingTodo, todo, [
-            'lastEditedBy',
-            'publicAccess',
-            'updatedAt',
-            'createdAt',
-            'createdBy'
-          ])
+          !checkIsEqual(existingTodo, todo, ['lastEditedBy', 'publicAccess', 'updatedAt', 'createdAt', 'createdBy'])
         ) {
           updatedTodos.push(setTodoUpdateType(todo, 'UPDATE'))
         }

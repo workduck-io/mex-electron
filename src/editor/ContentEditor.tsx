@@ -1,8 +1,19 @@
-import { useSuggestions } from '@components/mex/Suggestions/useSuggestions'
-import { selectEditor, useFloatingTree, usePlateEditorRef } from '@udecode/plate'
 import React, { useCallback, useEffect, useMemo, useRef } from 'react'
-import { tinykeys } from '@workduck-io/tinykeys'
+
+import { useApi } from '@apis/useSaveApi'
+import NavBreadCrumbs from '@components/mex/NavBreadcrumbs'
+import { useSuggestions } from '@components/mex/Suggestions/useSuggestions'
+import { useLastOpened } from '@hooks/useLastOpened'
+import { useNodes } from '@hooks/useNodes'
+import { useContentStore } from '@store/useContentStore'
+import { getPlateEditorRef, PlateProvider, selectEditor } from '@udecode/plate'
+import { getContent } from '@utils/helpers'
+import { areEqual } from '@utils/lib/hash'
+import toast from 'react-hot-toast'
 import shallow from 'zustand/shallow'
+
+import { tinykeys } from '@workduck-io/tinykeys'
+
 import Metadata from '../components/mex/Metadata/Metadata'
 import { defaultContent } from '../data/Defaults/baseData'
 import { useEditorBuffer } from '../hooks/useEditorBuffer'
@@ -17,19 +28,10 @@ import { useLayoutStore } from '../store/useLayoutStore'
 import { EditorWrapper, StyledEditor } from '../style/Editor'
 import { getEditorId } from '../utils/lib/EditorId'
 import BlockInfoBar from './Components/Blocks/BlockInfoBar'
-import { useComboboxOpen } from './Components/combobox/hooks/useComboboxOpen'
 import { BlockOptionsMenu } from './Components/EditorContextMenu'
+import { useComboboxOpen } from './Components/combobox/hooks/useComboboxOpen'
 import { default as Editor } from './Editor'
 import Toolbar from './Toolbar'
-
-import { useNodes } from '@hooks/useNodes'
-import { useApi } from '@apis/useSaveApi'
-import { getContent } from '@utils/helpers'
-import { areEqual } from '@utils/lib/hash'
-import toast from 'react-hot-toast'
-import { useLastOpened } from '@hooks/useLastOpened'
-import NavBreadCrumbs from '@components/mex/NavBreadcrumbs'
-import { useContentStore } from '@store/useContentStore'
 
 const ContentEditor = () => {
   const fetchingContent = useEditorStore((state) => state.fetchingContent)
@@ -55,8 +57,6 @@ const ContentEditor = () => {
   const shortcuts = useHelpStore((store) => store.shortcuts)
   const isUserEditing = useEditorStore((store) => store.isEditing)
 
-  const editorRef = usePlateEditorRef()
-
   const nodeContent = useMemo(() => {
     if (fsContent?.content) return fsContent.content
     return defaultContent.content
@@ -81,6 +81,8 @@ const ContentEditor = () => {
   const onFocusClick = (ev) => {
     ev.preventDefault()
     ev.stopPropagation()
+
+    const editorRef = getPlateEditorRef()
 
     if (editorRef) {
       if (editorWrapperRef.current) {
@@ -135,9 +137,6 @@ const ContentEditor = () => {
   }, [shortcuts, toggleFocusMode])
 
   const viewOnly = accessWhenShared(node.nodeid) === 'READ'
-  // const readOnly = !!fetchingContent
-
-  // mog('ContentEditor', { node, fsContent, nodeContent })
 
   return (
     <>
@@ -146,21 +145,26 @@ const ContentEditor = () => {
         <Toolbar />
 
         {isBlockMode ? <BlockInfoBar /> : <Metadata node={node} />}
-
-        <EditorWrapper comboboxOpen={isComboOpen} isUserEditing={isUserEditing} ref={editorWrapperRef} onClick={onFocusClick}>
-          <Editor
-            showBalloonToolbar
-            onAutoSave={onAutoSave}
-            getSuggestions={getSuggestions}
-            onChange={onChangeSave}
-            content={nodeContent?.length ? nodeContent : defaultContent.content}
-            editorId={editorId}
-            readOnly={viewOnly}
-          />
-        </EditorWrapper>
+        <PlateProvider id={editorId}>
+          <EditorWrapper
+            comboboxOpen={isComboOpen}
+            isUserEditing={isUserEditing}
+            ref={editorWrapperRef}
+            onClick={onFocusClick}
+          >
+            <Editor
+              showBalloonToolbar
+              onAutoSave={onAutoSave}
+              getSuggestions={getSuggestions}
+              onChange={onChangeSave}
+              content={nodeContent?.length ? nodeContent : defaultContent.content}
+              editorId={editorId}
+              readOnly={viewOnly}
+            />
+          </EditorWrapper>
+        </PlateProvider>
       </StyledEditor>
       <BlockOptionsMenu blockId="one" />
-      {/* <NodeIntentsModal nodeid={nodeid} /> */}
     </>
   )
 }

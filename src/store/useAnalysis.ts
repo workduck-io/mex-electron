@@ -5,6 +5,7 @@ import { AnalysisOptions } from '@electron/worker/controller'
 import { useLinks } from '@hooks/useLinks'
 import { useSearchExtra } from '@hooks/useSearch'
 import { useTodoBuffer } from '@hooks/useTodoBuffer'
+import { NodeEditorContent } from '@types/Types'
 import { ipcRenderer } from 'electron'
 import create from 'zustand'
 
@@ -14,6 +15,7 @@ import { useBufferStore, useEditorBuffer } from '../hooks/useEditorBuffer'
 import { getContent } from '../utils/helpers'
 import { areEqual } from '../utils/lib/hash'
 import { checkIfUntitledDraftNode } from '../utils/lib/strings'
+import { useContentStore } from './useContentStore'
 import { useEditorStore } from './useEditorStore'
 
 export interface OutlineItem {
@@ -65,12 +67,24 @@ export const useAnalysisIPC = () => {
 
   const setIpc = () => {
     ipcRenderer.on(IpcAction.RECEIVE_ANALYSIS, (_event, analysis: any) => {
-      // mog('analysisRECEIVEd', { analysis })
       if (analysis) setAnalysis(analysis)
     })
   }
 
   return setIpc
+}
+
+export const sendForAnalysis = (noteId: string, content: NodeEditorContent, options?: { title?: boolean }) => {
+  ipcRenderer.send(IpcAction.ANALYSE_CONTENT, { content, nodeid: noteId, options })
+}
+
+export const analyzeNote = (noteId: string, options?: { title?: boolean }) => {
+  const noteBuffer = useBufferStore.getState().buffer?.[noteId]
+  const noteContent = useContentStore.getState().getContent(noteId)?.content
+
+  if (noteBuffer) {
+    if (!areEqual(noteBuffer, noteContent)) sendForAnalysis(noteId, noteBuffer, options)
+  }
 }
 
 export const useAnalysis = () => {
@@ -80,7 +94,6 @@ export const useAnalysis = () => {
   const buffer = useBufferStore((s) => s.buffer)
   const { getSearchExtra } = useSearchExtra()
 
-  // mog('Setting up IPC for Buffer', { node })
   useEffect(() => {
     const parentNodePath = getParentNodePath(node.path)
     const parentNodeId = getNodeidFromPath(parentNodePath, node.namespace)
@@ -100,16 +113,12 @@ export const useAnalysis = () => {
       options['title'] = true
     }
 
-    // mog('sending for calc', { node, buffer })
-    // mog('Buffer for calc', { bufferContent })
     if (bufferContent) {
       if (!areEqual(bufferContent, content.content)) {
-        ipcRenderer.send(IpcAction.ANALYSE_CONTENT, { content: bufferContent, nodeid: node.nodeid, options })
+        sendForAnalysis(node.nodeid, bufferContent, options)
       }
     } else {
-      // mog('Content for calc', { content })
-      if (content && content.content)
-        ipcRenderer.send(IpcAction.ANALYSE_CONTENT, { content: content.content, nodeid: node.nodeid, options })
+      if (content && content.content) sendForAnalysis(node.nodeid, content.content, options)
     }
   }, [node.nodeid, buffer])
 

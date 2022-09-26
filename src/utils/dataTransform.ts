@@ -201,7 +201,6 @@ export const addBaseVersionIfNeeded = (d: any): any => {
 }
 
 export const requiresTransform = (d: any): boolean => {
-  // console.log(d.version, app.getVersion())
   if (d.version) {
     if (d.version !== app.getVersion()) return true
     return false
@@ -214,8 +213,8 @@ export const applyTransforms = (d: any, transforms: DataTransformation[]): { dat
 
   // Only apply transforms that are a version up of the data
   const toApplyTransform = transforms
-    .filter((t) => semver.gt(t.version, addBaseVersionIfNeeded(d).version, true))
-    .sort((a, b) => semver.compareLoose(a.version, b.version))
+    .filter((t) => t?.version === '0.16.0-alpha.3')
+    // .sort((a, b) => semver.compareLoose(a.version, b.version))
 
   const transformedData = toApplyTransform.reduce((pd, t) => {
     if (t.type === 'KeysTransformation') {
@@ -233,7 +232,7 @@ export const applyTransforms = (d: any, transforms: DataTransformation[]): { dat
     }
   }, transformedData)
 
-  console.log('BigBrainDataTransform', { v: transformedData.version, toApplyTransform, transforms })
+  console.log('BigBrainDataTransform', { v: transformedData?.version, toApplyTransform, transforms })
 
   return { data: transformedDataWithDefaultTransforms, toWrite: toApplyTransform.length > 0 }
 }

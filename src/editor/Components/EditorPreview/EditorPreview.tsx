@@ -1,17 +1,21 @@
 import React, { useEffect, useMemo, useRef } from 'react'
 
 import { NestedFloating } from '@components/FloatingElements'
+import { Tooltip } from '@components/FloatingElements/Tooltip'
+import NamespaceTag from '@components/mex/NamespaceTag'
 import { useBufferStore, useEditorBuffer } from '@hooks/useEditorBuffer'
+import { useNamespaces } from '@hooks/useNamespaces'
 import closeCircleLine from '@iconify/icons-ri/close-circle-line'
 import fileList2Line from '@iconify/icons-ri/file-list-2-line'
 import { Icon } from '@iconify/react'
 import useMultipleEditors from '@store/useEditorsStore'
 import { getPlateEditorRef, selectEditor } from '@udecode/plate'
 import { useMatch } from 'react-router-dom'
+import { useTheme } from 'styled-components'
 
 import { Button, MexIcon } from '@workduck-io/mex-components'
 import { tinykeys } from '@workduck-io/tinykeys'
-import { Tooltip } from '@components/FloatingElements/Tooltip'
+
 import { getNameFromPath } from '../../../components/mex/Sidebar/treeUtils'
 import { TagsRelatedTiny } from '../../../components/mex/Tags/TagsRelated'
 import { useLinks } from '../../../hooks/useLinks'
@@ -28,9 +32,6 @@ import {
   EditorPreviewWrapper,
   PreviewActionHeader
 } from './EditorPreview.styles'
-import { useTheme } from 'styled-components'
-import { useNamespaces } from '@hooks/useNamespaces'
-import NamespaceTag from '@components/mex/NamespaceTag'
 
 export interface EditorPreviewProps {
   nodeid: string
@@ -227,8 +228,8 @@ const EditablePreview = ({ content, editable, editorId, id: nodeId, onClose, hov
     >
       <EditorPreviewRenderer
         onChange={onChange}
+        blockId={blockId}
         content={content}
-      blockId={blockId}
         readOnly={!editable || !presentEditor?.editing}
         editorId={editorId}
       />

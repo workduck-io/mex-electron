@@ -279,6 +279,8 @@ const useLoad = () => {
       setHighlights([options.highlightBlockId], 'editor')
     }
 
+    loadNodeEditor(node)
+    
     if (!localCheck.isShared) {
       const allParents = getAllParentIds(node.path)
       expandNodes(allParents)
@@ -288,7 +290,6 @@ const useLoad = () => {
 
     mog('Loading that here', { node })
     changeSpace(node.namespace)
-    loadNodeEditor(node)
   }
 
   const loadNodeProps = (nodeProps: NodeProperties) => {

@@ -3,18 +3,19 @@ import React, { useEffect, useMemo } from 'react'
 import { useGlobalListener } from '@hooks/useGlobalListener'
 import useMultipleEditors from '@store/useEditorsStore'
 import useSuggestionStore from '@store/useSuggestionStore'
-import { getPlateEditorRef, Plate, selectEditor, usePlateEditorRef } from '@udecode/plate'
+import { getPlateEditorRef, Plate } from '@udecode/plate'
 import { debounce } from 'lodash'
 import { useContextMenu } from 'react-contexify'
 import { DndProvider } from 'react-dnd'
 import { HTML5Backend } from 'react-dnd-html5-backend'
 import { useDebouncedCallback } from 'use-debounce'
 
+import { mog } from '@workduck-io/mex-utils'
+
 import { useEditorChange } from '../hooks/useEditorActions'
 import { useGraphStore } from '../store/useGraphStore'
 import { EditorStyles } from '../style/Editor'
 import { NodeEditorContent } from '../types/Types'
-import { mog } from '../utils/lib/helper'
 import { useBlockHighlightStore, useFocusBlock } from './Actions/useFocusBlock'
 import BallonMarkToolbarButtons from './Components/EditorBalloonToolbar'
 import { MENU_ID } from './Components/EditorContextMenu'
@@ -34,6 +35,7 @@ interface EditorProps {
   focusAtBeginning?: boolean
   showBalloonToolbar?: boolean
   onAutoSave?: (content: NodeEditorContent) => void
+  placeholder?: string
   padding?: string
   options?: PluginOptionType
   getSuggestions?: any
@@ -47,6 +49,7 @@ export const Editor = ({
   options,
   readOnly = false,
   onChange,
+  placeholder,
   onAutoSave,
   padding = '32px',
   focusAtBeginning = true,
@@ -59,6 +62,7 @@ export const Editor = ({
   const editableProps = {
     spellCheck: true,
     autoFocus,
+    placeholder,
     style: {
       padding
     },
@@ -69,7 +73,7 @@ export const Editor = ({
   const headingQASearch = useSuggestionStore((store) => store.headingQASearch)
   const isEmpty = useMultipleEditors((store) => store.isEmpty)
 
-  const editorRef = usePlateEditorRef()
+  // const editorRef = usePlateEditorRef()
   const { show } = useContextMenu({ id: MENU_ID })
   const { focusBlock } = useFocusBlock()
   const clearHighlights = useBlockHighlightStore((store) => store.clearAllHighlightedBlockIds)
@@ -77,27 +81,28 @@ export const Editor = ({
 
   useEffect(() => {
     const hightlightedBlockIds = useBlockHighlightStore.getState().hightlighted.editor
+    const editorRef = getPlateEditorRef()
     if (editorRef && hightlightedBlockIds.length > 0) {
       focusBlock(hightlightedBlockIds[hightlightedBlockIds.length - 1], editorId)
       return
     }
-
-    if (editorRef && focusAtBeginning) {
-      selectEditor(editorRef, { edge: 'start', focus: true })
-    }
-  }, [editorRef, editorId, focusAtBeginning]) // eslint-disable-line react-hooks/exhaustive-deps
+  }, [editorId, focusAtBeginning]) // eslint-disable-line react-hooks/exhaustive-deps
 
   useEffect(() => {
-    // Clear highlights when highlightedBlockIds present
-    if (hightlightedBlockIds.length > 0) {
+    const tempRef = getPlateEditorRef(editorId)
+
+    mog('THIS EVENT IS BEING CALLED')
+    if (tempRef && hightlightedBlockIds.length > 0) {
       focusBlock(hightlightedBlockIds[hightlightedBlockIds.length - 1], editorId)
+
       const clearHighlightTimeoutId = setTimeout(() => {
         // mog('clearing highlights')
         if (!readOnly) clearHighlights()
       }, 2000)
+
       return () => clearTimeout(clearHighlightTimeoutId)
     }
-  }, [hightlightedBlockIds, editorId, editorRef])
+  }, [hightlightedBlockIds, editorId])
 
   const { pluginConfigs, comboConfigData } = useEditorPluginConfig(editorId, options)
 
@@ -149,11 +154,11 @@ export const Editor = ({
 
   return (
     <>
+      <GlobalEditorListener />
       <EditorStyles
         readOnly={readOnly}
         onClick={(ev) => {
           ev.stopPropagation()
-
           setNodePreview(false)
         }}
         data-tour="mex-onboarding-draft-editor"
@@ -167,7 +172,6 @@ export const Editor = ({
         >
           {showBalloonToolbar && <BallonMarkToolbarButtons />}
           {isEmpty && <MultiComboboxContainer options={comboboxOptions} config={comboConfigData} />}
-          <GlobalEditorListener />
         </Plate>
       </EditorStyles>
     </>

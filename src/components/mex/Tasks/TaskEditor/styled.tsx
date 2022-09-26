@@ -11,6 +11,5 @@ export const TaskEditorStyle = styled(EditorStyles)`
   max-height: 50vh;
   background: #333;
   border-radius: ${({ theme }) => theme.borderRadius.small};
-  padding: ${({ theme }) => theme.spacing.small};
   margin: ${({ theme }) => theme.spacing.medium};
 `

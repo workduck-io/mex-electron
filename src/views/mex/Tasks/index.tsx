@@ -1,11 +1,13 @@
-import React, { useEffect, useMemo, useRef } from 'react'
+import React, { useEffect, useMemo, useRef, useState } from 'react'
 
 import Board from '@asseinfo/react-kanban'
+import TaskEditor from '@components/mex/Tasks/TaskEditor'
 import TaskHeader from '@components/mex/Tasks/TaskHeader'
 import { useEnableShortcutHandler } from '@hooks/useShortcutListener'
 import { useSyncTaskViews, useViewStore } from '@hooks/useTaskViews'
 import { useTodoBuffer } from '@hooks/useTodoBuffer'
 import useTodoBufferStore from '@hooks/useTodoBufferStore'
+import useMultipleEditors from '@store/useEditorsStore'
 import { useLayoutStore } from '@store/useLayoutStore'
 import useModalStore, { ModalsType } from '@store/useModalStore'
 import { OverlaySidebarWindowWidth } from '@style/responsive'
@@ -19,6 +21,7 @@ import SearchFilters from '../../../components/mex/Search/SearchFilters'
 import { Heading } from '../../../components/spotlight/SearchResults/styled'
 import { getNextStatus, getPrevStatus, PriorityType, TodoType } from '../../../editor/Components/Todo/types'
 import EditorPreviewRenderer from '../../../editor/EditorPreviewRenderer'
+import useLoad from '../../../hooks/useLoad'
 import { useNavigation } from '../../../hooks/useNavigation'
 import { KanbanBoardColumn, TodoKanbanCard, useTodoKanban } from '../../../hooks/useTodoKanban'
 import useTodoStore from '../../../store/useTodoStore'
@@ -73,6 +76,7 @@ const Tasks = () => {
 
   const selectedRef = useRef<HTMLDivElement>(null)
 
+  const isPreviewEditors = useMultipleEditors((store) => store.editors)
   const handleCardMove = (card, source, destination) => {
     changeStatus(card.todo, destination.toColumnId)
   }
@@ -85,6 +89,7 @@ const Tasks = () => {
     if (!selectedCard) {
       return
     }
+
     const nodeid = selectedCard.todo.nodeid
     push(nodeid)
     goTo(ROUTE_PATHS.node, NavigationType.push, nodeid)
@@ -314,12 +319,14 @@ const Tasks = () => {
       }
     }
 
-    const unsubscribe = tinykeys(window, shorcutConfig())
+    if (!isPreviewEditors || (isPreviewEditors && !Object.entries(isPreviewEditors).length)) {
+      const unsubscribe = tinykeys(window, shorcutConfig())
 
-    return () => {
-      unsubscribe()
+      return () => {
+        unsubscribe()
+      }
     }
-  }, [board, selectedCard, isModalOpen])
+  }, [board, selectedCard, isModalOpen, isPreviewEditors])
 
   useEffect(() => {
     if (match && match.params && match.params.viewid) {
@@ -350,7 +357,9 @@ const Tasks = () => {
   }
 
   const RenderCard = ({ id, todo }: { id: string; todo: TodoType }, { dragging }: { dragging: boolean }) => {
-    const pC = getPureContent(todo)
+    const todos = useTodoStore((store) => store.todos)
+    const pC = useMemo(() => getPureContent(todo), [id, todos])
+    const toggleModal = useModalStore((store) => store.toggleOpen)
 
     return (
       <TaskCard
@@ -361,7 +370,9 @@ const Tasks = () => {
         sidebarExpanded={sidebar.show && sidebar.expanded && !overlaySidebar}
         onMouseDown={(event) => {
           event.preventDefault()
-          onDoubleClick(event, todo.nodeid, todo.entityId)
+          if (event.detail === 2) {
+            toggleModal(ModalsType.previewNote, { noteId: todo.nodeid, blockId: todo.id })
+          }
         }}
       >
         <Todo
@@ -371,10 +382,10 @@ const Tasks = () => {
           readOnly
           parentNodeId={todo.nodeid}
         >
-          <EditorPreviewRenderer
-            noStyle
+          <TaskEditor
+            readOnly
             content={pC}
-            editorId={`NodeTodoPreview_${todo.nodeid}_${todo.entityId}_${todo.entityMetadata.status}`}
+            editorId={`${todo.nodeid}_TASK_${todo.entityId}_${todo.entityMetadata.status}`}
           />
         </Todo>
       </TaskCard>

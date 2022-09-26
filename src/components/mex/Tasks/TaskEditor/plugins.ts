@@ -9,6 +9,7 @@ import { ILinkElement } from '@editor/Components/ilink/components/ILinkElement'
 import { createILinkPlugin } from '@editor/Components/ilink/createILinkPlugin'
 import { ELEMENT_ILINK } from '@editor/Components/ilink/defaults'
 import { MediaEmbedElement } from '@editor/Components/media-embed-ui/src'
+import { MentionElement } from '@editor/Components/mentions/components/MentionElement'
 import { createMentionPlugin } from '@editor/Components/mentions/createMentionsPlugin'
 import { TagElement } from '@editor/Components/tag/components/TagElement'
 import { createTagPlugin } from '@editor/Components/tag/createTagPlugin'
@@ -32,7 +33,6 @@ import {
   ELEMENT_PARAGRAPH,
   ELEMENT_TODO_LI,
   LinkElement,
-  MentionElement,
   StyledElement,
   withProps,
   createSelectOnBackspacePlugin,

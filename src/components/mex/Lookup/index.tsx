@@ -54,8 +54,8 @@ const InputWrapper = styled.div`
 `
 
 const Lookup = () => {
+  const open = useModalStore((store) => store.open === ModalsType.lookup)
   const setModalOpen = useModalStore((store) => store.toggleOpen)
-  const open = useModalStore((store) => store.open)
   const [tempClose, setTempClose] = useState(false)
   const isOnboarding = useOnboard((s) => s.isOnboarding)
   const setStep = useOnboard((s) => s.setStep)
@@ -68,7 +68,6 @@ const Lookup = () => {
 
   const openModal = () => {
     setModalOpen(ModalsType.lookup)
-    // searchInput.current.focus();
   }
 
   const closeModal = () => {
@@ -136,12 +135,7 @@ const Lookup = () => {
   }
 
   return (
-    <StyledModal
-      className="ModalContent"
-      overlayClassName="ModalOverlay"
-      onRequestClose={closeModal}
-      isOpen={open === ModalsType.lookup}
-    >
+    <StyledModal className="ModalContent" overlayClassName="ModalOverlay" onRequestClose={closeModal} isOpen={open}>
       <h1 style={{ textAlign: 'center' }}>Lookup</h1>
       <InputWrapper>
         <Brackets>[[</Brackets>

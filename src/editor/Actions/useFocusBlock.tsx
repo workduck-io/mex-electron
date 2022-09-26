@@ -66,7 +66,6 @@ export const useFocusBlock = () => {
   const selectBlock = (blockid: string, editorId?: string) => {
     try {
       const editor = editorId ? getPlateEditorRef(editorId) : getPlateEditorRef()
-      mog('editor', { editor })
       if (editor) {
         const headingNode = findNode(editor, {
           at: [],
@@ -80,12 +79,12 @@ export const useFocusBlock = () => {
         if (!headingNode) return
         const headingNodePath = headingNode[1]
 
-        mog('select block', { blockid, headingNode, headingNodePath })
         if (!headingNodePath) return
 
         // setHighlightedBlockIds([blockid], key)
-        select(editor, getStartPoint(editor, headingNodePath))
-        focusEditor(editor)
+        
+        // select(editor, getStartPoint(editor, headingNodePath))
+        // focusEditor(editor)
       }
     } catch (e) {
       console.log('select block error', e)
@@ -114,6 +113,7 @@ export const useFocusBlock = () => {
         // setHighlightedBlockIds([blockid], key)
         select(editor, getStartPoint(editor, headingNodePath))
         setTimeout(() => {
+          mog("THIS IS BEING CALLED")
           const highlightEl = document.getElementsByClassName('slate-highlight')[0]
           if (highlightEl) {
             highlightEl.scrollIntoView({

@@ -30,6 +30,7 @@ type TaskEntityResponseType = {
 const useEntityAPIs = () => {
   const updateTodosOfNode = useTodoStore((store) => store.updateTodosOfNode)
   const updateTodosOfNodes = useTodoStore((store) => store.updateTodosOfNodes)
+  const initTodos = useTodoStore((store) => store.initTodos)
 
   const { updateTodoInContent } = useUpdater()
 
@@ -68,7 +69,9 @@ const useEntityAPIs = () => {
       }
 
       const res = await client.post<TaskEntityResponseType>(apiURLs.batchGetTasksOfNotes, reqBody, {
-        headers: workspaceId
+        headers: {
+          'mex-workspace-id': workspaceId
+        }
       })
 
       if (res?.data) {
@@ -175,10 +178,20 @@ const useEntityAPIs = () => {
       if (res?.data) {
         const items = deserializeTodos(res.data.Items)
 
-        if (items.length > 0 && res.data.lastKey) {
-          const data = await getAllTodosOfWorkspace(res.data.lastKey)
-          items.push(...data)
-        }
+        const notesTasks = items.reduce((notesTasksMap, task: TodoType) => {
+          mog('Tasks', { notesTasksMap, task })
+          if (notesTasksMap[task.nodeid]) {
+            notesTasksMap[task.nodeid].push(task)
+          } else {
+            notesTasksMap[task.nodeid] = [task]
+          }
+
+          return notesTasksMap
+        }, {})
+
+        mog('After reducer', { notesTasks })
+
+        initTodos(notesTasks)
 
         return items
       }

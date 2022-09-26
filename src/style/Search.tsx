@@ -1,3 +1,4 @@
+import { StyledNamespaceTag } from '@components/mex/NamespaceTag/styled'
 import { TagFlex } from '@components/mex/Tags/TagsRelated.styles'
 import { transparentize } from 'polished'
 import { animated } from 'react-spring'
@@ -14,7 +15,6 @@ import { ProfileIcon } from './UserPage'
 import { CardShadow, HoverSubtleGlow } from './helpers'
 import { size } from './responsive'
 import { BodyFont, MainFont } from './spotlight/global'
-import { StyledNamespaceTag } from '@components/mex/NamespaceTag/styled'
 
 interface ResultProps {
   selected?: boolean

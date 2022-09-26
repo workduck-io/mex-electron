@@ -14,7 +14,6 @@ import { useHistoryStore } from '@store/useHistoryStore'
 import useModalStore, { ModalsType } from '@store/useModalStore'
 import useOnboard from '@store/useOnboarding'
 import { useRecentsStore } from '@store/useRecentsStore'
-import { mog } from '@utils/lib/helper'
 import { NavigationType, ROUTE_PATHS, useRouting } from '@views/routes/urls'
 import { ipcRenderer } from 'electron'
 
@@ -88,8 +87,6 @@ export const useIpcListenerOnInit = () => {
     ipcRenderer.on(IpcAction.SHOW_RELEASE_NOTES, (_event, { version }) => {
       const showedReleaseNotes = useModalStore.getState().init
 
-      mog('SHOW RELEASE NOTES', { version, showedReleaseNotes })
-
       if (!showedReleaseNotes) toggleModal(ModalsType.releases, undefined, true)
     })
 
@@ -99,8 +96,6 @@ export const useIpcListenerOnInit = () => {
 
     // * Pinned Note IPC Listener
     ipcRenderer.on(IpcAction.UNPIN_NOTE, (_event, { noteId }) => {
-      mog('NOTE TO DELTE', { noteId })
-
       if (noteId) {
         useMultipleEditors.getState().unPinNote(noteId)
       }

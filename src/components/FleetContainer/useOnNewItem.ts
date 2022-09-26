@@ -64,6 +64,7 @@ export const useOnNewItem = () => {
   const onNewTask = () => {
     mog('Opening modal')
     openModal(ModalsType.todo)
+    mog("TODO modal opened")
   }
 
   const getQuickNewItems = () => {

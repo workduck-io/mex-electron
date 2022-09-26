@@ -1,5 +1,6 @@
-import { useEditorStore } from '@store/useEditorStore'
 import { useEffect } from 'react'
+
+import { useEditorStore } from '@store/useEditorStore'
 import { useFocused } from 'slate-react'
 
 export const useGlobalListener = () => {
@@ -27,7 +28,7 @@ export const useGlobalListener = () => {
       setIsUserTyping(false)
     }
 
-    window.addEventListener('mousemove', mouseHandler)
+    window.addEventListener('mousemove', mouseHandler, { passive: false })
 
     return () => window.removeEventListener('mousemove', mouseHandler)
   }, [])

@@ -13,7 +13,6 @@ import { copyToClipboard, getGlobalShortcut, useSnippetFromClipboard } from '@el
 import {
   closeWindow,
   createMexWindow,
-  createNoteWindow,
   createSpotLighWindow,
   handleToggleMainWindow,
   notifyOtherWindow
@@ -34,8 +33,6 @@ import { clearLocalStorage } from '@utils/dataTransform'
 import { getAppleNotes } from '@utils/importers/appleNotes'
 import { app, globalShortcut, ipcMain } from 'electron'
 import fs from 'fs'
-
-import { mog } from '@workduck-io/mex-utils'
 
 import { AuthTokenData } from '../../types/auth'
 import { FileData } from '../../types/data'

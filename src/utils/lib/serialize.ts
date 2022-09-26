@@ -172,6 +172,7 @@ export const serializeTodo = (todo: TodoType) => {
     entityId: todo.entityId,
     nodeId: todo.nodeid,
     content: todo.content,
+    blockId: todo.id,
     properties: todo.entityMetadata
   }
 

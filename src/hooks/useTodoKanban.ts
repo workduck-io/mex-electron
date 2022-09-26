@@ -1,5 +1,6 @@
 import useDataStore from '@store/useDataStore'
 import { ELEMENT_TODO_LI } from '@udecode/plate'
+import toast from 'react-hot-toast'
 import create from 'zustand'
 
 import { getAllParentIds } from '../components/mex/Sidebar/treeUtils'
@@ -11,6 +12,7 @@ import { Filter, Filters, FilterTypeWithOptions, GlobalFilterJoin } from '../typ
 import { KanbanBoard, KanbanCard, KanbanColumn } from '../types/search'
 import { mog } from '../utils/lib/helper'
 import { convertContentToRawText } from '../utils/search/parseData'
+import useEntityAPIs from './useEntityAPIs'
 import { useTaskFilterFunctions } from './useFilterFunctions'
 import { FilterStore } from './useFilters'
 import { useLinks } from './useLinks'
@@ -63,26 +65,34 @@ export const useTodoKanban = () => {
   const globalJoin = useKanbanFilterStore((state) => state.globalJoin)
   const setGlobalJoin = useKanbanFilterStore((state) => state.setGlobalJoin)
 
-  const updateTodo = useTodoStore((s) => s.updateTodoOfNode)
   const tags = useDataStore((state) => state.tags)
   const ilinks = useDataStore((state) => state.ilinks)
   const namespaces = useDataStore((state) => state.namespaces)
 
   const { updateNoteTodo } = useTodoBuffer()
+  const updatePriorityOfTodo = useTodoStore((store) => store.updatePriorityOfTodo)
+  const updateStatusOfTodo = useTodoStore((store) => store.updateStatusOfTodo)
 
   const { getPathFromNodeid, getILinkFromNodeid } = useLinks()
   const { isInArchive } = useNodes()
   const { getSearchExtra } = useSearchExtra()
   const { getUserFromUserid } = useMentions()
   const { getTags } = useTags()
+  const { createTodo: updateTodo } = useEntityAPIs()
   const taskFilterFunctions = useTaskFilterFunctions()
 
   const changeStatus = (todo: TodoType, newStatus: TodoStatus) => {
-    updateNoteTodo(todo.nodeid, todo.entityId, { entityMetadata: { ...todo.entityMetadata, status: newStatus } })
+    updateTodo({ ...todo, entityMetadata: { ...todo.entityMetadata, status: newStatus } }).catch((err) => {
+      toast('Unable to update status!')
+    })
+    updateStatusOfTodo(todo.nodeid, todo.entityId, newStatus)
   }
 
   const changePriority = (todo: TodoType, newPriority: PriorityType) => {
-    updateNoteTodo(todo.nodeid, todo.entityId, { entityMetadata: { ...todo.entityMetadata, priority: newPriority } })
+    updateTodo({ ...todo, entityMetadata: { ...todo.entityMetadata, priority: newPriority } }).catch((err) => {
+      toast('Unable to change priority!')
+    })
+    updatePriorityOfTodo(todo.nodeid, todo.entityId, newPriority)
   }
 
   const generateTodoFilters = (board: TodoKanbanBoard) => {
@@ -266,6 +276,7 @@ export const useTodoKanban = () => {
 
     const currentFilters = useKanbanFilterStore.getState().currentFilters
 
+    mog('Note Todos', { nodetodos })
     Object.entries(nodetodos).forEach(([nodeid, todos]) => {
       if (nodeid.startsWith(SNIPPET_PREFIX)) return
       if (isInArchive(nodeid)) return
