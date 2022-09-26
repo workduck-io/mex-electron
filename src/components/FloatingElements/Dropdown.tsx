@@ -106,11 +106,6 @@ export const MenuComponent = forwardRef<any, Props & React.HTMLProps<HTMLButtonE
     const inputRef = React.useRef<HTMLInputElement>(null)
 
     const listItemsRef = useRef<Array<HTMLButtonElement | null>>([])
-    // const listContentRef = useRef(
-    //   Children.map(filteredChildren, (child) => (isValidElement(child) ? child.props.label : null)) as Array<
-    //     string | null
-    //   >
-    // )
 
     const onSearchChange: React.ChangeEventHandler<HTMLInputElement> = (e) => {
       setSearch(e.target.value)
@@ -149,21 +144,25 @@ export const MenuComponent = forwardRef<any, Props & React.HTMLProps<HTMLButtonE
       }),
       useRole(context, { role: 'menu' }),
       useDismiss(context, {
-        escapeKey: true,
+        escapeKey: true
       }),
       useListNavigation(context, {
         listRef: listItemsRef,
         activeIndex,
         nested,
+        loop: true,
         onNavigate: setActiveIndex
       })
-      // Typeahead disabled as it conflicts with search input
-      // useTypeahead(context, {
-      //   listRef: listContentRef,
-      //   onMatch: open ? setActiveIndex : undefined,
-      //   activeIndex
-      // })
     ])
+
+    // Add scroll to active item
+    // Required for scrollable menu and when overflow
+    useEffect(() => {
+      const activeEl = listItemsRef.current[activeIndex]
+      if (activeEl) {
+        activeEl.scrollIntoView({ block: 'nearest' })
+      }
+    }, [activeIndex])
 
     useEffect(() => {
       if (!open) {
