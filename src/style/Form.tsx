@@ -1,10 +1,13 @@
-import { transparentize } from 'polished'
 import React from 'react'
+
+import { transparentize } from 'polished'
 import Select from 'react-select'
 import Creatable from 'react-select/creatable'
 import styled, { css, DefaultTheme, useTheme } from 'styled-components'
-import { AppType } from '../hooks/useInitialize'
+
 import { TextFieldHeight } from '@workduck-io/action-request-helper'
+
+import { AppType } from '../hooks/useInitialize'
 
 interface InputProps {
   transparent?: boolean
@@ -55,7 +58,7 @@ export const Input = styled.input<InputProps>`
   ${({ theme, error }) =>
     error &&
     css`
-      border-color: ${theme.colors.palette.red};
+      border-color: ${theme.colors.palette.red} !important;
     `}
 `
 

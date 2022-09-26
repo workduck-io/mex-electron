@@ -6,10 +6,10 @@ import path from 'path'
 import { getSaveLocation, DataFileName } from '../data/Defaults/data'
 import { IpcAction } from '../data/IpcAction'
 import { ToastStatus } from '../types/toast'
+import { windowManager } from './WindowManager'
 import { windows } from './main'
 import { checkForUpdatesAndNotifyWrapper } from './update'
 import { checkIfAlpha } from './utils/version'
-import { windowManager } from './WindowManager'
 
 interface DarwinMenuItemConstructorOptions extends MenuItemConstructorOptions {
   selector?: string
@@ -95,6 +95,8 @@ export default class MenuBuilder {
           label: 'Quit',
           accelerator: 'Command+Q',
           click: () => {
+            windowManager.sendToWindow(AppType.MEX, IpcAction.SAVE_AND_EXIT)
+            windowManager.closeAllWindows()
             app.quit()
           }
         }
@@ -225,37 +227,37 @@ export default class MenuBuilder {
         submenu:
           process.env.MODE === 'development' || process.env.DEBUG_PROD === 'true'
             ? [
-              {
-                label: '&Reload',
-                accelerator: 'Ctrl+R',
-                click: () => {
-                  this.mainWindow?.webContents.reload()
+                {
+                  label: '&Reload',
+                  accelerator: 'Ctrl+R',
+                  click: () => {
+                    this.mainWindow?.webContents.reload()
+                  }
+                },
+                {
+                  label: 'Toggle &Full Screen',
+                  accelerator: 'F11',
+                  click: () => {
+                    this.mainWindow.setFullScreen(!this.mainWindow.isFullScreen())
+                  }
+                },
+                {
+                  label: 'Toggle &Developer Tools',
+                  accelerator: 'Alt+Ctrl+I',
+                  click: () => {
+                    this.mainWindow?.webContents.toggleDevTools()
+                  }
                 }
-              },
-              {
-                label: 'Toggle &Full Screen',
-                accelerator: 'F11',
-                click: () => {
-                  this.mainWindow.setFullScreen(!this.mainWindow.isFullScreen())
-                }
-              },
-              {
-                label: 'Toggle &Developer Tools',
-                accelerator: 'Alt+Ctrl+I',
-                click: () => {
-                  this.mainWindow?.webContents.toggleDevTools()
-                }
-              }
-            ]
+              ]
             : [
-              {
-                label: 'Toggle &Full Screen',
-                accelerator: 'F11',
-                click: () => {
-                  this.mainWindow.setFullScreen(!this.mainWindow.isFullScreen())
+                {
+                  label: 'Toggle &Full Screen',
+                  accelerator: 'F11',
+                  click: () => {
+                    this.mainWindow.setFullScreen(!this.mainWindow.isFullScreen())
+                  }
                 }
-              }
-            ]
+              ]
       }
     ]
 

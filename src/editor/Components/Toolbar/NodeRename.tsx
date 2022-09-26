@@ -10,6 +10,7 @@ import { getPlateEditorRef, selectEditor } from '@udecode/plate'
 import toast from 'react-hot-toast'
 
 import { Button, DisplayShortcut } from '@workduck-io/mex-components'
+import { mog } from '@workduck-io/mex-utils'
 import { tinykeys } from '@workduck-io/tinykeys'
 
 import { doesLinkRemain } from '../../../components/mex/Refactor/doesLinkRemain'
@@ -21,7 +22,6 @@ import { useRenameStore } from '../../../store/useRenameStore'
 import { Input } from '../../../style/Form'
 import { isClash, isMatch, isReserved } from '../../../utils/lib/paths'
 import { ButtonWrapper, TitleStatic, Wrapper } from './NodeRename.style'
-import { mog } from '@workduck-io/mex-utils'
 
 const NodeRenameOnlyTitle = () => {
   const { execRefactorAsync, getMockRefactor } = useRefactor()
@@ -196,6 +196,7 @@ const NodeRenameOnlyTitle = () => {
           onKeyDown={handleSubmit}
           onChange={(e) => handleTitleChange(e)}
           onBlur={() => reset()}
+          error={(getNameFromPath(nodeFrom) !== newTitle && isClashed) || newTitle.indexOf(SEPARATOR) !== -1}
           autoFocus
           defaultValue={newTitle}
           ref={inpRef}
@@ -212,7 +213,7 @@ const NodeRenameOnlyTitle = () => {
           </TitleStatic>
         </Tippy>
       )}
-      {editable && (
+      {/* {editable && (
         <ButtonWrapper>
           <Button
             primary
@@ -224,7 +225,7 @@ const NodeRenameOnlyTitle = () => {
             Rename
           </Button>
         </ButtonWrapper>
-      )}
+      )} */}
     </Wrapper>
   )
 }
