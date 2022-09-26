@@ -46,7 +46,7 @@ const config: UserConfig = {
         analysis: path.resolve(__dirname, 'src/electron/worker/analysis.ts'),
         search: path.resolve(__dirname, 'src/electron/worker/search.ts')
       },
-      external: ['electron', ...builtinModules, 'robotjs', 'chokidar', 'active-win-universal'],
+      external: ['electron', ...builtinModules, 'robotjs', 'chokidar', 'active-win'],
       output: {
         entryFileNames: (assetInfo) => {
           switch (assetInfo.name) {

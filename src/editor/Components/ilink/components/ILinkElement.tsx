@@ -2,6 +2,7 @@ import * as React from 'react'
 import { useEffect, useState } from 'react'
 
 import useLoad from '@hooks/useLoad'
+import { useNamespaces } from '@hooks/useNamespaces'
 import archivedIcon from '@iconify/icons-ri/archive-line'
 import eyeOffLine from '@iconify/icons-ri/eye-off-line'
 import shareLine from '@iconify/icons-ri/share-line'
@@ -10,24 +11,25 @@ import { useSpotlightContext } from '@store/Context/context.spotlight'
 import { useSpotlightEditorStore } from '@store/editor.spotlight'
 import useMultipleEditors from '@store/useEditorsStore'
 import { useEditorRef, moveSelection } from '@udecode/plate'
+import IconDisplay from '@ui/components/IconPicker/IconDisplay'
 import { openNodeInMex } from '@utils/combineSources'
 import { useMatch } from 'react-router-dom'
 import { useFocused, useSelected } from 'slate-react'
+
+import { mog } from '@workduck-io/mex-utils'
+import { tinykeys } from '@workduck-io/tinykeys'
 
 import { useLinks } from '../../../../hooks/useLinks'
 import { useNavigation } from '../../../../hooks/useNavigation'
 import { useNodes } from '../../../../hooks/useNodes'
 import { ILink, NodeType, SharedNode } from '../../../../types/Types'
+import { AccessLevel } from '../../../../types/mentions'
 import { getBlock } from '../../../../utils/search/parseData'
 import { NavigationType, ROUTE_PATHS, useRouting } from '../../../../views/routes/urls'
 import EditorPreview from '../../EditorPreview/EditorPreview'
 import { useHotkeys } from '../hooks/useHotkeys'
 import { SILink, SILinkRoot, StyledIcon } from './ILinkElement.styles'
 import { ILinkElementProps } from './ILinkElement.types'
-import { AccessLevel } from '../../../../types/mentions'
-import { useNamespaces } from '@hooks/useNamespaces'
-import IconDisplay from '@ui/components/IconPicker/IconDisplay'
-import { mog } from '@workduck-io/mex-utils'
 
 /**
  * ILinkElement with no default styles. [Use the `styles` API to add your own styles.](https://github.com/OfficeDev/office-ui-fabric-react/wiki/Component-Styling) */
@@ -166,43 +168,35 @@ export const ILinkElement = ({ attributes, children, element }: ILinkElementProp
     }
   }, [selected])
 
-  useHotkeys(
-    'backspace',
-    () => {
-      if (selected && focused && editor.selection) {
-        moveSelection(editor)
-      }
-    },
-    [element]
-  )
+  useEffect(() => {
+    const unsubscribe = tinykeys(window, {
+      Backspace: (event) => {
+        if (selected && focused && editor.selection) {
+          moveSelection(editor)
+        }
+      },
+      Enter: (ev) => {
+        // Show preview on Enter, if preview is shown, navigate to link
+        if (selected && focused && editor.selection) {
+          if (!preview) {
+            onPreviewShow(element.value)
+          }
+        }
 
-  useHotkeys(
-    'enter',
-    (ev) => {
-      // Show preview on Enter, if preview is shown, navigate to link
-      if (selected && focused && editor.selection) {
-        if (!preview) {
-          onPreviewShow(element.value)
+        // Once preview is shown the link looses focus
+        if (preview && !isEditingPreview()) {
+          loadLinkNode(element.value)
+        }
+      },
+      Delete: (ev) => {
+        if (selected && focused && editor.selection) {
+          moveSelection(editor, { reverse: true })
         }
       }
+    })
 
-      // Once preview is shown the link looses focus
-      if (preview && !isEditingPreview()) {
-        loadLinkNode(element.value)
-      }
-    },
-    [selected, focused, preview]
-  )
-
-  useHotkeys(
-    'delete',
-    () => {
-      if (selected && focused && editor.selection) {
-        moveSelection(editor, { reverse: true })
-      }
-    },
-    [selected, focused]
-  )
+    return () => unsubscribe()
+  }, [element, selected, focused, preview])
 
   const nodeType = getNodeType(element.value)
   const block = element.blockId ? getBlock(element.value, element.blockId) : undefined

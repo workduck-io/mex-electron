@@ -1,11 +1,14 @@
+import * as React from 'react'
+
 import { useNoteContext } from '@store/Context/context.note'
 import { useSpotlightContext } from '@store/Context/context.spotlight'
 import { moveSelection, useEditorRef } from '@udecode/plate'
 import { openTagInMex } from '@utils/combineSources'
-import * as React from 'react'
 import { useFocused, useSelected } from 'slate-react'
+
+import { tinykeys } from '@workduck-io/tinykeys'
+
 import { NavigationType, ROUTE_PATHS, useRouting } from '../../../../views/routes/urls'
-import { useHotkeys } from '../hooks/useHotkeys'
 import { useOnMouseClick } from '../hooks/useOnMouseClick'
 import { STag, STagRoot } from './TagElement.styles'
 import { TagElementProps } from './TagElement.types'
@@ -26,32 +29,27 @@ export const TagElement = ({ attributes, children, element }: TagElementProps) =
     openTag(element.value)
   })
 
-  useHotkeys(
-    'backspace',
-    () => {
-      if (selected && focused && editor.selection) {
-        moveSelection(editor)
+  React.useEffect(() => {
+    const unsubscribe = tinykeys(window, {
+      Backspace: (event) => {
+        if (selected && focused && editor.selection) {
+          moveSelection(editor)
+        }
+      },
+      Delete: (ev) => {
+        if (selected && focused && editor.selection) {
+          moveSelection(editor, { reverse: true })
+        }
       }
-    },
-    [selected, focused]
-  )
+    })
 
-  useHotkeys(
-    'delete',
-    () => {
-      if (selected && focused && editor.selection) {
-        // mog('delete', { selected, focused, sel: editor.selection })
-        moveSelection(editor, { reverse: true })
-      }
-    },
-    [selected, focused]
-  )
+    return () => unsubscribe()
+  }, [selected, focused])
 
   const openTag = (tag: string) => {
     if (noteCtx) {
       openTagInMex(tag)
-    }
-    else if (!spotlightCtx) {
+    } else if (!spotlightCtx) {
       goTo(ROUTE_PATHS.tag, NavigationType.push, tag)
     }
   }

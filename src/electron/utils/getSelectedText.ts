@@ -1,7 +1,7 @@
+import activeWindow from 'active-win'
+import { clipboard } from 'electron'
 import { keyTap, keyToggle, setKeyboardDelay } from 'robotjs'
 
-import activeWindow from 'active-win-universal'
-import { clipboard } from 'electron'
 import { getKeyFromKeycode } from '../../utils/lib/keyMap'
 
 export type SelectionType = {

@@ -2758,13 +2758,13 @@ acorn@^8.1.0, acorn@^8.4.1:
   resolved "https://registry.yarnpkg.com/acorn/-/acorn-8.8.0.tgz#88c0187620435c7f6015803f5539dae05a9dbea8"
   integrity sha512-QOxyigPVrpZ2GXT+PFyZTl6TtOFc5egxHIP9IlQ+RbupQuX4RkT/Bee4/kQuC02Xkzg84JcT7oLYtDIQxp+v7w==
 
-active-win-universal@^7.6.2:
-  version "7.6.2"
-  resolved "https://registry.yarnpkg.com/active-win-universal/-/active-win-universal-7.6.2.tgz#be43e827973a242935249a0e6600f3f8f663ee9c"
-  integrity sha512-tXNAf5TB+p+melJCaidoqBdGMvspb3okkM6VOHlGvHv8fxjtUwtCRITCneuGlAN/ZfJ56u6noi7yUg7WAvFHxA==
+active-win@^7.7.2:
+  version "7.7.2"
+  resolved "https://registry.yarnpkg.com/active-win/-/active-win-7.7.2.tgz#03e60fccffa2ac3ba0f6faf60cf6ec30676333f3"
+  integrity sha512-rXIHbkl1w/li3Lr9jjhaw90hitTANGuVXO6h1atFrxLWVl2Rw0mOdqrrauxNe2W6xeQJ428vsy+1cYOFlx6Lpg==
   optionalDependencies:
     ffi-napi "^4.0.3"
-    ref-napi "^3.0.2"
+    ref-napi "^3.0.3"
     ref-struct-di "^1.1.1"
     ref-wchar-napi "^1.0.3"
 
@@ -8872,7 +8872,7 @@ redux@^4.0.0, redux@^4.0.1, redux@^4.0.4, redux@^4.2.0:
   dependencies:
     "@babel/runtime" "^7.9.2"
 
-"ref-napi@^2.0.1 || ^3.0.2", ref-napi@^3.0.1, ref-napi@^3.0.2:
+"ref-napi@^2.0.1 || ^3.0.2", ref-napi@^3.0.1, ref-napi@^3.0.3:
   version "3.0.3"
   resolved "https://registry.yarnpkg.com/ref-napi/-/ref-napi-3.0.3.tgz#e259bfc2bbafb3e169e8cd9ba49037dd00396b22"
   integrity sha512-LiMq/XDGcgodTYOMppikEtJelWsKQERbLQsYm0IOOnzhwE9xYZC7x8txNnFC9wJNOkPferQI4vD4ZkC0mDyrOA==
