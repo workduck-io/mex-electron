@@ -155,7 +155,7 @@ const TaskHeader = ({ currentView, currentFilters, cardSelected, globalJoin }: T
         {cardSelected && (
           <>
             <ShortcutToken>
-              Navigate:
+              Open:
               <DisplayShortcut shortcut="$mod+Enter" />
             </ShortcutToken>
             <ShortcutToken>
@@ -164,15 +164,21 @@ const TaskHeader = ({ currentView, currentFilters, cardSelected, globalJoin }: T
               <Icon icon={arrowLeftRightLine} />
             </ShortcutToken>
             <ShortcutToken>
-              Change Priority:
+              Priority:
               <DisplayShortcut shortcut="$mod+0-3" />
             </ShortcutToken>
           </>
         )}
-        <ShortcutToken>
+        {currentFilters.length > 0 && (
+          <ShortcutToken>
+            Remove Filter:
+            <DisplayShortcut shortcut="Shift+F" />
+          </ShortcutToken>
+        )}
+        {/*<ShortcutToken>
           {cardSelected || currentFilters.length > 0 ? 'Clear Filters:' : 'Navigate to Editor:'}
           <DisplayShortcut shortcut="Esc" />
-        </ShortcutToken>
+        </ShortcutToken> */}
       </ShortcutTokens>
       {/*<Button onClick={onClearClick}>
    <Icon icon={trashIcon} height={24} />
