@@ -121,6 +121,7 @@ const Tasks = () => {
       selectFirst()
       return
     }
+
     const selectedColumn = board.columns.find(
       (column) => column.id === selectedCard.todo.metadata.status
     ) as KanbanBoardColumn
@@ -140,6 +141,7 @@ const Tasks = () => {
         }
         break
       }
+
       case 'down': {
         const nextCard = selectedColumn.cards[(selectedIndex + 1) % selectedColumnLength]
         // mog('nextCard', { nextCard, selectedColumn, selectedColumnLength, selectedIndex })
@@ -149,6 +151,7 @@ const Tasks = () => {
         }
         break
       }
+
       case 'left': {
         let selectedColumnStatus = selectedColumn.id
         let prevCard = undefined
@@ -166,6 +169,7 @@ const Tasks = () => {
         }
         break
       }
+
       case 'right': {
         let selectedColumnStatus = selectedColumn.id
         let nextCard = undefined
@@ -223,18 +227,21 @@ const Tasks = () => {
           // }
         })
       },
+
       'Shift+ArrowRight': (event) => {
         enableShortcutHandler(() => {
           event.preventDefault()
           handleCardMoveNext()
         })
       },
+
       'Shift+ArrowLeft': (event) => {
         enableShortcutHandler(() => {
           event.preventDefault()
           handleCardMovePrev()
         })
       },
+
       ArrowRight: (event) => {
         enableShortcutHandler(() => {
           event.preventDefault()
@@ -248,6 +255,7 @@ const Tasks = () => {
           selectNewCard('left')
         })
       },
+
       ArrowDown: (event) => {
         mog('ArrowDown')
         enableShortcutHandler(() => {
@@ -267,14 +275,17 @@ const Tasks = () => {
         event.preventDefault()
         changeSelectedPriority(PriorityType.low)
       },
+
       '$mod+2': (event) => {
         event.preventDefault()
         changeSelectedPriority(PriorityType.medium)
       },
+
       '$mod+3': (event) => {
         event.preventDefault()
         changeSelectedPriority(PriorityType.high)
       },
+
       '$mod+0': (event) => {
         event.preventDefault()
         changeSelectedPriority(PriorityType.noPriority)

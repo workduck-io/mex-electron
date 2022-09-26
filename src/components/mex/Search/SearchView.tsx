@@ -323,7 +323,6 @@ const SearchView = <Item,>({
         enableShortcutHandler(() => {
           event.preventDefault()
           event.stopPropagation()
-          resetCurrentFilters()
           if (inpRef.current) {
             if (inpRef.current.value !== '') {
               inpRef.current.value = ''
