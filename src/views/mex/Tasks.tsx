@@ -257,7 +257,6 @@ const Tasks = () => {
       },
 
       ArrowDown: (event) => {
-        mog('ArrowDown')
         enableShortcutHandler(() => {
           event.preventDefault()
           selectNewCard('down')
