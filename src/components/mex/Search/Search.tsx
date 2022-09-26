@@ -127,10 +127,11 @@ const Search = () => {
   const lastOpened = useRecentsStore((store) => store.lastOpened)
   const nodeUID = useEditorStore((store) => store.node.nodeid)
   const baseNodeId = useDataStore((store) => store.baseNodeId)
+  const isHighlightBlock = (item: GenericSearchResult) => item.matchField?.includes('text')
 
   const onOpenItem = (item: GenericSearchResult) => {
     if (item.index === 'node') {
-      loadNode(item.id, { highlightBlockId: item.blockId })
+      loadNode(item.id, { highlightBlockId: isHighlightBlock(item) ? item.blockId : undefined })
       goTo(ROUTE_PATHS.node, NavigationType.push, item.id)
     } else if (item.index === 'snippet' || item.index === 'template') {
       loadSnippet(item.id)
@@ -357,7 +358,7 @@ const Search = () => {
           </Title>
           <EditorPreviewRenderer
             content={content}
-            blockId={item.blockId}
+            blockId={isHighlightBlock(item) ? item.blockId : undefined}
             onDoubleClick={(e) => onDoubleClick(e, item)}
             editorId={`SearchPreview_editor_${item.id}`}
           />

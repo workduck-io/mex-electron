@@ -88,11 +88,11 @@ export const Editor = ({
   }, [editorRef, editorId, focusAtBeginning]) // eslint-disable-line react-hooks/exhaustive-deps
 
   useEffect(() => {
-    const tempRef = editorRef || getPlateEditorRef(editorId)
-
-    if (tempRef && hightlightedBlockIds.length > 0) {
+    // Clear highlights when highlightedBlockIds present
+    if (hightlightedBlockIds.length > 0) {
       focusBlock(hightlightedBlockIds[hightlightedBlockIds.length - 1], editorId)
       const clearHighlightTimeoutId = setTimeout(() => {
+        // mog('clearing highlights')
         if (!readOnly) clearHighlights()
       }, 2000)
       return () => clearTimeout(clearHighlightTimeoutId)

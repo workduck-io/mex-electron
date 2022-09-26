@@ -50,6 +50,13 @@ export const StyledBoard = styled.div<{ sidebarExpanded?: boolean }>`
     padding: ${({ theme }) => theme.spacing.small};
     margin: ${({ theme }) => theme.spacing.small};
     border-radius: ${({ theme }) => theme.borderRadius.small};
+
+    div:focus-visible {
+      outline: none;
+      border-color: none;
+      -webkit-box-shadow: none;
+      box-shadow: none;
+    }
   }
 `
 
@@ -112,7 +119,7 @@ export const ShortcutTokens = styled.div`
   display: flex;
   flex-wrap: wrap;
   align-items: center;
-  gap: ${({ theme }) => `${theme.spacing.small} ${theme.spacing.large}`};
+  gap: ${({ theme }) => `${theme.spacing.tiny} ${theme.spacing.small}`};
   max-width: 600px;
   justify-content: end;
 `
@@ -125,7 +132,8 @@ export const ShortcutToken = styled.div`
   padding: ${({ theme }) => `${theme.spacing.tiny} ${theme.spacing.small}`};
   background: ${({ theme }) => theme.colors.gray[9]};
   border-radius: ${({ theme }) => theme.borderRadius.small};
-  font-size: 0.9rem;
+  font-size: 10px;
+  font-weight: 500;
 
   svg {
     width: 1.3rem;

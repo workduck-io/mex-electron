@@ -148,7 +148,9 @@ export const MenuComponent = forwardRef<any, Props & React.HTMLProps<HTMLButtonE
         ignoreMouse: nested
       }),
       useRole(context, { role: 'menu' }),
-      useDismiss(context),
+      useDismiss(context, {
+        escapeKey: true,
+      }),
       useListNavigation(context, {
         listRef: listItemsRef,
         activeIndex,

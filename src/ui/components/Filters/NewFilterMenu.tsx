@@ -15,11 +15,12 @@ import { DisplayShortcut } from '@workduck-io/mex-components'
 interface NewFilterMenuProps {
   filters: Filters
   addFilter: (filter: Filter) => void
+  removeLastFilter: () => void
 }
 
 const NewFilterClassName = 'new-filter-menu'
 
-const NewFilterMenu = ({ addFilter, filters }: NewFilterMenuProps) => {
+const NewFilterMenu = ({ addFilter, filters, removeLastFilter }: NewFilterMenuProps) => {
   const { getFilterValueIcon } = useFilterIcons()
   const { enableShortcutHandler } = useEnableShortcutHandler()
   const onAddNewFilter = (type: FilterType, value: FilterValue) => {
@@ -39,7 +40,7 @@ const NewFilterMenu = ({ addFilter, filters }: NewFilterMenuProps) => {
 
   useEffect(() => {
     const unsubscribe = tinykeys(window, {
-      'Shift+F': (event) => {
+      F: (event) => {
         enableShortcutHandler(
           () => {
             event.preventDefault()
@@ -50,6 +51,19 @@ const NewFilterMenu = ({ addFilter, filters }: NewFilterMenuProps) => {
               const first = newFilterMenus[0] as HTMLElement
               first.click()
             }
+          },
+          {
+            skipLocal: false,
+            ignoreClasses: 'input'
+          }
+        )
+      },
+      'Shift+F': (event) => {
+        enableShortcutHandler(
+          () => {
+            event.preventDefault()
+            event.stopPropagation()
+            removeLastFilter()
           },
           {
             skipLocal: false,
@@ -70,7 +84,7 @@ const NewFilterMenu = ({ addFilter, filters }: NewFilterMenuProps) => {
         <FilterMenuDiv>
           <Icon icon={filter2Line} />
           Filter
-          <DisplayShortcut shortcut={'Shift+F'} />
+          <DisplayShortcut shortcut={'F'} />
         </FilterMenuDiv>
       }
     >

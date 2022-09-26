@@ -150,7 +150,7 @@ interface LocalSkipOptions {
 export const useEnableShortcutHandler = () => {
   const isEditingPreview = useMultipleEditors((store) => store.isEditingAnyPreview)
 
-  const isOnSearchFilter = (ignoreClasses?: IgnoreClasses) => {
+  const isOnElementClass = (ignoreClasses?: IgnoreClasses) => {
     const allIgnore: IgnoreClasses = ignoreClasses ?? 'all'
     const classesToIgnore = MEX_KEYBOARD_IGNORE_CLASSES[allIgnore]
     const fElement = document.activeElement as HTMLElement
@@ -159,8 +159,12 @@ export const useEnableShortcutHandler = () => {
     //   cl: fElement.classList,
     //   tagName: fElement.tagName
     // })
-    return fElement && (fElement.tagName === 'INPUT' || fElement.tagName === 'TEXTAREA'
-      || classesToIgnore.some((c) => fElement.classList.contains(c)))
+    const ignoredInputTags =
+      ignoreClasses === 'input' || ignoreClasses === 'all'
+        ? fElement.tagName === 'INPUT' || fElement.tagName === 'TEXTAREA'
+        : false
+
+    return fElement && ignoredInputTags && classesToIgnore.some((c) => fElement.classList.contains(c))
   }
 
   const enableShortcutHandler = (callback: () => void, options?: LocalSkipOptions) => {
@@ -168,9 +172,10 @@ export const useEnableShortcutHandler = () => {
       ignoreClasses: 'all',
       skipLocal: false
     }
+    // mog('enableShortcutHandler', { allOp, isEditingPreview, isOnSearchFilter: isOnElementClass(allOp.ignoreClasses) })
     if (isEditingPreview() || !useMultipleEditors.getState().editors) return
 
-    if (!allOp.skipLocal && isOnSearchFilter(allOp.ignoreClasses)) return
+    if (!allOp.skipLocal && isOnElementClass(allOp.ignoreClasses)) return
 
     callback()
   }

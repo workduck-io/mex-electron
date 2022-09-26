@@ -2,7 +2,7 @@ import { SharedNodeIconify } from '@components/icons/Icons'
 import StarredNotes from '@components/mex/Sidebar/StarredNotes'
 import SharedNotes from '@components/mex/Sidebar/SharedNotes'
 import useDataStore from '@store/useDataStore'
-import React, { useEffect, useMemo, useState } from 'react'
+import React, { useEffect, useMemo, useRef, useState } from 'react'
 import { SidebarSpaceComponent } from './space'
 import { SidebarSpaceSwitcher } from './Sidebar.spaceSwitcher'
 import { SpaceContentWrapper, SpaceWrapper } from './Sidebar.style'
@@ -25,6 +25,7 @@ export const NoteSidebar = () => {
   const tags = useDataStore((s) => s.tags)
   const replaceAndAddActionToPoll = useApiStore((store) => store.replaceAndAddActionToPoll)
   const { getNodesByNamespaces } = useNamespaces()
+  const isAnimate = useRef(false)
 
   const mostUsedTags = useMemo(() => {
     const topUsedTags = getMostUsedTags()
@@ -80,10 +81,13 @@ export const NoteSidebar = () => {
   const changeIndex = (newIndex: number, updateStores = true) => {
     if (newIndex === index.current) return
     const nextSpaceId = spaces[newIndex]?.id
-    mog('Changing index', { newIndex, index })
+    // mog('Changing index', { newIndex, index })
     if (nextSpaceId) {
       if (updateStores) {
         changeSidebarSpace(nextSpaceId)
+        isAnimate.current = true
+      } else {
+        isAnimate.current = false
       }
       setIndex({ current: newIndex, prev: index.current })
     }
@@ -100,12 +104,14 @@ export const NoteSidebar = () => {
 
   const transRef = useSpringRef()
   const defaultStyles = { opacity: 1, transform: 'translate3d(0%,0,0)' }
+  const fadeStyles = { opacity: 1, transform: 'translate3d(0%,0,0)' }
   const transitions = useTransition(index, {
     ref: transRef,
     keys: null,
     from: () => {
       // Skip if there is no previous index
       if (index.prev === -1) return defaultStyles
+      if (!isAnimate.current) return fadeStyles
       const direction = index.prev > -1 ? Math.sign(index.current - index.prev) : 1
       // mog('from', { index, direction })
       return { opacity: 0, transform: `translate3d(${direction * 100}%,0,0)` }
@@ -114,6 +120,7 @@ export const NoteSidebar = () => {
     leave: () => {
       // Skip if there is no previous index
       if (index.prev === -1) return defaultStyles
+      if (!isAnimate.current) return fadeStyles
       const direction = index.prev > -1 ? -Math.sign(index.current - index.prev) : -1
       // mog('leave', { index, direction })
       return { opacity: 0, transform: `translate3d(${direction * 100}%,0,0)` }

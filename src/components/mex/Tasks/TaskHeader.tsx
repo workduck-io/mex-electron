@@ -52,9 +52,11 @@ const TaskHeader = ({ currentView, currentFilters, cardSelected, globalJoin }: T
   const [source, target] = useSingleton()
   const [deleting, setDeleting] = useState(false)
 
-  const isCurrentFiltersUnchanged = useMemo(() => {
-    return JSON.stringify(currentFilters) === JSON.stringify(currentView?.filters)
-  }, [currentFilters, currentView])
+  const isCurrentViewChanged = useMemo(() => {
+    return !(
+      JSON.stringify(currentFilters) === JSON.stringify(currentView?.filters) && globalJoin === currentView?.globalJoin
+    )
+  }, [currentFilters, currentView, globalJoin])
 
   const onDeleteView = async () => {
     if (currentView) {
@@ -79,7 +81,7 @@ const TaskHeader = ({ currentView, currentFilters, cardSelected, globalJoin }: T
               <TaskViewTitle>
                 <Icon icon={stackLine} />
                 {currentView?.title}
-                {!isCurrentFiltersUnchanged && '*'}
+                {isCurrentViewChanged && '*'}
               </TaskViewTitle>
               <TaskViewControls>
                 <Button
@@ -91,7 +93,7 @@ const TaskHeader = ({ currentView, currentFilters, cardSelected, globalJoin }: T
                     })
                   }
                   disabled={currentFilters.length === 0}
-                  primary={!isCurrentFiltersUnchanged && currentFilters.length > 0}
+                  primary={isCurrentViewChanged && currentFilters.length > 0}
                 >
                   <Icon icon={edit2Line} />
                   Update View
@@ -153,7 +155,7 @@ const TaskHeader = ({ currentView, currentFilters, cardSelected, globalJoin }: T
         {cardSelected && (
           <>
             <ShortcutToken>
-              Navigate:
+              Open:
               <DisplayShortcut shortcut="$mod+Enter" />
             </ShortcutToken>
             <ShortcutToken>
@@ -162,15 +164,21 @@ const TaskHeader = ({ currentView, currentFilters, cardSelected, globalJoin }: T
               <Icon icon={arrowLeftRightLine} />
             </ShortcutToken>
             <ShortcutToken>
-              Change Priority:
+              Priority:
               <DisplayShortcut shortcut="$mod+0-3" />
             </ShortcutToken>
           </>
         )}
-        <ShortcutToken>
+        {currentFilters.length > 0 && (
+          <ShortcutToken>
+            Remove Filter:
+            <DisplayShortcut shortcut="Shift+F" />
+          </ShortcutToken>
+        )}
+        {/*<ShortcutToken>
           {cardSelected || currentFilters.length > 0 ? 'Clear Filters:' : 'Navigate to Editor:'}
           <DisplayShortcut shortcut="Esc" />
-        </ShortcutToken>
+        </ShortcutToken> */}
       </ShortcutTokens>
       {/*<Button onClick={onClearClick}>
    <Icon icon={trashIcon} height={24} />

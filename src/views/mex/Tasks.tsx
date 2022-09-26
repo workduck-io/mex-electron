@@ -1,29 +1,25 @@
 import Board from '@asseinfo/react-kanban'
 import TaskHeader from '@components/mex/Tasks/TaskHeader'
+import { useEnableShortcutHandler } from '@hooks/useShortcutListener'
 import { useSyncTaskViews, useViewStore } from '@hooks/useTaskViews'
 import { useLayoutStore } from '@store/useLayoutStore'
 import { OverlaySidebarWindowWidth } from '@style/responsive'
+import { mog } from '@workduck-io/mex-utils'
+import { tinykeys } from '@workduck-io/tinykeys'
 import React, { useEffect, useMemo, useRef } from 'react'
 import { useMediaQuery } from 'react-responsive'
 import { useMatch } from 'react-router-dom'
-import { tinykeys } from '@workduck-io/tinykeys'
 import SearchFilters from '../../components/mex/Search/SearchFilters'
 import { Heading } from '../../components/spotlight/SearchResults/styled'
 import { getNextStatus, getPrevStatus, PriorityType, TodoType } from '../../editor/Components/Todo/types'
 import EditorPreviewRenderer from '../../editor/EditorPreviewRenderer'
-import useLoad from '../../hooks/useLoad'
 import { useNavigation } from '../../hooks/useNavigation'
 import { KanbanBoardColumn, TodoKanbanCard, useTodoKanban } from '../../hooks/useTodoKanban'
-import useDataStore from '../../store/useDataStore'
-import { useEditorStore } from '../../store/useEditorStore'
-import { useRecentsStore } from '../../store/useRecentsStore'
 import useTodoStore from '../../store/useTodoStore'
 import { PageContainer } from '../../style/Layouts'
 import { StyledTasksKanban, TaskCard, TaskColumnHeader } from '../../style/Todo'
 import Todo from '../../ui/components/Todo'
-import { mog } from '../../utils/lib/helper'
 import { NavigationType, ROUTE_PATHS, useRouting } from '../routes/urls'
-import { useEnableShortcutHandler } from '@hooks/useShortcutListener'
 
 const Tasks = () => {
   const [selectedCard, setSelectedCard] = React.useState<TodoKanbanCard | null>(null)
@@ -35,12 +31,7 @@ const Tasks = () => {
   const setCurrentView = useViewStore((store) => store.setCurrentView)
   const { enableShortcutHandler } = useEnableShortcutHandler()
 
-  const { loadNode } = useLoad()
   const { goTo } = useRouting()
-
-  const lastOpened = useRecentsStore((store) => store.lastOpened)
-  const nodeUID = useEditorStore((store) => store.node.nodeid)
-  const baseNodeId = useDataStore((store) => store.baseNodeId)
 
   const { push } = useNavigation()
 
@@ -130,6 +121,7 @@ const Tasks = () => {
       selectFirst()
       return
     }
+
     const selectedColumn = board.columns.find(
       (column) => column.id === selectedCard.todo.metadata.status
     ) as KanbanBoardColumn
@@ -149,6 +141,7 @@ const Tasks = () => {
         }
         break
       }
+
       case 'down': {
         const nextCard = selectedColumn.cards[(selectedIndex + 1) % selectedColumnLength]
         // mog('nextCard', { nextCard, selectedColumn, selectedColumnLength, selectedIndex })
@@ -158,6 +151,7 @@ const Tasks = () => {
         }
         break
       }
+
       case 'left': {
         let selectedColumnStatus = selectedColumn.id
         let prevCard = undefined
@@ -175,6 +169,7 @@ const Tasks = () => {
         }
         break
       }
+
       case 'right': {
         let selectedColumnStatus = selectedColumn.id
         let nextCard = undefined
@@ -221,28 +216,32 @@ const Tasks = () => {
       Escape: (event) => {
         enableShortcutHandler(() => {
           event.preventDefault()
-          if (selectedCard || currentFilters.length > 0) {
+          if (selectedCard) {
             setSelectedCard(null)
-            resetCurrentFilters()
-          } else {
-            const nodeid = nodeUID ?? lastOpened[0] ?? baseNodeId
-            loadNode(nodeid)
-            goTo(ROUTE_PATHS.node, NavigationType.push, nodeid)
           }
+          // else {
+          // mog('LOAD NODE')
+          // // const nodeid = nodeUID ?? lastOpened[0] ?? baseNodeId
+          // // loadNode(nodeid)
+          // // goTo(ROUTE_PATHS.node, NavigationType.push, nodeid)
+          // }
         })
       },
+
       'Shift+ArrowRight': (event) => {
         enableShortcutHandler(() => {
           event.preventDefault()
           handleCardMoveNext()
         })
       },
+
       'Shift+ArrowLeft': (event) => {
         enableShortcutHandler(() => {
           event.preventDefault()
           handleCardMovePrev()
         })
       },
+
       ArrowRight: (event) => {
         enableShortcutHandler(() => {
           event.preventDefault()
@@ -256,6 +255,7 @@ const Tasks = () => {
           selectNewCard('left')
         })
       },
+
       ArrowDown: (event) => {
         enableShortcutHandler(() => {
           event.preventDefault()
@@ -274,14 +274,17 @@ const Tasks = () => {
         event.preventDefault()
         changeSelectedPriority(PriorityType.low)
       },
+
       '$mod+2': (event) => {
         event.preventDefault()
         changeSelectedPriority(PriorityType.medium)
       },
+
       '$mod+3': (event) => {
         event.preventDefault()
         changeSelectedPriority(PriorityType.high)
       },
+
       '$mod+0': (event) => {
         event.preventDefault()
         changeSelectedPriority(PriorityType.noPriority)
