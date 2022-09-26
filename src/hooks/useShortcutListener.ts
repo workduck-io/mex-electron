@@ -159,12 +159,12 @@ export const useEnableShortcutHandler = () => {
     //   cl: fElement.classList,
     //   tagName: fElement.tagName
     // })
-    return (
-      fElement &&
-      (fElement.tagName === 'INPUT' ||
-        fElement.tagName === 'TEXTAREA' ||
-        classesToIgnore.some((c) => fElement.classList.contains(c)))
-    )
+    const ignoredInputTags =
+      ignoreClasses === 'input' || ignoreClasses === 'all'
+        ? fElement.tagName === 'INPUT' || fElement.tagName === 'TEXTAREA'
+        : false
+
+    return fElement && ignoredInputTags && classesToIgnore.some((c) => fElement.classList.contains(c))
   }
 
   const enableShortcutHandler = (callback: () => void, options?: LocalSkipOptions) => {

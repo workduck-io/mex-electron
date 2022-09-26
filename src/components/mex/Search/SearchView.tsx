@@ -352,29 +352,36 @@ const SearchView = <Item,>({
       // },
       ArrowDown: (event) => {
         // event.preventDefault()
-        enableShortcutHandler(selectNext)
+        enableShortcutHandler(selectNext, { ignoreClasses: 'dropdown', skipLocal: false })
       },
 
       ArrowUp: (event) => {
-        enableShortcutHandler(selectPrev)
+        enableShortcutHandler(selectPrev, { ignoreClasses: 'dropdown', skipLocal: false })
       },
 
       Enter: (event) => {
         // Only when the selected index is -1
-        enableShortcutHandler(() => {
-          if (selected > -1) {
-            onSelect(result[selected] as Item)
-          }
-        })
+        enableShortcutHandler(
+          () => {
+            if (selected > -1) {
+              onSelect(result[selected] as Item)
+            }
+          },
+          { ignoreClasses: 'dropdown', skipLocal: false }
+        )
       },
+
       Delete: (event) => {
         // Only when the selected index is -1
-        enableShortcutHandler(() => {
-          if (selected > -1) {
-            onDelete(result[selected] as Item)
-            setSelected(-1)
-          }
-        })
+        enableShortcutHandler(
+          () => {
+            if (selected > -1) {
+              onDelete(result[selected] as Item)
+              setSelected(-1)
+            }
+          },
+          { ignoreClasses: 'dropdown', skipLocal: false }
+        )
       }
     })
     return () => {
