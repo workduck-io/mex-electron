@@ -129,13 +129,14 @@ const TaskViewModal = () => {
   }, [cloneViewId, updateViewId])
 
   const onSubmit = async (data: TaskViewModalFormData) => {
-    mog('onSubmit', { data, filters, cloneViewId })
+    // mog('onSubmit', { data, filters, cloneViewId })
     if (updateViewId) {
       const oldview = { ...getView(updateViewId) }
       const newView = {
         ...oldview,
         title: data.title ?? oldview.title,
         description: data.description ?? oldview.description,
+        globalJoin,
         filters
       }
       await updateView(newView)
