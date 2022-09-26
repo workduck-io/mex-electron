@@ -50,6 +50,13 @@ export const StyledBoard = styled.div<{ sidebarExpanded?: boolean }>`
     padding: ${({ theme }) => theme.spacing.small};
     margin: ${({ theme }) => theme.spacing.small};
     border-radius: ${({ theme }) => theme.borderRadius.small};
+
+    div:focus-visible {
+      outline: none;
+      border-color: none;
+      -webkit-box-shadow: none;
+      box-shadow: none;
+    }
   }
 `
 
