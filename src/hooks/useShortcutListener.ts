@@ -1,3 +1,5 @@
+import { useEffect, useCallback, useMemo } from 'react'
+
 import {
   MenuClassName,
   MenuFilterInputClassName,
@@ -7,7 +9,7 @@ import {
 import useMultipleEditors from '@store/useEditorsStore'
 import { useLayoutStore } from '@store/useLayoutStore'
 import useModalStore from '@store/useModalStore'
-import { useEffect, useCallback, useMemo } from 'react'
+
 import { Shortcut } from '../components/mex/Help/Help.types'
 import useAnalytics from '../services/analytics'
 import { ActionType } from '../services/analytics/events'
@@ -24,10 +26,21 @@ export type ShortcutListner = {
 export type KeyBindingPress = [string[], string]
 
 export const usePlatformInfo = () =>
-  useMemo(
-    () => (typeof navigator === 'object' && /Mac|iPod|iPhone|iPad/.test(navigator.platform) ? 'Meta' : 'Control'),
-    []
-  )
+  useMemo(() => {
+    const isMac = typeof navigator === 'object' && /Mac|iPod|iPhone|iPad/.test(navigator.platform)
+
+    if (isMac) {
+      return {
+        MOD: 'Meta',
+        CONTROL: 'Control'
+      }
+    }
+
+    return {
+      MOD: 'Control',
+      CONTROL: 'Alt'
+    }
+  }, [])
 
 export type Key = {
   name: string
@@ -57,7 +70,7 @@ const useShortcutListener = (): ShortcutListner => {
 
   const { trackEvent } = useAnalytics()
 
-  const MOD = usePlatformInfo()
+  const { MOD } = usePlatformInfo()
 
   const getKeyModifiers = (event: KeyboardEvent): Array<Key> => {
     const modifiers = []

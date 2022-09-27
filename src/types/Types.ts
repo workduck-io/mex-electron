@@ -203,5 +203,6 @@ export enum NodeType {
   DEFAULT,
   SHARED,
   ARCHIVED,
-  MISSING
+  MISSING,
+  SNIPPET
 }
