@@ -55,7 +55,7 @@ const uploadToS3 = async () => {
 }
 
 const uploadToVersionFolder = async () => {
-  const versionFolderName = `${s3BucketNameBase}/v${version}`
+  const versionFolderName = `${s3BucketNameBase}/${version}`
   const child = spawn('aws', ['s3', 'sync', 'out', versionFolderName])
 
   child.on('stdout', (data) => console.log(data.toString()))
