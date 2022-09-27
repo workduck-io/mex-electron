@@ -94,7 +94,7 @@ export const useLayoutStore = create<LayoutState>((set, get) => ({
   showAllSidebars: () =>
     set((state) => ({
       sidebar: { ...state.sidebar, show: true },
-      rhSidebar: { ...state.rhSidebar, show: true }
+      rhSidebar: { ...state.rhSidebar, show: true, expanded: false }
     })),
 
   hideAllSidebars: () =>
