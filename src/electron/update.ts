@@ -46,7 +46,10 @@ export const setupAutoUpdates = (version: string, isAlpha: boolean, beforeQuit: 
     }
 
     dialog.showMessageBox(dialogOpts).then((returnValue) => {
-      if (returnValue.response === 0) autoUpdater.quitAndInstall()
+      if (returnValue.response === 0) {
+        windowManager.closeAllWindows()
+        autoUpdater.quitAndInstall()
+      }
     })
 
     beforeQuit()
