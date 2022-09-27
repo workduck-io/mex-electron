@@ -1,14 +1,18 @@
 import React, { useEffect, useMemo, useRef, useState } from 'react'
 
 import { isParent } from '@components/mex/Sidebar/treeUtils'
+import { getDefaultContent } from '@components/spotlight/Preview'
 import { BASE_TASKS_PATH } from '@data/Defaults/baseData'
 import { useCreateNewNote } from '@hooks/useCreateNewNote'
 import { useLastOpened } from '@hooks/useLastOpened'
+import { useNodes } from '@hooks/useNodes'
 import { useSaveData } from '@hooks/useSaveData'
+import { usePlatformInfo } from '@hooks/useShortcutListener'
 import { useTaskFromSelection } from '@hooks/useTaskFromSelection'
 import { useSpotlightSettingsStore } from '@store/settings.spotlight'
 import { useRecentsStore } from '@store/useRecentsStore'
 import { serializeHtml, createPlateEditor, createPlateUI, getPlateSelectors } from '@udecode/plate'
+import { getContent } from '@utils/helpers'
 import { findIndex, groupBy } from 'lodash'
 import { useSpring } from 'react-spring'
 import { Virtuoso } from 'react-virtuoso'
@@ -25,6 +29,7 @@ import { useSnippets } from '../../../../hooks/useSnippets'
 import { ActiveItem, CategoryType, useSpotlightContext } from '../../../../store/Context/context.spotlight'
 import { useSpotlightAppStore } from '../../../../store/app.spotlight'
 import { useSpotlightEditorStore } from '../../../../store/editor.spotlight'
+import { NodeType } from '../../../../types/Types'
 import { mog } from '../../../../utils/lib/helper'
 import {
   convertContentToRawText,
@@ -50,7 +55,7 @@ export enum KEYBOARD_KEYS {
   ArrowLeft = 'ArrowLeft',
   ArrowRight = 'ArrowRight',
   Escape = 'Escape',
-  Space = 'Space',
+  Space = 'Space'
 }
 
 const List = ({
@@ -87,6 +92,7 @@ const List = ({
   const { createNewNote } = useCreateNewNote()
   const { getSnippet } = useSnippets()
   const { saveData } = useSaveData()
+  const { getNodeType } = useNodes()
 
   const { getNewTaskNode } = useTaskFromSelection()
 
@@ -150,6 +156,8 @@ const List = ({
     if (search?.value) return search.value.startsWith('[[') ? search.value.slice(2) : search.value
   }
 
+  const platformModifierKeys = usePlatformInfo()
+
   useEffect(() => {
     const unsubscribe = tinykeys(window, {
       [KEYBOARD_KEYS.ArrowUp]: (event) => {
@@ -203,6 +211,21 @@ const List = ({
 
             return nextIndex
           })
+      },
+      [`${platformModifierKeys.CONTROL}+c`]: (event) => {
+        const currentActiveItem = data[activeIndex]
+        mog('CTRL C')
+        if (currentActiveItem?.category === CategoryType.backlink) {
+          handleCopyActiveItem(currentActiveItem.id)
+        }
+      },
+      [`${platformModifierKeys.CONTROL}+v`]: (event) => {
+        const currentActiveItem = data[activeIndex]
+        mog('CTRL V')
+
+        if (currentActiveItem?.category === CategoryType.backlink) {
+          handleCopyActiveItem(currentActiveItem.id, true)
+        }
       }
     })
 
@@ -217,8 +240,7 @@ const List = ({
         event.preventDefault()
         const currentActiveItem = data[activeIndex]
         const isPinnedNote = currentActiveItem.category === CategoryType.pinned
-        const isNoteCategory =
-          currentActiveItem?.category === CategoryType.backlink || isPinnedNote
+        const isNoteCategory = currentActiveItem?.category === CategoryType.backlink || isPinnedNote
         // * If current item is ILINK
         if (isNoteCategory && !activeItem.active) {
           // mog('Matched with node')
@@ -261,13 +283,11 @@ const List = ({
             }
 
             if (currentActiveItem?.type === QuickLinkType.snippet) {
-              handleCopySnippet(currentActiveItem.id, true)
+              handleCopyActiveItem(currentActiveItem.id, true)
             }
-
-
           } else {
             if (currentActiveItem.type === QuickLinkType.snippet) {
-              handleCopySnippet(currentActiveItem.id, false)
+              handleCopyActiveItem(currentActiveItem.id, false)
               setInput('')
             } else {
               let nodePath = node.path
@@ -419,7 +439,7 @@ const List = ({
         createNewNote({ path: nodePath, noteId: node.nodeid, namespace: selectedNamespace })
       }
     } else if (currentActiveItem?.type === QuickLinkType.snippet && !activeItem.active) {
-      handleCopySnippet(currentActiveItem.id, true)
+      handleCopyActiveItem(currentActiveItem.id, true)
     } else {
       if (currentActiveItem?.type !== ItemActionType.search && selectedItem?.item?.type !== ItemActionType.search) {
         setSelectedItem({ item: currentActiveItem, active: false })
@@ -432,14 +452,25 @@ const List = ({
     }
   }
 
-  const handleCopySnippet = (id: string, isUse?: boolean) => {
-    const snippet = getSnippet(id)
-    const text = convertContentToRawText(snippet.content, '\n')
+  const getContentByType = (id: string) => {
+    const isNode = getNodeType(id)
+    switch (isNode) {
+      case NodeType.DEFAULT:
+        return getContent(id)?.content ?? getDefaultContent()
+      case NodeType.SNIPPET:
+      default:
+        return getSnippet(id)?.content ?? getDefaultContent()
+    }
+  }
+
+  const handleCopyActiveItem = (id: string, isUse?: boolean) => {
+    const content = getContentByType(id)
+    const text = convertContentToRawText(content, '\n')
 
     let html = text
 
     try {
-      const filterdContent = convertToCopySnippet(snippet.content)
+      const filterdContent = convertToCopySnippet(content)
       const convertedContent = convertToCopySnippet(filterdContent, {
         filter: defaultCopyFilter,
         converter: defaultCopyConverter
@@ -489,7 +520,7 @@ const List = ({
               }
 
               if (currentActiveItem?.type === QuickLinkType.snippet) {
-                handleCopySnippet(currentActiveItem.id)
+                handleCopyActiveItem(currentActiveItem.id)
               }
             },
             onDoubleClick: () => {

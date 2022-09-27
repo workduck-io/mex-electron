@@ -1,4 +1,5 @@
 import { useRecentsStore } from '@store/useRecentsStore'
+import { useSnippetStore } from '@store/useSnippetStore'
 import { getParentBreadcurmbs, RESERVED_NAMESPACES } from '@utils/lib/paths'
 import toast from 'react-hot-toast'
 
@@ -25,6 +26,12 @@ export const useNodes = () => {
       // if (e.startsWith('ERROR-RESERVED:'))
       if (showAlert) toast.error('Path clashed with a ReservedKeyword')
     }
+  }
+
+  const isSnippetNode = (snippetId: string): boolean => {
+    const snippets = useSnippetStore.getState().snippets
+    const res = snippets?.find((s) => s.id === snippetId)
+    return !!res
   }
 
   const isInArchive = (nodeid: string): boolean => {
@@ -99,6 +106,7 @@ export const useNodes = () => {
     if (getNode(nodeid)) return NodeType.DEFAULT
     if (isInArchive(nodeid)) return NodeType.ARCHIVED
     if (isSharedNode(nodeid)) return NodeType.SHARED
+    if (isSnippetNode(nodeid)) return NodeType.SNIPPET
     return NodeType.MISSING
   }
 
