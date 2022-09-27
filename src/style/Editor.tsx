@@ -31,6 +31,7 @@ export const InfoTools = styled.div<FocusModeProp>`
   align-items: center;
   gap: ${({ theme }) => theme.spacing.small};
   ${Button} {
+    background: transparent;
     margin: 0;
   }
   ${(props) => focusStyles(props)}
