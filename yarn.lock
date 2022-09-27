@@ -2679,8 +2679,8 @@
 
 "@workduck-io/dwindle@^0.0.20":
   version "0.0.20"
-  resolved "https://npm.pkg.github.com/download/@workduck-io/dwindle/0.0.20/2c4f7b49faada74a2e01cb04cc142c588d945f98#2c4f7b49faada74a2e01cb04cc142c588d945f98"
-  integrity sha512-pxtazV/SZPDcFVho7TJBcuo9DcLk20tleOCh4VcQPS6Uk3Ht9ZIp4it/co3Kc9TDk0fNX3JPJm48qr8K89atxA==
+  resolved "https://npm.pkg.github.com/download/@workduck-io/dwindle/0.0.20/351561c09c341adb9cf20207e883673345b61012#351561c09c341adb9cf20207e883673345b61012"
+  integrity sha512-2jEPmB0fQOtktDG/gjLlGZudBZ1evbGgtGrfM1ilhJ/SuXkXpYs1pQ9uQeZCWA38b7KJU5s2+5u+fim6o9hMaA==
   dependencies:
     "@types/jsonwebtoken" "^8.5.5"
     amazon-cognito-identity-js "^5.2.0"
