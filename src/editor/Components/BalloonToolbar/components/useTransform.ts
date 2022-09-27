@@ -1,16 +1,10 @@
+import { useOpenToast } from '@components/toast/showOpenToasts'
 import { useCreateNewNote } from '@hooks/useCreateNewNote'
 import { useSnippets } from '@hooks/useSnippets'
-import { useToast } from '@hooks/useToast'
 import { useUpdater } from '@hooks/useUpdater'
 import {
-  getSelectionText,
-  insertNodes,
-  TEditor,
-  getNodeEntries,
-  removeNodes,
-  deleteText,
-  getPath,
-  withoutNormalizing
+    deleteText, getNodeEntries, getPath, getSelectionText,
+    insertNodes, removeNodes, TEditor, withoutNormalizing
 } from '@udecode/plate'
 import { convertValueToTasks } from '@utils/lib/contentConvertTask'
 import genereateName from 'project-name-generator'
@@ -18,7 +12,6 @@ import { SEPARATOR } from '../../../../components/mex/Sidebar/treeUtils'
 import { defaultContent } from '../../../../data/Defaults/baseData'
 import { generateSnippetId, generateTempId } from '../../../../data/Defaults/idPrefixes'
 import { useEditorStore } from '../../../../store/useEditorStore'
-import { useSnippetStore } from '../../../../store/useSnippetStore'
 import { NodeEditorContent } from '../../../../types/Types'
 import { getSlug, NODE_PATH_CHAR_LENGTH, NODE_PATH_SPACER } from '../../../../utils/lib/strings'
 import { convertContentToRawText } from '../../../../utils/search/parseData'
@@ -28,12 +21,13 @@ import { ELEMENT_QA_BLOCK } from '../../QABlock/createQAPlugin'
 import { ELEMENT_SYNC_BLOCK } from '../../SyncBlock'
 
 export const useTransform = () => {
-  const addSnippet = useSnippetStore((s) => s.addSnippet)
-  const node = useEditorStore((s) => s.node)
+  // const addSnippet = useSnippetStore((s) => s.addSnippet)
+  // const node = useEditorStore((s) => s.node)
+  const { openNoteToast, openSnippetToast } = useOpenToast()
   const { updateSnippet } = useSnippets()
   const { createNewNote } = useCreateNewNote()
   const { updater } = useUpdater()
-  const { toast } = useToast()
+  // const { toast } = useToast()
 
   // Checks whether a node is a flowblock
   const isFlowBlock = (node: any): boolean => {
@@ -159,7 +153,7 @@ export const useTransform = () => {
    * Inserts the link of new node in place of the selection
    * @param editor
    */
-  const selectionToNode = (editor: TEditor) => {
+  const selectionToNode = (editor: TEditor, title?: string) => {
     if (!editor.selection) return
     if (!isConvertable(editor)) return
 
@@ -186,20 +180,27 @@ export const useTransform = () => {
         return node
       })
       const isInline = lowest.length === 1
-      const putContent = selText.length > NODE_PATH_CHAR_LENGTH
+      const putContent = selText.length > NODE_PATH_CHAR_LENGTH && title !== undefined
 
       const text = convertContentToRawText(value, NODE_PATH_SPACER)
-      const parentPath = useEditorStore.getState().node.title
-      const path = parentPath + SEPARATOR + (isInline ? getSlug(selText) : getSlug(text))
+      const parentPath = useEditorStore.getState().node.path
+      const namespace = useEditorStore.getState().node.namespace
+      const childTitle = title ?? (isInline ? getSlug(selText) : getSlug(text))
+      const path = parentPath + SEPARATOR + childTitle
 
       const note = createNewNote({
         path,
         noteContent: putContent ? value : defaultContent.content,
-        namespace: node?.namespace,
+        namespace: namespace,
         noRedirect: true
       })
 
       replaceSelectionWithLink(editor, note?.nodeid, isInline)
+
+      if (note) {
+        openNoteToast(note.nodeid, note.path)
+      }
+
       // mog('Replace Selection with node We are here', {
       //   lowest,
       //   selText,
@@ -247,7 +248,7 @@ export const useTransform = () => {
    * Shows notification of snippet creation
    * @param editor
    */
-  const selectionToSnippet = (editor: TEditor) => {
+  const selectionToSnippet = (editor: TEditor, title?: string) => {
     if (!editor.selection) return
     if (!isConvertable(editor)) return
 
@@ -266,7 +267,7 @@ export const useTransform = () => {
       })
 
       const snippetId = generateSnippetId()
-      const snippetTitle = genereateName().dashed
+      const snippetTitle = title ?? genereateName().dashed
       const newSnippet = {
         id: snippetId,
         title: snippetTitle,
@@ -278,8 +279,9 @@ export const useTransform = () => {
       // addSnippet()
 
       // mog('We are here', { esl: editor.selection, selectionPath, nodes, value })
+      //
+      openSnippetToast(snippetId, snippetTitle)
 
-      toast(`Snippet created [[${snippetTitle}]]`)
       // setContent(nodeid, value)
       // saveData()
       // mog('We are here', { esl: editor.selection, selectionPath, nodes, value, text, path })
