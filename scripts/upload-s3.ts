@@ -11,7 +11,8 @@ const checkAlpha = (version) => {
 }
 
 const isAlpha = checkAlpha(version)
-const s3BucketName = isAlpha ? 's3://mex-electron-alpha-updates' : 's3://mex-electron-updates'
+const s3BucketNameBase = isAlpha ? 's3://mex-electron-alpha-updates' : 's3://mex-electron-updates'
+const s3BucketName = `${s3BucketNameBase}/latest`
 const updateInfoFile = isAlpha ? 'alpha-mac.yml' : 'latest-mac.yml'
 
 const filesToUpload = new Set(
@@ -53,7 +54,18 @@ const uploadToS3 = async () => {
   await child
 }
 
-clearS3Bucket().then(() => {
+const uploadToVersionFolder = async () => {
+  const versionFolderName = `${s3BucketNameBase}/v${version}`
+  const child = spawn('aws', ['s3', 'sync', 'out', versionFolderName])
+
+  child.on('stdout', (data) => console.log(data.toString()))
+  child.on('stderr', (data) => console.error(data.toString()))
+
+  await child
+}
+
+clearS3Bucket().then(async () => {
   console.log('Cleared Bucket. Uploading latest files')
-  uploadToS3()
+  await uploadToS3()
+  await uploadToVersionFolder()
 })
