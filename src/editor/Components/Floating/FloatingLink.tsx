@@ -1,7 +1,7 @@
 import { Tooltip } from '@components/FloatingElements/Tooltip'
 import { EditorIcons } from '@components/icons/Icons'
 import { Icon } from '@iconify/react'
-import { LinkIcon, ShortTextIcon, useFloatingLinkSelectors } from '@udecode/plate-link'
+import { useFloatingLinkSelectors } from '@udecode/plate-link'
 import { FloatingIconWrapper } from '@udecode/plate-ui-toolbar'
 import React from 'react'
 import {

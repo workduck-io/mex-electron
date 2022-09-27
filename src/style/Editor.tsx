@@ -73,7 +73,7 @@ export const CenteredMainContent = styled.div`
   }
 `
 
-export const StyledEditor = styled(CenteredMainContent) <StyledEditorProps>``
+export const StyledEditor = styled(CenteredMainContent)<StyledEditorProps>``
 
 export const EditorBreadcrumbs = styled.div<{ isVisible?: boolean }>`
   display: flex;
@@ -206,7 +206,6 @@ export const EditorStyles = styled.div<{ readOnly?: boolean }>`
 
   a * {
     cursor: pointer;
-    color: ${({ theme }) => theme.colors.primary} !important;
     text-decoration: inherit;
   }
 
