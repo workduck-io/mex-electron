@@ -169,10 +169,11 @@ export const MenuComponent = forwardRef<any, Props & React.HTMLProps<HTMLButtonE
         allowSearch && resetSearch()
       } else {
         if (inputRef.current) {
+          listItemsRef.current.push(inputRef.current as any)
           inputRef.current.focus()
         }
       }
-    }, [open, inputRef, allowSearch, resetSearch])
+    }, [open, inputRef, allowSearch])
 
     // Event emitter allows you to communicate across tree components.
     // This effect closes all menus when an item gets clicked anywhere
