@@ -1,5 +1,7 @@
 import React from 'react'
 // Icons for sidebar and UI
+import editLine from '@iconify/icons-ri/edit-line'
+import linkUnlinkM from '@iconify/icons-ri/link-unlink-m'
 import bxChevronDownCircle from '@iconify/icons-bx/bx-chevron-down-circle'
 import checkboxBlankCircleFill from '@iconify/icons-ri/checkbox-blank-circle-fill'
 import checkboxBlankCircleLine from '@iconify/icons-ri/checkbox-blank-circle-line'
@@ -32,9 +34,12 @@ export const MexNodeIcons: { [key: string]: [any, any] } = {
   'ri:draft-line': [draftFill, draftLine]
 }
 
-// eslint-disable-next-line  @typescript-eslint/no-explicit-any
-export const EditorIcons: { [name: string]: any } = {
-  externalLink: externalLinkLine
+// Icons to use inside the editor via Iconify Component
+export const EditorIcons = {
+  externalLink: externalLinkLine,
+  text: 'icon-park-outline:add-text',
+  edit: editLine,
+  linkUnlink: linkUnlinkM
 }
 
 export default MexIcons
