@@ -99,6 +99,7 @@ const LinkElement = ({ attributes, children, element, nodeProps }: StyledElement
       </div> */}
         {!isExternal && (
           <button
+            tabIndex={-1}
             className="LinkIcon"
             type="button"
             aria-label="Open link"
