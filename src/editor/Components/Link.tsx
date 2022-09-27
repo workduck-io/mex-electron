@@ -19,7 +19,7 @@ const Link = styled.a`
     border-radius: ${({ theme }) => theme.borderRadius.small};
     border: none;
     svg {
-      color: ${({ theme }) => theme.colors.text.subheading};
+      color: ${({ theme }) => theme.colors.primary};
     }
   }
 

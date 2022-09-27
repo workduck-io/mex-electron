@@ -13,7 +13,7 @@ const GlobalStyle = createGlobalStyle`
     outline: ${({ theme }) => theme.colors.primary} solid 1px;
   }
 
-  button:focus-visible {
+  button:focus-visible, a:focus-visible {
     outline: ${({ theme }) => theme.colors.primary} solid 1px;
     border-color: inherit;
     -webkit-box-shadow: 1px 1px 1px 1px ${({ theme }) => theme.colors.primary};

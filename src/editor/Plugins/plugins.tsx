@@ -77,12 +77,17 @@ import { withBlockOptions } from '@editor/Components/Blocks'
 import { createBlockModifierPlugin } from '@editor/Components/Blocks/createBlockModifierPlugin'
 // eslint-disable-next-line import/no-unresolved
 import MediaIFrame, { parseRestMediaUrls } from '@editor/Components/media-embed-ui/src/MediaEmbedElement/MediaIFrame'
+import { PlateFloatingLink } from '@editor/Components/Floating/FloatingLink'
 
 export type PluginOptionType = {
   exclude: {
     dnd?: boolean
     mentions?: boolean
-  },
+  }
+}
+
+export const linkPlugin = {
+  renderAfterEditable: PlateFloatingLink
 }
 
 /**
@@ -117,7 +122,7 @@ export const generatePlugins = (options: PluginOptionType) => {
 
     // Special Elements
     createImagePlugin(optionsImagePlugin), // Image
-    createLinkPlugin(), // Link
+    createLinkPlugin(linkPlugin), // Link
     createListPlugin(), // List
     createTodoPlugin(),
     createTablePlugin({ component: TableWrapper }), // Table

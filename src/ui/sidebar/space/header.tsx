@@ -37,7 +37,7 @@ const Header = ({ space }: { space: SidebarSpace }) => {
   const titleRef = React.useRef<HTMLDivElement>(null)
   const { changeNamespaceName, changeNamespaceIcon } = useNamespaces()
   const [showInput, setShowInput] = useState(false)
-  const [title, setTitle] = useState(space.label)
+  const [title, setTitle] = useState(space?.label ?? 'Space')
 
   const onChangeName = (name: string) => {
     // mog('onChangeName', { name })
@@ -97,7 +97,12 @@ const Header = ({ space }: { space: SidebarSpace }) => {
       <SpaceHeader>
         <SpaceTitleWrapper>
           <SpaceTitle>
-            <IconPicker size={20} allowPicker={!isNamespaceIconDisabled} onChange={onChangeIcon} value={space?.icon} />
+            <IconPicker
+              size={20}
+              allowPicker={!isNamespaceIconDisabled}
+              onChange={onChangeIcon}
+              value={space?.icon ?? { type: 'ICON', value: 'heroicons-outline:view-grid' }}
+            />
             {showInput && !isNamespaceInputDisabled ? (
               <Input defaultValue={space?.label} onBlur={(e) => onChangeName(e.target.value)} ref={inpRef} />
             ) : (

@@ -1,4 +1,9 @@
-import { MenuClassName, MenuItemClassName, RootMenuClassName } from '@components/FloatingElements/Dropdown.classes'
+import {
+  MenuClassName,
+  MenuFilterInputClassName,
+  MenuItemClassName,
+  RootMenuClassName
+} from '@components/FloatingElements/Dropdown.classes'
 import useMultipleEditors from '@store/useEditorsStore'
 import { useLayoutStore } from '@store/useLayoutStore'
 import useModalStore from '@store/useModalStore'
@@ -137,7 +142,7 @@ export default useShortcutListener
 
 const MEX_KEYBOARD_IGNORE_CLASSES = {
   all: ['mex-search-input', 'FilterInput', MenuItemClassName, MenuClassName, RootMenuClassName],
-  input: ['mex-search-input', 'FilterInput'],
+  input: ['mex-search-input', 'FilterInput', MenuFilterInputClassName],
   dropdown: [MenuItemClassName, MenuClassName, RootMenuClassName]
 }
 
@@ -154,11 +159,11 @@ export const useEnableShortcutHandler = () => {
     const allIgnore: IgnoreClasses = ignoreClasses ?? 'all'
     const classesToIgnore = MEX_KEYBOARD_IGNORE_CLASSES[allIgnore]
     const fElement = document.activeElement as HTMLElement
-    // mog('fElement', {
-    //   hasClass: classesToIgnore.some((c) => fElement.classList.contains(c)),
-    //   cl: fElement.classList,
-    //   tagName: fElement.tagName
-    // })
+    mog('fElement', {
+      hasClass: classesToIgnore.some((c) => fElement.classList.contains(c)),
+      cl: fElement.classList,
+      tagName: fElement.tagName
+    })
     const ignoredInputTags =
       ignoreClasses === 'input' || ignoreClasses === 'all'
         ? fElement.tagName === 'INPUT' || fElement.tagName === 'TEXTAREA'

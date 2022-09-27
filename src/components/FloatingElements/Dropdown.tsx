@@ -51,7 +51,7 @@ import { mog } from '@workduck-io/mex-utils'
 import { MIcon } from '../../types/Types'
 import IconDisplay from '@ui/components/IconPicker/IconDisplay'
 import { GenericFlex } from '@ui/components/Filters/Filter.style'
-import { MenuClassName, MenuItemClassName, RootMenuClassName } from './Dropdown.classes'
+import { MenuClassName, MenuFilterInputClassName, MenuItemClassName, RootMenuClassName } from './Dropdown.classes'
 
 export const MenuItem = forwardRef<
   HTMLButtonElement,
@@ -309,6 +309,7 @@ export const MenuComponent = forwardRef<any, Props & React.HTMLProps<HTMLButtonE
                     <Icon icon={searchLine} />
                     <Input
                       placeholder={searchPlaceholder ?? 'Filter items'}
+                      className={MenuFilterInputClassName}
                       onChange={debounce((e) => onSearchChange(e), 250)}
                       ref={inputRef}
                     />
