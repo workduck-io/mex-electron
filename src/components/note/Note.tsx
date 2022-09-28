@@ -101,7 +101,7 @@ const NoteIdSetter = ({ noteId }: { noteId: string }) => {
     if (ilink) {
       ctx.setNode(ilink)
     }
-  }, [noteId])
+  }, [noteId, ctx, ilinks])
 
   return <></>
 }

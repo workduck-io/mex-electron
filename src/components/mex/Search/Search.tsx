@@ -23,8 +23,6 @@ import { useSearch } from '../../../hooks/useSearch'
 import { useTags } from '../../../hooks/useTags'
 import { useContentStore } from '../../../store/useContentStore'
 import useDataStore from '../../../store/useDataStore'
-import { useEditorStore } from '../../../store/useEditorStore'
-import { useRecentsStore } from '../../../store/useRecentsStore'
 import { MainHeader } from '../../../style/Layouts'
 import {
   ItemTag,
@@ -124,9 +122,6 @@ const Search = () => {
     return filRes
   }
 
-  const lastOpened = useRecentsStore((store) => store.lastOpened)
-  const nodeUID = useEditorStore((store) => store.node.nodeid)
-  const baseNodeId = useDataStore((store) => store.baseNodeId)
   const isHighlightBlock = (item: GenericSearchResult) => item.matchField?.includes('text')
 
   const onOpenItem = (item: GenericSearchResult) => {
@@ -140,9 +135,7 @@ const Search = () => {
   }
 
   const onEscapeExit = () => {
-    const nodeid = nodeUID ?? lastOpened[0] ?? baseNodeId
-    loadNode(nodeid)
-    goTo(ROUTE_PATHS.node, NavigationType.push, nodeid)
+    // Used to load the last node
   }
 
   const onDoubleClick = (e: React.MouseEvent<HTMLElement>, item: GenericSearchResult) => {
