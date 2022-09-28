@@ -3,7 +3,7 @@ import React, { useMemo, useCallback, useEffect } from 'react'
 import { getDefaultContent } from '@components/spotlight/Preview'
 import { Editor } from '@editor/Editor'
 import { useEditorBuffer } from '@hooks/useEditorBuffer'
-import { NoteProvider, useNoteContext } from '@store/Context/context.note'
+import { NoteProvider } from '@store/Context/context.note'
 import { useContentStore } from '@store/useContentStore'
 import useDataStore from '@store/useDataStore'
 

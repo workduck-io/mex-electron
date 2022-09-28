@@ -1,4 +1,3 @@
-import { ILink } from '../../types/Types'
 import React, { createContext, useContext } from 'react'
 
 type NoteContextType = {
