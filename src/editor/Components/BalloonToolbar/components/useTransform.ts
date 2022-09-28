@@ -1,8 +1,10 @@
 import { useOpenToast } from '@components/toast/showOpenToasts'
+import { cleanEditorId } from '@editor/Components/Todo'
 import { useCreateNewNote } from '@hooks/useCreateNewNote'
 import { useSnippets } from '@hooks/useSnippets'
 import { useUpdater } from '@hooks/useUpdater'
 import { useNoteContext } from '@store/Context/context.note'
+import useDataStore from '@store/useDataStore'
 import {
   deleteText,
   getNodeEntries,
@@ -192,46 +194,34 @@ export const useTransform = () => {
       const putContent = selText.length > NODE_PATH_CHAR_LENGTH && title !== undefined
 
       const text = convertContentToRawText(value, NODE_PATH_SPACER)
-      let parentPath = useEditorStore.getState().node.path
-      let namespace = useEditorStore.getState().node.namespace
 
-      // If the action is performed in a pinned note
-      if (pinnedNoteCtx && pinnedNoteCtx.node) {
-        // Set the respective parent path and namespace from pinned note context
-        parentPath = pinnedNoteCtx.node.path
-        namespace = pinnedNoteCtx.node.namespace
+      const editorId = editor.id as string
+      const nodeid = cleanEditorId(editorId)
+
+      const ilinks = useDataStore.getState().ilinks
+      const node = ilinks.find((n) => n.nodeid === nodeid)
+
+      if (node) {
+        const parentPath = node.path
+        const namespace = node.namespace
+        const childTitle = title ?? (isInline ? getSlug(selText) : getSlug(text))
+        const path = parentPath + SEPARATOR + childTitle
+
+        // mog('selectionToNode  ', { parentPath, childTitle, path, namespace, editorId, nodeid })
+
+        const note = createNewNote({
+          path,
+          noteContent: putContent ? value : defaultContent.content,
+          namespace: namespace,
+          noRedirect: true
+        })
+
+        replaceSelectionWithLink(editor, note?.nodeid, isInline)
+
+        if (note) {
+          openNoteToast(note.nodeid, note.path)
+        }
       }
-
-      const childTitle = title ?? (isInline ? getSlug(selText) : getSlug(text))
-      const path = parentPath + SEPARATOR + childTitle
-
-      // mog('selectionToNode  ', { parentPath, childTitle, path, namespace })
-
-      const note = createNewNote({
-        path,
-        noteContent: putContent ? value : defaultContent.content,
-        namespace: namespace,
-        noRedirect: true
-      })
-
-      replaceSelectionWithLink(editor, note?.nodeid, isInline)
-
-      if (note) {
-        openNoteToast(note.nodeid, note.path)
-      }
-
-      // mog('Replace Selection with node We are here', {
-      //   lowest,
-      //   selText,
-      //   esl: editor.selection,
-      //   selectionPath,
-      //   nodes,
-      //   value,
-      //   text,
-      //   path
-      // })
-      // saveData()
-      // mog('We are here', { esl: editor.selection, selectionPath, nodes, value, text, path })
     })
   }
 
