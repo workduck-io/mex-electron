@@ -1,12 +1,22 @@
 import { useOpenToast } from '@components/toast/showOpenToasts'
+import { cleanEditorId } from '@editor/Components/Todo'
 import { useCreateNewNote } from '@hooks/useCreateNewNote'
 import { useSnippets } from '@hooks/useSnippets'
 import { useUpdater } from '@hooks/useUpdater'
+import { useNoteContext } from '@store/Context/context.note'
+import useDataStore from '@store/useDataStore'
 import {
-    deleteText, getNodeEntries, getPath, getSelectionText,
-    insertNodes, removeNodes, TEditor, withoutNormalizing
+  deleteText,
+  getNodeEntries,
+  getPath,
+  getSelectionText,
+  insertNodes,
+  removeNodes,
+  TEditor,
+  withoutNormalizing
 } from '@udecode/plate'
 import { convertValueToTasks } from '@utils/lib/contentConvertTask'
+import { mog } from '@workduck-io/mex-utils'
 import genereateName from 'project-name-generator'
 import { SEPARATOR } from '../../../../components/mex/Sidebar/treeUtils'
 import { defaultContent } from '../../../../data/Defaults/baseData'
@@ -27,6 +37,7 @@ export const useTransform = () => {
   const { updateSnippet } = useSnippets()
   const { createNewNote } = useCreateNewNote()
   const { updater } = useUpdater()
+  const pinnedNoteCtx = useNoteContext()
   // const { toast } = useToast()
 
   // Checks whether a node is a flowblock
@@ -183,36 +194,34 @@ export const useTransform = () => {
       const putContent = selText.length > NODE_PATH_CHAR_LENGTH && title !== undefined
 
       const text = convertContentToRawText(value, NODE_PATH_SPACER)
-      const parentPath = useEditorStore.getState().node.path
-      const namespace = useEditorStore.getState().node.namespace
-      const childTitle = title ?? (isInline ? getSlug(selText) : getSlug(text))
-      const path = parentPath + SEPARATOR + childTitle
 
-      const note = createNewNote({
-        path,
-        noteContent: putContent ? value : defaultContent.content,
-        namespace: namespace,
-        noRedirect: true
-      })
+      const editorId = editor.id as string
+      const nodeid = cleanEditorId(editorId)
 
-      replaceSelectionWithLink(editor, note?.nodeid, isInline)
+      const ilinks = useDataStore.getState().ilinks
+      const node = ilinks.find((n) => n.nodeid === nodeid)
 
-      if (note) {
-        openNoteToast(note.nodeid, note.path)
+      if (node) {
+        const parentPath = node.path
+        const namespace = node.namespace
+        const childTitle = title ?? (isInline ? getSlug(selText) : getSlug(text))
+        const path = parentPath + SEPARATOR + childTitle
+
+        // mog('selectionToNode  ', { parentPath, childTitle, path, namespace, editorId, nodeid })
+
+        const note = createNewNote({
+          path,
+          noteContent: putContent ? value : defaultContent.content,
+          namespace: namespace,
+          noRedirect: true
+        })
+
+        replaceSelectionWithLink(editor, note?.nodeid, isInline)
+
+        if (note) {
+          openNoteToast(note.nodeid, note.path)
+        }
       }
-
-      // mog('Replace Selection with node We are here', {
-      //   lowest,
-      //   selText,
-      //   esl: editor.selection,
-      //   selectionPath,
-      //   nodes,
-      //   value,
-      //   text,
-      //   path
-      // })
-      // saveData()
-      // mog('We are here', { esl: editor.selection, selectionPath, nodes, value, text, path })
     })
   }
 
