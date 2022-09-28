@@ -2,11 +2,19 @@ import { useOpenToast } from '@components/toast/showOpenToasts'
 import { useCreateNewNote } from '@hooks/useCreateNewNote'
 import { useSnippets } from '@hooks/useSnippets'
 import { useUpdater } from '@hooks/useUpdater'
+import { useNoteContext } from '@store/Context/context.note'
 import {
-    deleteText, getNodeEntries, getPath, getSelectionText,
-    insertNodes, removeNodes, TEditor, withoutNormalizing
+  deleteText,
+  getNodeEntries,
+  getPath,
+  getSelectionText,
+  insertNodes,
+  removeNodes,
+  TEditor,
+  withoutNormalizing
 } from '@udecode/plate'
 import { convertValueToTasks } from '@utils/lib/contentConvertTask'
+import { mog } from '@workduck-io/mex-utils'
 import genereateName from 'project-name-generator'
 import { SEPARATOR } from '../../../../components/mex/Sidebar/treeUtils'
 import { defaultContent } from '../../../../data/Defaults/baseData'
@@ -27,6 +35,7 @@ export const useTransform = () => {
   const { updateSnippet } = useSnippets()
   const { createNewNote } = useCreateNewNote()
   const { updater } = useUpdater()
+  const pinnedNoteCtx = useNoteContext()
   // const { toast } = useToast()
 
   // Checks whether a node is a flowblock
@@ -183,10 +192,20 @@ export const useTransform = () => {
       const putContent = selText.length > NODE_PATH_CHAR_LENGTH && title !== undefined
 
       const text = convertContentToRawText(value, NODE_PATH_SPACER)
-      const parentPath = useEditorStore.getState().node.path
-      const namespace = useEditorStore.getState().node.namespace
+      let parentPath = useEditorStore.getState().node.path
+      let namespace = useEditorStore.getState().node.namespace
+
+      // If the action is performed in a pinned note
+      if (pinnedNoteCtx && pinnedNoteCtx.node) {
+        // Set the respective parent path and namespace from pinned note context
+        parentPath = pinnedNoteCtx.node.path
+        namespace = pinnedNoteCtx.node.namespace
+      }
+
       const childTitle = title ?? (isInline ? getSlug(selText) : getSlug(text))
       const path = parentPath + SEPARATOR + childTitle
+
+      // mog('selectionToNode  ', { parentPath, childTitle, path, namespace })
 
       const note = createNewNote({
         path,
