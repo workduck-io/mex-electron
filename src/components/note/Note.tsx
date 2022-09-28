@@ -70,7 +70,6 @@ const Note: React.FC<{ noteId: string }> = ({ noteId }) => {
       <EditorContainer>
         <InfoBar archived={archived} />
         <NoteProvider>
-          <NoteIdSetter noteId={noteId} />
           <Editor
             showBalloonToolbar
             onAutoSave={onAutoSave}
@@ -86,24 +85,6 @@ const Note: React.FC<{ noteId: string }> = ({ noteId }) => {
       </EditorContainer>
     </NoteBodyContainer>
   )
-}
-
-/**
- * Component to automatically set the correct node in the note context
- * Useful as EditorStore is not employed in the pinned note windows
- */
-const NoteIdSetter = ({ noteId }: { noteId: string }) => {
-  const ctx = useNoteContext()
-  const ilinks = useDataStore((store) => store.ilinks)
-
-  useEffect(() => {
-    const ilink = ilinks.find((i) => i.nodeid === noteId)
-    if (ilink) {
-      ctx.setNode(ilink)
-    }
-  }, [noteId, ctx, ilinks])
-
-  return <></>
 }
 
 export default Note
