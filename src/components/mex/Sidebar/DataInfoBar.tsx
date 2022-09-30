@@ -1,9 +1,10 @@
-import { CollapsableHeaderTitle } from '@ui/layout/Collapse/Collapse'
+import { CollapsableHeaderTitle } from '@workduck-io/mex-components'
 import React from 'react'
 import styled from 'styled-components'
 import { useEditorStore } from '../../../store/useEditorStore'
 import Backlinks from '../Backlinks'
 import Outline from '../Outline/Outline'
+import SuggestionInfoBar from '../Suggestions'
 import TagsRelated from '../Tags/TagsRelated'
 
 export const DataInfobarWrapper = styled.div`
@@ -26,9 +27,10 @@ const DataInfoBar = () => {
 
   return (
     <DataInfobarWrapper>
+      <TagsRelated nodeid={node.nodeid} fromAnalysis />
+      <SuggestionInfoBar />
       <Outline />
       <Backlinks nodeid={node.nodeid} />
-      <TagsRelated nodeid={node.nodeid} fromAnalysis />
     </DataInfobarWrapper>
   )
 }

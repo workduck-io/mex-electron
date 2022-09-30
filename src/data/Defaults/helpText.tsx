@@ -26,6 +26,16 @@ export const BacklinksHelp = (
   </div>
 )
 
+export const SuggestionsHelp = (
+  <div>
+    <h1>Suggestions</h1>
+    <p>Notes that are similar to current document.</p>
+    <p>Hover over note to preview temporarily, Click to preserve preview and interact.</p>
+    <p>Use buttons to link/embed the note.</p>
+    <p>Click twice on the note to navigate.</p>
+  </div>
+)
+
 export const TreeHelp = (
   <div>
     <h1>Notes</h1>

@@ -141,7 +141,7 @@ const QABlock: React.FC<QABlockProps> = ({ attributes, element, children }) => {
         const templates = results.map((result) => ({ ...result, type: 'template' }))
         mog('HeaderQA', { templates, results })
         setSuggestions(templates)
-        setInfobarMode('suggestions')
+        setInfobarMode('snippets')
       })
     } else {
       queryIndexWithRanking(['snippet', 'node'], query).then((results) => {
@@ -150,7 +150,7 @@ const QABlock: React.FC<QABlockProps> = ({ attributes, element, children }) => {
         // const withoutTemplates = res.filter((r) => r.type !== 'template')
         mog('NotHeaderQA', { results })
         setSuggestions(res)
-        setInfobarMode('suggestions')
+        setInfobarMode('snippets')
       })
     }
   }

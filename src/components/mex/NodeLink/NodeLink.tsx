@@ -11,7 +11,7 @@ import { useLinks } from '../../../hooks/useLinks'
 import { useNavigation } from '../../../hooks/useNavigation'
 import { NodeType } from '../../../types/Types'
 import { NavigationType, ROUTE_PATHS, useRouting } from '../../../views/routes/urls'
-import { NodeLinkStyled, NodeLinkWrapper } from '../Backlinks/Backlinks.style'
+import { NodeLinkStyled, NodeLinkTitleWrapper, NodeLinkWrapper } from '../Backlinks/Backlinks.style'
 
 interface NodeLinkProps {
   keyStr: string
@@ -20,9 +20,19 @@ interface NodeLinkProps {
   // Show preview (default true)
   preview?: boolean
   icon?: boolean
+
+  /**
+   * Replace the default onclick action on node link
+   */
+  onClick?: (ev: React.MouseEvent<HTMLDivElement, MouseEvent>) => void
+
+  /**
+   * RenderActions
+   */
+  RenderActions?: () => JSX.Element
 }
 
-const NodeLink = ({ nodeid, preview = true, icon, keyStr }: NodeLinkProps) => {
+const NodeLink = ({ nodeid, preview = true, icon, keyStr, onClick, RenderActions }: NodeLinkProps) => {
   const [visible, setVisible] = React.useState(false)
   const isEditorPresent = useMultipleEditors((store) => store.editors)?.[nodeid]
   const { getPathFromNodeid } = useLinks()
@@ -39,8 +49,12 @@ const NodeLink = ({ nodeid, preview = true, icon, keyStr }: NodeLinkProps) => {
     ev.stopPropagation()
 
     if (ev.detail === 2) {
-      push(nodeid)
-      goTo(ROUTE_PATHS.node, NavigationType.push, nodeid)
+      if (onClick) {
+        onClick(ev)
+      } else {
+        push(nodeid)
+        goTo(ROUTE_PATHS.node, NavigationType.push, nodeid)
+      }
     }
 
     addPreviewInEditors(nodeid)
@@ -80,8 +94,11 @@ const NodeLink = ({ nodeid, preview = true, icon, keyStr }: NodeLinkProps) => {
     >
       <NodeLinkWrapper onClick={onClickProps}>
         <NodeLinkStyled selected={!!isEditorPresent} key={`NodeLink_${keyStr}`}>
-          {nodeType === NodeType.SHARED && <SharedNodeIcon />}
-          {getPathFromNodeid(nodeid, true)}
+          <NodeLinkTitleWrapper>
+            {nodeType === NodeType.SHARED && <SharedNodeIcon />}
+            {getPathFromNodeid(nodeid, true)}
+          </NodeLinkTitleWrapper>
+          {RenderActions && <RenderActions />}
         </NodeLinkStyled>
       </NodeLinkWrapper>
     </EditorPreview>

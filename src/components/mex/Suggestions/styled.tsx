@@ -15,6 +15,11 @@ export const SuggestionIconsGroup = styled.span`
   display: flex;
   align-items: center;
   justify-content: center;
+  gap: ${({ theme }) => theme.spacing.tiny};
+  svg {
+    width: 12px;
+    height: 12px;
+  }
 `
 
 export const SuggestionContainer = styled.div<{ highlight: boolean; type: string }>`

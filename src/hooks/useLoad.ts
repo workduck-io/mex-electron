@@ -254,7 +254,7 @@ const useLoad = () => {
     quitFullscreenGraph()
     setNodePreview(false)
     setSuggestions([])
-    if (infobar.mode === 'suggestions') toggleSuggestedNodes()
+    if (infobar.mode === 'snippets') toggleSuggestedNodes()
 
     // setSelectedNode(undefined)
 

@@ -1,9 +1,16 @@
-import arrowRightSLine from '@iconify/icons-ri/arrow-right-s-line'
+import arrowDownSLine from '@iconify/icons-ri/arrow-down-s-line'
+import arrowLeftSLine from '@iconify/icons-ri/arrow-left-s-line'
 import { Icon, IconifyIcon } from '@iconify/react'
 import React, { useMemo } from 'react'
 import { useSpring } from 'react-spring'
 import styled from 'styled-components'
-import { CollapseContent, CollapseHeader, CollapseToggle, CollapseWrapper } from './Collapse.style'
+import {
+  CollapseContent,
+  CollapsableHeaderTitle,
+  CollapseHeader,
+  CollapseToggle,
+  CollapseWrapper
+} from './Collapse.style'
 import { Infobox, InfoboxProps } from '@workduck-io/mex-components'
 
 interface CollapseProps {
@@ -16,11 +23,6 @@ interface CollapseProps {
   infoProps?: InfoboxProps
   stopPropagation?: boolean
 }
-
-export const CollapsableHeaderTitle = styled.h2`
-  font-size: 1.25rem;
-  font-weight: bolder;
-`
 
 const Collapse = ({
   defaultOpen,
@@ -51,21 +53,22 @@ const Collapse = ({
   return (
     <CollapseWrapper id={`Collapse_${oid}`} onMouseUp={(e) => stopPropagation && e.stopPropagation()}>
       <CollapseHeader collapsed={hide}>
+        <CollapsableHeaderTitle
+        // onClick={() => {
+        //   setHide((b) => !b)
+        // }}
+        >
+          <Icon className={'SidebarCollapseSectionIcon'} icon={icon} />
+          {title}
+          {infoProps && <Infobox {...infoProps} />}
+        </CollapsableHeaderTitle>
         <CollapseToggle
           onClick={() => {
             setHide((b) => !b)
           }}
         >
-          <Icon icon={hide ? arrowRightSLine : icon} />
+          <Icon icon={hide ? arrowLeftSLine : arrowDownSLine} />
         </CollapseToggle>
-        <CollapsableHeaderTitle
-          onClick={() => {
-            setHide((b) => !b)
-          }}
-        >
-          {title}
-        </CollapsableHeaderTitle>
-        {infoProps && <Infobox {...infoProps} />}
       </CollapseHeader>
 
       <CollapseContent style={animationProps}>{children}</CollapseContent>

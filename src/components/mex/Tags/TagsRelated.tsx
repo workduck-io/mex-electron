@@ -20,50 +20,51 @@ interface TagsRelated {
 }
 
 const TagsRelated = ({ nodeid, fromAnalysis }: TagsRelated) => {
-  const { getRelatedNodes, getTags } = useTags()
+  const { getTags } = useTags()
   const tagsCache = useDataStore((state) => state.tagsCache)
   const analysisTags = useAnalysisStore((state) => state.analysis.tags)
-  const [relNodes, setRelNodes] = useState<string[]>([])
+  // const [relNodes, setRelNodes] = useState<string[]>([])
   const [tags, setTags] = useState<string[]>([])
 
-  useEffect(() => {
-    setRelNodes(getRelatedNodes(nodeid, fromAnalysis))
-  }, [nodeid, tagsCache, analysisTags])
+  // useEffect(() => {
+  //   setRelNodes(getRelatedNodes(nodeid, fromAnalysis))
+  // }, [nodeid, tagsCache, analysisTags])
 
   useEffect(() => {
     setTags(getTags(nodeid, fromAnalysis))
-  }, [nodeid, tagsCache, analysisTags])
+  }, [nodeid, tagsCache, fromAnalysis, analysisTags])
 
   // mog('TagsRelated', { nodeid, relNodes, tags, analysisTags })
 
-  return (
-    <InfoWidgetWrapper>
-      <Collapse
-        icon={hashtagIcon}
-        infoProps={{
-          text: TagsHelp
-        }}
-        title="Tags"
-        defaultOpen
-        maximumHeight="40vh"
-      >
-        {tags.length > 0 ? (
-          <>
-            <TagsLabel tags={tags.map((t) => ({ value: t }))} />
-            {relNodes.length > 0 ? <InfoSubHeading>Related Notes</InfoSubHeading> : null}
-            {relNodes.map((n) => (
-              <NodeLink key={`info_tag_related_${nodeid}_${n}`} keyStr={`info_tag_related_${nodeid}_${n}`} nodeid={n} />
-            ))}
-          </>
-        ) : (
-          <>
-            <Note>No Tags found.</Note>
-            <Note>Create Tags with # view them and related Notes here.</Note>
-          </>
-        )}
-      </Collapse>
-    </InfoWidgetWrapper>
-  )
+  return <TagsLabel tags={tags.map((t) => ({ value: t }))} />
+  /*
+       <InfoWidgetWrapper>
+       <Collapse
+       icon={hashtagIcon}
+       infoProps={{
+       text: TagsHelp
+       }}
+       title="Tags"
+       defaultOpen
+       maximumHeight="40vh"
+       >
+       {tags.length > 0 ? (
+       <>
+       <TagsLabel tags={tags.map((t) => ({ value: t }))} />
+       {relNodes.length > 0 ? <InfoSubHeading>Related Notes</InfoSubHeading> : null}
+       {relNodes.map((n) => (
+       <NodeLink key={`info_tag_related_${nodeid}_${n}`} keyStr={`info_tag_related_${nodeid}_${n}`} nodeid={n} />
+       ))}
+       </>
+       ) : (
+       <>
+       <Note>No Tags found.</Note>
+       <Note>Create Tags with # view them and related Notes here.</Note>
+       </>
+       )}
+       </Collapse>
+       </InfoWidgetWrapper>
+       */
 }
 
 export const TagsRelatedTiny = ({ nodeid }: TagsRelated) => {

@@ -5,7 +5,7 @@ export interface FocusMode {
   hover: boolean
 }
 
-export type InfobarMode = 'default' | 'flow' | 'graph' | 'reminders' | 'suggestions'
+export type InfobarMode = 'default' | 'flow' | 'graph' | 'reminders' | 'snippets'
 
 interface LayoutState {
   sidebar: {

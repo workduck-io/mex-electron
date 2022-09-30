@@ -30,7 +30,7 @@ const useToggleElements = () => {
   }
 
   const toggleSuggestedNodes = () => {
-    toggleMode('suggestions')
+    toggleMode('snippets')
   }
 
   const toggleReminder = () => {

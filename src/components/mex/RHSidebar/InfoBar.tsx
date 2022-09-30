@@ -17,6 +17,7 @@ import Tabs, { TabType } from '@components/layouts/Tabs'
 import bubbleChartLine from '@iconify/icons-ri/bubble-chart-line'
 import lightbulbFlashLine from '@iconify/icons-ri/lightbulb-flash-line'
 import timerFlashLine from '@iconify/icons-ri/timer-flash-line'
+import quillPenLine from '@iconify/icons-ri/quill-pen-line'
 import { useShortcutStore } from '@store/useShortcutStore'
 
 const InfoBarItems = () => {
@@ -35,11 +36,11 @@ const InfoBarItems = () => {
         tooltip: 'Context'
       },
       {
-        label: <MexIcon noHover icon={lightbulbFlashLine} width={24} height={24} />,
+        label: <MexIcon noHover icon={quillPenLine} width={24} height={24} />,
         type: 'suggestions',
         component: <SuggestionInfoBar />,
-        tooltip: 'Suggestions',
-        shortcut: shortcuts.showSuggestedNodes.keystrokes
+        tooltip: 'Snippets',
+        // shortcut: shortcuts.showSuggestedNodes.keystrokes
       },
       {
         label: <MexIcon noHover icon={timerFlashLine} width={24} height={24} />,
