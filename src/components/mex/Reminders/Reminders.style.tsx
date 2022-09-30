@@ -1,3 +1,4 @@
+import { CollapseWrapper } from '@ui/layout/Collapse/Collapse.style'
 import { Button } from '@workduck-io/mex-components'
 import { mix, transparentize } from 'polished'
 import styled, { createGlobalStyle, css } from 'styled-components'
@@ -239,10 +240,15 @@ export const ReminderInfobar = styled.div`
   flex-direction: column;
   gap: ${({ theme }) => theme.spacing.large};
   padding: 0 ${({ theme }) => theme.spacing.medium};
+  padding-top: ${({ theme }) => theme.spacing.large};
   border-radius: 0px 0px ${({ theme }) => `calc(2 * ${theme.borderRadius.large}) calc(2* ${theme.borderRadius.large})`};
 
   & > ${Title} {
     margin: ${({ theme }) => theme.spacing.large} 0 0;
+  }
+
+  ${CollapseWrapper} {
+    width: 100%;
   }
 `
 export const SelectedDate = styled.div`

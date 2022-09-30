@@ -44,6 +44,7 @@ export type ReminderControls = Array<ReminderControl | SnoozeControl>
 
 interface Props {
   reminder: DisplayReminder
+  inSidebar?: boolean
   isNotification?: boolean
   controls?: Array<ReminderControl | SnoozeControl>
   showNodeInfo?: boolean
@@ -161,7 +162,7 @@ export const reminderStateIcons: Record<ReminderStatus, string> = {
   seen: 'ri-check-double-line'
 }
 
-const ReminderUI = ({ reminder, isNotification, showNodeInfo, controls, oid }: Props) => {
+const ReminderUI = ({ reminder, inSidebar = false, isNotification, showNodeInfo, controls, oid }: Props) => {
   // mog('ReminderUI', { reminder, isNotification, showNodeInfo })
   const [snoozeControls, setSnoozeControls] = React.useState(false)
   // mog('reminder', { reminder })
@@ -180,14 +181,6 @@ const ReminderUI = ({ reminder, isNotification, showNodeInfo, controls, oid }: P
             <Icon icon={reminderStateIcons[reminderState]} />
             {reminderState}
           </ReminderStateTag>
-          {!isNotification && (
-            <RelativeTime
-              tippy
-              dateNum={reminder.time}
-              refreshMs={1000 * 30}
-              tippyProps={{ placement: 'right', theme: 'mex-bright' }}
-            />
-          )}
         </ReminderRelative>
         {showNodeInfo && reminder.path && (
           <ReminderStateTag>
@@ -201,10 +194,23 @@ const ReminderUI = ({ reminder, isNotification, showNodeInfo, controls, oid }: P
             Task
           </ReminderStateTag>
         )}
-        <ReminderExact>{getRelativeDate(new Date(reminder.time))}</ReminderExact>
+        {!isNotification && (
+          <RelativeTime
+            tippy
+            dateNum={reminder.time}
+            refreshMs={1000 * 30}
+            tippyProps={{ placement: 'right', theme: 'mex-bright' }}
+          />
+        )}
       </ReminderTime>
-      <Title>{reminder.title}</Title>
-      {reminder.description && <Description>{reminder.description}</Description>}
+      {inSidebar ? (
+        reminder.description && <Title>{reminder.description}</Title>
+      ) : (
+        <>
+          <Title>{reminder.title}</Title>
+          {reminder.description && <Description>{reminder.description}</Description>}
+        </>
+      )}
       {reminder.todo && (
         <NotificationTodo
           oid="ReminderTodo"
