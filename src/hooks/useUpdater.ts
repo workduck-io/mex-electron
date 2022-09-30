@@ -1,7 +1,9 @@
 import { useContentStore } from '@store/useContentStore'
 import useTodoStore from '@store/useTodoStore'
+import { getPlateEditorRef } from '@udecode/plate'
 
 import { client } from '@workduck-io/dwindle'
+import { mog } from '@workduck-io/mex-utils'
 
 import { integrationURLs } from '../apis/routes'
 import { Service, SyncBlockTemplate } from '../editor/Components/SyncBlock'
@@ -62,12 +64,18 @@ export const useUpdater = () => {
   }
 
   const updateTodoInContent = (noteId: string, todos: Array<TodoType>, bufferEditorContent = false) => {
-    const nodeContent = getNoteContent(noteId)
+    const presentEditorContent = getPlateEditorRef()?.children
+    const nodeContent = presentEditorContent ?? getNoteContent(noteId)?.content
 
-    if (nodeContent.content) {
+    mog('CONTENT', { presentEditorContent, nodeContent })
+
+    if (nodeContent && nodeContent?.length > 0) {
       const todosToReplace = [...todos]
-      const newContent = nodeContent.content?.map((block) => {
+      mog('BEFORE REPLACE', { todos, todosToReplace })
+      const newContent = nodeContent?.map((block) => {
         const todoIndex = todosToReplace?.findIndex((td) => td.entityId === block.entityId)
+        mog('INDEX AT', { todoIndex, block })
+
         if (todoIndex >= 0) {
           const todo = todosToReplace[todoIndex]
           todosToReplace.splice(todoIndex, 1)
@@ -77,8 +85,11 @@ export const useUpdater = () => {
         return block
       })
 
+      mog('AFTER REPLACE', { todosToReplace })
       const newTodoContent = todosToReplace?.length > 0 ? todosToReplace.map((todo) => todo.content[0]) : []
-      const contentWithNewTodos = [...newContent, ...newTodoContent]
+      const contentWithNewTodos = [...newContent]
+
+      mog('TODO with new content', { contentWithNewTodos })
 
       if (bufferEditorContent) {
         add2Buffer(noteId, contentWithNewTodos)

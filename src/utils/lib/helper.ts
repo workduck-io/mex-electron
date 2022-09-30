@@ -11,14 +11,15 @@ import { NodeEditorContent } from '../../types/Types'
 type MogOptions = {
   pretty: boolean
   collapsed: boolean
+  show: boolean
 }
 
 export const mog = (
   title: string,
   propertiesToLog?: Record<string, any>,
-  options: Partial<MogOptions> = { pretty: false, collapsed: false }
+  options: Partial<MogOptions> = { pretty: false, collapsed: false, show: false }
 ) => {
-  if (IS_DEV) {
+  if (options.show) {
     if (!propertiesToLog) {
       console.log(title)
       return

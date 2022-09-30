@@ -33,6 +33,7 @@ export const useInitLoader = () => {
   const { fetchShareData } = useFetchShareData()
   const { initPortals } = usePortals()
   const { getAllTodosOfWorkspace } = useEntityAPIs()
+
   const backgroundFetch = async () => {
     try {
       runBatch<any>([fetchShareData(), getArchiveNotesHierarchy(), getAllTodosOfWorkspace()])
@@ -45,7 +46,7 @@ export const useInitLoader = () => {
     initActionPerfomerClient(useAuthStore.getState().userDetails?.userID)
     setShowLoader(true)
     try {
-      const res = await runBatch<any>([
+      await runBatch<any>([
         getNodesByWorkspace(),
         getAllSnippetsByWorkspace(),
         getAllNamespaces(),

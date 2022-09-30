@@ -1,21 +1,21 @@
 import { SEPARATOR } from '@components/mex/Sidebar/treeUtils'
 import { BASE_TASKS_PATH, defaultContent } from '@data/Defaults/baseData'
-import { generateTempId } from '@data/Defaults/idPrefixes'
-import { useSpotlightContext } from '@store/Context/context.spotlight'
+import { generateTaskEntityId, generateTempId } from '@data/Defaults/idPrefixes'
 import { useContentStore } from '@store/useContentStore'
 import useDataStore from '@store/useDataStore'
 import { format } from 'date-fns'
 
 import { NodeEditorContent } from '../types/Types'
 import { useCreateNewNote } from './useCreateNewNote'
+import { useNamespaces } from './useNamespaces'
 
 export const getTodayTaskNodePath = () => {
   return `${BASE_TASKS_PATH}${SEPARATOR}${format(Date.now(), 'do MMM yyyy')}`
 }
 
 export const useTaskFromSelection = () => {
-  const { selectedNamespace } = useSpotlightContext()
   const { createNewNote } = useCreateNewNote()
+  const { getDefaultNamespaceId } = useNamespaces()
 
   const getNewTaskNode = (create?: boolean, nodeContent?: NodeEditorContent) => {
     const todayTaskNodePath = getTodayTaskNodePath()
@@ -30,7 +30,7 @@ export const useTaskFromSelection = () => {
           path: todayTaskNodePath,
           parent: { path: dailyTaskNode?.nodeid, namespace: dailyTaskNode?.namespace },
           noteContent: nodeContent,
-          namespace: selectedNamespace
+          namespace: getDefaultNamespaceId()
         })
       : undefined
 
@@ -47,6 +47,7 @@ export const useTaskFromSelection = () => {
     const newTask = {
       type: 'action_item',
       id: generateTempId(),
+      entityId: generateTaskEntityId(),
       children: [selection]
     }
 

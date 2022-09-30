@@ -1,3 +1,6 @@
+import { getPlateEditorRef } from '@udecode/plate'
+import { mog } from '@workduck-io/mex-utils'
+import { useEffect } from 'react'
 import create from 'zustand'
 
 import useDataStore from '../store/useDataStore'
@@ -76,13 +79,14 @@ const useEditorActions = () => {
 }
 
 export const useEditorChange = (editorId: string, content: NodeEditorContent, onChange?: any) => {
-  // useEffect(() => {
-  //   const editor = getPlateEditorRef(editorId)
-  //   if (editor && content?.length > 0) {
-  //     editor.children = content
-  //     if (onChange) onChange(content)
-  //   }
-  // }, [content])
+  useEffect(() => {
+    const editor = getPlateEditorRef(editorId)
+    mog('Editor is here', { content, editor })
+    if (editor && content?.length > 0) {
+      editor.children = content
+      if (onChange) onChange(content)
+    }
+  }, [content])
 }
 
 export default useEditorActions

@@ -193,6 +193,9 @@ export const useEnableShortcutHandler = () => {
       ignoreClasses: 'all',
       skipLocal: false
     }
+
+    if (useModalStore.getState().open) return
+
     // mog('enableShortcutHandler', { allOp, isEditingPreview, isOnSearchFilter: isOnElementClass(allOp.ignoreClasses) })
     if (isEditingPreview() || !useMultipleEditors.getState().editors) return
 

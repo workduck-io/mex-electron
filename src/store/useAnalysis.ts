@@ -17,6 +17,7 @@ import { areEqual } from '../utils/lib/hash'
 import { checkIfUntitledDraftNode } from '../utils/lib/strings'
 import { useContentStore } from './useContentStore'
 import { useEditorStore } from './useEditorStore'
+import { mog } from '@workduck-io/mex-utils'
 
 export interface OutlineItem {
   id: string
@@ -58,6 +59,7 @@ export const useAnalysisTodoAutoUpdate = () => {
 
   useEffect(() => {
     const { editorTodos, nodeid } = useAnalysisStore.getState().analysis
+    mog('ADDING IN BUFFER', { editorTodos })
     addInBuffer(nodeid, editorTodos)
   }, [analysis, node])
 }

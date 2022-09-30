@@ -4,6 +4,7 @@ import { useIntervalWithTimeout } from '@hooks/useRelativeTime'
 import { useAuthStore } from '@services/auth/useAuth'
 import { PollActions, useApiStore } from '@store/useApiStore'
 import { mog } from '@utils/lib/helper'
+
 import { useApi } from './useSaveApi'
 
 export const PollingInterval = {
@@ -24,7 +25,7 @@ export const usePolling = () => {
     () => {
       fetchShareData()
         .then(() => mog('Successfully fetched shared nodes'))
-        .catch(err => mog('Unable to fetch Shared Notes', { err }))
+        .catch((err) => mog('Unable to fetch Shared Notes', { err }))
     },
     isAuthenticated && polling.has(PollActions.shared) ? PollingInterval[PollActions.shared] : null
   )
@@ -33,16 +34,16 @@ export const usePolling = () => {
     () => {
       getAllBookmarks()
         .then(() => mog('Successfully fetched bookmarks'))
-        .catch(err => mog('Unable to fetch bookmarks', { err }))
+        .catch((err) => mog('Unable to fetch bookmarks', { err }))
     },
     isAuthenticated && polling.has(PollActions.bookmarks) ? PollingInterval[PollActions.bookmarks] : null
   )
 
   useIntervalWithTimeout(
     () => {
-      getNodesByWorkspace()
+      getNodesByWorkspace(true) // * Fetch with Entities
         .then(() => mog('Successfully fetched hierarchy'))
-        .catch(err => mog('Unable to fetch Workspace hierarchy', { err }))
+        .catch((err) => mog('Unable to fetch Workspace hierarchy', { err }))
     },
     isAuthenticated && polling.has(PollActions.hierarchy) ? PollingInterval[PollActions.hierarchy] : null
   )

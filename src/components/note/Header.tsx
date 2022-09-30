@@ -6,6 +6,7 @@ import { useNamespaces } from '@hooks/useNamespaces'
 import useDataStore from '@store/useDataStore'
 
 import { NoteHeaderContainer, NoteTitle } from './styled'
+import { useAnalysisTodoAutoUpdate } from '@store/useAnalysis'
 
 type NoteHeaderType = {
   noteId: string
@@ -16,6 +17,8 @@ const Header = ({ noteId }: NoteHeaderType) => {
   const archive = useDataStore((store) => store.archive)
   const { getNamespaceOfNode } = useNamespaces()
   const namespace = getNamespaceOfNode(noteId)
+
+  useAnalysisTodoAutoUpdate()
 
   const noteTitle = useMemo(() => {
     let notePath = ilinks.find((ilink) => ilink.nodeid === noteId)?.path

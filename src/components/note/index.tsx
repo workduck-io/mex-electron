@@ -12,6 +12,7 @@ import { ipcRenderer } from 'electron'
 import Header from './Header'
 import Note from './Note'
 import { NoteWindowLayout } from './styled'
+import { useAnalysisIPC } from '@store/useAnalysis'
 
 const NoteWindow = () => {
   const [noteId, setNoteId] = useState<string>(undefined)
@@ -57,6 +58,8 @@ const NoteWindow = () => {
       if (noteId) unPinNote(noteId)
     }
   }, [])
+
+  useAnalysisIPC()
 
   if (!noteId) return <></>
 

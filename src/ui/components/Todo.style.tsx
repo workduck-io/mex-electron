@@ -1,14 +1,33 @@
-import { CompleteWave, WaterWave } from '../../components/mex/Onboarding/components/Welcome'
-import styled, { css } from 'styled-components'
 import { transparentize } from 'polished'
+import styled, { css, keyframes } from 'styled-components'
+
+import { CompleteWave, WaterWave } from '../../components/mex/Onboarding/components/Welcome'
 import { TodoStatus } from '../../editor/Components/Todo/types'
 
-export const TodoContainer = styled.div<{ checked?: boolean }>`
+export const SkeletonLoader = (theme) => keyframes`
+  from {
+    background-color: ${transparentize(0.7, theme.colors.background.highlight)};
+  }
+
+  to {
+    background-color: ${transparentize(0.5, theme.colors.background.highlight)};
+  }
+`
+
+export const TodoContainer = styled.div<{ checked?: boolean, $loading?: boolean }>`
   display: flex;
   flex-direction: row;
-  /* align-items: center; */
   position: relative;
   width: 100%;
+  padding: ${({ theme }) => theme.spacing.tiny}
+
+  ${({ theme, $loading}) => $loading && css`
+    box-sizing: border-box;
+    margin: ${({ theme }) => theme.spacing.tiny};
+    padding: 0;
+    border-radius: ${({ theme }) =>theme.borderRadius.tiny};
+    animation: ${SkeletonLoader(theme)} 0.6s linear infinite alternate;
+  `}
 
   ${({ theme, checked }) =>
     checked &&
@@ -37,9 +56,6 @@ export const TodoActionButton = styled.button`
   border: none;
   background-color: transparent;
   color: ${({ theme }) => theme.colors.secondary};
-  :hover {
-    background-color: ${({ theme }) => theme.colors.background.card};
-  }
 `
 
 export const StyledTodoStatus = styled.div<{ animate?: boolean; status: TodoStatus }>`

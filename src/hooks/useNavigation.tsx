@@ -17,7 +17,9 @@ export const useNavigation = () => {
 
   const push = (nodeid: string, options?: LoadNodeOptions) => {
     loadNode(nodeid, options)
-    pushHs(nodeid)
+    try {
+      pushHs(nodeid)
+    } catch (err) { mog('Unable to push Note into history store')}
     addRecent(nodeid)
   }
 

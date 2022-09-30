@@ -4,7 +4,6 @@ import { isParent } from '@components/mex/Sidebar/treeUtils'
 import downIcon from '@iconify/icons-ph/arrow-down-bold'
 import { Icon } from '@iconify/react'
 import { useSpotlightSettingsStore } from '@store/settings.spotlight'
-import { mog } from '@utils/lib/helper'
 import { useSpring } from 'react-spring'
 
 import { BASE_TASKS_PATH, defaultContent } from '../../../data/Defaults/baseData'
@@ -14,7 +13,6 @@ import { CategoryType, useSpotlightContext } from '../../../store/Context/contex
 import { useSpotlightAppStore } from '../../../store/app.spotlight'
 import { useSnippetStore } from '../../../store/useSnippetStore'
 import PreviewContainer from './PreviewContainer'
-import PreviewHeader from './PreviewHeader'
 import { SeePreview, StyledPreview } from './styled'
 
 export type PreviewType = {

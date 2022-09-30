@@ -53,7 +53,6 @@ export const useEditorBuffer = () => {
   const saveAndClearBuffer = (explicitSave?: boolean) => {
     const buffer = useBufferStore.getState().buffer
     // mog('Save And Clear Buffer', { buffer })
-    flushTodosBuffer()
 
     if (Object.keys(buffer).length > 0) {
       const saved = Object.entries(buffer)
@@ -65,6 +64,7 @@ export const useEditorBuffer = () => {
           // const mT = measureTime(() => areEqual(content.content, val))
           if (!res) {
             saveEditorValueAndUpdateStores(nodeid, namespace.id, val, { saveApi: true, isShared })
+            flushTodosBuffer()
           }
 
           return !res

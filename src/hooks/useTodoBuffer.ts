@@ -16,9 +16,10 @@ export const useTodoBuffer = () => {
   const setTodosBuffer = useTodoBufferStore((store) => store.setTodosBuffer)
   const updateTodoBuffer = useTodoBufferStore((store) => store.update)
   const addTodoInStore = useTodoStore((store) => store.addTodoInNode)
-  const setNodeTodos = useTodoStore((store) => store.setNodeTodos)
   const removeTodoFromBuffer = useTodoBufferStore((store) => store.removeTodo)
   const removeNoteBuffer = useTodoBufferStore((store) => store.remove)
+  const setNoteTodos = useTodoStore((store) => store.setNodeTodos)
+
   /*
     Adds given Todo to respecive Note's Todo buffer.
   */
@@ -30,7 +31,7 @@ export const useTodoBuffer = () => {
     Adds all Todo changes to Buffer. 
   */
   const addInBuffer = (noteId: string, todos: NodeEditorContent) => {
-    const todoBuffer = todos.reduce((prev, todoContent) => {
+    const todoBuffer = todos?.reduce((prev, todoContent) => {
       const todo = getNoteTodo(noteId, todoContent.entityId) || createDefaultTodo(noteId, [todoContent])
       const tags = getTagsFromContent([todoContent])
       const mentions = getMentionsFromContent([todoContent])
@@ -46,16 +47,14 @@ export const useTodoBuffer = () => {
         }
     }, {})
 
-    mog('todos', { todos })
-
-    setTodosBuffer(noteId, todoBuffer)
+    if (todoBuffer) setTodosBuffer(noteId, todoBuffer)
   }
 
   /*
     Clears the buffer after saving all todo buffer changes.
     Checks All Notes buffer, if there's any change calls `Batch update` Todos
   */
-  const flushTodosBuffer = async () => {
+  const flushTodosBuffer = async (clearLocalTodosBuffer = false) => {
     const todosInBuffer = useTodoBufferStore.getState().todosBuffer
     const getNodeTodos = useTodoStore.getState().getNodeTodos
 
@@ -78,7 +77,7 @@ export const useTodoBuffer = () => {
             const req = updateTodos(serializedTodos)
               .then((d) => {
                 if (isEmpty(d?.UnprocessedItems)) {
-                  setNodeTodos(noteId, Object.values(todosBuffer))
+                  setNoteTodos(noteId, Object.values(todosBuffer))
                   removeNoteBuffer(noteId)
                 }
               })
@@ -90,6 +89,8 @@ export const useTodoBuffer = () => {
           }
         }
       })
+
+      mog('TODO SAVE REQUEST', { todosSaveRequests }, { show: true })
 
       if (todosSaveRequests.length > 0) {
         await runBatch(todosSaveRequests)
@@ -128,6 +129,30 @@ export const useTodoBuffer = () => {
     return updatedTodos
   }
 
+  const getTodosWithBuffer = () => {
+    const existingTodos = useTodoStore.getState().todos
+
+    mog('Existing', { existingTodos })
+    const bufferTodos = useTodoBufferStore.getState().todosBuffer || {}
+
+    Object.entries(existingTodos).forEach(([noteId, todos]) => {
+      const newTodos = todos.map((todo) => {
+        const noteTodos = bufferTodos[noteId]
+
+        if (noteTodos) {
+          const isEntityPresent = noteTodos[todo.entityId]
+          if (isEntityPresent) return isEntityPresent
+        }
+
+        return todo
+      })
+
+      existingTodos[noteId] = newTodos
+    })
+
+    return existingTodos
+  }
+
   /*
     Returns existing todos of a Note
   */
@@ -160,14 +185,11 @@ export const useTodoBuffer = () => {
     Eg: 'status' of todo or 'priority' of Todo
   */
   const updateNoteTodo = (noteId: string, todoEntityId: string, updateFields: Partial<Omit<TodoType, 'entityId'>>) => {
-    const noteTodosBuffer = getNoteTodosBuffer(noteId)
-    if (noteTodosBuffer) {
-      const todo: TodoType = noteTodosBuffer[todoEntityId]
+    const todo = getNoteTodo(noteId, todoEntityId)
 
-      if (todo) {
-        const updatedTodo = { ...todo, ...updateFields }
-        updateTodoBuffer(noteId, updatedTodo)
-      }
+    if (todo) {
+      const updatedTodo = { ...todo, ...updateFields }
+      updateTodoBuffer(noteId, updatedTodo)
     }
   }
 
@@ -200,11 +222,13 @@ export const useTodoBuffer = () => {
     getTodosBuffer,
     getTodoFromBuffer,
     getNoteTodosBuffer,
+    getTodosWithBuffer,
     addTodoInBuffer,
     flushTodosBuffer,
     updateNoteTodo,
     isTodosBufferEmpty,
     getNoteTodo,
-    clearAndSaveTodo
+    clearAndSaveTodo,
+    removeTodoFromBuffer
   }
 }

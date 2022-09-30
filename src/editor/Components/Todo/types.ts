@@ -1,5 +1,5 @@
 import { Shortcut } from '../../../components/mex/Help/Help.types'
-import { NodeEditorContent } from '../../../types/Types'
+import { MIcon, NodeEditorContent } from '../../../types/Types'
 
 export enum PriorityType {
   low = 'low',
@@ -9,7 +9,7 @@ export enum PriorityType {
 }
 
 export type PriorityDataType = {
-  icon: string
+  icon: MIcon
   title: string
   shortcut: Shortcut
   type: PriorityType
@@ -89,7 +89,10 @@ export const Priority: Record<keyof typeof PriorityType, PriorityDataType> = {
       keystrokes: '$mod+4',
       title: 'No priority'
     },
-    icon: 'ph:cell-signal-none-fill',
+    icon: {
+      type: 'ICON',
+      value: 'ph:cell-signal-none-fill'
+    },
     type: PriorityType.noPriority
   },
   low: {
@@ -99,7 +102,10 @@ export const Priority: Record<keyof typeof PriorityType, PriorityDataType> = {
       keystrokes: '$mod+3',
       title: 'Low priority'
     },
-    icon: 'ph:cell-signal-low-fill',
+    icon: {
+      type: 'ICON',
+      value: 'ph:cell-signal-low-fill'
+    },
     type: PriorityType.low
   },
   medium: {
@@ -109,7 +115,10 @@ export const Priority: Record<keyof typeof PriorityType, PriorityDataType> = {
       keystrokes: '$mod+2',
       title: 'Medium priority'
     },
-    icon: 'ph:cell-signal-medium-fill',
+    icon: {
+      type: 'ICON',
+      value: 'ph:cell-signal-medium-fill'
+    },
     type: PriorityType.medium
   },
   high: {
@@ -119,7 +128,10 @@ export const Priority: Record<keyof typeof PriorityType, PriorityDataType> = {
       keystrokes: '$mod+1',
       title: 'Highest priority'
     },
-    icon: 'ph:cell-signal-full-fill',
+    icon: {
+      type: 'ICON',
+      value: 'ph:cell-signal-full-fill'
+    },
     type: PriorityType.high
   }
 }

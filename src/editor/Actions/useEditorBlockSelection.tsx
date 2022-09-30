@@ -1,3 +1,8 @@
+import { defaultContent } from '@data/Defaults/baseData'
+import { generateTempId } from '@data/Defaults/idPrefixes'
+import useBlockStore, { BlockMetaDataType, BlockType } from '@store/useBlockStore'
+import { useContentStore } from '@store/useContentStore'
+import { useEditorStore } from '@store/useEditorStore'
 import {
   ELEMENT_PARAGRAPH,
   TNode,
@@ -9,13 +14,9 @@ import {
   deleteText,
   getPlateEditorRef
 } from '@udecode/plate'
-import useBlockStore, { BlockMetaDataType, BlockType } from '@store/useBlockStore'
-import { defaultContent } from '@data/Defaults/baseData'
-import { generateTempId } from '@data/Defaults/idPrefixes'
 import { updateIds } from '@utils/dataTransform'
-import { useContentStore } from '@store/useContentStore'
-import { useEditorStore } from '@store/useEditorStore'
 import { mog } from '@utils/lib/helper'
+
 import { NodeEditorContent } from '../../types/Types'
 
 export const getBlockMetadata = (text: string, meta?: BlockMetaDataType): BlockMetaDataType => {

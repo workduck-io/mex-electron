@@ -46,12 +46,10 @@ const v01603 = (): CustomTransformation => {
     version: '0.16.0-alpha.3',
     custom: (data: FileData) => {
       const todosBuffer: TodoBufferType = {}
-      mog("CONTENTS ARE", { data })
       if (data.contents) {
         Object.entries(data.contents).map(([noteId, noteContent]) => {
-          mog(`\n --------------------------- Transforming Todos for Note: ${noteId} -----------------------------\n`, { content: noteContent?.content})
           const nodeTodos = {}
-          const transformedContent = (noteContent?.content).map((block) => {
+          const transformedContent = (noteContent?.content)?.map((block) => {
             if (block?.type === ELEMENT_TODO_LI && !block?.entityId) {
               const { newTodo, newBlock } = getNewTodoAndBlock(block)
               mog(`>> block ${block?.id}`, { block, newTodo, newBlock })
@@ -62,13 +60,14 @@ const v01603 = (): CustomTransformation => {
             return block
           })
 
-          todosBuffer[noteId] = nodeTodos
-          data.contents[noteId].content = transformedContent
+          if (transformedContent) {
+            todosBuffer[noteId] = nodeTodos
+            data.contents[noteId].content = transformedContent
+          }
         })
       }
 
-      mog('TODOS buffer', { todosBuffer })
-      if (!data.todosBuffer) return { ...data, todosBuffer, todos: {} }
+      if (!data?.saveBuffer?.todosBuffer && data?.todos) return { ...data, saveBuffer: { ...(data.saveBuffer ?? {}), todosBuffer} }
       
       return data
     }

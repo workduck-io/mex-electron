@@ -153,7 +153,7 @@ const PreviewContainer: React.FC<PreviewContainerProps> = ({
         padding="1rem"
         showBalloonToolbar
         focusAtBeginning={!normalMode}
-        options={{ exclude: { dnd: true } }}
+        options={{ exclude: { dnd: true }, withEntities: true }}
         readOnly={normalMode}
         content={previewContent ?? getDefaultContent()}
         editorId={nodeId}

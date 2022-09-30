@@ -20,8 +20,6 @@ import { tinykeys } from '@workduck-io/tinykeys'
 import SearchFilters from '../../../components/mex/Search/SearchFilters'
 import { Heading } from '../../../components/spotlight/SearchResults/styled'
 import { getNextStatus, getPrevStatus, PriorityType, TodoType } from '../../../editor/Components/Todo/types'
-import EditorPreviewRenderer from '../../../editor/EditorPreviewRenderer'
-import useLoad from '../../../hooks/useLoad'
 import { useNavigation } from '../../../hooks/useNavigation'
 import { KanbanBoardColumn, TodoKanbanCard, useTodoKanban } from '../../../hooks/useTodoKanban'
 import useTodoStore from '../../../store/useTodoStore'
@@ -52,8 +50,6 @@ const Tasks = () => {
 
   const { push } = useNavigation()
 
-  const todos = useMemo(() => Object.entries(nodesTodo), [nodesTodo])
-
   const overlaySidebar = useMediaQuery({ maxWidth: OverlaySidebarWindowWidth })
 
   const {
@@ -72,7 +68,10 @@ const Tasks = () => {
     setGlobalJoin
   } = useTodoKanban()
 
-  const board = useMemo(() => getTodoBoard(), [nodesTodo, todosInBuffer, globalJoin, currentFilters])
+  const { todoBoard: board, todosLength } = useMemo(
+    () => getTodoBoard(),
+    [nodesTodo, todosInBuffer, globalJoin, currentFilters]
+  )
 
   const selectedRef = useRef<HTMLDivElement>(null)
 
@@ -421,7 +420,7 @@ const Tasks = () => {
           {board}
         </Board>
       </StyledTasksKanban>
-      {todos.length < 1 && (
+      {todosLength < 1 && (
         <div>
           <Heading>No Todos</Heading>
           <p>Use the Editor to add Todos to your nodes. All todos will show up here.</p>

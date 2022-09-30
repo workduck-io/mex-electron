@@ -1,7 +1,9 @@
+import React from 'react'
+
 import FullPageLoader from '@components/mex/FullPageLoader'
 import { useLayoutStore } from '@store/useLayoutStore'
-import React from 'react'
 import { Navigate } from 'react-router-dom'
+
 import { useAuthStore } from '../../services/auth/useAuth'
 import { useEditorStore } from '../../store/useEditorStore'
 import { ROUTE_PATHS } from '../routes/urls'
@@ -19,7 +21,7 @@ const AuthRoute: React.FC<MexRouteProps> = ({ component: Component, redirectTo }
   if (showLoader) return <FullPageLoader />
 
   if (authenticated) {
-    return <Navigate to={redirectTo || `${ROUTE_PATHS.tasks}`} />
+    return <Navigate to={redirectTo || `${ROUTE_PATHS.node}/${nodeid}`} />
   }
 
   return <Component />

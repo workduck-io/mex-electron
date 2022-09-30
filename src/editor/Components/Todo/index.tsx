@@ -1,6 +1,7 @@
 import React from 'react'
 
-import { deleteText, getNodeEntries, getPlateEditorRef, usePlateId } from '@udecode/plate'
+import { getDefaultContent } from '@components/spotlight/Preview'
+import { getBlockAbove, getPlateEditorRef, insertNode, removeNodes, usePlateId } from '@udecode/plate'
 import { getRootProps } from '@udecode/plate-styled-components'
 import { getNodeIdFromEditor } from '@utils/helpers'
 import toast from 'react-hot-toast'
@@ -19,17 +20,16 @@ const TodoElement = React.forwardRef<any, any>((props, ref) => {
 
   const onDeleteClick = () => {
     const editor = getPlateEditorRef()
-    const blockNode = getNodeEntries(editor, {
-      at: [],
-      match: (node) => element.id === node.id,
-      block: true
-    })
-    try {
-      const [_, path] = Array.from(blockNode)[0]
-      deleteText(editor, { at: [path[0]] })
-      editor.insertText('')
-    } catch (error) {
-      toast('Unable to delete this todo')
+
+    if (editor) {
+      try {
+        removeNodes(editor, { at: [], mode: 'highest', match: (node) => element.id === node.id })
+        const blockPresentAbove = getBlockAbove(editor)
+
+        if (!blockPresentAbove) insertNode(editor, getDefaultContent())
+      } catch (error) {
+        toast('Unable to delete this todo')
+      }
     }
   }
 

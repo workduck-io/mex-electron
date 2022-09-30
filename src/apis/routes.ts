@@ -37,6 +37,8 @@ export const GOOGLE_CAL_BASE = 'https://www.googleapis.com/calendar/v3/calendars
 export const GOOGLE_OAUTH2_REFRESH_URL = `${MEXIT_BACKEND_URL_BASE}/oauth2/getGoogleAccessToken`
 
 export const API_URL = config.constants.MEX_BACKEND_BASE_URL
+
+// * Entities
 export const ENTITIES_API_BASE_URL = IS_DEV ? 'http://localhost:4000' : 'https://entities.workduck.io/api/v1'
 export const ENTITIES_API = {
   task: `${ENTITIES_API_BASE_URL}`
@@ -45,6 +47,7 @@ export const ENTITIES_API = {
 export const apiURLs = {
   //node
   saveNode: `${API_URL}/node`,
+  appendToNode: (nodeId: string) => `${API_URL}/node/${nodeId}/append`, //* PATCH
   bulkSaveNodes: `${API_URL}/node/bulk`,
   getNode: (nodeid: string) => `${API_URL}/node/${nodeid}`,
   getNodes: `${API_URL}/node/ids`,
@@ -78,6 +81,7 @@ export const apiURLs = {
   getTodosOfWorkspace: `${ENTITIES_API.task}/all/workspace`,
   getTodosOfNote: (noteId: string) => `${ENTITIES_API.task}/all/node/${noteId}`,
   deleteTodo: (entityId: string) => `${ENTITIES_API.task}/${entityId}`,
+  archiveNoteTodos: (noteId: string) => `${ENTITIES_API.task}/all/node/${noteId}`,
   batchUpdateTodos: `${ENTITIES_API.task}/batch/update`,
   batchGetTasksOfNotes: `${ENTITIES_API.task}/batch/get`, // * POST Request
 

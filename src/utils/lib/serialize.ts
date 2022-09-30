@@ -4,7 +4,6 @@ import { TodoType } from '@editor/Components/Todo/types'
 import { useAuthStore } from '@services/auth/useAuth'
 
 import { generateTempId } from '../../data/Defaults/idPrefixes'
-import { mog } from './helper'
 import { extractMetadata } from './metadata'
 
 // const ElementsWithProperties = [ELEMENT_PARAGRAPH]
@@ -49,9 +48,11 @@ const mappedKeys = {
 }
 
 // From content to api
-export const serializeContent = (content: any[], nodeid: string) => {
+export const serializeContent = (content: any[], nodeid: string, skipSpecials?: Set<keyof typeof serializeSpecial>) => {
+  const specialElementsToProcess = Object.keys(serializeSpecial).filter((el) => !skipSpecials?.has(el))
+
   return content.map((el) => {
-    if (Object.keys(serializeSpecial).includes(el.type)) {
+    if (specialElementsToProcess.includes(el.type)) {
       return serializeSpecial[el.type](el, nodeid)
     }
     const nl: any = {}
@@ -125,8 +126,11 @@ export const serializeSpecial: { [elementType: string]: (element: any, nodeid: s
     }
   },
   [ELEMENT_TODO_LI]: (el: any, nodeid: string) => {
+    const childId = el?.children?.at(0)?.id
+
     return {
       id: el.id || generateTempId(),
+      children: [{ text: '', id: childId ?? generateTempId() }],
       elementType: el.type,
       properties: {
         entityId: el.entityId

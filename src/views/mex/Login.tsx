@@ -1,8 +1,11 @@
-import { LoadingButton } from '@workduck-io/mex-components'
 import React from 'react'
+
 import { useForm } from 'react-hook-form'
 import toast from 'react-hot-toast'
 import { Link } from 'react-router-dom'
+
+import { LoadingButton } from '@workduck-io/mex-components'
+
 import { GoogleLoginButton } from '../../components/mex/Buttons/LoadingButton'
 import { InputFormError } from '../../components/mex/Forms/Input'
 import { EMAIL_REG } from '../../data/Defaults/auth'

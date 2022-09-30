@@ -36,6 +36,7 @@ import Preview, { PreviewType } from '../Preview'
 import { ListItemType } from '../SearchResults/types'
 import SideBar from '../SideBar'
 import { StyledContent } from './styled'
+import { PlateProvider } from '@udecode/plate'
 
 export const INIT_PREVIEW: PreviewType = {
   text: DEFAULT_PREVIEW_TEXT,
@@ -209,7 +210,7 @@ const Content = () => {
       })
     } else {
       if (nodeid && useSpotlightAppStore.getState().normalMode) {
-        const e = resultNode?.extras.event
+        const e = resultNode?.extras?.event
         const meetingContent = MeetingSnippetContent({
           title: e?.summary,
           date: e?.times?.start,
@@ -225,7 +226,7 @@ const Content = () => {
         setNodeContent(content)
         setPreview(INIT_PREVIEW)
       } else if (isMeeting) {
-        const e = resultNode?.extras.event
+        const e = resultNode?.extras?.event
         const content = MeetingSnippetContent({
           title: e.summary,
           date: e.times.start,
@@ -243,7 +244,9 @@ const Content = () => {
       <SideBar data={searchResults} />
       <SpotlightModals />
       <ErrorBoundary onReset={() => resetEditor(AppType.SPOTLIGHT)} FallbackComponent={EditorErrorFallback}>
-        <Preview preview={preview} nodeId={editorNode.nodeid} />
+        <PlateProvider id={editorNode.nodeid}>
+          <Preview preview={preview} nodeId={editorNode.nodeid} />
+        </PlateProvider>
       </ErrorBoundary>
     </StyledContent>
   )

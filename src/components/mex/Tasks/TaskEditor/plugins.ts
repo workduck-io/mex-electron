@@ -50,7 +50,6 @@ const generateTodoPlugins = () => {
       component: ExcalidrawElement,
       isInline: true
     }) as any,
-    createTodoPlugin(),
     createSelectOnBackspacePlugin(),
     createImagePlugin(optionsImagePlugin), // Image
     createLinkPlugin(), // Link

@@ -12,7 +12,7 @@ export type HistoryType = {
   getDistanceNodeid: (distance: number) => string | undefined
 }
 
-export const useHistoryStore = create<HistoryType>((set, get) => ({
+export const useHistoryStore = create<HistoryType>()((set, get) => ({
   stack: [],
   currentNodeIndex: -1,
 

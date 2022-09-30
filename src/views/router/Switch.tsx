@@ -83,7 +83,6 @@ const Switch = () => {
       if (isBlockMode) setIsBlockMode(false)
       if (editorNode) saveNodeName(editorNode.nodeid)
       saveEditorBuffer()
-      mog('Saving editor buffer onLocationChange')
       saveSnippetBuffer()
     }
 

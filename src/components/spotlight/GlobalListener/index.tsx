@@ -5,11 +5,13 @@ import { useShareModalStore } from '@components/mex/Mention/ShareModalStore'
 import { useCreateNewNote } from '@hooks/useCreateNewNote'
 // import useDwindleAuthStore from '@workduck-io/dwindle/lib/esm/AuthStore/useAuthStore'
 import syncStores from '@store/syncStore/synced'
+// import { useActionsCache } from '../Actions/useActionsCache'
+// import useDwindleAuthStore from '@workduck-io/dwindle/lib/esm/AuthStore/useAuthStore'
+import { useAnalysisIPC } from '@store/useAnalysis'
 import { getPlateSelectors } from '@udecode/plate'
 import { ipcRenderer } from 'electron'
 
 import { IpcAction } from '../../../data/IpcAction'
-import { useSaver } from '../../../editor/Components/Saver'
 // import { appNotifierWindow } from '../../../electron/utils/notifiers'
 import { getNewDraftKey } from '../../../editor/Components/SyncBlock/getNewBlockData'
 import { useGoogleCalendarAutoFetch } from '../../../hooks/useCalendar'
@@ -24,9 +26,9 @@ import useDataStore from '../../../store/useDataStore'
 // import useOnboard from '../../../store/useOnboarding'
 import { useRecentsStore } from '../../../store/useRecentsStore'
 import { NavigationType, ROUTE_PATHS, useRouting } from '../../../views/routes/urls'
-import { useActionsPerfomerClient } from '../Actions/useActionPerformer'
 // import { useMentionData, useTokenData } from '../../../hooks/useLocalData'
 // import { useRecieveMentions, useRecieveTokens } from '../../../hooks/useSyncData'
+import { useActionsPerfomerClient } from '../Actions/useActionPerformer'
 import { useActionStore } from '../Actions/useActionStore'
 import ReminderArmer from '../Reminder/ReminderArmer'
 import { useSaveChanges } from '../Search/useSearchProps'
@@ -228,6 +230,7 @@ const GlobalListener = memo(() => {
   }, [])
 
   useGoogleCalendarAutoFetch()
+  useAnalysisIPC()
 
   return (
     <>

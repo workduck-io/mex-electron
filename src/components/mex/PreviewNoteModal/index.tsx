@@ -16,20 +16,39 @@ import { useTags } from '@hooks/useTags'
 import { useTodoBuffer } from '@hooks/useTodoBuffer'
 import closeCircleLine from '@iconify/icons-ri/close-circle-line'
 import { Icon } from '@iconify/react'
-import { useAnalysisTodoAutoUpdate } from '@store/useAnalysis'
+import { analyzeNote, useAnalysisStore } from '@store/useAnalysis'
 import { useContentStore } from '@store/useContentStore'
 import useModalStore, { ModalsType } from '@store/useModalStore'
-import { NodeType } from '@types/Types'
 import { PlateProvider } from '@udecode/plate'
+import { mog } from '@utils/lib/helper'
 import Modal from 'react-modal'
 import { useTheme } from 'styled-components'
 
 import { Button, MexIcon } from '@workduck-io/mex-components'
 import { NodeEditorContent } from '@workduck-io/mex-utils'
 
+import { NodeType } from '../../../types/Types'
 import NamespaceTag from '../NamespaceTag'
 import { TagsRelatedTiny } from '../Tags/TagsRelated'
 import { PreviewNoteContainer } from './styled'
+
+const AnalyseBuffer = (noteId) => {
+  const buffer = useBufferStore((store) => store.buffer)
+  const analysis = useAnalysisStore((store) => store.analysis)
+  const { addInBuffer } = useTodoBuffer()
+
+  useEffect(() => {
+    const { editorTodos, nodeid } = useAnalysisStore.getState().analysis
+    mog('CHANGED TODOS', { editorTodos, nodeid })
+    addInBuffer(nodeid, editorTodos)
+  }, [analysis])
+
+  useEffect(() => {
+    analyzeNote(noteId)
+  }, [buffer, noteId])
+
+  return <></>
+}
 
 const PreviewNoteModal = () => {
   const isOpen = useModalStore((store) => store.open === ModalsType.previewNote)
@@ -57,13 +76,12 @@ const PreviewNoteModal = () => {
     }
   }, [modalData?.noteId])
 
-  useAnalysisTodoAutoUpdate()
-
   if (!isOpen) return <></>
 
   const onRequestClose = () => {
-    saveAndClearBuffer(false)
+
     flushTodosBuffer()
+    saveAndClearBuffer(false)
     toggleModal(undefined)
   }
 
@@ -92,6 +110,7 @@ const PreviewNoteModal = () => {
       <PlateProvider id={modalData?.noteId}>
         <PreviewNoteContainer>
           {/* <ModalHeader>{noteTitle}</ModalHeader> */}
+          <AnalyseBuffer noteId={modalData?.noteId} />
           <EditorPreviewControls hasTags={hasTags(modalData?.noteId)}>
             {
               <PreviewActionHeader>

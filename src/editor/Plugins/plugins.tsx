@@ -1,3 +1,10 @@
+import { createActionPlugin } from '@editor/Components/Actions/createActionPlugin'
+import { withBlockOptions } from '@editor/Components/Blocks'
+import { createBlockModifierPlugin } from '@editor/Components/Blocks/createBlockModifierPlugin'
+import { PlateFloatingLink } from '@editor/Components/Floating/FloatingLink'
+// eslint-disable-next-line import/no-unresolved
+import MediaIFrame, { parseRestMediaUrls } from '@editor/Components/media-embed-ui/src/MediaEmbedElement/MediaIFrame'
+import { createMentionPlugin } from '@editor/Components/mentions/createMentionsPlugin'
 import {
   ELEMENT_DEFAULT,
   ELEMENT_H1,
@@ -47,6 +54,20 @@ import {
   MediaEmbedTweet
 } from '@udecode/plate'
 import { ELEMENT_EXCALIDRAW, createExcalidrawPlugin } from '@udecode/plate-excalidraw'
+
+import { withStyledDraggables } from '../Actions/withDraggable'
+import { withStyledPlaceHolders } from '../Actions/withPlaceholder'
+import { ExcalidrawElement } from '../Components/Excalidraw'
+import { createInlineBlockPlugin } from '../Components/InlineBlock/createInlineBlockPlugin'
+import { createQAPlugin } from '../Components/QABlock/createQAPlugin'
+import { createSyncBlockPlugin } from '../Components/SyncBlock/createSyncBlockPlugin'
+import TableWrapper from '../Components/TableWrapper'
+import createTodoPlugin from '../Components/Todo/createTodoPlugin'
+import { createILinkPlugin } from '../Components/ilink/createILinkPlugin'
+import { createTagPlugin } from '../Components/tag/createTagPlugin'
+// import { TagCombobox } from '../Components/tag/components/TagCombobox';
+import { createBlurSelectionPlugin } from './blurSelection'
+import { createHighlightTextPlugin } from './highlightText'
 import {
   optionsAutoFormatRule,
   optionsCreateNodeIdPlugin,
@@ -58,32 +79,12 @@ import {
   autoformatMath
 } from './pluginOptions'
 
-import { ExcalidrawElement } from '../Components/Excalidraw'
-import TableWrapper from '../Components/TableWrapper'
-// import { TagCombobox } from '../Components/tag/components/TagCombobox';
-import { createBlurSelectionPlugin } from './blurSelection'
-import { createILinkPlugin } from '../Components/ilink/createILinkPlugin'
-import { createInlineBlockPlugin } from '../Components/InlineBlock/createInlineBlockPlugin'
-import { createSyncBlockPlugin } from '../Components/SyncBlock/createSyncBlockPlugin'
-import { createTagPlugin } from '../Components/tag/createTagPlugin'
-import { withStyledDraggables } from '../Actions/withDraggable'
-import { withStyledPlaceHolders } from '../Actions/withPlaceholder'
-import createTodoPlugin from '../Components/Todo/createTodoPlugin'
-import { createQAPlugin } from '../Components/QABlock/createQAPlugin'
-import { createHighlightTextPlugin } from './highlightText'
-import { createActionPlugin } from '@editor/Components/Actions/createActionPlugin'
-import { createMentionPlugin } from '@editor/Components/mentions/createMentionsPlugin'
-import { withBlockOptions } from '@editor/Components/Blocks'
-import { createBlockModifierPlugin } from '@editor/Components/Blocks/createBlockModifierPlugin'
-// eslint-disable-next-line import/no-unresolved
-import MediaIFrame, { parseRestMediaUrls } from '@editor/Components/media-embed-ui/src/MediaEmbedElement/MediaIFrame'
-import { PlateFloatingLink } from '@editor/Components/Floating/FloatingLink'
-
 export type PluginOptionType = {
   exclude: {
     dnd?: boolean
     mentions?: boolean
   }
+  withEntities?: boolean
 }
 
 export const linkPlugin = {
@@ -124,7 +125,6 @@ export const generatePlugins = (options: PluginOptionType) => {
     createImagePlugin(optionsImagePlugin), // Image
     createLinkPlugin(linkPlugin), // Link
     createListPlugin(), // List
-    createTodoPlugin(),
     createTablePlugin({ component: TableWrapper }), // Table
 
     // Editing Plugins
@@ -215,7 +215,10 @@ export const generatePlugins = (options: PluginOptionType) => {
     createHighlightTextPlugin()
   ]
 
-  const withPlugins = !options?.exclude?.dnd ? [...Plugins, createDndPlugin()] : Plugins
+  const useEntitiesInPlugins = options?.withEntities !== false
+  const withEntityPlugins = [createTodoPlugin(useEntitiesInPlugins)()]
+
+  const withPlugins = !options?.exclude?.dnd ? [...Plugins, createDndPlugin(), ...withEntityPlugins] : [...Plugins, ...withEntityPlugins]
 
   return withPlugins
 }

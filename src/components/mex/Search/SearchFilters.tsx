@@ -1,12 +1,15 @@
+import React, { useMemo } from 'react'
+
 import filter2Line from '@iconify/icons-ri/filter-2-line'
 import filterOffLine from '@iconify/icons-ri/filter-off-line'
 import { Icon } from '@iconify/react'
 import FilterRender from '@ui/components/Filters/Filter'
 import GlobalJoinFilterMenu from '@ui/components/Filters/GlobalJoinFilterMenu'
 import NewFilterMenu from '@ui/components/Filters/NewFilterMenu'
-import { Infobox, ToolbarTooltip } from '@workduck-io/mex-components'
 import { nanoid } from 'nanoid'
-import React, { useMemo } from 'react'
+
+import { Infobox, ToolbarTooltip } from '@workduck-io/mex-components'
+
 import { SearchFiltersHelp } from '../../../data/Defaults/helpText'
 import { SearchFilterCancel, SearchFilterLabel, SearchFiltersWrapper, SearchFilterWrapper } from '../../../style/Search'
 import { Filter, Filters, GlobalFilterJoin } from '../../../types/filters'
@@ -29,7 +32,6 @@ const SearchFilters = ({
   currentFilters,
   addCurrentFilter,
   changeCurrentFilter,
-  result,
   removeCurrentFilter,
   resetCurrentFilters,
   globalJoin,

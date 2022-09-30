@@ -22,6 +22,7 @@ import { getDeserializeSelectionToNodes } from '../../../utils/htmlDeserializer'
 import { checkIfUntitledDraftNode } from '../../../utils/lib/strings'
 import { getTitleFromContent } from '../../../utils/search/parseData'
 import { useRouting } from '../../../views/routes/urls'
+import { mog } from '@workduck-io/mex-utils'
 
 export const useSearchProps = () => {
   const currentListItem = useSpotlightEditorStore((store) => store.currentListItem)
@@ -151,6 +152,7 @@ export const useSaveChanges = () => {
     // * Add this item in recents list of Mex
     addRecent(node.nodeid)
     addInResearchNodes(node.nodeid)
+    mog("UT", { node })
     appNotifierWindow(IpcAction.REFRESH_NODE, AppType.SPOTLIGHT, { nodeid: node.nodeid })
   }
 

@@ -1,8 +1,9 @@
-import { app } from 'electron'
-import { generateTempId } from '../data/Defaults/idPrefixes'
-import semver from 'semver'
-import { DefaultTransforms, ForceLogutVersion } from '../data/transforms'
 import { TNode, TNodeEntry } from '@udecode/plate'
+import { app } from 'electron'
+import semver from 'semver'
+
+import { generateTaskEntityId, generateTempId } from '../data/Defaults/idPrefixes'
+import { DefaultTransforms, ForceLogutVersion } from '../data/transforms'
 
 export type getValuefn = (obj?: any) => string
 export type getDatafn = (data?: any) => any
@@ -138,6 +139,11 @@ export const updateIds = (blockToUpdate: any, withType?: boolean, idGenerator: (
     const newId = idGenerator()
     block.id = newId
   }
+
+  if (block.entityId) {
+    block.entityId = generateTaskEntityId()
+  }
+
   if (block.children) {
     block.children = block.children.map((bl) => {
       return updateIds(bl, addIdIfType, idGenerator)
@@ -212,9 +218,8 @@ export const applyTransforms = (d: any, transforms: DataTransformation[]): { dat
   // const fromTransformIndex = transforms.map(t => t.version)
 
   // Only apply transforms that are a version up of the data
-  const toApplyTransform = transforms
-    .filter((t) => t?.version === '0.16.0-alpha.3')
-    // .sort((a, b) => semver.compareLoose(a.version, b.version))
+  const toApplyTransform = transforms.filter((t) => t?.version === '0.16.0-alpha.3')
+  // .sort((a, b) => semver.compareLoose(a.version, b.version))
 
   const transformedData = toApplyTransform.reduce((pd, t) => {
     if (t.type === 'KeysTransformation') {

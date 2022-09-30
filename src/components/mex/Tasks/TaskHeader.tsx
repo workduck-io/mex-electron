@@ -1,5 +1,6 @@
 import React, { useMemo, useState } from 'react'
 
+import { useOnNewItem } from '@components/FleetContainer/useOnNewItem'
 import { useTaskViewModalStore } from '@components/mex/TaskViewModal'
 import { TasksHelp } from '@data/Defaults/helpText'
 import { useTaskViews, useViewStore, View } from '@hooks/useTaskViews'
@@ -37,6 +38,7 @@ import {
   DisplayShortcut,
   LoadingButton
 } from '@workduck-io/mex-components'
+
 import { Filter, GlobalFilterJoin } from '../../../types/filters'
 
 interface TaskHeaderProps {
@@ -50,7 +52,7 @@ const TaskHeader = ({ currentView, currentFilters, cardSelected, globalJoin }: T
   const openTaskViewModal = useTaskViewModalStore((store) => store.openModal)
   const setCurrentView = useViewStore((store) => store.setCurrentView)
   const { deleteView } = useTaskViews()
-  const openTodo = useModalStore((store) => store.toggleOpen)
+  const { onNewTask } = useOnNewItem()
 
   const { goTo } = useRouting()
 
@@ -73,8 +75,10 @@ const TaskHeader = ({ currentView, currentFilters, cardSelected, globalJoin }: T
     }
   }
 
-  const onCreateNewTask = () => {
-    openTodo(ModalsType.todo)
+  const onCreateNewTask = (ev: MouseEvent) => {
+    // ev.preventDefault()
+
+    onNewTask()
   }
 
   return (

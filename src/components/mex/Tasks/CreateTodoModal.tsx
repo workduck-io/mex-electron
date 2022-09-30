@@ -1,59 +1,62 @@
-import { BASE_TASKS_PATH } from '@data/Defaults/baseData'
-import useModalStore, { ModalsType } from '@store/useModalStore'
-import { Button, DisplayShortcut, LoadingButton } from '@workduck-io/mex-components'
 import React, { useEffect, useState } from 'react'
+
+import { useApi } from '@apis/useSaveApi'
+import { defaultContent } from '@data/Defaults/baseData'
+import { TodoType } from '@editor/Components/Todo/types'
+import { useEditorBuffer } from '@hooks/useEditorBuffer'
+import useEntityAPIs from '@hooks/useEntityAPIs'
+import { useTodoBuffer } from '@hooks/useTodoBuffer'
+import { useUpdater } from '@hooks/useUpdater'
+import useModalStore, { ModalsType } from '@store/useModalStore'
+import { getPlateEditorRef, PlateProvider } from '@udecode/plate'
+import { mog } from '@utils/lib/helper'
+import toast from 'react-hot-toast'
 import Modal from 'react-modal'
+
+import { Button, DisplayShortcut, LoadingButton } from '@workduck-io/mex-components'
+import { tinykeys } from '@workduck-io/tinykeys'
+
 import { QuickLink } from '../NodeSelect/NodeSelect'
 import { ModalControls, ModalHeader, ModalSection } from '../Refactor/styles'
 import TaskEditor from './TaskEditor'
-import { useLinks } from '@hooks/useLinks'
-import { createDefaultTodo } from '@store/useTodoStore'
-import { useTodoBuffer } from '@hooks/useTodoBuffer'
-import { TodoType } from '@editor/Components/Todo/types'
-import useEntityAPIs from '@hooks/useEntityAPIs'
 import { TaskEditorWrapper } from './TaskEditor/styled'
-import { mog } from '@utils/lib/helper'
-import toast from 'react-hot-toast'
-import { useUpdater } from '@hooks/useUpdater'
-import { useEditorBuffer } from '@hooks/useEditorBuffer'
-import { tinykeys } from '@workduck-io/tinykeys'
-import { useNamespaces } from '@hooks/useNamespaces'
-import { PlateProvider } from '@udecode/plate'
 
 const CreateTodoModal = () => {
   const isOpen = useModalStore((store) => store.open === ModalsType.todo)
   const setOpen = useModalStore((store) => store.toggleOpen)
-  const { getNodeidFromPath } = useLinks()
-  const { addTodoInBuffer, getTodoFromBuffer, clearAndSaveTodo } = useTodoBuffer()
+  const { clearAndSaveTodo, removeTodoFromBuffer } = useTodoBuffer()
   const { createTodo } = useEntityAPIs()
   const setModalData = useModalStore((store) => store.setData)
   const { updateTodoInContent } = useUpdater()
   const { saveAndClearBuffer } = useEditorBuffer()
+  const { appendToNoteAPI } = useApi()
   const [isLoading, setIsLoading] = useState<boolean>(false)
-  const { getDefaultNamespaceId } = useNamespaces()
+
+  const onCreateTask = async () => {
+    setIsLoading(true)
+    const todo = useModalStore.getState().data
+
+    try {
+      const savedTodo = await createTodo(todo)
+
+      if (savedTodo) {
+        clearAndSaveTodo(savedTodo)
+        saveAndClearBuffer()
+        appendToNoteAPI(savedTodo.nodeid, '', savedTodo.content)
+        updateTodoInContent(savedTodo.nodeid, [savedTodo])
+        toast('Task created!')
+      }
+    } catch (err) {
+      toast('Error occured while creating Task')
+      mog('Error occured while creating Task', { err })
+    } finally {
+      setIsLoading(false)
+      setOpen(undefined)
+    }
+  }
 
   useEffect(() => {
-    if (isOpen) {
-      const defaultNamespaceId = getDefaultNamespaceId()
-      const dailyNotesId = getNodeidFromPath(BASE_TASKS_PATH, defaultNamespaceId)
-      const todo = useModalStore.getState().data
-
-      if (todo) {
-        const bufferTodo = getTodoFromBuffer(todo.nodeid, todo.entityId)
-
-        // * If existing todo buffer present, load that content
-        if (bufferTodo) {
-          setModalData(bufferTodo)
-          return
-        }
-
-        addTodoInBuffer(todo.nodeid, todo)
-      } else if (dailyNotesId) {
-        const todo = createDefaultTodo(dailyNotesId)
-        addTodoInBuffer(dailyNotesId, todo)
-        setModalData(todo)
-      }
-    } else {
+    if (!isOpen) {
       setModalData(undefined)
     }
   }, [isOpen])
@@ -77,33 +80,10 @@ const CreateTodoModal = () => {
   const onRequestClose = () => {
     const todo: TodoType = useModalStore.getState().data
     if (todo) {
+      removeTodoFromBuffer(todo.nodeid, todo.entityId)
       setModalData(undefined)
     }
     setOpen(undefined)
-  }
-
-  const onCreateTask = async () => {
-    setIsLoading(true)
-    const modalData = useModalStore.getState().data
-    const todo = getTodoFromBuffer(modalData.nodeid, modalData.entityId)
-    try {
-      const savedTodo = await createTodo(todo)
-
-      if (savedTodo) {
-        clearAndSaveTodo(savedTodo)
-        updateTodoInContent(savedTodo.nodeid, [savedTodo], true)
-        saveAndClearBuffer()
-        toast('Task created!')
-      }
-    } 
-    catch (err) {
-      toast('Error occured while creating Task')
-      mog('Error occured while creating Task', { err })
-    } 
-      finally {
-      setIsLoading(false)
-      setOpen(undefined)
-    }
   }
 
   return (
@@ -139,12 +119,11 @@ const CreateTodoModal = () => {
 
 const NewTodoSection = ({ onSelectNote }: { onSelectNote?: (item: QuickLink) => void }) => {
   const todo = useModalStore((store) => store.data)
+  const setModalData = useModalStore((store) => store.setData)
 
-  const { updateNoteTodo } = useTodoBuffer()
-
-  const onEditorChange = (val: any) => {
+  const onEditorChange = (content: any) => {
     if (todo) {
-      updateNoteTodo(todo.nodeid, todo.entityId, { content: val })
+      setModalData({ ...todo, content })
     }
   }
 
@@ -154,12 +133,20 @@ const NewTodoSection = ({ onSelectNote }: { onSelectNote?: (item: QuickLink) => 
 
   if (!todo) return <></>
 
-  const todoEditorId = `${todo.nodeid}_task_${todo.entityId}`
+  const todoEditorId = `hello_${todo.nodeid}_task_${todo.entityId}`
+
+  const e = getPlateEditorRef()
+  mog('SOM', { f: e })
+  mog('TODO IS', { todo })
 
   return (
     <PlateProvider id={todoEditorId}>
       <TaskEditorWrapper>
-        <TaskEditor editorId={todoEditorId} content={todo.content} onChange={onEditorChange} />
+        <TaskEditor
+          editorId={todoEditorId}
+          content={todo?.content || defaultContent.content}
+          onChange={onEditorChange}
+        />
       </TaskEditorWrapper>
     </PlateProvider>
   )

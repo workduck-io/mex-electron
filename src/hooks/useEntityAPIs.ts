@@ -1,6 +1,7 @@
 import { apiURLs } from '@apis/routes'
 import { TodoType } from '@editor/Components/Todo/types'
 import { useAuthStore } from '@services/auth/useAuth'
+import { isRequestedWithin } from '@store/useApiStore'
 import useTodoStore from '@store/useTodoStore'
 import { getTodosFromContent } from '@utils/lib/content'
 import { mog } from '@utils/lib/helper'
@@ -9,7 +10,7 @@ import { deserializeTodos, serializeTodo } from '@utils/lib/serialize'
 import { client } from '@workduck-io/dwindle'
 
 import { NodeEditorContent } from '../types/Types'
-import { useUpdater } from './useUpdater'
+import useTodoBufferStore from './useTodoBufferStore'
 
 type UpdateTodosType = {
   entityId: string
@@ -31,8 +32,6 @@ const useEntityAPIs = () => {
   const updateTodosOfNode = useTodoStore((store) => store.updateTodosOfNode)
   const updateTodosOfNodes = useTodoStore((store) => store.updateTodosOfNodes)
   const initTodos = useTodoStore((store) => store.initTodos)
-
-  const { updateTodoInContent } = useUpdater()
 
   const fetchAllEntitiesOfNote = async (noteId: string, content: NodeEditorContent) => {
     const requests = []
@@ -60,6 +59,18 @@ const useEntityAPIs = () => {
     }
   }
 
+  const archiveNoteTodos = async (noteId: string): Promise<void> => {
+    const workspaceId = useAuthStore.getState().getWorkspaceId()
+
+    if (workspaceId) {
+      await client.delete(apiURLs.archiveNoteTodos(noteId), {
+        headers: {
+          'mex-workspace-id': workspaceId
+        }
+      })
+    }
+  }
+
   const getTodosOfNotes = async (noteIds: Array<string>): Promise<TaskEntityResponseType> => {
     const workspaceId = useAuthStore.getState().getWorkspaceId()
 
@@ -77,8 +88,8 @@ const useEntityAPIs = () => {
       if (res?.data) {
         const notesWithTasks = res.data.Items
         if (notesWithTasks) {
-          const deserializedNotesWithTodos = Object.entries(notesWithTasks).reduce((prev, current) => {
-            prev[current[0]] = current[1]
+          const deserializedNotesWithTodos = Object.entries(notesWithTasks).reduce((prev, [noteId, todos]) => {
+            prev[noteId] = todos
             return prev
           }, {})
 
@@ -90,7 +101,6 @@ const useEntityAPIs = () => {
       }
     }
   }
-
   // * Todo Entity
   const updateTodos = async (todos: Array<UpdateTodosType>): Promise<any> => {
     const workspaceId = useAuthStore.getState().getWorkspaceId()
@@ -110,9 +120,9 @@ const useEntityAPIs = () => {
 
   const getNoteTodos = async (noteId: string) => {
     const workspaceId = useAuthStore.getState().getWorkspaceId()
-
-    if (workspaceId) {
-      const res = await client.get(apiURLs.getTodosOfNote(noteId), {
+    const url = apiURLs.getTodosOfNote(noteId)
+    if (workspaceId && !isRequestedWithin(2, url)) {
+      const res = await client.get(url, {
         headers: {
           'mex-workspace-id': workspaceId
         }
@@ -120,19 +130,23 @@ const useEntityAPIs = () => {
 
       if (res && res.data) {
         const todos = deserializeTodos(res.data)
+
         updateTodosOfNode(noteId, todos)
-        updateTodoInContent(noteId, todos)
+        // updateTodoInContent(noteId, todos)
+
+        // const currentNote = useEditorStore.getState().node
+        // if (currentNote?.nodeid === noteId) useEditorStore.getState().loadNode(currentNote)
 
         return todos
       }
     }
   }
 
-  const createTodo = async (todo: TodoType) => {
+  const createTodo = async (todo: TodoType): Promise<TodoType> => {
     const workspaceId = useAuthStore.getState().getWorkspaceId()
 
     if (workspaceId) {
-      const res = await client.post(apiURLs.createTodo(), serializeTodo(todo), {
+      const res = await client.post<TodoType>(apiURLs.createTodo(), serializeTodo(todo), {
         headers: {
           Accept: 'application/json, text/plain, */*',
           'mex-workspace-id': workspaceId
@@ -179,17 +193,20 @@ const useEntityAPIs = () => {
         const items = deserializeTodos(res.data.Items)
 
         const notesTasks = items.reduce((notesTasksMap, task: TodoType) => {
-          mog('Tasks', { notesTasksMap, task })
-          if (notesTasksMap[task.nodeid]) {
-            notesTasksMap[task.nodeid].push(task)
+          if (task.nodeid) {
+            if (notesTasksMap[task.nodeid]) {
+              notesTasksMap[task.nodeid].push(task)
+            } else {
+              notesTasksMap[task.nodeid] = [task]
+            }
           } else {
-            notesTasksMap[task.nodeid] = [task]
+            mog(`[TASK]: NodeId is not present in (${task.entityId})`)
           }
 
           return notesTasksMap
         }, {})
 
-        mog('After reducer', { notesTasks })
+        mog('After reducer', { notesTasks, buffer: useTodoBufferStore.getState().todosBuffer }, { show: true })
 
         initTodos(notesTasks)
 
@@ -200,6 +217,7 @@ const useEntityAPIs = () => {
 
   return {
     updateTodos,
+    archiveNoteTodos,
     getAllTodosOfWorkspace,
     getTodo,
     createTodo,

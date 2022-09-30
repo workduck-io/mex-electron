@@ -20,13 +20,14 @@ import { useSnippetStore } from '@store/useSnippetStore'
 import useTodoStore from '@store/useTodoStore'
 import { TippyProps } from '@tippyjs/react'
 import { getPlateEditorRef, platesStore } from '@udecode/plate'
-import { getTodosFromContent } from '@utils/lib/content'
 import { mog } from '@utils/lib/helper'
 import { getEventNameFromElement } from '@utils/lib/strings'
 import toast from 'react-hot-toast'
 
 import { IconButton } from '@workduck-io/mex-components'
 import { tinykeys } from '@workduck-io/tinykeys'
+
+import { getTodosFromContent } from '../../utils/lib/content'
 
 interface SaveEditorValueOptions {
   // If not set, defaults to true

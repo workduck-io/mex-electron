@@ -1,3 +1,5 @@
+import { TodoBufferType } from '@hooks/useTodoBufferStore'
+
 import {
   Service,
   SyncBlockData,
@@ -70,6 +72,7 @@ export interface NodeContent {
 
 export interface FileSaveBuffer {
   views?: View<any>[]
+  todosBuffer?: TodoBufferType
 }
 
 export interface FileData {
@@ -87,7 +90,6 @@ export interface FileData {
   archive: ILink[]
   linkCache: LinkCache
   tagsCache: TagsCache
-  todosBuffer?: TodoBufferType
   bookmarks: string[]
   sharedNodes: SharedNode[]
 

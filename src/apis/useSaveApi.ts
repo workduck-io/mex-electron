@@ -14,7 +14,7 @@ import { getTagsFromContent } from '@utils/lib/content'
 import toast from 'react-hot-toast'
 
 import { client } from '@workduck-io/dwindle'
-import { allNamespacesHierarchyParser } from '@workduck-io/mex-utils'
+import { allNamespacesHierarchyParser, ELEMENT_TODO_LI } from '@workduck-io/mex-utils'
 
 import { defaultContent } from '../data/Defaults/baseData'
 import { WORKSPACE_HEADER, DEFAULT_NAMESPACE } from '../data/Defaults/defaults'
@@ -34,7 +34,6 @@ type GetDataTypeOptions = { isShared?: boolean; isRefresh?: boolean; isUpdate?: 
 
 export const useApi = () => {
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  //
   const { updateDocument, removeDocument } = useSearch()
   const getWorkspaceId = useAuthStore((store) => store.getWorkspaceId)
   const getMetadata = useContentStore((store) => store.getMetadata)
@@ -45,14 +44,12 @@ export const useApi = () => {
   const { addLastOpened } = useLastOpened()
   const addInArchive = useDataStore((store) => store.addInArchive)
 
-  const { getTodosOfNotes } = useEntityAPIs()
+  const { getTodosOfNotes, fetchAllEntitiesOfNote } = useEntityAPIs()
   const setILinks = useDataStore((store) => store.setIlinks)
   const setNamespaces = useDataStore((s) => s.setNamespaces)
-  const setArchive = useDataStore((state) => state.setArchive)
   const initSnippets = useSnippetStore((store) => store.initSnippets)
   const updateSnippet = useSnippetStore((store) => store.updateSnippet)
   const { updateFromContent } = useUpdater()
-  const { fetchAllEntitiesOfNote } = useEntityAPIs()
 
   const workspaceHeaders = () => ({
     [WORKSPACE_HEADER]: getWorkspaceId(),
@@ -162,6 +159,27 @@ export const useApi = () => {
       })
 
     return data
+  }
+
+  const appendToNoteAPI = async (
+    noteId: string,
+    namespace: string,
+    content: NodeEditorContent,
+    options?: { isShared?: boolean }
+  ) => {
+    const reqData = {
+      type: 'ElementRequest',
+      elements: serializeContent(content, noteId)
+    }
+
+    // * TODO: Add append to Note for shared notes
+    const url = apiURLs.appendToNode(noteId)
+
+    const res = await client.patch(url, reqData, { headers: workspaceHeaders() })
+
+    if (res?.data) {
+      toast('Task added!')
+    }
   }
 
   /*
@@ -365,7 +383,7 @@ export const useApi = () => {
     }
   }
 
-  const getNodesByWorkspace = async (): Promise<ILink[]> => {
+  const getNodesByWorkspace = async (fetchEntities?: boolean): Promise<ILink[]> => {
     const data = await client
       .get(apiURLs.namespaces.getHierarchy, {
         headers: workspaceHeaders()
@@ -409,7 +427,7 @@ export const useApi = () => {
             if (toUpdateLocal.length > 0) {
               const noteIds = toUpdateLocal.map((n) => n.nodeid)
 
-              getTodosOfNotes(noteIds)
+              if (fetchEntities) getTodosOfNotes(noteIds)
 
               // * Use this after NAMESPACES
               // getNotesDataAPI(noteIds)
@@ -457,7 +475,7 @@ export const useApi = () => {
       type: 'SnippetRequest',
       title: snippetTitle,
       namespaceIdentifier: DEFAULT_NAMESPACE,
-      data: serializeContent(content ?? defaultContent.content, snippetId),
+      data: serializeContent(content ?? defaultContent.content, snippetId, new Set([ELEMENT_TODO_LI])),
       template: template ?? false
     }
 
@@ -668,7 +686,7 @@ export const useApi = () => {
 
     if (namespaces) {
       setNamespaces(namespaces.map((n) => n.ns))
-      namespaces.map((n) => {
+      namespaces.map(async (n) => {
         const archivedNotes = hierarchyParser(n.archiveHierarchy, n.ns.id, {
           withParentNodeId: true,
           allowDuplicates: true
@@ -798,7 +816,8 @@ export const useApi = () => {
     getAllNamespaces,
     changeNamespaceName,
     changeNamespaceIcon,
-    createNewNamespace
+    createNewNamespace,
+    appendToNoteAPI
   }
 }
 

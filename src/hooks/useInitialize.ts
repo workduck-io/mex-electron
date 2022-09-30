@@ -41,7 +41,6 @@ export const useInitialize = () => {
       linkCache,
       tagsCache,
       bookmarks,
-      todosBuffer,
       sharedNodes,
       contents,
       archive,
@@ -75,7 +74,6 @@ export const useInitialize = () => {
     initSyncBlocks(syncBlocks, templates, services, intents)
     initSnippets(snippets)
     initTodos(todos)
-    initializeTodosBuffer(todosBuffer)
     setViews(views)
     setReminders(reminders)
     // const currentTheme = getTheme(data.userSettings.theme)
