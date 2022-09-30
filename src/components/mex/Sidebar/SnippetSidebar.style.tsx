@@ -22,9 +22,15 @@ export const SnippetCardHeader = styled.div`
   align-items: center;
   gap: ${({ theme }) => theme.spacing.tiny};
   font-size: 1.15rem;
+  cursor: pointer;
+  user-select: none;
+  &:hover {
+    color: ${({ theme }) => theme.colors.primary};
+  }
 `
 
 export const SnippetCardFooter = styled.div`
+  margin-top: ${({ theme }) => theme.spacing.small};
   display: flex;
   align-items: center;
   justify-content: space-between;

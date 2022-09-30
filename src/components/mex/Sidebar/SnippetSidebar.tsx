@@ -1,12 +1,17 @@
-import quillPenLine from '@iconify/icons-ri/quill-pen-line'
-import { useSnippetStore } from '@store/useSnippetStore'
-import { NavigationType, ROUTE_PATHS, useRouting } from '@views/routes/urls'
-import React, { useState, useEffect } from 'react'
-import { debounce } from 'lodash'
-import SidebarList from './SidebarList'
+import { useSearch } from '@hooks/useSearch'
 import magicLine from '@iconify/icons-ri/magic-line'
-import { SidebarWrapper } from '@ui/sidebar/Sidebar.style'
-import { SidebarHeaderLite } from '@ui/sidebar/Sidebar.space.header'
+import quillPenLine from '@iconify/icons-ri/quill-pen-line'
+import searchLine from '@iconify/icons-ri/search-line'
+import { Icon } from '@iconify/react'
+import { useSnippetStore } from '@store/useSnippetStore'
+import { TagsLabel } from '@components/mex/Tags/TagLabel'
+import { Input } from '@style/Form'
+import { NavigationType, ROUTE_PATHS, useRouting } from '@views/routes/urls'
+import { convertContentToRawText, getTagsFromContent, mog } from '@workduck-io/mex-utils'
+import { debounce } from 'lodash'
+import React, { useEffect, useMemo, useState } from 'react'
+import { Snippet } from '../../../types/data'
+import { SidebarListFilter } from './SidebarList.style'
 import {
   SnippetCardFooter,
   SnippetCardHeader,
@@ -14,14 +19,7 @@ import {
   SnippetCardWrapper,
   SnippetContentPreview
 } from './SnippetSidebar.style'
-import { Icon } from '@iconify/react'
-import { SidebarListFilter } from './SidebarList.style'
-import searchLine from '@iconify/icons-ri/search-line'
-import { convertContentToRawText, mog } from '@workduck-io/mex-utils'
-import { useSearch } from '@hooks/useSearch'
-import { GenericSearchResult } from '../../../types/search'
-import { Input } from '@style/Form'
-import { Snippet } from '../../../types/data'
+import { getPlateEditorRef, insertNodes, selectEditor, TElement } from '@udecode/plate'
 
 const SnippetSidebar = () => {
   const [search, setSearch] = useState('')
@@ -42,9 +40,23 @@ const SnippetSidebar = () => {
     goTo(ROUTE_PATHS.snippet, NavigationType.push, id, { title: snippet?.title })
   }
 
+  const snippetTags = useMemo(() => {
+    const tags = snippets.reduce(
+      (p, snippet) => ({ ...p, [snippet.id]: getTagsFromContent(snippet.content).map((tag) => ({ value: tag })) }),
+      {}
+    )
+    return tags
+  }, [snippets])
+
   const onInsertSnippet = (id: string) => {
     // TODO: insert snippet in editor
     mog('onInsertSnippet', { id })
+    const snippet = snippets.find((snippet) => snippet.id === id)
+    if (!snippet) return
+    const editor = getPlateEditorRef()
+    const selection = editor.selection
+    insertNodes<TElement>(editor, snippet.content)
+    selectEditor(editor, { at: selection, edge: 'start', focus: true })
   }
 
   const onSearchChange: React.ChangeEventHandler<HTMLInputElement> = (e) => {
@@ -82,6 +94,8 @@ const SnippetSidebar = () => {
     }
   }, [snippets, search])
 
+  // mog('SnippetSidebar', { snippets, searchedSnippets, snippetTags })
+
   return (
     <SnippetCards>
       <SidebarListFilter noMargin={true}>
@@ -89,14 +103,16 @@ const SnippetSidebar = () => {
         <Input placeholder={'Search snippets'} onChange={debounce((e) => onSearchChange(e), 250)} ref={inputRef} />
       </SidebarListFilter>
       {searchedSnippets.map((snippet) => (
-        <SnippetCardWrapper onClick={() => onInsertSnippet(snippet.id)} key={`snippet_card_${snippet.id}`}>
-          <SnippetCardHeader>
+        <SnippetCardWrapper key={`snippet_card_${snippet.id}`}>
+          <SnippetCardHeader onClick={() => onInsertSnippet(snippet.id)}>
             <Icon icon={snippet.template ? magicLine : quillPenLine} />
             {snippet.title}
           </SnippetCardHeader>
 
           <SnippetContentPreview>{convertContentToRawText(snippet.content, ' ')}</SnippetContentPreview>
-          <SnippetCardFooter></SnippetCardFooter>
+          <SnippetCardFooter>
+            <TagsLabel tags={snippetTags[snippet.id]} />
+          </SnippetCardFooter>
         </SnippetCardWrapper>
       ))}
     </SnippetCards>
