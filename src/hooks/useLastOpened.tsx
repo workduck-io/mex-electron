@@ -1,5 +1,5 @@
 import { useUserPreferenceStore } from '@store/userPreferenceStore'
-import { LastOpenedNote, LastOpenedState } from '../types/userPreference'
+import { LastOpenedData, LastOpenedState } from '../types/userPreference'
 import { getInitialNode } from '@utils/helpers'
 import { mog } from '@utils/lib/helper'
 import { debounce } from 'lodash'
@@ -17,7 +17,7 @@ const INIT_LAST_OPENED = {
   muted: false
 }
 
-export const getLastOpenedState = (updatedAt: number, lastOpenedNote: LastOpenedNote): LastOpenedState => {
+export const getLastOpenedState = (updatedAt: number, lastOpenedNote: LastOpenedData): LastOpenedState => {
   if (lastOpenedNote.muted) {
     return LastOpenedState.MUTED
   } else if (updatedAt > lastOpenedNote.ts) {
@@ -33,6 +33,29 @@ export const getLastOpenedState = (updatedAt: number, lastOpenedNote: LastOpened
   }
 }
 
+export const useLastUsedSnippets = () => {
+  const setLastUsedSnippets = useUserPreferenceStore((state) => state.setLastUsedSnippets)
+
+  const addLastUsed = (snippetId: string) => {
+    const lastUsedSnippets = useUserPreferenceStore.getState().lastUsedSnippets
+
+    const lastUsedSnippet = setLastUsedSnippets[snippetId] || { ...INIT_LAST_OPENED }
+
+    const newLastUsedSnippets = {
+      ...lastUsedSnippets,
+      [snippetId]: {
+        ...lastUsedSnippet,
+        freq: lastUsedSnippet.freq + 1,
+        ts: Date.now()
+      }
+    }
+
+    setLastUsedSnippets(newLastUsedSnippets)
+  }
+
+  return { addLastUsed }
+}
+
 /**
  * Hook to update the last opened timestamp of a node
  */
@@ -40,6 +63,7 @@ export const useLastOpened = () => {
   const setLastOpenedNotes = useUserPreferenceStore((state) => state.setLastOpenedNotes)
   const { getNodeType, getSharedNode } = useNodes()
   const { getILinkFromNodeid } = useLinks()
+
   /**
    * Update the last opened timestamp of a node
    * The current timestamp is used as the last opened timestamp
@@ -86,7 +110,7 @@ export const useLastOpened = () => {
     setMuteNode(nodeId, false)
   }
 
-  const getLastOpened = (nodeId: string, lastOpenedNote: LastOpenedNote) => {
+  const getLastOpened = (nodeId: string, lastOpenedNote: LastOpenedData) => {
     const nodeType = getNodeType(nodeId)
     switch (nodeType) {
       case NodeType.DEFAULT: {

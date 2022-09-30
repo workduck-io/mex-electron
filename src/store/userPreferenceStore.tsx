@@ -1,7 +1,7 @@
 import { mog } from '@utils/lib/helper'
 import create from 'zustand'
 import { devtools, persist } from 'zustand/middleware'
-import { LastOpenedNotes, UserPreferences } from '../types/userPreference'
+import { LastOpenedNotes, LastUsedSnippets, UserPreferences, LastOpenedData } from '../types/userPreference'
 import { indexedDbStorageZustand } from './Adapters/indexedDB'
 // import { baseMetaState, metaState, ZustandStoreMeta } from './middlewares/metaState'
 
@@ -10,6 +10,7 @@ interface UserPreferenceStore extends UserPreferences {
   setHasHydrated: (state) => void
   setTheme: (theme: string) => void
   setLastOpenedNotes: (lastOpenedNotes: LastOpenedNotes) => void
+  setLastUsedSnippets: (lastUsedSnippets: LastUsedSnippets) => void
   getUserPreferences: () => UserPreferences
   setUserPreferences: (userPreferences: UserPreferences) => void
   setActiveNamespace: (namespace: string) => void
@@ -22,6 +23,7 @@ export const useUserPreferenceStore = create<UserPreferenceStore>(
     devtools(
       (set, get) => ({
         lastOpenedNotes: {},
+        lastUsedSnippets: {},
         version: 'unset',
         theme: 'xeM',
         _hasHydrated: false,
@@ -34,6 +36,7 @@ export const useUserPreferenceStore = create<UserPreferenceStore>(
           return {
             lastOpenedNotes: get().lastOpenedNotes,
             version: get().version,
+            lastUsedSnippets: get().lastUsedSnippets,
             theme: get().theme
           }
         },
@@ -45,6 +48,9 @@ export const useUserPreferenceStore = create<UserPreferenceStore>(
         },
         setActiveNamespace: (namespace: string) => {
           set({ activeNamespace: namespace })
+        },
+        setLastUsedSnippets: (lastUsedSnippets) => {
+          set({ lastUsedSnippets })
         },
         setLastOpenedNotes: (lastOpenedNotes) => {
           set({
@@ -64,20 +70,13 @@ export const useUserPreferenceStore = create<UserPreferenceStore>(
   )
 )
 
-/**
- * Merging user preferences from the remote server with the local preferences
- *
- * The remote user preferences may be lagging as the local preferences
- * have not been saved on exit
- */
-export const mergeUserPreferences = (local: UserPreferences, remote: UserPreferences): UserPreferences => {
-  const { version, lastOpenedNotes, theme } = local
-  const { lastOpenedNotes: remoteLastOpenedNotes } = remote
-
-  // For all lastOpened of remote
-  const mergedLastOpenedNotes = Object.keys(remoteLastOpenedNotes).reduce((acc, key) => {
-    const localLastOpenedNote = lastOpenedNotes[key]
-    const remoteLastOpenedNote = remoteLastOpenedNotes[key]
+export const mergeLastOpenedData = (
+  remote: Record<string, LastOpenedData>,
+  local: Record<string, LastOpenedData>
+): Record<string, LastOpenedData> => {
+  const merged = Object.keys(remote).reduce((acc, key) => {
+    const localLastOpenedNote = local[key]
+    const remoteLastOpenedNote = remote[key]
     // If a local lastOpenedNote exists
     if (localLastOpenedNote) {
       // Get the latest of the two which has the latest lastOpened
@@ -93,12 +92,29 @@ export const mergeUserPreferences = (local: UserPreferences, remote: UserPrefere
     return acc
   }, {})
 
-  mog('mergedLastOpenedNotes', { lastOpenedNotes, mergedLastOpenedNotes, local, remote })
+  return merged
+}
+
+/**
+ * Merging user preferences from the remote server with the local preferences
+ *
+ * The remote user preferences may be lagging as the local preferences
+ * have not been saved on exit
+ */
+export const mergeUserPreferences = (local: UserPreferences, remote: UserPreferences): UserPreferences => {
+  const { version, theme } = local
+
+  // For all lastOpened of remote
+  const mergedLastOpenedNotes = mergeLastOpenedData(remote.lastOpenedNotes, local.lastOpenedNotes)
+  const mergedLastUsedSnippets = mergeLastOpenedData(remote.lastUsedSnippets, local.lastUsedSnippets)
+
+  // mog('mergedLastOpenedNotes', { localLastOpenedNotes, mergedLastOpenedNotes, local, remote })
   return {
     version,
     // Overwrite all notes with the remote notes which exist
     // The local notes which do not exist in the remote notes will be left alone
-    lastOpenedNotes: { ...lastOpenedNotes, ...mergedLastOpenedNotes },
+    lastOpenedNotes: { ...local.lastOpenedNotes, ...mergedLastOpenedNotes },
+    lastUsedSnippets: { ...local.lastUsedSnippets, ...mergedLastUsedSnippets },
     theme
   }
 }

@@ -19,6 +19,7 @@ import lightbulbFlashLine from '@iconify/icons-ri/lightbulb-flash-line'
 import timerFlashLine from '@iconify/icons-ri/timer-flash-line'
 import quillPenLine from '@iconify/icons-ri/quill-pen-line'
 import { useShortcutStore } from '@store/useShortcutStore'
+import SnippetSidebar from '../Sidebar/SnippetSidebar'
 
 const InfoBarItems = () => {
   const graphData = useGraphData()
@@ -37,9 +38,9 @@ const InfoBarItems = () => {
       },
       {
         label: <MexIcon noHover icon={quillPenLine} width={24} height={24} />,
-        type: 'suggestions',
-        component: <SuggestionInfoBar />,
-        tooltip: 'Snippets',
+        type: 'snippets',
+        component: <SnippetSidebar />,
+        tooltip: 'Snippets'
         // shortcut: shortcuts.showSuggestedNodes.keystrokes
       },
       {
