@@ -1,8 +1,9 @@
 import { FloatingDelayGroup } from '@floating-ui/react-dom-interactions'
 import arrowGoBackLine from '@iconify/icons-ri/arrow-go-back-line'
 import { Icon } from '@iconify/react'
+import { capitalize } from '@workduck-io/mex-utils'
 import React from 'react'
-import { BacklinksHelp } from '../../../data/Defaults/helpText'
+import { BacklinksHelp, ForwardlinksHelp } from '../../../data/Defaults/helpText'
 import { useLinks } from '../../../hooks/useLinks'
 import { InfoWidgetScroll, InfoWidgetWrapper } from '../../../style/infobar'
 import { Note } from '../../../style/Typography'
@@ -14,8 +15,16 @@ interface BackLinkProps {
 }
 
 const Backlinks = ({ nodeid }: BackLinkProps) => {
-  const { getBacklinks } = useLinks()
+  const { getBacklinks, getForwardlinks } = useLinks()
+  const [state, setState] = React.useState<'backlink' | 'forwardlink'>('backlink')
   const backlinks = getBacklinks(nodeid)
+  const forwardlinks = getForwardlinks(nodeid)
+
+  const toggleState = () => {
+    setState((s) => (s === 'backlink' ? 'forwardlink' : 'backlink'))
+  }
+
+  const linksToShow = state === 'backlink' ? backlinks : forwardlinks
 
   return (
     <InfoWidgetWrapper>
@@ -23,20 +32,23 @@ const Backlinks = ({ nodeid }: BackLinkProps) => {
         <Collapse
           maximumHeight="40vh"
           defaultOpen
-          icon={arrowGoBackLine}
-          title="Backlinks"
+          icon={`mex:${state}`}
+          title={state === 'backlink' ? 'Backlinks' : 'Forwardlinks'}
+          onTitleClick={toggleState}
           infoProps={{
-            text: BacklinksHelp
+            text: state === 'backlink' ? BacklinksHelp : ForwardlinksHelp
           }}
         >
-          {backlinks.length === 0 && (
+          {linksToShow.length === 0 && (
             <>
-              <Note>No backlinks found.</Note>
-              <Note>Link from other notes to view them here.</Note>
+              <Note>No {capitalize(state)}s found.</Note>
+              <Note>
+                Link {state === 'backlink' ? 'this note from other notes' : 'from this note'} to view them here.
+              </Note>
             </>
           )}
-          {backlinks.map((l, i) => (
-            <NodeLink key={`backlink_${l.nodeid}_${i}`} keyStr={`backlink_${l.nodeid}_${i}`} nodeid={l.nodeid} />
+          {linksToShow.map((l, i) => (
+            <NodeLink key={`backforlink_${l.nodeid}_${i}`} keyStr={`backforlink_${l.nodeid}_${i}`} nodeid={l.nodeid} />
           ))}
         </Collapse>
       </FloatingDelayGroup>

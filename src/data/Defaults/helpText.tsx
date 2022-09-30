@@ -17,15 +17,30 @@ export const TagsHelp = (
   </div>
 )
 
-export const BacklinksHelp = (
+const GenericNodeLinkHelp = () => (
   <div>
-    <h1>Backlinks</h1>
-    <p>Notes that reference current document.</p>
     <p>Hover over note to preview temporarily, Click to preserve preview and interact.</p>
     <p>Click twice on the note to navigate.</p>
   </div>
 )
 
+export const BacklinksHelp = (
+  <div>
+    <h1>Backlinks</h1>
+    <p>Notes that reference current document.</p>
+    <GenericNodeLinkHelp />
+    <p>Click on the title to switch to Forwardlinks</p>
+  </div>
+)
+
+export const ForwardlinksHelp = (
+  <div>
+    <h1>Forwardlinks</h1>
+    <p>Notes that are referenced from the current document.</p>
+    <GenericNodeLinkHelp />
+    <p>Click on the title to switch to Backlinks</p>
+  </div>
+)
 export const SuggestionsHelp = (
   <div>
     <h1>Suggestions</h1>

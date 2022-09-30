@@ -22,6 +22,7 @@ interface CollapseProps {
   children?: React.ReactNode
   infoProps?: InfoboxProps
   stopPropagation?: boolean
+  onTitleClick?: (e?: React.MouseEvent<HTMLDivElement, MouseEvent>) => void
 }
 
 const Collapse = ({
@@ -32,7 +33,8 @@ const Collapse = ({
   children,
   oid,
   title,
-  stopPropagation
+  stopPropagation,
+  onTitleClick
 }: CollapseProps) => {
   const [hide, setHide] = React.useState(!defaultOpen ?? true)
 
@@ -52,12 +54,8 @@ const Collapse = ({
 
   return (
     <CollapseWrapper id={`Collapse_${oid}`} onMouseUp={(e) => stopPropagation && e.stopPropagation()}>
-      <CollapseHeader collapsed={hide}>
-        <CollapsableHeaderTitle
-        // onClick={() => {
-        //   setHide((b) => !b)
-        // }}
-        >
+      <CollapseHeader collapsed={hide} canClick={!!onTitleClick}>
+        <CollapsableHeaderTitle onClick={(e) => onTitleClick && onTitleClick(e)}>
           <Icon className={'SidebarCollapseSectionIcon'} icon={icon} />
           {title}
           {infoProps && <Infobox {...infoProps} />}

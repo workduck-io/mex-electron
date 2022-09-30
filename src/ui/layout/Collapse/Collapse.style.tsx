@@ -32,13 +32,19 @@ export const CollapseToggle = styled.div`
   }
 `
 
-export const CollapseHeader = styled.div<{ collapsed?: boolean }>`
+export const CollapseHeader = styled.div<{ collapsed?: boolean; canClick?: boolean }>`
   display: flex;
   align-items: center;
   justify-content: flex-start;
-  cursor: pointer;
+  user-select: none;
 
   gap: ${({ theme }) => theme.spacing.tiny};
+
+  ${({ canClick }) =>
+    canClick &&
+    css`
+      cursor: pointer;
+    `}
 
   :hover {
     ${CollapseToggle} {
