@@ -10,10 +10,10 @@ import TagsRelated from '../Tags/TagsRelated'
 
 export const DataInfobarWrapper = styled.div`
   display: flex;
-  margin-top: 2rem;
+  margin-top: 1rem;
   flex-direction: column;
   justify-content: flex-start;
-  gap: calc(2 * ${({ theme }) => theme.spacing.large});
+  gap: calc(1 * ${({ theme }) => theme.spacing.large});
   padding: ${({ theme }) => `${theme.spacing.medium}`};
   max-width: 100%;
   overflow-y: auto;
@@ -34,18 +34,18 @@ const DataInfoBar = ({ wrapRef }: { wrapRef: React.RefObject<HTMLDivElement> }) 
       {
         key: 'outline',
         open: true,
-        height: '40vh'
+        height: '20vh'
       },
 
       {
         key: 'suggestions',
         open: true,
-        height: '40vh'
+        height: '25vh'
       },
       {
         key: 'backlinks',
         open: true,
-        height: '40vh'
+        height: '25vh'
       }
     ],
     wrapperRef: wrapRef
