@@ -1,6 +1,7 @@
 import { SuggestionsHelp } from '@data/Defaults/helpText'
 import { FloatingDelayGroup } from '@floating-ui/react-dom-interactions'
 import arrowGoBackLine from '@iconify/icons-ri/arrow-go-back-line'
+import { Note } from '@style/Typography'
 import { getPlateEditorRef, insertNodes, selectEditor, TElement } from '@udecode/plate'
 import Collapse from '@ui/layout/Collapse/Collapse'
 import { IconButton } from '@workduck-io/mex-components'
@@ -118,6 +119,11 @@ const SuggestionInfoBar = () => {
             text: SuggestionsHelp
           }}
         >
+          {suggestions.length === 0 && (
+            <>
+              <Note>Start typing and use some tags, we will suggest you notes that might be useful.</Note>
+            </>
+          )}
           {suggestions.map((l, i) => (
             <NodeLink
               key={`suggestion_${l.id}_${i}`}

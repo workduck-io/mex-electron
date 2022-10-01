@@ -41,6 +41,7 @@ export const ForwardlinksHelp = (
     <p>Click on the title to switch to Backlinks</p>
   </div>
 )
+
 export const SuggestionsHelp = (
   <div>
     <h1>Suggestions</h1>
@@ -48,6 +49,16 @@ export const SuggestionsHelp = (
     <p>Hover over note to preview temporarily, Click to preserve preview and interact.</p>
     <p>Use buttons to link/embed the note.</p>
     <p>Click twice on the note to navigate.</p>
+  </div>
+)
+
+export const SnippetSidebarHelp = (
+  <div>
+    <h1>Snippets</h1>
+    <p>Hover over snippet to preview.</p>
+    <p>Click on title to insert snippet in note.</p>
+    <p>Click on the title of the preview to open the snippet.</p>
+    <p>Search for snippets</p>
   </div>
 )
 

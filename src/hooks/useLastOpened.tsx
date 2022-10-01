@@ -8,6 +8,7 @@ import { useContentStore } from '@store/useContentStore'
 import { useLinks } from './useLinks'
 import { useNodes } from './useNodes'
 import { NodeType } from '../types/Types'
+import { Snippet } from '../types/data'
 
 const DEBOUNCE_TIME = 1000
 
@@ -53,7 +54,26 @@ export const useLastUsedSnippets = () => {
     setLastUsedSnippets(newLastUsedSnippets)
   }
 
-  return { addLastUsed }
+  const getLastUsed = (snippetId: string): number | undefined => {
+    const lastUsedSnippets = useUserPreferenceStore.getState().lastUsedSnippets
+    const lastUsedSnippet = lastUsedSnippets[snippetId]
+    if (lastUsedSnippet) {
+      return lastUsedSnippet.ts
+    }
+    return undefined
+  }
+
+  return { addLastUsed, getLastUsed }
+}
+
+export const sortByLastUsedSnippets = (snippets: Snippet[]) => {
+  const lastUsedSnippets = useUserPreferenceStore.getState().lastUsedSnippets
+  const sortedSnippets = snippets.sort((a, b) => {
+    const lastUsedA = lastUsedSnippets[a.id] || { ...INIT_LAST_OPENED }
+    const lastUsedB = lastUsedSnippets[b.id] || { ...INIT_LAST_OPENED }
+    return lastUsedB.ts - lastUsedA.ts
+  })
+  return sortedSnippets
 }
 
 /**

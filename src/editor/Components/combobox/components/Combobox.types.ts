@@ -62,7 +62,7 @@ export interface IComboboxItem {
   /**
    * Data available to onRenderItem / onExtendedAction.
    */
-  data?: unknown
+  data?: any
 }
 
 export interface ComboboxItemProps {
@@ -72,7 +72,6 @@ export interface ComboboxItemProps {
 export type ComboboxOptions = {
   showPreview?: boolean
 }
-
 
 export interface ComboboxProps {
   isSlash?: boolean

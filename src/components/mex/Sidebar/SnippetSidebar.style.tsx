@@ -35,6 +35,8 @@ export const SnippetCardFooter = styled.div`
   align-items: center;
   justify-content: space-between;
   gap: ${({ theme }) => theme.spacing.tiny};
+
+  color: ${({ theme }) => theme.colors.text.fade};
 `
 
 export const SnippetContentPreview = styled.div`

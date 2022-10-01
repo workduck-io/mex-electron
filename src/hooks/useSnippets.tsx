@@ -20,12 +20,13 @@ export const useSnippets = () => {
   const getSnippetsConfigs = (): { [key: string]: SlashCommandConfig } => {
     const snippets = useSnippetStore.getState().snippets
     return snippets.reduce((prev, cur) => {
-      const snipCommand = getSnippetCommand(cur.title)
+      const snipCommand = getSnippetCommand(cur)
       return {
         ...prev,
-        [snipCommand]: {
+        [snipCommand.command]: {
           slateElementType: '__SPECIAL__SNIPPETS',
-          command: snipCommand
+          command: snipCommand.command,
+          extras: snipCommand.data
         }
       }
     }, {})
@@ -42,7 +43,7 @@ export const useSnippets = () => {
   // Replacer that will provide new fresh and different content each time
   const getSnippetContent = (command: string) => {
     const snippets = useSnippetStore.getState().snippets
-    const snippet = snippets.filter((c) => getSnippetCommand(c.title) === command)
+    const snippet = snippets.filter((c) => getSnippetCommand(c).command === command)
 
     if (snippet.length > 0) return snippet[0].content
     return undefined
@@ -89,9 +90,12 @@ export const useSnippets = () => {
   }
 }
 
-export const extractSnippetCommands = (snippets: Snippet[]): string[] => {
-  return snippets.map((c) => getSnippetCommand(c.title))
+export const extractSnippetCommands = (snippets: Snippet[]): { command: string; data?: any }[] => {
+  return snippets.map((c) => getSnippetCommand(c))
 }
 
 export const SnippetCommandPrefix = `snip`
-export const getSnippetCommand = (title: string) => `${SnippetCommandPrefix}${SEPARATOR}${title}`
+export const getSnippetCommand = (snippet: Snippet) => ({
+  command: `${SnippetCommandPrefix}${SEPARATOR}${snippet.title}`,
+  data: snippet
+})

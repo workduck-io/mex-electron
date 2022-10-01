@@ -1,56 +1,30 @@
+import { SnippetSidebarHelp } from '@data/Defaults/helpText'
+import { sortByLastUsedSnippets, useLastUsedSnippets } from '@hooks/useLastOpened'
 import { useSearch } from '@hooks/useSearch'
-import magicLine from '@iconify/icons-ri/magic-line'
-import quillPenLine from '@iconify/icons-ri/quill-pen-line'
 import searchLine from '@iconify/icons-ri/search-line'
 import { Icon } from '@iconify/react'
 import { useSnippetStore } from '@store/useSnippetStore'
-import { TagsLabel } from '@components/mex/Tags/TagLabel'
 import { Input } from '@style/Form'
-import { NavigationType, ROUTE_PATHS, useRouting } from '@views/routes/urls'
-import { convertContentToRawText, getTagsFromContent, mog } from '@workduck-io/mex-utils'
-import { debounce } from 'lodash'
-import React, { useEffect, useMemo, useState } from 'react'
-import { Snippet } from '../../../types/data'
-import { SidebarListFilter } from './SidebarList.style'
-import {
-  SnippetCardFooter,
-  SnippetCardHeader,
-  SnippetCards,
-  SnippetCardWrapper,
-  SnippetContentPreview
-} from './SnippetSidebar.style'
 import { getPlateEditorRef, insertNodes, selectEditor, TElement } from '@udecode/plate'
-import { useLastUsedSnippets } from '@hooks/useLastOpened'
-import SnippetPreview from '@editor/Components/EditorPreview/SnippetPreview'
+import { Infobox } from '@workduck-io/mex-components'
+import { debounce } from 'lodash'
+import React, { useEffect, useState } from 'react'
+import { Snippet } from '../../../types/data'
+import { SidebarListFilter, SidebarListFilterWrapper } from './SidebarList.style'
 import SnippetCard from './SnippetCard'
+import { SnippetCards } from './SnippetSidebar.style'
 
 const SnippetSidebar = () => {
   const [search, setSearch] = useState('')
 
   const snippets = useSnippetStore((store) => store.snippets)
   // const currentSnippet = useSnippetStore((store) => store.editor.snippet)
-  const loadSnippet = useSnippetStore((store) => store.loadSnippet)
-  const { goTo } = useRouting()
   const { queryIndex } = useSearch()
   const { addLastUsed } = useLastUsedSnippets()
 
   const inputRef = React.useRef<HTMLInputElement>(null)
 
-  const [searchedSnippets, setSearchedSnippets] = useState<Snippet[]>(snippets)
-
-  const onOpenSnippet = (id: string) => {
-    loadSnippet(id)
-    const snippet = snippets.find((snippet) => snippet.id === id)
-    goTo(ROUTE_PATHS.snippet, NavigationType.push, id, { title: snippet?.title })
-  }
-
-  const snippetTags = useMemo(() => {
-    const tags = snippets.reduce(
-      (p, snippet) => ({ ...p, [snippet.id]: getTagsFromContent(snippet.content).map((tag) => ({ value: tag })) }),
-      {}
-    )
-    return tags
-  }, [snippets])
+  const [searchedSnippets, setSearchedSnippets] = useState<Snippet[]>(sortByLastUsedSnippets(snippets))
 
   const onInsertSnippet = (id: string) => {
     // TODO: insert snippet in editor
@@ -75,7 +49,7 @@ const SnippetSidebar = () => {
     const res = await queryIndex(['template', 'snippet'], newSearchTerm)
 
     if (newSearchTerm === '' && res.length === 0) {
-      setSearchedSnippets(snippets)
+      setSearchedSnippets(sortByLastUsedSnippets(snippets))
     } else {
       const searched = res
         .map((r) => {
@@ -85,7 +59,7 @@ const SnippetSidebar = () => {
           } else return undefined
         })
         .filter((s) => s !== undefined) as Snippet[]
-      setSearchedSnippets(searched)
+      setSearchedSnippets(sortByLastUsedSnippets(searched))
     }
   }
 
@@ -95,7 +69,7 @@ const SnippetSidebar = () => {
       // return searched
     }
     if (search === '') {
-      setSearchedSnippets(snippets)
+      setSearchedSnippets(sortByLastUsedSnippets(snippets))
     }
   }, [snippets, search])
 
@@ -103,10 +77,13 @@ const SnippetSidebar = () => {
 
   return (
     <SnippetCards>
-      <SidebarListFilter noMargin={true}>
-        <Icon icon={searchLine} />
-        <Input placeholder={'Search snippets'} onChange={debounce((e) => onSearchChange(e), 250)} ref={inputRef} />
-      </SidebarListFilter>
+      <SidebarListFilterWrapper>
+        <SidebarListFilter noMargin={true}>
+          <Icon icon={searchLine} />
+          <Input placeholder={'Search snippets'} onChange={debounce((e) => onSearchChange(e), 250)} ref={inputRef} />
+        </SidebarListFilter>
+        <Infobox text={SnippetSidebarHelp} />
+      </SidebarListFilterWrapper>
       {searchedSnippets.map((snippet) => (
         <SnippetCard
           key={snippet.id}
@@ -117,19 +94,6 @@ const SnippetSidebar = () => {
       ))}
     </SnippetCards>
   )
-  // <SnippetPreview key={`snippet_card_${snippet.id}`} snippetId={snippet.id} hover={true}>
-  //   <SnippetCardWrapper>
-  //     <SnippetCardHeader onClick={() => onInsertSnippet(snippet.id)}>
-  //       <Icon icon={snippet.template ? magicLine : quillPenLine} />
-  //       {snippet.title}
-  //     </SnippetCardHeader>
-
-  //     <SnippetContentPreview>{convertContentToRawText(snippet.content, ' ')}</SnippetContentPreview>
-  //     <SnippetCardFooter>
-  //       <TagsLabel tags={snippetTags[snippet.id]} />
-  //     </SnippetCardFooter>
-  //   </SnippetCardWrapper>
-  // </SnippetPreview>
 }
 
 export default SnippetSidebar

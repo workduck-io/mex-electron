@@ -17,16 +17,17 @@ import { useTags } from '../../../hooks/useTags'
 import { NavigationType, ROUTE_PATHS, useRouting } from '../../../views/routes/urls'
 import EditorPreviewRenderer from '../../EditorPreviewRenderer'
 import {
-    EditorPreviewControls,
-    EditorPreviewNoteName,
-    EditorPreviewWrapper,
-    PreviewActionHeader
+  EditorPreviewControls,
+  EditorPreviewNoteName,
+  EditorPreviewWrapper,
+  PreviewActionHeader
 } from './EditorPreview.styles'
+import { Placement } from '@floating-ui/react-dom-interactions'
 
 export interface SnippetPreviewProps {
   snippetId: string
   children: React.ReactElement
-  placement?: string
+  placement?: Placement
   delay?: number
   preview?: boolean
   previewRef?: any
@@ -45,6 +46,7 @@ const SnippetPreview = ({
   children,
   hover,
   label,
+  placement,
   // editable = true,
   setPreview,
   icon,
@@ -63,7 +65,6 @@ const SnippetPreview = ({
 
   const snippet = useMemo(() => {
     const s = getSnippet(snippetId)
-    mog('got snippet', s)
     return s
   }, [snippetId, snippets])
 
@@ -84,6 +85,7 @@ const SnippetPreview = ({
       <NestedFloating
         hover={hover}
         label={label}
+        placement={placement}
         persist={!allowClosePreview}
         open={preview}
         setOpen={setPreview}

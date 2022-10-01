@@ -16,8 +16,9 @@ export const useSlashCommands = () => {
       uniq([
         ...addIconToSlashCommand(
           snippetCommands.map((command) => ({
-            command,
-            text: command.replace('snip.', ''),
+            command: command.command,
+            extras: command.data,
+            text: command.command.replace('snip.', ''),
             type: QuickLinkType.snippet
           })),
           'ri:quill-pen-line'
