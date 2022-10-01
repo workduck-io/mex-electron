@@ -81,7 +81,7 @@ const InfoBar = () => {
 
   const infobar = useLayoutStore((s) => s.infobar)
   const pinnedSuggestions = useSuggestionStore((s) => s.pinnedSuggestions)
-  const { toggleGraph, toggleSuggestedNodes, toggleReminder } = useToggleElements()
+  const { toggleGraph, toggleSnippets, toggleReminder } = useToggleElements()
   const { shortcutHandler } = useKeyListener()
 
   useEffect(() => {
@@ -101,7 +101,7 @@ const InfoBar = () => {
       [shortcuts.showSuggestedNodes.keystrokes]: (event) => {
         event.preventDefault()
         shortcutHandler(shortcuts.showSuggestedNodes, () => {
-          toggleSuggestedNodes()
+          toggleSnippets()
         })
       },
       [shortcuts.showReminder.keystrokes]: (event) => {

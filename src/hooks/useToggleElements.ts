@@ -29,7 +29,7 @@ const useToggleElements = () => {
     toggleMode('flow')
   }
 
-  const toggleSuggestedNodes = () => {
+  const toggleSnippets = () => {
     toggleMode('snippets')
   }
 
@@ -38,7 +38,7 @@ const useToggleElements = () => {
   }
 
   return {
-    toggleSuggestedNodes,
+    toggleSnippets,
     toggleGraph,
     toggleSyncBlocks,
     toggleReminder
