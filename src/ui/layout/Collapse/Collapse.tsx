@@ -12,6 +12,7 @@ import {
   CollapseWrapper
 } from './Collapse.style'
 import { Infobox, InfoboxProps } from '@workduck-io/mex-components'
+import { ManagedOpenState } from '@ui/sidebar/Sidebar.types'
 
 interface CollapseProps {
   oid?: string
@@ -23,6 +24,7 @@ interface CollapseProps {
   infoProps?: InfoboxProps
   stopPropagation?: boolean
   onTitleClick?: (e?: React.MouseEvent<HTMLDivElement, MouseEvent>) => void
+  managedOpenState?: ManagedOpenState
 }
 
 const Collapse = ({
@@ -34,27 +36,39 @@ const Collapse = ({
   oid,
   title,
   stopPropagation,
-  onTitleClick
+  onTitleClick,
+  managedOpenState
 }: CollapseProps) => {
   const [hide, setHide] = React.useState(!defaultOpen ?? true)
 
   const springProps = useMemo(() => {
     const style = { maxHeight: '0vh' }
+    const mergedMaxHeight = managedOpenState ? managedOpenState.height : maximumHeight ?? '100vh'
 
-    if (!hide) {
-      style.maxHeight = maximumHeight ?? '100vh'
+    if (!managedOpenState) {
+      if (!hide) {
+        style.maxHeight = mergedMaxHeight
+      } else {
+        style.maxHeight = '0vh'
+      }
     } else {
-      style.maxHeight = '0vh'
+      if (managedOpenState.open) {
+        style.maxHeight = mergedMaxHeight
+      } else {
+        style.maxHeight = '0vh'
+      }
     }
 
     return style
-  }, [hide])
+  }, [hide, managedOpenState])
 
   const animationProps = useSpring(springProps)
 
+  const mergedHide = managedOpenState ? managedOpenState.open : !hide
+
   return (
     <CollapseWrapper id={`Collapse_${oid}`} onMouseUp={(e) => stopPropagation && e.stopPropagation()}>
-      <CollapseHeader collapsed={hide} canClick={!!onTitleClick}>
+      <CollapseHeader collapsed={mergedHide} canClick={!!onTitleClick}>
         <CollapsableHeaderTitle onClick={(e) => onTitleClick && onTitleClick(e)}>
           <Icon className={'SidebarCollapseSectionIcon'} icon={icon} />
           {title}
@@ -62,10 +76,12 @@ const Collapse = ({
         </CollapsableHeaderTitle>
         <CollapseToggle
           onClick={() => {
-            setHide((b) => !b)
+            if (managedOpenState) {
+              managedOpenState.setOpen(!managedOpenState.open)
+            } else setHide((b) => !b)
           }}
         >
-          <Icon icon={hide ? arrowLeftSLine : arrowDownSLine} />
+          <Icon icon={mergedHide ? arrowLeftSLine : arrowDownSLine} />
         </CollapseToggle>
       </CollapseHeader>
 

@@ -4,6 +4,7 @@ import arrowGoBackLine from '@iconify/icons-ri/arrow-go-back-line'
 import { Note } from '@style/Typography'
 import { getPlateEditorRef, insertNodes, selectEditor, TElement } from '@udecode/plate'
 import Collapse from '@ui/layout/Collapse/Collapse'
+import { ManagedOpenState } from '@ui/sidebar/Sidebar.types'
 import { IconButton } from '@workduck-io/mex-components'
 import React from 'react'
 import { generateTempId } from '../../../data/Defaults/idPrefixes'
@@ -19,7 +20,11 @@ import NodeLink from '../NodeLink/NodeLink'
 import { SuggestionIconsGroup } from './styled'
 import { SuggestionContent, SuggestionType } from './types'
 
-const SuggestionInfoBar = () => {
+interface SuggestionInfoBarProps {
+  managedOpenState?: ManagedOpenState
+}
+
+const SuggestionInfoBar = ({ managedOpenState }: SuggestionInfoBarProps) => {
   // * Store
   // const actionsVisible = useSuggestionStore((store) => store.actionVisible)
   // const toggleActionInSuggestions = useSuggestionStore((store) => store.toggleActionInSuggestion)
@@ -115,6 +120,7 @@ const SuggestionInfoBar = () => {
           defaultOpen
           icon={arrowGoBackLine}
           title="Suggestions"
+          managedOpenState={managedOpenState}
           infoProps={{
             text: SuggestionsHelp
           }}

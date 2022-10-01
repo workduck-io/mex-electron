@@ -5,6 +5,7 @@ import listUnordered from '@iconify/icons-ri/list-unordered'
 import taskLine from '@iconify/icons-ri/task-line'
 import { Icon } from '@iconify/react'
 import { ELEMENT_OL, ELEMENT_UL } from '@udecode/plate'
+import { ManagedOpenState } from '@ui/sidebar/Sidebar.types'
 import React from 'react'
 import { OutlineHelp } from '../../../data/Defaults/helpText'
 import { ELEMENTS_IN_OUTLINE } from '../../../data/outline'
@@ -16,7 +17,11 @@ import { Note } from '../../../style/Typography'
 import Collapse from '../../../ui/layout/Collapse/Collapse'
 import { OutlineIconWrapper, OutlineItemRender, OutlineItemText, OutlineWrapper } from './Outline.styles'
 
-const Outline = () => {
+interface OutlineProps {
+  managedOpenState?: ManagedOpenState
+}
+
+const Outline = ({ managedOpenState }: OutlineProps) => {
   const outline = useAnalysisStore((state) => state.analysis.outline)
 
   const { selectBlock } = useFocusBlock()
@@ -29,6 +34,7 @@ const Outline = () => {
         defaultOpen
         icon={fileList3Line}
         title="Outline"
+        managedOpenState={managedOpenState}
         infoProps={{
           text: OutlineHelp
         }}

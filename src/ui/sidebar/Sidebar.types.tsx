@@ -5,6 +5,15 @@ import { IconifyIcon } from '@iconify/react'
 import { PollActions } from '@store/useApiStore'
 
 /**
+ * Used to override the component's internal opened state
+ */
+export interface ManagedOpenState {
+  open: boolean
+  setOpen: (open: boolean) => void
+  height: string
+}
+
+/**
  * A generic item to be shown in sidebar
  */
 export interface FlatSidebarItem extends DesignItem {

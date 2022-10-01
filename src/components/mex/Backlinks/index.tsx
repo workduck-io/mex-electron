@@ -1,20 +1,20 @@
 import { FloatingDelayGroup } from '@floating-ui/react-dom-interactions'
-import arrowGoBackLine from '@iconify/icons-ri/arrow-go-back-line'
-import { Icon } from '@iconify/react'
+import { ManagedOpenState } from '@ui/sidebar/Sidebar.types'
 import { capitalize } from '@workduck-io/mex-utils'
 import React from 'react'
 import { BacklinksHelp, ForwardlinksHelp } from '../../../data/Defaults/helpText'
 import { useLinks } from '../../../hooks/useLinks'
-import { InfoWidgetScroll, InfoWidgetWrapper } from '../../../style/infobar'
+import { InfoWidgetWrapper } from '../../../style/infobar'
 import { Note } from '../../../style/Typography'
 import Collapse from '../../../ui/layout/Collapse/Collapse'
 import NodeLink from '../NodeLink/NodeLink'
 
 interface BackLinkProps {
   nodeid: string
+  managedOpenState?: ManagedOpenState
 }
 
-const Backlinks = ({ nodeid }: BackLinkProps) => {
+const Backlinks = ({ nodeid, managedOpenState }: BackLinkProps) => {
   const { getBacklinks, getForwardlinks } = useLinks()
   const [state, setState] = React.useState<'backlink' | 'forwardlink'>('backlink')
   const backlinks = getBacklinks(nodeid)
@@ -35,6 +35,7 @@ const Backlinks = ({ nodeid }: BackLinkProps) => {
           icon={`mex:${state}`}
           title={state === 'backlink' ? 'Backlinks' : 'Forwardlinks'}
           onTitleClick={toggleState}
+          managedOpenState={managedOpenState}
           infoProps={{
             text: state === 'backlink' ? BacklinksHelp : ForwardlinksHelp
           }}

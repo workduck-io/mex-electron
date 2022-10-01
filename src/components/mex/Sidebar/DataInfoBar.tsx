@@ -1,3 +1,4 @@
+import useManagedCollapse from '@ui/layout/Collapse/useManagedCollapse'
 import { CollapsableHeaderTitle } from '@workduck-io/mex-components'
 import React from 'react'
 import styled from 'styled-components'
@@ -24,13 +25,39 @@ export const DataInfobarWrapper = styled.div`
 
 const DataInfoBar = () => {
   const node = useEditorStore((state) => state.node)
+  const wrapperRef = React.useRef<HTMLDivElement>(null)
+
+  /**
+   * Pass initial states to the hook
+   */
+  const { managedStates } = useManagedCollapse({
+    states: [
+      {
+        key: 'outline',
+        open: true,
+        height: '10vh'
+      },
+
+      {
+        key: 'suggestions',
+        open: true,
+        height: '10vh'
+      },
+      {
+        key: 'backlinks',
+        open: true,
+        height: '10vh'
+      }
+    ],
+    wrapperRef
+  })
 
   return (
     <DataInfobarWrapper>
       <TagsRelated nodeid={node.nodeid} fromAnalysis />
-      <SuggestionInfoBar />
-      <Outline />
-      <Backlinks nodeid={node.nodeid} />
+      <SuggestionInfoBar managedOpenState={managedStates['suggestions']} />
+      <Outline managedOpenState={managedStates['outline']} />
+      <Backlinks nodeid={node.nodeid} managedOpenState={managedStates['backlinks']} />
     </DataInfobarWrapper>
   )
 }
