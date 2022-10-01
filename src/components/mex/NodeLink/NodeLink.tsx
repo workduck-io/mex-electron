@@ -17,6 +17,8 @@ interface NodeLinkProps {
   keyStr: string
   nodeid: string
 
+  blockId?: string
+
   // Show preview (default true)
   preview?: boolean
   icon?: boolean
@@ -32,7 +34,7 @@ interface NodeLinkProps {
   RenderActions?: () => JSX.Element
 }
 
-const NodeLink = ({ nodeid, preview = true, icon, keyStr, onClick, RenderActions }: NodeLinkProps) => {
+const NodeLink = ({ nodeid, blockId, preview = true, icon, keyStr, onClick, RenderActions }: NodeLinkProps) => {
   const [visible, setVisible] = React.useState(false)
   const isEditorPresent = useMultipleEditors((store) => store.editors)?.[nodeid]
   const { getPathFromNodeid } = useLinks()
@@ -88,6 +90,7 @@ const NodeLink = ({ nodeid, preview = true, icon, keyStr, onClick, RenderActions
       label={nodeid}
       setPreview={setVisible}
       allowClosePreview={!isEditorPresent}
+      blockId={blockId}
       hover
       nodeid={nodeid}
       placement="auto-start"

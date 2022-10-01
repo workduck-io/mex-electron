@@ -34,6 +34,7 @@ import NamespaceTag from '@components/mex/NamespaceTag'
 
 export interface EditorPreviewProps {
   nodeid: string
+  blockId?: string
   children: React.ReactElement
   placement?: string
   delay?: number
@@ -51,6 +52,7 @@ export interface EditorPreviewProps {
 
 const EditorPreview = ({
   nodeid,
+  blockId,
   allowClosePreview,
   children,
   content,
@@ -148,6 +150,7 @@ const EditorPreview = ({
                 editable={editable}
                 onClose={close}
                 id={nodeid}
+                blockId={blockId}
                 hover={hover}
                 editorId={editorId}
                 content={cc}
@@ -162,7 +165,7 @@ const EditorPreview = ({
   } else return children
 }
 
-const EditablePreview = ({ content, editable, editorId, id: nodeId, onClose, hover }: any) => {
+const EditablePreview = ({ content, editable, editorId, id: nodeId, onClose, hover, blockId }: any) => {
   const addToBuffer = useBufferStore((store) => store.add)
   const removeEditor = useMultipleEditors((store) => store.removeEditor)
   const presentEditor = useMultipleEditors((store) => store.editors)?.[nodeId]
@@ -225,6 +228,7 @@ const EditablePreview = ({ content, editable, editorId, id: nodeId, onClose, hov
       <EditorPreviewRenderer
         onChange={onChange}
         content={content}
+      blockId={blockId}
         readOnly={!editable || !presentEditor?.editing}
         editorId={editorId}
       />

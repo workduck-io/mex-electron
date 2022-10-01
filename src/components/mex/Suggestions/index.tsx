@@ -135,6 +135,7 @@ const SuggestionInfoBar = ({ managedOpenState }: SuggestionInfoBarProps) => {
               key={`suggestion_${l.id}_${i}`}
               keyStr={`suggestion_${l.id}_${i}`}
               nodeid={l.id}
+              blockId={l.blockId}
               RenderActions={() => SuggestionActions(l)}
             />
           ))}
