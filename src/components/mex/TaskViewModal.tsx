@@ -1,3 +1,5 @@
+import React, { useMemo } from 'react'
+
 import { generateTaskViewId } from '@data/Defaults/idPrefixes'
 import { useSaveData } from '@hooks/useSaveData'
 import { useTaskViews, useViewStore } from '@hooks/useTaskViews'
@@ -8,11 +10,12 @@ import { RenderGlobalJoin } from '@ui/components/Filters/GlobalJoinFilterMenu'
 import { mog } from '@utils/lib/helper'
 import { getPathNum } from '@utils/lib/paths'
 import { NavigationType, ROUTE_PATHS, useRouting } from '@views/routes/urls'
-import { Button, LoadingButton } from '@workduck-io/mex-components'
-import React, { useMemo } from 'react'
 import { useForm } from 'react-hook-form'
 import Modal from 'react-modal'
 import create from 'zustand'
+
+import { Button, LoadingButton } from '@workduck-io/mex-components'
+
 import { Filter, GlobalFilterJoin } from '../../types/filters'
 import Input from './Forms/Input'
 import { ModalControls, ModalHeader } from './Refactor/styles'
@@ -31,7 +34,7 @@ interface TaskViewModalState {
     filters: Filter[]
     updateViewId?: string
     cloneViewId?: string
-    globalJoin: GlobalFilterJoin
+    globalJoin?: GlobalFilterJoin
   }) => void
   closeModal: () => void
 }

@@ -1,19 +1,22 @@
 import React, { useEffect, useState } from 'react'
-import { ActionHelperConfig, FormField, MenuPostActionConfig } from '@workduck-io/action-request-helper'
+
 import { useActionPerformer } from '@components/spotlight/Actions/useActionPerformer'
-import ActionFormElement from '../Forms/Fields/ActionFormElement'
-import FormSelector from '../Forms/FormSelector'
-import { useForm, FormProvider } from 'react-hook-form'
-import { set } from 'lodash'
-import { FormLoadingButton, MenuForm, NoOption } from './styled'
-import { tinykeys } from '@workduck-io/tinykeys'
-import { mog } from '@utils/lib/helper'
-import { useActionMenuStore } from './useActionMenuStore'
-import Tippy from '@tippyjs/react'
+import { useActionStore } from '@components/spotlight/Actions/useActionStore'
 import { ShortcutText } from '@components/spotlight/Home/components/Item'
 import { MexIcon } from '@style/Layouts'
-import { useActionStore } from '@components/spotlight/Actions/useActionStore'
+import Tippy from '@tippyjs/react'
+import { mog } from '@utils/lib/helper'
+import { set } from 'lodash'
+import { useForm, FormProvider } from 'react-hook-form'
+
+import { ActionHelperConfig, FormField, MenuPostActionConfig } from '@workduck-io/action-request-helper'
 import { DisplayShortcut } from '@workduck-io/mex-components'
+import { tinykeys } from '@workduck-io/tinykeys'
+
+import ActionFormElement from '../Forms/Fields/ActionFormElement'
+import FormSelector from '../Forms/FormSelector'
+import { FormLoadingButton, MenuForm, NoOption } from './styled'
+import { useActionMenuStore } from './useActionMenuStore'
 
 type MenuActionFormProps = {
   action: MenuPostActionConfig

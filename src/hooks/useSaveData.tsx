@@ -1,17 +1,18 @@
+import { useUserPreferenceStore } from '@store/userPreferenceStore'
 import { ipcRenderer } from 'electron'
+
 import { IpcAction } from '../data/IpcAction'
-import { useVersionStore } from '../store/useAppDataStore'
 import { useSpotlightSettingsStore } from '../store/settings.spotlight'
+import { useVersionStore } from '../store/useAppDataStore'
 import { useContentStore } from '../store/useContentStore'
 import useDataStore from '../store/useDataStore'
 import { useSnippetStore } from '../store/useSnippetStore'
 import { useSyncStore } from '../store/useSyncStore'
+import useTodoStore from '../store/useTodoStore'
 import { FileData } from '../types/data'
 import { mog } from '../utils/lib/helper'
-import useTodoStore from '../store/useTodoStore'
 import { useReminderStore } from './useReminders'
 import { useViewStore } from './useTaskViews'
-import { useUserPreferenceStore } from '@store/userPreferenceStore'
 
 // Save the data in the local file database
 export const useSaveData = () => {

@@ -37,7 +37,7 @@ type SpotlightContextType = {
 const SpotlightContext = createContext<SpotlightContextType>(undefined!)
 export const useSpotlightContext = () => useContext(SpotlightContext)
 
-export const SpotlightProvider: React.FC = ({ children }: any) => {
+export const SpotlightProvider: React.FC<React.PropsWithChildren> = ({ children }) => {
   const [search, setSearch] = useState<Search>({ value: '', type: CategoryType.search })
   const [selection, setSelection] = useState<any>()
   const [searchResults, setSearchResults] = useState<Array<ListItemType>>([])

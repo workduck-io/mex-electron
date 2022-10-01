@@ -1,13 +1,16 @@
-import { actionStore, Provider } from '@components/spotlight/Actions/useActionStore'
-import { actionMenuStore, MenuProvider } from '@components/spotlight/ActionStage/ActionMenu/useActionMenuStore'
 import React from 'react'
+
+import { actionMenuStore, MenuProvider } from '@components/spotlight/ActionStage/ActionMenu/useActionMenuStore'
+import { actionStore, Provider } from '@components/spotlight/Actions/useActionStore'
 import styled, { css } from 'styled-components'
+
 import { RootElement } from '../SyncBlock'
 import ActionBlockContainer from './ActionBlock'
 
 interface ActionBlockProps {
   attributes: any
   element: any
+  children?: React.ReactElement | React.ReactElement[]
 }
 
 export const StyledActionBlock = styled.section<{ selected?: boolean }>`

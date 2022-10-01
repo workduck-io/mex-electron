@@ -1,6 +1,7 @@
 import useDataStore from '@store/useDataStore'
 import { ELEMENT_TODO_LI } from '@udecode/plate'
 import create from 'zustand'
+
 import { getAllParentIds } from '../components/mex/Sidebar/treeUtils'
 import { defaultContent } from '../data/Defaults/baseData'
 import { SNIPPET_PREFIX } from '../data/Defaults/idPrefixes'

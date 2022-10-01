@@ -1,7 +1,7 @@
+import useDataStore from '@store/useDataStore'
 import create from 'zustand'
 
 import { getAllParentIds } from '../components/mex/Sidebar/treeUtils'
-import useDataStore from '@store/useDataStore'
 import { Filter, Filters, FilterTypeWithOptions, GlobalFilterJoin, SearchFilterFunctions } from '../types/filters'
 import { GenericSearchResult, idxKey } from '../types/search'
 import { mog } from '../utils/lib/helper'

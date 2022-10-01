@@ -1,14 +1,16 @@
+import React, { useEffect, useMemo, useRef } from 'react'
+
 import Board from '@asseinfo/react-kanban'
 import TaskHeader from '@components/mex/Tasks/TaskHeader'
 import { useEnableShortcutHandler } from '@hooks/useShortcutListener'
 import { useSyncTaskViews, useViewStore } from '@hooks/useTaskViews'
 import { useLayoutStore } from '@store/useLayoutStore'
 import { OverlaySidebarWindowWidth } from '@style/responsive'
-import { mog } from '@workduck-io/mex-utils'
-import { tinykeys } from '@workduck-io/tinykeys'
-import React, { useEffect, useMemo, useRef } from 'react'
 import { useMediaQuery } from 'react-responsive'
 import { useMatch } from 'react-router-dom'
+
+import { tinykeys } from '@workduck-io/tinykeys'
+
 import SearchFilters from '../../components/mex/Search/SearchFilters'
 import { Heading } from '../../components/spotlight/SearchResults/styled'
 import { getNextStatus, getPrevStatus, PriorityType, TodoType } from '../../editor/Components/Todo/types'

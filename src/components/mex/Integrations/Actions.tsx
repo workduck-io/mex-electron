@@ -1,7 +1,9 @@
+import React from 'react'
+
 import { useActionsCache } from '@components/spotlight/Actions/useActionsCache'
 import { shell } from 'electron'
-import React from 'react'
 import { useParams } from 'react-router-dom'
+
 import Detail from './Detail'
 import GlobalSectionProvider from './GlobalSection/GlobalSectionProvider'
 import ServiceHeader from './ServiceHeader'

@@ -1,10 +1,12 @@
-import { isUrl } from '@udecode/plate'
 import React, { forwardRef } from 'react'
-import styled, { css, useTheme } from 'styled-components'
-import { MexIcon } from '../../../../style/Layouts'
+
 import Tippy from '@tippyjs/react'
-import { TemplateCss, TemplateItemProp } from './ProjectTitle'
+import { isUrl } from '@udecode/plate'
 import { mog } from '@utils/lib/helper'
+import styled, { css, useTheme } from 'styled-components'
+
+import { MexIcon } from '../../../../style/Layouts'
+import { TemplateCss, TemplateItemProp } from './ProjectTitle'
 
 export const FieldLabel = styled.div`
   display: flex;
@@ -133,7 +135,7 @@ const ProjectIcon: React.FC<TemplateItemProp> = ({ item, isView }) => {
       <FieldLabel>{item.key}</FieldLabel>
       <FieldValue>
         <ProjectIconMex isMex={mexIcon} icon={item.icon} />
-        <span>{item.value}</span>
+        <span>{item.value as any}</span>
       </FieldValue>
     </ProjectIconContainer>
   )

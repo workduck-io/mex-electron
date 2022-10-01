@@ -1,6 +1,8 @@
 import React from 'react'
-import { TemplateEntity } from '@workduck-io/action-request-helper'
+
 import styled, { css } from 'styled-components'
+
+import { TemplateEntity } from '@workduck-io/action-request-helper'
 
 export type TemplateItemProp = { item: TemplateEntity; isView?: boolean }
 
@@ -33,7 +35,7 @@ const Title = styled.span<{ isView: boolean }>`
 `
 
 const ProjectTitle: React.FC<TemplateItemProp> = ({ item, isView }) => {
-  return <Title isView={isView}>{item.value}</Title>
+  return <Title isView={isView}>{item.value as any}</Title>
 }
 
 export default ProjectTitle

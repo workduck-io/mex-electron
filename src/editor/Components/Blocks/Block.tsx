@@ -1,12 +1,14 @@
-import { BlockElement, BlockSelectorInput } from './styled'
 import React from 'react'
+
 import useBlockStore, { BlockType } from '../../../store/useBlockStore'
+import { BlockElement, BlockSelectorInput } from './styled'
 
 type BlockProps = {
   blockId: string
   block: BlockType
   isEmpty?: boolean
   isBlock?: boolean
+  children?: React.ReactElement | React.ReactElement[]
 }
 
 const Block: React.FC<BlockProps> = ({ children, blockId, block }) => {
