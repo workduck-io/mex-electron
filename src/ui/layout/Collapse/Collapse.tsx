@@ -81,7 +81,7 @@ const Collapse = ({
             } else setHide((b) => !b)
           }}
         >
-          <Icon icon={mergedHide ? arrowLeftSLine : arrowDownSLine} />
+          <Icon icon={mergedHide ? arrowDownSLine : arrowLeftSLine} />
         </CollapseToggle>
       </CollapseHeader>
 

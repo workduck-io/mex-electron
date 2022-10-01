@@ -26,9 +26,10 @@ type TabsProps = {
   openedTab: SingleTabType
   onChange: (tabType: SingleTabType) => void
   visible?: boolean
+  wrapperRef?: React.RefObject<HTMLDivElement>
 }
 
-const Tabs: React.FC<TabsProps> = ({ tabs, openedTab, onChange, visible }) => {
+const Tabs: React.FC<TabsProps> = ({ tabs, openedTab, wrapperRef, onChange, visible }) => {
   const [previousTab, setPreviousTab] = useState(openedTab)
 
   const animationProps = useSpring({
@@ -64,7 +65,9 @@ const Tabs: React.FC<TabsProps> = ({ tabs, openedTab, onChange, visible }) => {
         </TabsWrapper>
       </TabHeaderContainer>
       <TabPanel style={bodyAnimation}>
-        <TabBody onClick={() => onChange(openedTab)}>{tabs[index]?.component}</TabBody>
+        <TabBody ref={wrapperRef} onClick={() => onChange(openedTab)}>
+          {tabs[index]?.component}
+        </TabBody>
       </TabPanel>
     </TabsContainer>
   )

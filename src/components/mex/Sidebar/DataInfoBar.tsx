@@ -23,9 +23,8 @@ export const DataInfobarWrapper = styled.div`
   }
 `
 
-const DataInfoBar = () => {
+const DataInfoBar = ({ wrapRef }: { wrapRef: React.RefObject<HTMLDivElement> }) => {
   const node = useEditorStore((state) => state.node)
-  const wrapperRef = React.useRef<HTMLDivElement>(null)
 
   /**
    * Pass initial states to the hook
@@ -35,21 +34,21 @@ const DataInfoBar = () => {
       {
         key: 'outline',
         open: true,
-        height: '10vh'
+        height: '40vh'
       },
 
       {
         key: 'suggestions',
         open: true,
-        height: '10vh'
+        height: '40vh'
       },
       {
         key: 'backlinks',
         open: true,
-        height: '10vh'
+        height: '40vh'
       }
     ],
-    wrapperRef
+    wrapperRef: wrapRef
   })
 
   return (

@@ -21,14 +21,48 @@ interface MultiCollapseStateProps {
 const useManagedCollapse = ({ states, wrapperRef }: MultiCollapseStateProps) => {
   const [managedState, setManagedState] = useState(states)
 
-  const setCollapse = (key: string, collapse: boolean) => {
-    mog('Managed setCollapse', { key, collapse })
+  // const [collapsed, setCollapsed] = useState<string[]>(
+  //   states.reduce((acc, s) => {
+  //     if (!s.open) return [...acc, s.key]
+  //     else return acc
+  //   }, [])
+  // )
+
+  // const isOverflowing = () => {
+  //   if (!wrapperRef.current) {
+  //     // console.log('no wrapper ref')
+  //     return false
+  //   }
+  //   const elScrollHeight = wrapperRef.current.scrollHeight
+  //   const elHeight = wrapperRef.current.clientHeight
+  //   // mog('isOverflowing', { elScrollHeight, elHeight })
+  //   return elScrollHeight > elHeight
+  // }
+
+  const setCollapse = (key: string, open: boolean) => {
+    // const isOverflowingCond = isOverflowing()
+    // mog('Managed setCollapse', { key, open, isOverflowingCond })
+    // const newCollapsed = [...collapsed]
     const newManagedState = managedState.map((state) => {
       if (state.key === key) {
-        state.open = collapse
+        state.open = open
+        // if (!open) {
+        //   newCollapsed.push(key)
+        // } else if (newCollapsed.indexOf(key) !== -1) {
+        //   newCollapsed.splice(newCollapsed.indexOf(key), 1)
+        // }
       }
+
+      // if (state.key !== key && isOverflowingCond) {
+      //   if (collapsed.indexOf(state.key) === -1) {
+      //     state.open = false
+      //     newCollapsed.push(state.key)
+      //   }
+      // }
+
       return state
     })
+    // setCollapsed(newCollapsed)
     setManagedState(newManagedState)
   }
 

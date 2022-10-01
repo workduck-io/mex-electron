@@ -26,6 +26,7 @@ const InfoBarItems = () => {
   const infobar = useLayoutStore((s) => s.infobar)
   const shortcuts = useHelpStore((store) => store.shortcuts)
   const setInfobarMode = useLayoutStore((s) => s.setInfobarMode)
+  const wrapperRef = React.useRef<HTMLDivElement>(null)
 
   // Ensure the tabs have InfobarType in type
   const tabs: Array<TabType> = useMemo(
@@ -33,7 +34,7 @@ const InfoBarItems = () => {
       {
         label: <MexIcon noHover icon="fluent:content-view-gallery-24-regular" width={24} height={24} />,
         type: 'default',
-        component: <DataInfoBar />,
+        component: <DataInfoBar wrapRef={wrapperRef} />,
         tooltip: 'Context'
       },
       {
@@ -64,6 +65,7 @@ const InfoBarItems = () => {
     <Tabs
       visible={true}
       openedTab={infobar.mode}
+      wrapperRef={wrapperRef}
       onChange={(tab) => {
         setInfobarMode(tab as InfobarMode)
       }}
