@@ -4,7 +4,7 @@ import { isParent } from '@components/mex/Sidebar/treeUtils'
 import { getDefaultContent } from '@components/spotlight/Preview'
 import { BASE_TASKS_PATH } from '@data/Defaults/baseData'
 import { useCreateNewNote } from '@hooks/useCreateNewNote'
-import { useLastOpened } from '@hooks/useLastOpened'
+import { useLastOpened, useLastUsedSnippets } from '@hooks/useLastOpened'
 import { useNodes } from '@hooks/useNodes'
 import { useSaveData } from '@hooks/useSaveData'
 import { usePlatformInfo } from '@hooks/useShortcutListener'
@@ -93,6 +93,7 @@ const List = ({
   const { getSnippet } = useSnippets()
   const { saveData } = useSaveData()
   const { getNodeType } = useNodes()
+  const { addLastUsed } = useLastUsedSnippets()
 
   const { getNewTaskNode } = useTaskFromSelection()
 
@@ -284,11 +285,13 @@ const List = ({
 
             if (currentActiveItem?.type === QuickLinkType.snippet) {
               handleCopyActiveItem(currentActiveItem.id, true)
+              addLastUsed(currentActiveItem.id)
             }
           } else {
             if (currentActiveItem.type === QuickLinkType.snippet) {
               handleCopyActiveItem(currentActiveItem.id, false)
               setInput('')
+              addLastUsed(currentActiveItem.id)
             } else {
               let nodePath = node.path
 
@@ -440,6 +443,7 @@ const List = ({
       }
     } else if (currentActiveItem?.type === QuickLinkType.snippet && !activeItem.active) {
       handleCopyActiveItem(currentActiveItem.id, true)
+      addLastUsed(currentActiveItem.id)
     } else {
       if (currentActiveItem?.type !== ItemActionType.search && selectedItem?.item?.type !== ItemActionType.search) {
         setSelectedItem({ item: currentActiveItem, active: false })
@@ -521,6 +525,7 @@ const List = ({
 
               if (currentActiveItem?.type === QuickLinkType.snippet) {
                 handleCopyActiveItem(currentActiveItem.id)
+                addLastUsed(currentActiveItem.id)
               }
             },
             onDoubleClick: () => {

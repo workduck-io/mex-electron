@@ -20,6 +20,9 @@ import {
   SnippetContentPreview
 } from './SnippetSidebar.style'
 import { getPlateEditorRef, insertNodes, selectEditor, TElement } from '@udecode/plate'
+import { useLastUsedSnippets } from '@hooks/useLastOpened'
+import SnippetPreview from '@editor/Components/EditorPreview/SnippetPreview'
+import SnippetCard from './SnippetCard'
 
 const SnippetSidebar = () => {
   const [search, setSearch] = useState('')
@@ -29,6 +32,7 @@ const SnippetSidebar = () => {
   const loadSnippet = useSnippetStore((store) => store.loadSnippet)
   const { goTo } = useRouting()
   const { queryIndex } = useSearch()
+  const { addLastUsed } = useLastUsedSnippets()
 
   const inputRef = React.useRef<HTMLInputElement>(null)
 
@@ -50,13 +54,14 @@ const SnippetSidebar = () => {
 
   const onInsertSnippet = (id: string) => {
     // TODO: insert snippet in editor
-    mog('onInsertSnippet', { id })
+    // mog('onInsertSnippet', { id })
     const snippet = snippets.find((snippet) => snippet.id === id)
     if (!snippet) return
     const editor = getPlateEditorRef()
     const selection = editor.selection
     insertNodes<TElement>(editor, snippet.content)
     selectEditor(editor, { at: selection, edge: 'start', focus: true })
+    addLastUsed(id)
   }
 
   const onSearchChange: React.ChangeEventHandler<HTMLInputElement> = (e) => {
@@ -103,20 +108,28 @@ const SnippetSidebar = () => {
         <Input placeholder={'Search snippets'} onChange={debounce((e) => onSearchChange(e), 250)} ref={inputRef} />
       </SidebarListFilter>
       {searchedSnippets.map((snippet) => (
-        <SnippetCardWrapper key={`snippet_card_${snippet.id}`}>
-          <SnippetCardHeader onClick={() => onInsertSnippet(snippet.id)}>
-            <Icon icon={snippet.template ? magicLine : quillPenLine} />
-            {snippet.title}
-          </SnippetCardHeader>
-
-          <SnippetContentPreview>{convertContentToRawText(snippet.content, ' ')}</SnippetContentPreview>
-          <SnippetCardFooter>
-            <TagsLabel tags={snippetTags[snippet.id]} />
-          </SnippetCardFooter>
-        </SnippetCardWrapper>
+        <SnippetCard
+          key={snippet.id}
+          keyStr={snippet.id}
+          snippet={snippet}
+          onClick={() => onInsertSnippet(snippet.id)}
+        />
       ))}
     </SnippetCards>
   )
+  // <SnippetPreview key={`snippet_card_${snippet.id}`} snippetId={snippet.id} hover={true}>
+  //   <SnippetCardWrapper>
+  //     <SnippetCardHeader onClick={() => onInsertSnippet(snippet.id)}>
+  //       <Icon icon={snippet.template ? magicLine : quillPenLine} />
+  //       {snippet.title}
+  //     </SnippetCardHeader>
+
+  //     <SnippetContentPreview>{convertContentToRawText(snippet.content, ' ')}</SnippetContentPreview>
+  //     <SnippetCardFooter>
+  //       <TagsLabel tags={snippetTags[snippet.id]} />
+  //     </SnippetCardFooter>
+  //   </SnippetCardWrapper>
+  // </SnippetPreview>
 }
 
 export default SnippetSidebar
