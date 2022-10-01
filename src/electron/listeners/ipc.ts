@@ -1,6 +1,5 @@
 import { IpcAction } from '@data/IpcAction'
 import { windowManager } from '@electron/WindowManager'
-import { windows } from '@electron/main'
 import {
   MENTION_LOCATION,
   SAVE_LOCATION,
@@ -13,12 +12,12 @@ import { copyToClipboard, getGlobalShortcut, useSnippetFromClipboard } from '@el
 import {
   closeWindow,
   createMexWindow,
-  createNoteWindow,
   createSpotLighWindow,
   handleToggleMainWindow,
   notifyOtherWindow
 } from '@electron/utils/helper'
 import { getIndexData } from '@electron/utils/indexData'
+import { windows } from '@electron/windows'
 import {
   addDoc,
   analyseContent,
@@ -41,9 +40,8 @@ import { MentionData } from '../../types/mentions'
 import { Reminder, ReminderActions } from '../../types/reminders'
 import { idxKey } from '../../types/search'
 import { ToastStatus, ToastType } from '../../types/toast'
-import handlePinnedWindowsIPCListener from './pinned-windows'
 import { checkForUpdatesAndNotifyWrapper } from '../update'
-import { mog } from '@workduck-io/mex-utils'
+import handlePinnedWindowsIPCListener from './pinned-windows'
 
 export let SPOTLIGHT_SHORTCUT = 'CommandOrCOntrol+Shift+X'
 

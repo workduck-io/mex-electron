@@ -1,5 +1,5 @@
 import { AppType } from '@hooks/useInitialize'
-import { BrowserWindow, Menu, MenuItemConstructorOptions, app, shell, dialog } from 'electron'
+import { BrowserWindow, Menu, MenuItemConstructorOptions, app, dialog } from 'electron'
 import fs from 'fs/promises'
 import path from 'path'
 
@@ -7,9 +7,9 @@ import { getSaveLocation, DataFileName } from '../data/Defaults/data'
 import { IpcAction } from '../data/IpcAction'
 import { ToastStatus } from '../types/toast'
 import { windowManager } from './WindowManager'
-import { windows } from './main'
 import { checkForUpdatesAndNotifyWrapper } from './update'
 import { checkIfAlpha } from './utils/version'
+import { windows } from './windows'
 
 interface DarwinMenuItemConstructorOptions extends MenuItemConstructorOptions {
   selector?: string

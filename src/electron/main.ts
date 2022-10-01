@@ -5,7 +5,7 @@ import { app } from 'electron'
 import 'threads/register'
 
 import { initializeSentry } from '../services/sentry'
-import appEventListeners, { WindowsType } from './listeners/app'
+import appEventListeners from './listeners/app'
 import handleIPCListener from './listeners/ipc'
 
 if (process.env.MODE === 'production' || process.env.FORCE_PRODUCTION) {
@@ -16,8 +16,6 @@ if (process.env.MODE === 'production' || process.env.FORCE_PRODUCTION) {
 if (process.platform === 'win32') {
   app.disableHardwareAcceleration()
 }
-
-export const windows: WindowsType = { toast: null }
 
 if (process.env.MODE === 'production' || process.env.FORCE_PRODUCTION) {
   const sourceMapSupport = require('source-map-support')

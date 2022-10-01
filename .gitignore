@@ -113,3 +113,6 @@ actionConfigs.ts
 dist/
 out/
 assets/icon.icns
+madgeOutputs/
+*.ipynb
+.ipynb_checkpoints/

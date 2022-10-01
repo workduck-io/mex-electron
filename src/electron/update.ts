@@ -6,11 +6,11 @@ import { IpcAction } from '../data/IpcAction'
 import { ToastStatus } from '../types/toast'
 import { windowManager } from './WindowManager'
 import { backupMexJSON } from './backup'
-import { windows } from './main'
 import { TEMP_DATA_BEFORE_UPDATE, SEARCH_INDEX_LOCATION } from './utils/fileLocations'
 import { setDataAtLocation } from './utils/filedata'
 import { deleteSearchIndexDisk } from './utils/indexData'
 import { checkIfAlpha } from './utils/version'
+import { windows } from './windows'
 
 const logger = require('electron-log') // eslint-disable-line
 logger.transports.file.level = 'info'
