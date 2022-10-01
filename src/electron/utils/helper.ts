@@ -5,13 +5,9 @@ import { windows } from '@electron/windows'
 import { sanitizeHtml } from '@utils/sanitizeHtml'
 import { session, BrowserWindow, screen } from 'electron'
 
+import { AppType } from '../../data/constants'
 import { windowManager } from '../WindowManager'
 import { SelectionType, getSelectedTextSync, getSelectedText } from './getSelectedText'
-
-export enum AppType {
-  SPOTLIGHT = 'SPOTLIGHT',
-  MEX = 'MEX'
-}
 
 const MEX_WINDOW_OPTIONS = {
   width: 1600,

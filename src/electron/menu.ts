@@ -1,4 +1,4 @@
-import { AppType } from '@hooks/useInitialize'
+import { AppType } from '@data/constants'
 import { BrowserWindow, Menu, MenuItemConstructorOptions, app, dialog } from 'electron'
 import fs from 'fs/promises'
 import path from 'path'

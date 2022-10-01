@@ -1,3 +1,4 @@
+import { AppType } from '../data/constants'
 import { useReminderStore } from '../hooks/useReminders'
 import { useSpotlightSettingsStore } from '../store/settings.spotlight'
 import { useContentStore } from '../store/useContentStore'
@@ -11,11 +12,6 @@ import useLoad from './useLoad'
 import { useNamespaces } from './useNamespaces'
 import { useSlashCommands } from './useSlashCommands'
 import { useViewStore } from './useTaskViews'
-
-export enum AppType {
-  SPOTLIGHT = 'SPOTLIGHT',
-  MEX = 'MEX'
-}
 
 export const useInitialize = () => {
   const initializeDataStore = useDataStore((state) => state.initializeDataStore)

@@ -1,4 +1,4 @@
-import { AppType } from '@hooks/useInitialize'
+import { AppType } from '@data/constants'
 import { app, dialog, ipcMain } from 'electron'
 import { autoUpdater } from 'electron-updater'
 

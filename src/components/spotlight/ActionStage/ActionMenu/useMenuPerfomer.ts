@@ -1,17 +1,19 @@
 /* eslint-disable no-case-declarations */
 import { useActionPerformer } from '@components/spotlight/Actions/useActionPerformer'
-import { useActionsCache } from '@components/spotlight/Actions/useActionsCache'
 import { useActionStore } from '@components/spotlight/Actions/useActionStore'
+import { useActionsCache } from '@components/spotlight/Actions/useActionsCache'
 import useItemExecutor from '@components/spotlight/Home/actionExecutor'
 import { getListItemFromAction } from '@components/spotlight/Home/helper'
 import { IpcAction } from '@data/IpcAction'
+import { AppType } from '@data/constants'
 import { appNotifierWindow } from '@electron/utils/notifiers'
-import { AppType } from '@hooks/useInitialize'
 import { ViewDataType } from '@store/app.spotlight'
 import { getPlateEditorRef } from '@udecode/plate'
 import { mog } from '@utils/lib/helper'
-import { ClickPostActionType, MenuPostActionConfig } from '@workduck-io/action-request-helper'
 import toast from 'react-hot-toast'
+
+import { ClickPostActionType, MenuPostActionConfig } from '@workduck-io/action-request-helper'
+
 import { useActionMenuStore } from './useActionMenuStore'
 
 export const useMenuPerformer = () => {

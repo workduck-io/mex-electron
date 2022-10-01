@@ -1,13 +1,12 @@
 import React from 'react'
 
+import { AppType } from '@data/constants'
 import { transparentize } from 'polished'
 import Select from 'react-select'
 import Creatable from 'react-select/creatable'
 import styled, { css, DefaultTheme, useTheme } from 'styled-components'
 
 import { TextFieldHeight } from '@workduck-io/action-request-helper'
-
-import { AppType } from '../hooks/useInitialize'
 
 interface InputProps {
   transparent?: boolean

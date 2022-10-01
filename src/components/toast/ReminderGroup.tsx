@@ -1,10 +1,12 @@
+import React, { useEffect } from 'react'
+
+import { AppType } from '@data/constants'
+
 import { IpcAction } from '../../data/IpcAction'
 import { appNotifierWindow } from '../../electron/utils/notifiers'
-import { AppType } from '../../hooks/useInitialize'
-import React, { useEffect } from 'react'
 import { ReminderGroup, Reminder, DisplayReminderGroup } from '../../types/reminders'
+import { mog } from '../../utils/lib/helper'
 import ReminderUI, { ReminderControls } from '../mex/Reminders/Reminder'
-
 import {
   ReminderGroupsWrapper,
   ReminderGroupTitle,
@@ -12,7 +14,6 @@ import {
   RemindersWrapper,
   ReminderUIGlobal
 } from '../mex/Reminders/Reminders.style'
-import { mog } from '../../utils/lib/helper'
 
 interface ReminderGroupProps {
   reminderGroup: DisplayReminderGroup

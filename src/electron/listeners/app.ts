@@ -8,8 +8,9 @@ import { handleToggleMainWindow, createAllWindows, createMexWindow, createSpotLi
 import extensionsForDevX from '@electron/utils/installExtensions'
 import { getRedirectPath } from '@electron/utils/redirect'
 import { dumpIndexDisk } from '@electron/worker/controller'
-import { AppType } from '@hooks/useInitialize'
 import { app, globalShortcut } from 'electron'
+
+import { AppType } from '../../data/constants'
 
 const appEventListeners = () => {
   app

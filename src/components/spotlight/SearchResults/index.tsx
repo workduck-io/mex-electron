@@ -7,7 +7,7 @@
 // import { useTheme } from 'styled-components'
 // import { IpcAction } from '../../../data/IpcAction'
 // import { appNotifierWindow } from '../../../electron/utils/notifiers'
-// import { AppType } from '../../../hooks/useInitialize'
+// import { AppType } from '@data/constants'
 // import useLoad from '../../../hooks/useLoad'
 // import { useSpotlightAppStore } from '../../../store/app.spotlight'
 // import { useSpotlightContext } from '../../../store/Context/context.spotlight'
