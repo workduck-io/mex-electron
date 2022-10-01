@@ -1,24 +1,22 @@
-import { MexIcon } from '@style/Layouts'
-import React, { useEffect, useMemo, useState } from 'react'
-import { tinykeys } from '@workduck-io/tinykeys'
+import Tabs, { TabType } from '@components/layouts/Tabs'
+import Graph from '@components/mex/Graph/Graph'
+import RemindersInfobar from '@components/mex/Reminders/Reminders'
+import DataInfoBar from '@components/mex/Sidebar/DataInfoBar'
 import { useGraphData } from '@hooks/useGraphData'
 import useLayout from '@hooks/useLayout'
 import { useKeyListener } from '@hooks/useShortcutListener'
 import useToggleElements from '@hooks/useToggleElements'
+import bubbleChartLine from '@iconify/icons-ri/bubble-chart-line'
+import quillPenLine from '@iconify/icons-ri/quill-pen-line'
+import timerFlashLine from '@iconify/icons-ri/timer-flash-line'
 import { useHelpStore } from '@store/useHelpStore'
 import { InfobarMode, useLayoutStore } from '@store/useLayoutStore'
 import useSuggestionStore from '@store/useSuggestionStore'
 import { InfoBarWrapper } from '@style/infobar'
-import Graph from '@components/mex/Graph/Graph'
-import RemindersInfobar from '@components/mex/Reminders/Reminders'
-import DataInfoBar from '@components/mex/Sidebar/DataInfoBar'
-import SuggestionInfoBar from '@components/mex/Suggestions'
-import Tabs, { TabType } from '@components/layouts/Tabs'
-import bubbleChartLine from '@iconify/icons-ri/bubble-chart-line'
-import lightbulbFlashLine from '@iconify/icons-ri/lightbulb-flash-line'
-import timerFlashLine from '@iconify/icons-ri/timer-flash-line'
-import quillPenLine from '@iconify/icons-ri/quill-pen-line'
-import { useShortcutStore } from '@store/useShortcutStore'
+import { MexIcon } from '@style/Layouts'
+import { mog } from '@workduck-io/mex-utils'
+import { tinykeys } from '@workduck-io/tinykeys'
+import React, { useEffect, useMemo } from 'react'
 import SnippetSidebar from '../Sidebar/SnippetSidebar'
 
 const InfoBarItems = () => {
@@ -28,6 +26,7 @@ const InfoBarItems = () => {
   const setInfobarMode = useLayoutStore((s) => s.setInfobarMode)
   const wrapperRef = React.useRef<HTMLDivElement>(null)
 
+  mog('infobar', { shortcuts })
   // Ensure the tabs have InfobarType in type
   const tabs: Array<TabType> = useMemo(
     () => [
@@ -41,8 +40,8 @@ const InfoBarItems = () => {
         label: <MexIcon noHover icon={quillPenLine} width={24} height={24} />,
         type: 'snippets',
         component: <SnippetSidebar />,
-        tooltip: 'Snippets'
-        // shortcut: shortcuts.showSuggestedNodes.keystrokes
+        tooltip: 'Snippets',
+        shortcut: shortcuts.showSnippetSidebar.keystrokes
       },
       {
         label: <MexIcon noHover icon={timerFlashLine} width={24} height={24} />,
@@ -98,9 +97,9 @@ const InfoBar = () => {
       //     toggleSyncBlocks()
       //   })
       // },
-      [shortcuts.showSuggestedNodes.keystrokes]: (event) => {
+      [shortcuts.showSnippetSidebar.keystrokes]: (event) => {
         event.preventDefault()
-        shortcutHandler(shortcuts.showSuggestedNodes, () => {
+        shortcutHandler(shortcuts.showSnippetSidebar, () => {
           toggleSnippets()
         })
       },

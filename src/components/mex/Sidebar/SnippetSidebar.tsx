@@ -80,7 +80,12 @@ const SnippetSidebar = () => {
       <SidebarListFilterWrapper>
         <SidebarListFilter noMargin={true}>
           <Icon icon={searchLine} />
-          <Input placeholder={'Search snippets'} onChange={debounce((e) => onSearchChange(e), 250)} ref={inputRef} />
+          <Input
+            autoFocus
+            placeholder={'Search snippets'}
+            onChange={debounce((e) => onSearchChange(e), 250)}
+            ref={inputRef}
+          />
         </SidebarListFilter>
         <Infobox text={SnippetSidebarHelp} />
       </SidebarListFilterWrapper>
