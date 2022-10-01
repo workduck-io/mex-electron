@@ -1,6 +1,7 @@
 import { isElder } from '@components/mex/Sidebar/treeUtils'
 import { getReminderState } from '@services/reminders/reminders'
 import useDataStore from '@store/useDataStore'
+import { mog } from '@workduck-io/mex-utils'
 import { Filter, FilterJoin, FilterValue, SearchFilterFunctions } from '../types/filters'
 import { useLinks } from './useLinks'
 
@@ -120,8 +121,7 @@ export const useTaskFilterFunctions = (): SearchFilterFunctions => {
     },
 
     tag: (item, f) => {
-      const tagsCache = useDataStore.getState().tagsCache
-      const res = filterAndJoin(f, (v) => tagsCache[v.value]?.nodes?.includes(item.nodeid))
+      const res = filterAndJoin(f, (v) => item.tags?.includes(v.value))
       return res
     },
 
