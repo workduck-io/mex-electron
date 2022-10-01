@@ -1,6 +1,7 @@
 import React from 'react'
 
 import { RefactorPath } from '@components/mex/Refactor/types'
+import { mog } from '@utils/lib/mog'
 
 import { getAllParentIds } from '../components/mex/Sidebar/treeUtils'
 import useDataStore from '../store/useDataStore'
@@ -9,7 +10,6 @@ import { useHistoryStore } from '../store/useHistoryStore'
 import { useRecentsStore } from '../store/useRecentsStore'
 import { ILink } from '../types/Types'
 import { getContent } from '../utils/helpers'
-import { mog } from '../utils/lib/helper'
 import { isMatch } from '../utils/lib/paths'
 import useArchive from './useArchive'
 import { getTitleFromPath, useLinks } from './useLinks'

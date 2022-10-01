@@ -1,4 +1,5 @@
 import { getTodayTaskNodePath } from '@hooks/useTaskFromSelection'
+import { mog } from '@utils/lib/mog'
 import { search as getSearchResults } from 'fast-fuzzy'
 
 import { searchGoogle } from '../../../data/Actions'
@@ -9,7 +10,6 @@ import { useQuickLinks } from '../../../hooks/useQuickLinks'
 import { useSearch as useSearchHook, useSearchExtra } from '../../../hooks/useSearch'
 import { useSnippets } from '../../../hooks/useSnippets'
 import { CategoryType, useSpotlightContext } from '../../../store/Context/context.spotlight'
-import { mog } from '../../../utils/lib/helper'
 import { isReservedOrClash } from '../../../utils/lib/paths'
 import { QuickLinkType } from '../../mex/NodeSelect/NodeSelect'
 import { useActionsCache } from '../Actions/useActionsCache'

@@ -1,7 +1,7 @@
 import { useEffect } from 'react'
 
 import { useApi } from '@apis/useSaveApi'
-import { mog } from '@utils/lib/helper'
+import { mog } from '@utils/lib/mog'
 import create from 'zustand'
 
 import { Filter, GlobalFilterJoin } from '../types/filters'

@@ -1,7 +1,8 @@
 import { useEffect } from 'react'
+
 import { useUserService } from '@services/auth/useUserService'
-import { mog } from '@utils/lib/helper'
 import { mergeUserPreferences, useUserPreferenceStore } from '@store/userPreferenceStore'
+import { mog } from '@utils/lib/mog'
 
 const USER_PREF_AUTO_SAVE_MS = 30 * 60 * 1000 // 30 minutes
 

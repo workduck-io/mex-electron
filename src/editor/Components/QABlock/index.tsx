@@ -13,6 +13,7 @@ import {
   getPreviousNode,
   getPath
 } from '@udecode/plate'
+import { mog } from '@utils/lib/mog'
 import { useReadOnly, useSelected } from 'slate-react'
 import { useTheme } from 'styled-components'
 import { useDebouncedCallback } from 'use-debounce'
@@ -25,7 +26,6 @@ import { useSearch } from '../../../hooks/useSearch'
 import { useLayoutStore } from '../../../store/useLayoutStore'
 import { InputBlock } from '../../../style/Form'
 import { MexIcon } from '../../../style/Layouts'
-import { mog } from '../../../utils/lib/helper'
 import { getSlug } from '../../../utils/lib/strings'
 import { removeStopwords } from '../../../utils/stopwords'
 import { useRouting } from '../../../views/routes/urls'

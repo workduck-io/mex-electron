@@ -1,11 +1,11 @@
 import React, { useEffect } from 'react'
 
 import { AppType } from '@data/constants'
+import { mog } from '@utils/lib/mog'
 
 import { IpcAction } from '../../data/IpcAction'
 import { appNotifierWindow } from '../../electron/utils/notifiers'
 import { ReminderGroup, Reminder, DisplayReminderGroup } from '../../types/reminders'
-import { mog } from '../../utils/lib/helper'
 import ReminderUI, { ReminderControls } from '../mex/Reminders/Reminder'
 import {
   ReminderGroupsWrapper,

@@ -6,7 +6,7 @@ import trashIcon from '@iconify/icons-codicon/trash'
 import fileCopyLine from '@iconify/icons-ri/file-copy-line'
 import { Icon } from '@iconify/react'
 import { ContextMenuContent, ContextMenuItem, ContextMenuSeparator } from '@ui/components/menus/contextMenu'
-import { mog } from '@utils/lib/helper'
+import { mog } from '@utils/lib/mog'
 import { NavigationType, ROUTE_PATHS, useRouting } from '@views/routes/urls'
 
 import { SidebarListItem } from './SidebarList.types'

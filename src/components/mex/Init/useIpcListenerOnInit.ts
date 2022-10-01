@@ -14,7 +14,7 @@ import { useHistoryStore } from '@store/useHistoryStore'
 import useModalStore, { ModalsType } from '@store/useModalStore'
 import useOnboard from '@store/useOnboarding'
 import { useRecentsStore } from '@store/useRecentsStore'
-import { mog } from '@utils/lib/helper'
+import { mog } from '@utils/lib/mog'
 import { NavigationType, ROUTE_PATHS, useRouting } from '@views/routes/urls'
 import { ipcRenderer } from 'electron'
 

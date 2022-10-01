@@ -1,8 +1,9 @@
 import { getParentNodePath } from '@components/mex/Sidebar/treeUtils'
 import { useAnalysisStore } from '@store/useAnalysis'
-import { mog } from '@utils/lib/helper'
+import { mog } from '@utils/lib/mog'
 import { checkIfUntitledDraftNode } from '@utils/lib/strings'
 import toast from 'react-hot-toast'
+
 import { getLinkFromNodeIdHookless, getPathFromNodeIdHookless } from './useLinks'
 import { useRefactor } from './useRefactor'
 

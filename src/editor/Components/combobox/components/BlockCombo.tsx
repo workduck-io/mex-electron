@@ -2,7 +2,7 @@ import React, { useEffect, useState } from 'react'
 
 import arrowLeftLine from '@iconify/icons-ri/arrow-left-line'
 import { getPlateEditorRef } from '@udecode/plate'
-import { mog } from '@utils/lib/helper'
+import { mog } from '@utils/lib/mog'
 import { useTheme } from 'styled-components'
 
 import { DisplayShortcut, IconButton } from '@workduck-io/mex-components'

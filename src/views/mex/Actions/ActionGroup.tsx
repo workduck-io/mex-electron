@@ -3,7 +3,7 @@ import React from 'react'
 import { DEFAULT_LIST_ITEM_ICON } from '@components/spotlight/ActionStage/ActionMenu/ListSelector'
 import { getIconType, ProjectIconMex } from '@components/spotlight/ActionStage/Project/ProjectIcon'
 import Check from '@iconify/icons-bi/check'
-import { mog } from '@utils/lib/helper'
+import { mog } from '@utils/lib/mog'
 
 import { ActionGroupType } from '../../../components/spotlight/Actions/useActionStore'
 import { ActiveStatus, CenteredFlex, RightCut, ServiceCard, ServiceName } from '../../../style/Integration'

@@ -1,10 +1,12 @@
+import React, { useEffect } from 'react'
+
+import { mog } from '@utils/lib/mog'
 import { add } from 'date-fns'
 import { ipcRenderer } from 'electron'
-import React, { useEffect } from 'react'
+
 import { IpcAction } from '../../../data/IpcAction'
 import { useReminders, useReminderStore } from '../../../hooks/useReminders'
 import { Reminder, ReminderActionIpcData, ReminderActions } from '../../../types/reminders'
-import { mog } from '../../../utils/lib/helper'
 
 const ReminderArmer = () => {
   const reminders = useReminderStore((state) => state.reminders)

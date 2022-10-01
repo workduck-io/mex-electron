@@ -1,5 +1,6 @@
 import { useApi } from '@apis/useSaveApi'
-import { mog } from '@utils/lib/helper'
+import { mog } from '@utils/lib/mog'
+
 import { FileData } from '../types/data'
 
 export const useFileSaveBuffer = () => {

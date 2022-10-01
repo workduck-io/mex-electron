@@ -9,7 +9,7 @@ import { AppType } from '@data/constants'
 import { appNotifierWindow } from '@electron/utils/notifiers'
 import { ViewDataType } from '@store/app.spotlight'
 import { getPlateEditorRef } from '@udecode/plate'
-import { mog } from '@utils/lib/helper'
+import { mog } from '@utils/lib/mog'
 import toast from 'react-hot-toast'
 
 import { ClickPostActionType, MenuPostActionConfig } from '@workduck-io/action-request-helper'

@@ -2,8 +2,9 @@ import { generateTempId } from '@data/Defaults/idPrefixes'
 import { ELEMENT_EXCALIDRAW } from '@editor/Components/Excalidraw'
 import { ELEMENT_TODO_LI } from '@editor/Components/Todo/createTodoPlugin'
 import { ELEMENT_LI, ELEMENT_LIC, ELEMENT_MEDIA_EMBED, ELEMENT_OL, ELEMENT_PARAGRAPH, ELEMENT_UL } from '@udecode/plate'
+import { mog } from '@utils/lib/mog'
+
 import { NodeEditorContent } from '../../types/Types'
-import { mog } from './helper'
 
 /**
  * Converts the content to a list of tasks

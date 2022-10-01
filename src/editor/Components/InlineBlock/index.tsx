@@ -1,10 +1,15 @@
 import React, { useMemo } from 'react'
 
 import { SharedNodeIcon } from '@components/icons/Icons'
+import NamespaceTag from '@components/mex/NamespaceTag'
+import { useNamespaces } from '@hooks/useNamespaces'
 import { useNodes } from '@hooks/useNodes'
 import { useNoteContext } from '@store/Context/context.note'
 import { useSpotlightContext } from '@store/Context/context.spotlight'
 import { openNodeInMex } from '@utils/combineSources'
+import { mog } from '@utils/lib/mog'
+import { ROUTE_PATHS, useRouting, NavigationType } from '@views/routes/urls'
+import { useMatch } from 'react-router-dom'
 import { useSelected } from 'slate-react'
 import styled from 'styled-components'
 
@@ -12,7 +17,6 @@ import { useLinks } from '../../../hooks/useLinks'
 import { useNavigation } from '../../../hooks/useNavigation'
 import { useContentStore } from '../../../store/useContentStore'
 import { NodeType } from '../../../types/Types'
-import { mog } from '../../../utils/lib/helper'
 import { getBlock } from '../../../utils/search/parseData'
 import EditorPreviewRenderer from '../../EditorPreviewRenderer'
 import { RootElement } from '../SyncBlock'
@@ -25,10 +29,6 @@ import {
   StyledInlineBlock,
   StyledInlineBlockPreview
 } from './styled'
-import { ROUTE_PATHS, useRouting, NavigationType } from '@views/routes/urls'
-import { useNamespaces } from '@hooks/useNamespaces'
-import { useMatch } from 'react-router-dom'
-import NamespaceTag from '@components/mex/NamespaceTag'
 
 const StyledArchiveText = styled.text`
   border-radius: ${({ theme }) => theme.borderRadius.small};

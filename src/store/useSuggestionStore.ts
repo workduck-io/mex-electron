@@ -1,8 +1,9 @@
 // import { NodeSearchResult } from './useSearchStore'
-import create from 'zustand'
 import { TNode } from '@udecode/plate'
+import { mog } from '@utils/lib/mog'
+import create from 'zustand'
+
 import { SuggestionType } from '../components/mex/Suggestions/types'
-import { mog } from '@utils/lib/helper'
 
 type SuggestionStoreType = {
   suggestions: SuggestionType[]

@@ -1,7 +1,7 @@
 import { useContentStore } from '@store/useContentStore'
 import useTodoStore from '@store/useTodoStore'
 import { getTodosFromContent } from '@utils/lib/content'
-import { mog } from '@utils/lib/helper'
+import { mog } from '@utils/lib/mog'
 
 import { client } from '@workduck-io/dwindle'
 
@@ -51,7 +51,12 @@ export const useUpdater = () => {
       updateTagsFromContent(noteId, content)
       updateNodeTodos(noteId, getTodosFromContent(content))
 
-      updateDocument('node', noteId, content, getTitleFromNoteId(noteId, { includeArchived: true, includeShared: true}))
+      updateDocument(
+        'node',
+        noteId,
+        content,
+        getTitleFromNoteId(noteId, { includeArchived: true, includeShared: true })
+      )
     }
   }
 

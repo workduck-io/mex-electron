@@ -1,6 +1,7 @@
+import { mog } from '@utils/lib/mog'
 import { BrowserWindow } from 'electron'
+
 import { IpcAction } from '../../data/IpcAction'
-import { mog } from '../../utils/lib/helper'
 
 const sanitizePath = (path: string) => (path.endsWith('/') ? path.slice(0, -1) : path)
 

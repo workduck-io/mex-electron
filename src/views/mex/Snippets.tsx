@@ -6,11 +6,12 @@ import magicLine from '@iconify/icons-ri/magic-line'
 import quillPenLine from '@iconify/icons-ri/quill-pen-line'
 import { Icon } from '@iconify/react'
 import { ELEMENT_PARAGRAPH } from '@udecode/plate'
-import { mog } from '@utils/lib/helper'
+import { mog } from '@utils/lib/mog'
 import { nanoid } from 'nanoid'
 import generateName from 'project-name-generator'
 
 import { Button, IconButton, Infobox } from '@workduck-io/mex-components'
+import { runBatch } from '@workduck-io/mex-utils'
 
 import SearchView, { RenderItemProps, RenderPreviewProps } from '../../components/mex/Search/SearchView'
 import { View } from '../../components/mex/Search/ViewSelector'
@@ -38,10 +39,9 @@ import {
 import { SnippetsSearchContainer } from '../../style/Snippets'
 import { Title } from '../../style/Typography'
 import { GenericSearchResult } from '../../types/search'
-// import { mog } from '../../utils/lib/helper'
+// import { mog } from '@utils/lib/mog'
 import { convertContentToRawText } from '../../utils/search/parseData'
 import { NavigationType, ROUTE_PATHS, useRouting } from '../routes/urls'
-import { runBatch } from '@workduck-io/mex-utils'
 
 export type SnippetsProps = {
   title?: string
@@ -255,14 +255,16 @@ const Snippets = () => {
     const snippets = getSnippets()
     const unfetchedSnippets = snippets.filter((snippet) => snippet.content.length === 0)
 
-    const requests = unfetchedSnippets.map(async item => await api.getSnippetById(item.id).then((response) => {
-      updateSnippet(response as Snippet)
-    }))
+    const requests = unfetchedSnippets.map(
+      async (item) =>
+        await api.getSnippetById(item.id).then((response) => {
+          updateSnippet(response as Snippet)
+        })
+    )
 
-    runBatch(requests).catch(err => {
+    runBatch(requests).catch((err) => {
       mog('Failed to fetch snippets', { err })
     })
-
   }, [])
 
   // mog('Snippets', { initialSnippets })

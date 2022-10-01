@@ -1,7 +1,7 @@
 import { IS_DEV } from '@data/Defaults/dev_'
 import { IpcAction } from '@data/IpcAction'
 import { AppType } from '@data/constants'
-import { mog } from '@utils/lib/helper'
+import { mog } from '@utils/lib/mog'
 import { app, BrowserWindow, shell } from 'electron'
 
 import { WindowOptions } from '../types/window.types'

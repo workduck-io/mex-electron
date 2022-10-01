@@ -3,7 +3,7 @@
 // import Document from '@iconify/icons-gg/file-document'
 // import { Icon } from '@iconify/react'
 // import React, { useRef, useState } from 'react'
-// import { mog } from '../../../utils/lib/helper'
+// import { mog } from '@utils/lib/mog'
 // import { useTheme } from 'styled-components'
 // import { IpcAction } from '../../../data/IpcAction'
 // import { appNotifierWindow } from '../../../electron/utils/notifiers'

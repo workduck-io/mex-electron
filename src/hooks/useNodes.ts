@@ -1,5 +1,6 @@
 import { useRecentsStore } from '@store/useRecentsStore'
 import { useSnippetStore } from '@store/useSnippetStore'
+import { mog } from '@utils/lib/mog'
 import { getParentBreadcurmbs, RESERVED_NAMESPACES } from '@utils/lib/paths'
 import toast from 'react-hot-toast'
 
@@ -8,7 +9,6 @@ import { BreadcrumbItem } from '@workduck-io/mex-components'
 import useDataStore from '../store/useDataStore'
 import { AddILinkProps, ILink, NodeType, SharedNode } from '../types/Types'
 import { AccessLevel } from '../types/mentions'
-import { mog } from '../utils/lib/helper'
 
 // Used to ensure no path clashes while adding ILink.
 // path functions to check wether clash is happening can be also used

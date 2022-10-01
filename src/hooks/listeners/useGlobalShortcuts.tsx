@@ -1,19 +1,21 @@
-import { CategoryType, useSpotlightContext } from '../../store/Context/context.spotlight'
-
-import { ipcRenderer } from 'electron'
-import { spotlightShortcuts } from '../../components/spotlight/Shortcuts/list'
-import { tinykeys } from '@workduck-io/tinykeys'
-import { useContentStore } from '../../store/useContentStore'
 import { useEffect } from 'react'
-import { useKeyListener } from '../useShortcutListener'
+
+import { useActionMenuStore } from '@components/spotlight/ActionStage/ActionMenu/useActionMenuStore'
+import { useActionStore } from '@components/spotlight/Actions/useActionStore'
+import { mog } from '@utils/lib/mog'
+import { ipcRenderer } from 'electron'
+
+import { tinykeys } from '@workduck-io/tinykeys'
+
 import { useSaveChanges } from '../../components/spotlight/Search/useSearchProps'
+import { spotlightShortcuts } from '../../components/spotlight/Shortcuts/list'
+import { CategoryType, useSpotlightContext } from '../../store/Context/context.spotlight'
 import { useSpotlightAppStore } from '../../store/app.spotlight'
 import { useSpotlightEditorStore } from '../../store/editor.spotlight'
 import { useSpotlightSettingsStore } from '../../store/settings.spotlight'
+import { useContentStore } from '../../store/useContentStore'
 import { NavigationType, ROUTE_PATHS, useRouting } from '../../views/routes/urls'
-import { useActionMenuStore } from '@components/spotlight/ActionStage/ActionMenu/useActionMenuStore'
-import { mog } from '@utils/lib/helper'
-import { useActionStore } from '@components/spotlight/Actions/useActionStore'
+import { useKeyListener } from '../useShortcutListener'
 
 export const useGlobalShortcuts = () => {
   const { setSelection, setSearch, setActiveItem, activeItem, search, selection } = useSpotlightContext()

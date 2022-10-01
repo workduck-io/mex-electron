@@ -1,9 +1,10 @@
-import { client } from '@workduck-io/dwindle'
+import { mog } from '@utils/lib/mog'
 import Compress from 'compress.js'
-
-import { mog } from './lib/helper'
-import { apiURLs } from '../apis/routes'
 import toast from 'react-hot-toast'
+
+import { client } from '@workduck-io/dwindle'
+
+import { apiURLs } from '../apis/routes'
 
 export const uploadImageToWDCDN = async (
   data: string | ArrayBuffer,

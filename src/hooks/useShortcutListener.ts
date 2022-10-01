@@ -9,13 +9,13 @@ import {
 import useMultipleEditors from '@store/useEditorsStore'
 import { useLayoutStore } from '@store/useLayoutStore'
 import useModalStore from '@store/useModalStore'
+import { mog } from '@utils/lib/mog'
 
 import { Shortcut } from '../components/mex/Help/Help.types'
 import useAnalytics from '../services/analytics'
 import { ActionType } from '../services/analytics/events'
 import { useHelpStore } from '../store/useHelpStore'
 import { KeyBinding, useShortcutStore } from '../store/useShortcutStore'
-import { mog } from '../utils/lib/helper'
 import { MiscKeys } from '../utils/lib/keyMap'
 import { getEventNameFromElement } from '../utils/lib/strings'
 

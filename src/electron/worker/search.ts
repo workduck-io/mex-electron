@@ -1,5 +1,15 @@
+import { mog } from '@utils/lib/mog'
+import { parseNode } from '@utils/search/parseData'
 import { expose } from 'threads/worker'
-import { FileData } from './../../types/data'
+
+import {
+  SearchIndex,
+  SearchWorker,
+  idxKey,
+  SearchRepExtra,
+  GenericSearchResult,
+  SearchOptions
+} from '../../types/search'
 import {
   createSearchIndex,
   exportIndex,
@@ -10,17 +20,8 @@ import {
   TITLE_RANK_BUMP,
   CreateSearchIndexData
 } from '../../utils/search/flexsearch'
-import { mog } from '../../utils/lib/helper'
+import { FileData } from './../../types/data'
 import { setSearchIndexData } from './../utils/indexData'
-import {
-  SearchIndex,
-  SearchWorker,
-  idxKey,
-  SearchRepExtra,
-  GenericSearchResult,
-  SearchOptions
-} from '../../types/search'
-import { parseNode } from '@utils/search/parseData'
 
 let globalSearchIndex: SearchIndex = null
 let nodeBlockMapping: { [key: string]: string[] } = null

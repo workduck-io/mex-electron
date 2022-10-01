@@ -1,7 +1,8 @@
-import { formatDistanceToNow, formatRelative, format, add, startOfTomorrow, sub, startOfToday } from 'date-fns'
-import { capitalize } from './lib/strings'
+import { mog } from '@utils/lib/mog'
 import * as chrono from 'chrono-node'
-import { mog } from './lib/helper'
+import { formatDistanceToNow, formatRelative, format, add, startOfTomorrow, sub, startOfToday } from 'date-fns'
+
+import { capitalize } from './lib/strings'
 
 export const toLocaleString = (date: Date) => {
   return date.toLocaleString('en-US', {

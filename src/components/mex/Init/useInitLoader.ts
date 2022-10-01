@@ -11,7 +11,7 @@ import { usePortals } from '@hooks/usePortals'
 import { useAuthentication, useAuthStore } from '@services/auth/useAuth'
 import { useLayoutStore } from '@store/useLayoutStore'
 import { runBatch } from '@utils/lib/batchPromise'
-import { mog } from '@utils/lib/helper'
+import { mog } from '@utils/lib/mog'
 import { useRouting, ROUTE_PATHS, NavigationType } from '@views/routes/urls'
 import toast from 'react-hot-toast'
 

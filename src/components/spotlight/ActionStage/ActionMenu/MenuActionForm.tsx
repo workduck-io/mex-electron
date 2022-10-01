@@ -5,7 +5,7 @@ import { useActionStore } from '@components/spotlight/Actions/useActionStore'
 import { ShortcutText } from '@components/spotlight/Home/components/Item'
 import { MexIcon } from '@style/Layouts'
 import Tippy from '@tippyjs/react'
-import { mog } from '@utils/lib/helper'
+import { mog } from '@utils/lib/mog'
 import { set } from 'lodash'
 import { useForm, FormProvider } from 'react-hook-form'
 

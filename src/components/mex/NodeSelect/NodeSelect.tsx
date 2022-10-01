@@ -1,5 +1,6 @@
 import React, { useEffect, useMemo, useState } from 'react'
 
+import { useNamespaces } from '@hooks/useNamespaces'
 import { useSearchExtra } from '@hooks/useSearch'
 import addCircleLine from '@iconify/icons-ri/add-circle-line'
 import checkboxCircleLine from '@iconify/icons-ri/checkbox-circle-line'
@@ -7,6 +8,8 @@ import errorWarningLine from '@iconify/icons-ri/error-warning-line'
 import fileList2Line from '@iconify/icons-ri/file-list-2-line'
 import lock2Line from '@iconify/icons-ri/lock-2-line'
 import { Icon } from '@iconify/react'
+import { useUserPreferenceStore } from '@store/userPreferenceStore'
+import { StyledNamespaceSelectComponents } from '@style/Select'
 import { useCombobox } from 'downshift'
 import toast from 'react-hot-toast'
 // import { MexIcon } from '../../../style/Layouts'
@@ -20,9 +23,11 @@ import { useSnippetStore } from '../../../store/useSnippetStore'
 import { Input, StyledCreatatbleSelect } from '../../../style/Form'
 import { ILink, SingleNamespace } from '../../../types/Types'
 import { fuzzySearch } from '../../../utils/lib/fuzzySearch'
-import { mog, withoutContinuousDelimiter } from '../../../utils/lib/helper'
+import { withoutContinuousDelimiter } from '../../../utils/lib/helper'
 import { isClash, isMatch, isReserved, RESERVED_NAMESPACES, SHARED_NAMESPACE } from '../../../utils/lib/paths'
 import { convertContentToRawText } from '../../../utils/search/parseData'
+import { FlexGap } from '../Archive/styled'
+import NamespaceTag from '../NamespaceTag'
 import { SEPARATOR } from '../Sidebar/treeUtils'
 import {
   StyledCombobox,
@@ -36,11 +41,6 @@ import {
   SuggestionText,
   SuggestionTextWrapper
 } from './NodeSelect.styles'
-import NamespaceTag from '../NamespaceTag'
-import { FlexGap } from '../Archive/styled'
-import { useUserPreferenceStore } from '@store/userPreferenceStore'
-import { useNamespaces } from '@hooks/useNamespaces'
-import { StyledNamespaceSelectComponents } from '@style/Select'
 
 export type QuickLink = {
   // Text to be shown in the combobox list

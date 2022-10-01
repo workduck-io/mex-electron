@@ -1,3 +1,5 @@
+import React, { useEffect, useMemo, useState } from 'react'
+
 import ShareOptions from '@components/spotlight/Public'
 import { useLinks } from '@hooks/useLinks'
 import { getAccessValue, useMentions } from '@hooks/useMentions'
@@ -8,9 +10,10 @@ import { usePermission } from '@services/auth/usePermission'
 import { useEditorStore } from '@store/useEditorStore'
 import { useMentionStore } from '@store/useMentionStore'
 import { StyledCreatatbleSelect } from '@style/Form'
-import { mog } from '@utils/lib/helper'
+import { mog } from '@utils/lib/mog'
+
 import { Button, IconButton } from '@workduck-io/mex-components'
-import React, { useEffect, useMemo, useState } from 'react'
+
 import { AccessLevel, DefaultPermissionValue, Mentionable, permissionOptions } from '../../../types/mentions'
 import { ModalControls, ModalHeader, ModalSection, ModalSectionScroll } from '../Refactor/styles'
 import { ProfileImage } from '../User/ProfileImage'

@@ -1,6 +1,7 @@
 import React, { useEffect, useMemo, useState } from 'react'
 
 import Tippy from '@tippyjs/react'
+import { mog } from '@utils/lib/mog'
 import styled from 'styled-components'
 
 import { Button } from '@workduck-io/mex-components'
@@ -15,7 +16,6 @@ import { useAnalysisStore } from '../../../store/useAnalysis'
 import { useEditorStore } from '../../../store/useEditorStore'
 import { useRenameStore } from '../../../store/useRenameStore'
 import { Input } from '../../../style/Form'
-import { mog } from '../../../utils/lib/helper'
 import { isMatch, isReserved } from '../../../utils/lib/paths'
 
 const Wrapper = styled.div`

@@ -1,9 +1,25 @@
 import React, { useEffect, useState } from 'react'
 
+<<<<<<< HEAD
 import { useTags } from '../../../hooks/useTags'
 import { useAnalysisStore } from '../../../store/useAnalysis'
 import useDataStore from '../../../store/useDataStore'
 import { TagsLabel } from './TagLabel'
+=======
+import hashtagIcon from '@iconify/icons-ri/hashtag'
+import { mog } from '@utils/lib/mog'
+
+import { TagsHelp } from '../../../data/Defaults/helpText'
+import { useTags } from '../../../hooks/useTags'
+import { useAnalysisStore } from '../../../store/useAnalysis'
+import useDataStore from '../../../store/useDataStore'
+import { Note } from '../../../style/Typography'
+import { InfoWidgetWrapper } from '../../../style/infobar'
+import Collapse from '../../../ui/layout/Collapse/Collapse'
+import NodeLink from '../NodeLink/NodeLink'
+import { TagsLabel } from './TagLabel'
+import { InfoSubHeading } from './TagsRelated.styles'
+>>>>>>> 8e18e450 (v2 - Mog to new file)
 
 interface TagsRelated {
   nodeid: string

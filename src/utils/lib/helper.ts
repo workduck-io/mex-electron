@@ -1,36 +1,12 @@
-import { FAKE_APP_URI, IS_DEV } from '../../data/Defaults/dev_'
-
 import { ELEMENT_PARAGRAPH } from '@udecode/plate'
-import { NodeEditorContent } from '../../types/Types'
-import { NodeProperties } from '../../store/useEditorStore'
-import { SEPARATOR } from '../../components/mex/Sidebar/treeUtils'
-import WebStorageCookieStore from 'tough-cookie-web-storage-store'
-import { generateNodeUID } from '../../data/Defaults/idPrefixes'
 import tough from 'tough-cookie'
+import WebStorageCookieStore from 'tough-cookie-web-storage-store'
 
-type MogOptions = {
-  pretty: boolean
-  collapsed: boolean
-}
-
-export const mog = (
-  title: string,
-  propertiesToLog?: Record<string, any>,
-  options: Partial<MogOptions> = { pretty: false, collapsed: false }
-) => {
-  if (IS_DEV) {
-    if (!propertiesToLog) {
-      console.log(title)
-      return
-    }
-
-    options.collapsed ? console.groupCollapsed(title) : console.group(title)
-    Object.entries(propertiesToLog).forEach(([key, value]) => {
-      console.info(`${key}: `, options?.pretty ? JSON.stringify(value, null, 2) : value)
-    })
-    console.groupEnd()
-  }
-}
+import { SEPARATOR } from '../../components/mex/Sidebar/treeUtils'
+import { FAKE_APP_URI, IS_DEV } from '../../data/Defaults/dev_'
+import { generateNodeUID } from '../../data/Defaults/idPrefixes'
+import { NodeProperties } from '../../store/useEditorStore'
+import { NodeEditorContent } from '../../types/Types'
 
 export const electronCookies = () => {
   const { Cookie } = tough

@@ -1,10 +1,12 @@
+import React, { FunctionComponent, useEffect, useRef, useState } from 'react'
+
 import { KEYBOARD_KEYS } from '@components/spotlight/Home/components/List'
 import { MexIcon } from '@style/Layouts'
 import Loading from '@style/Loading'
-import { mog } from '@utils/lib/helper'
-import React, { FunctionComponent, useEffect, useRef, useState } from 'react'
+import { mog } from '@utils/lib/mog'
 import { Virtuoso } from 'react-virtuoso'
 import { useTheme } from 'styled-components'
+
 import { ListContainer, NoOption } from './styled'
 
 type VirtualListProps<T> = {

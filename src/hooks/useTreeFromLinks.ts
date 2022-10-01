@@ -1,10 +1,11 @@
 import { getAllParentIds } from '@components/mex/Sidebar/treeUtils'
 import { getLevel } from '@store/useDataStore'
 import { useTreeStore } from '@store/useTreeStore'
-import { mog } from '@utils/lib/helper'
+import { mog } from '@utils/lib/mog'
 import { FlatItem, generateTree } from '@utils/lib/tree'
-import { ILink } from '../types/Types'
 import { uniqBy } from 'lodash'
+
+import { ILink } from '../types/Types'
 
 /** Link sanatization
  *

@@ -1,5 +1,8 @@
+import { useEffect } from 'react'
+
+import { addIconsToIconify } from '@components/icons/Icons'
 import { IpcAction } from '@data/IpcAction'
-import { useAutoSyncUserPreference } from '@hooks/useSyncUserPreferences'
+import { useFileSaveBuffer } from '@hooks/useFileSaveBuffer'
 import { useImportExport } from '@hooks/useImportExport'
 import { useInitialize } from '@hooks/useInitialize'
 import { useInternetListener } from '@hooks/useInternetListener'
@@ -7,20 +10,20 @@ import useLoad from '@hooks/useLoad'
 import { useLocalData, useMentionData, useTokenData } from '@hooks/useLocalData'
 import { useNodes } from '@hooks/useNodes'
 import { useSaveAndExit } from '@hooks/useSaveAndExit'
+import { useAutoSyncUserPreference } from '@hooks/useSyncUserPreferences'
 import { useAuthStore } from '@services/auth/useAuth'
 import { useAnalysis } from '@store/useAnalysis'
-import { mog } from '@utils/lib/helper'
+import { mog } from '@utils/lib/mog'
 import { NavigationType, ROUTE_PATHS, useBrowserNavigation, useRouting } from '@views/routes/urls'
-import { useAuth } from '@workduck-io/dwindle'
 import { ipcRenderer } from 'electron'
-import { useEffect } from 'react'
+
+import { useAuth } from '@workduck-io/dwindle'
+
 import config from '../../../config.json'
 import { useActionsPerfomerClient } from '../../spotlight/Actions/useActionPerformer'
 import { useInitLoader } from './useInitLoader'
 import { useIpcListenerOnInit } from './useIpcListenerOnInit'
 import { useNavigator } from './useNavigator'
-import { useFileSaveBuffer } from '@hooks/useFileSaveBuffer'
-import { addIconsToIconify } from '@components/icons/Icons'
 
 const Init = () => {
   const { goTo } = useRouting()

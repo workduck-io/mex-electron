@@ -1,15 +1,16 @@
+import { produce } from 'immer'
 import create from 'zustand'
 import { devtools, persist } from 'zustand/middleware'
+
 import { getAllParentIds, SEPARATOR } from '../components/mex/Sidebar/treeUtils'
 import { generateNodeUID } from '../data/Defaults/idPrefixes'
 import { CachedILink, DataStoreState } from '../types/Types'
 import { generateTag } from '../utils/generateComboItem'
 import { Settify, typeInvert } from '../utils/helpers'
-import { mog, withoutContinuousDelimiter } from '../utils/lib/helper'
+import { withoutContinuousDelimiter } from '../utils/lib/helper'
 import { getNodeIcon } from '../utils/lib/icons'
 import { removeLink } from '../utils/lib/links'
 import { getUniquePath } from '../utils/lib/paths'
-import { produce } from 'immer'
 
 const useDataStore = create<DataStoreState>(
   persist(

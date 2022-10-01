@@ -10,7 +10,7 @@ import { useMentions } from '@hooks/useMentions'
 import { useMentionStore } from '@store/useMentionStore'
 import { ELEMENT_MEDIA_EMBED, ELEMENT_MENTION, ELEMENT_PARAGRAPH, ELEMENT_TABLE } from '@udecode/plate'
 import { ELEMENT_EXCALIDRAW } from '@udecode/plate-excalidraw'
-import { mog } from '@utils/lib/helper'
+import { mog } from '@utils/lib/mog'
 
 import { QuickLinkType } from '../../components/mex/NodeSelect/NodeSelect'
 import { useOpenReminderModal } from '../../components/mex/Reminders/CreateReminderModal'

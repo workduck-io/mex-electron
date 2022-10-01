@@ -3,7 +3,8 @@ import { useFetchShareData } from '@hooks/useFetchShareData'
 import { useIntervalWithTimeout } from '@hooks/useRelativeTime'
 import { useAuthStore } from '@services/auth/useAuth'
 import { PollActions, useApiStore } from '@store/useApiStore'
-import { mog } from '@utils/lib/helper'
+import { mog } from '@utils/lib/mog'
+
 import { useApi } from './useSaveApi'
 
 export const PollingInterval = {

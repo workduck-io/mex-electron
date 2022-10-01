@@ -1,9 +1,9 @@
+import { mog } from '@utils/lib/mog'
 import { spawn, Worker } from 'threads'
 
 import { NodeEditorContent } from '../../types/Types'
 import { FileData } from '../../types/data'
 import { idxKey, SearchOptions, SearchRepExtra } from '../../types/search'
-import { mog } from '../../utils/lib/helper'
 
 export let worker = null
 

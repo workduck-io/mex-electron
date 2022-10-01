@@ -1,5 +1,5 @@
 import { findNode, focusEditor, getPlateEditorRef, select, getStartPoint } from '@udecode/plate'
-import { mog } from '../../utils/lib/helper'
+import { mog } from '@utils/lib/mog'
 import create from 'zustand'
 
 interface Highlighted {

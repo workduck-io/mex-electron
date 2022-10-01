@@ -1,6 +1,7 @@
 import React, { useEffect, useMemo, useState } from 'react'
 
 import { AppType } from '@data/constants'
+import { mog } from '@utils/lib/mog'
 
 import { IpcAction } from '../../data/IpcAction'
 import { PriorityType, TodoStatus, TodoType } from '../../editor/Components/Todo/types'
@@ -10,7 +11,6 @@ import { getPureContent } from '../../hooks/useTodoKanban'
 import useTodoStore from '../../store/useTodoStore'
 import { Reminder } from '../../types/reminders'
 import Todo, { TodoControls } from '../../ui/components/Todo'
-import { mog } from '../../utils/lib/helper'
 
 interface NotificationTodoProps {
   oid?: string

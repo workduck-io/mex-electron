@@ -1,19 +1,20 @@
-import closeCircleLine from '@iconify/icons-ri/close-circle-line'
-import Tippy, { useSingleton } from '@tippyjs/react'
-import { PinnedList } from '@ui/sidebar/Sidebar.style'
-import { mog } from '@utils/lib/helper'
-import starFill from '@iconify/icons-ri/star-fill'
+import React, { useEffect, useMemo } from 'react'
 
 import { useBookmarks } from '@hooks/useBookmarks'
+import closeCircleLine from '@iconify/icons-ri/close-circle-line'
+import starFill from '@iconify/icons-ri/star-fill'
+import { useEditorStore } from '@store/useEditorStore'
+import Tippy, { useSingleton } from '@tippyjs/react'
+import { PinnedList } from '@ui/sidebar/Sidebar.style'
+import { mog } from '@utils/lib/mog'
 import { NavigationType, ROUTE_PATHS, useRouting } from '@views/routes/urls'
-import React, { useEffect, useMemo } from 'react'
 import styled from 'styled-components'
+
 import { getTitleFromPath, useLinks } from '../../../hooks/useLinks'
 import { useNavigation } from '../../../hooks/useNavigation'
 import useDataStore from '../../../store/useDataStore'
 import StarNoteButton from '../Buttons/StarNoteButton'
 import SidebarListItemComponent from './SidebarListItem'
-import { useEditorStore } from '@store/useEditorStore'
 
 export const Centered = styled.div`
   display: flex;

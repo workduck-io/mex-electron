@@ -2,7 +2,7 @@ import React, { forwardRef } from 'react'
 
 import Tippy from '@tippyjs/react'
 import { isUrl } from '@udecode/plate'
-import { mog } from '@utils/lib/helper'
+import { mog } from '@utils/lib/mog'
 import styled, { css, useTheme } from 'styled-components'
 
 import { MexIcon } from '../../../../style/Layouts'

@@ -1,4 +1,4 @@
-import { mog } from '@utils/lib/helper'
+import { mog } from '@utils/lib/mog'
 import { isEqual, isEmpty } from 'lodash'
 import { StoreApi, State } from 'zustand'
 

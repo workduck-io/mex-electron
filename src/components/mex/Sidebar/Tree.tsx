@@ -10,19 +10,19 @@ import {
   TreeItem,
   TreeSourcePosition
 } from '@atlaskit/tree'
+import { useRefactor } from '@hooks/useRefactor'
 import { getTreeFromLinks } from '@hooks/useTreeFromLinks'
 import useDataStore from '@store/useDataStore'
 import { useEditorStore } from '@store/useEditorStore'
 import { useTreeStore } from '@store/useTreeStore'
 import Tippy, { useSingleton } from '@tippyjs/react'
-import { mog } from '@utils/lib/helper'
+import { mog } from '@utils/lib/mog'
 import { NavigationType, ROUTE_PATHS, useRouting } from '@views/routes/urls'
 import { useLocation, useMatch } from 'react-router-dom'
 
 import { useRefactorStore } from '../Refactor/Refactor'
 import { RenderTreeItem } from './TreeItem'
 import { getNameFromPath, SEPARATOR } from './treeUtils'
-import { useRefactor } from '@hooks/useRefactor'
 
 // import { complexTree } from '../mockdata/complexTree'
 

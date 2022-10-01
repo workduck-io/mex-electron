@@ -4,7 +4,7 @@ import { isParent } from '@components/mex/Sidebar/treeUtils'
 import downIcon from '@iconify/icons-ph/arrow-down-bold'
 import { Icon } from '@iconify/react'
 import { useSpotlightSettingsStore } from '@store/settings.spotlight'
-import { mog } from '@utils/lib/helper'
+import { mog } from '@utils/lib/mog'
 import { useSpring } from 'react-spring'
 
 import { BASE_TASKS_PATH, defaultContent } from '../../../data/Defaults/baseData'

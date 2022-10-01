@@ -1,6 +1,7 @@
 import React from 'react'
 
 import { useApi } from '@apis/useSaveApi'
+import { mog } from '@utils/lib/mog'
 
 // import { useRefactorStore } from '../components/mex/Refactor/Refactor'
 // import { linkInRefactor } from '../components/mex/Refactor/doesLinkRemain'
@@ -10,7 +11,6 @@ import { useApi } from '@apis/useSaveApi'
 // import { CustomEvents } from '../services/analytics/events'
 import useDataStore from '../store/useDataStore'
 import { NodeLink } from '../types/relations'
-import { mog } from '../utils/lib/helper'
 // import { getNodeIcon } from '../utils/lib/icons'
 import { getUniquePath, isMatch } from '../utils/lib/paths'
 import { getLatestContent, useEditorBuffer } from './useEditorBuffer'
