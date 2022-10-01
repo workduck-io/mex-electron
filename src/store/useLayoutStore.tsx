@@ -5,7 +5,7 @@ export interface FocusMode {
   hover: boolean
 }
 
-export type InfobarMode = 'default' | 'flow' | 'graph' | 'reminders' | 'suggestions'
+export type InfobarMode = 'default' | 'flow' | 'graph' | 'reminders' | 'snippets'
 
 interface LayoutState {
   sidebar: {
@@ -32,7 +32,7 @@ interface LayoutState {
 
   expandSidebar: () => void
 
-  showAllSidebars: () => void
+  showAllSidebars: (expandRHSidebar: boolean) => void
   hideAllSidebars: () => void
   toggleAllSidebars: () => void
 
@@ -91,10 +91,10 @@ export const useLayoutStore = create<LayoutState>((set, get) => ({
       rhSidebar: { ...state.rhSidebar, expanded: false }
     })),
 
-  showAllSidebars: () =>
+  showAllSidebars: (expandRHSidebar) =>
     set((state) => ({
       sidebar: { ...state.sidebar, show: true },
-      rhSidebar: { ...state.rhSidebar, show: true, expanded: false }
+      rhSidebar: { ...state.rhSidebar, show: true, expanded: expandRHSidebar }
     })),
 
   hideAllSidebars: () =>

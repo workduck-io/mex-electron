@@ -17,12 +17,48 @@ export const TagsHelp = (
   </div>
 )
 
+const GenericNodeLinkHelp = () => (
+  <div>
+    <p>Hover over note to preview temporarily, Click to preserve preview and interact.</p>
+    <p>Click twice on the note to navigate.</p>
+  </div>
+)
+
 export const BacklinksHelp = (
   <div>
     <h1>Backlinks</h1>
-    <p>Notes that reference current document.</p>
+    <p>Notes that reference current note.</p>
+    <GenericNodeLinkHelp />
+    <p>Click on the title to switch to Forwardlinks</p>
+  </div>
+)
+
+export const ForwardlinksHelp = (
+  <div>
+    <h1>Forwardlinks</h1>
+    <p>Notes that are referenced from the current note.</p>
+    <GenericNodeLinkHelp />
+    <p>Click on the title to switch to Backlinks</p>
+  </div>
+)
+
+export const SuggestionsHelp = (
+  <div>
+    <h1>Suggestions</h1>
+    <p>Notes that are similar to current document.</p>
     <p>Hover over note to preview temporarily, Click to preserve preview and interact.</p>
+    <p>Use buttons to link/embed the note.</p>
     <p>Click twice on the note to navigate.</p>
+  </div>
+)
+
+export const SnippetSidebarHelp = (
+  <div>
+    <h1>Snippets</h1>
+    <p>Hover over snippet to preview.</p>
+    <p>Click on title to insert snippet in note.</p>
+    <p>Click on the title of the preview to open the snippet.</p>
+    <p>Search for snippets</p>
   </div>
 )
 

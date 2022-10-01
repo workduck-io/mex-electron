@@ -23,6 +23,7 @@ import { SlashCommandConfig } from './Types'
 import { mog } from '../../../utils/lib/helper'
 import { defaultContent } from '../../../data/Defaults/baseData'
 import { ELEMENT_ACTION_BLOCK } from '../Actions/types'
+import { useLastUsedSnippets } from '@hooks/useLastOpened'
 
 export const useSlashCommandOnChange = (
   keys: Record<string, SlashCommandConfig>
@@ -34,6 +35,7 @@ export const useSlashCommandOnChange = (
   const { trackEvent } = useAnalytics()
 
   const { getSnippetContent } = useSnippets()
+  const { addLastUsed } = useLastUsedSnippets()
 
   return (editor: PlateEditor, item: IComboboxItem) => {
     const targetRange = useComboboxStore.getState().targetRange
@@ -47,11 +49,12 @@ export const useSlashCommandOnChange = (
         const isBlockEnd = editor.selection && pathAbove && isEndPoint(editor, editor.selection.anchor, pathAbove)
 
         if (isElder(commandKey, 'snip')) {
-          mog('im here', { commandKey, item, keys })
+          // mog('im here', { commandKey, item, keys })
           const content = getSnippetContent(commandConfig.command)
 
           const eventName = getEventNameFromElement('Editor', ActionType.USE, 'Snippet')
           trackEvent(eventName, { 'mex-content': content })
+          if (item.data && item?.data?.id) addLastUsed(item.data.id)
 
           if (content) {
             select(editor, targetRange)

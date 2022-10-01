@@ -7,7 +7,7 @@ export enum LastOpenedState {
 /**
  * Last opened note details
  */
-export interface LastOpenedNote {
+export interface LastOpenedData {
   /** Number of times opened */
   freq: number
 
@@ -22,12 +22,20 @@ export interface LastOpenedNote {
  * Last opened note mapped to their nodeid
  */
 export interface LastOpenedNotes {
-  [nodeid: string]: LastOpenedNote
+  [nodeid: string]: LastOpenedData
+}
+
+/**
+ * Last opened note mapped to their nodeid
+ */
+export interface LastUsedSnippets {
+  [snippetid: string]: LastOpenedData
 }
 
 export interface UserPreferences {
   version: string
   lastOpenedNotes: LastOpenedNotes
+  lastUsedSnippets: LastUsedSnippets
   /** Current mex Theme */
   theme?: string
   activeNamespace?: string // * Namespace Id

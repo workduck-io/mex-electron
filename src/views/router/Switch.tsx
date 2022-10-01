@@ -11,7 +11,7 @@ import { OverlaySidebarWindowWidth } from '@style/responsive'
 import { mog } from '@utils/lib/helper'
 import React, { useEffect } from 'react'
 import { useMediaQuery } from 'react-responsive'
-import { Outlet, Route, Routes, useLocation } from 'react-router-dom'
+import { matchPath, Outlet, Route, Routes, useLocation } from 'react-router-dom'
 import { animated } from 'react-spring'
 import styled from 'styled-components'
 import Search from '../../components/mex/Search/Search'
@@ -91,8 +91,12 @@ const Switch = () => {
         showSidebar()
         hideRHSidebar()
       } else if (location.pathname.startsWith(ROUTE_PATHS.node)) {
-        // mog('Showing Sidebar', { location })
-        showAllSidebars()
+        if (location.state && location.state.from) {
+          const match = matchPath(`${ROUTE_PATHS.node}/:id`, location.state.from)
+          if (match) {
+            showAllSidebars(true)
+          } else showAllSidebars(false)
+        } else showAllSidebars(false)
       } else if (location.pathname.startsWith(ROUTE_PATHS.archive)) {
         showSidebar()
         hideRHSidebar()

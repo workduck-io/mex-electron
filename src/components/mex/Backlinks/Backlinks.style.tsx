@@ -1,3 +1,4 @@
+import { Button, IconButton } from '@workduck-io/mex-components'
 import { transparentize } from 'polished'
 import styled, { css } from 'styled-components'
 import { HoverSubtleGlow, SubtleGlow } from '../../../style/helpers'
@@ -14,13 +15,19 @@ export const NodeLinkWrapper = styled.div`
   background: none;
 `
 
+export const NodeLinkTitleWrapper = styled.div<{ selected?: boolean }>`
+  display: flex;
+  align-items: center;
+  gap: ${({ theme }) => theme.spacing.tiny};
+`
+
 export const NodeLinkStyled = styled.div<{ selected?: boolean }>`
   display: flex;
   align-items: center;
+  justify-content: space-between;
   gap: ${({ theme }) => theme.spacing.small};
   cursor: pointer;
   border-radius: ${({ theme }) => theme.borderRadius.tiny};
-  /* margin-bottom: ${({ theme }) => theme.spacing.small}; */
   background: ${({ theme }) => transparentize(0.75, theme.colors.gray[8])};
   padding: ${({ theme }) => `${theme.spacing.small} ${theme.spacing.medium}`};
 
@@ -30,12 +37,28 @@ export const NodeLinkStyled = styled.div<{ selected?: boolean }>`
     height: 16px;
   }
 
+  ${Button} {
+    padding: ${({ theme }) => theme.spacing.tiny};
+  }
+
+  &:hover {
+    ${Button} {
+      color: ${({ theme }) => theme.colors.text.oppositePrimary};
+      &:hover {
+        color: ${({ theme }) => theme.colors.primary};
+      }
+    }
+  }
+
   ${({ selected, theme }) =>
     selected
       ? css`
           background: ${theme.colors.primary};
           color: ${theme.colors.text.oppositePrimary};
           ${SubtleGlow}
+          svg {
+            fill: ${theme.colors.text.oppositePrimary};
+          }
         `
       : css`
           &:nth-child(2n + 1) {

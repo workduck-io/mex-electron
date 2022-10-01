@@ -21,8 +21,8 @@ export const defaultShortcuts = {
     category: 'Navigate',
     disabled: true
   },
-  showSuggestedNodes: {
-    title: 'Smart Suggestions',
+  showSnippetSidebar: {
+    title: 'Snippets',
     keystrokes: '$mod+/',
     category: 'Actions'
   },

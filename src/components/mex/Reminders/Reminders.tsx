@@ -1,5 +1,6 @@
 import addCircleLine from '@iconify/icons-ri/add-circle-line'
 import { Icon } from '@iconify/react'
+import Collapse from '@ui/layout/Collapse/Collapse'
 import { Button } from '@workduck-io/mex-components'
 import React, { useMemo } from 'react'
 import { useReminders, useReminderStore } from '../../../hooks/useReminders'
@@ -30,8 +31,8 @@ const RemindersInfobar = () => {
 
   return (
     <InfobarFull>
+      {/*
       <InfobarTools>
-        {/*
         <IconButton
           size={24}
           icon={timerFlashLine}
@@ -47,12 +48,12 @@ const RemindersInfobar = () => {
             goTo(ROUTE_PATHS.reminders, NavigationType.push)
           }}
           title="All Reminders"
-        /> */}
-        <label htmlFor="reminders">Reminders</label>
+          />
+          <label htmlFor="reminders">Reminders</label>
       </InfobarTools>
+        */}
 
       <ReminderInfobar>
-        <Title>Reminders</Title>
         <Button large primary onClick={() => openModal({ nodeid: nodeid })}>
           <Icon icon={addCircleLine} />
           Create Reminder
@@ -64,19 +65,26 @@ const RemindersInfobar = () => {
             // const path = getPathFromNodeid(suggestion.id)
             // const content = con ? con.content : defaultContent.content
             // mog('SuggestionInfoBar', { content, con, path, suggestion })
-            <ReminderGroupWrapper key={`ReminderGroup_${nodeid}_${reminderGroup.type}`}>
-              <Title>{reminderGroup.label}</Title>
-              <RemindersWrapper>
-                {reminderGroup.reminders.map((reminder) => (
-                  <ReminderUI
-                    controls={getReminderControls(reminder)}
-                    key={`ReminderFo_${reminder.id}`}
-                    oid={`ReminderUI_for_${reminder.id}_infobar`}
-                    reminder={reminder}
-                  />
-                ))}
-              </RemindersWrapper>
-            </ReminderGroupWrapper>
+            <Collapse
+              key={`reminder_${reminderGroup.label}`}
+              maximumHeight="40vh"
+              defaultOpen
+              title={reminderGroup.label}
+            >
+              <ReminderGroupWrapper key={`ReminderGroup_${nodeid}_${reminderGroup.type}`}>
+                <RemindersWrapper>
+                  {reminderGroup.reminders.map((reminder) => (
+                    <ReminderUI
+                      controls={getReminderControls(reminder)}
+                      key={`ReminderFo_${reminder.id}`}
+                      oid={`ReminderUI_for_${reminder.id}_infobar`}
+                      reminder={reminder}
+                      inSidebar
+                    />
+                  ))}
+                </RemindersWrapper>
+              </ReminderGroupWrapper>
+            </Collapse>
           )
         )}
       </ReminderInfobar>

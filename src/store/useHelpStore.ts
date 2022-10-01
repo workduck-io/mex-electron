@@ -58,7 +58,7 @@ export const useHelpStore = create<HelpState>(
     }),
     {
       name: SHORTCUT_STORE_KEY,
-      version: 0,
+      version: 1,
       getStorage: () => indexedDbStorageZustand,
       migrate: (persistedState: any, version: number) => {
         persistedState.shortcuts = mergeShortcuts(persistedState.shortcuts, defaultShortcuts)

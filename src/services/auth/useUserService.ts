@@ -111,6 +111,7 @@ export const useUserService = () => {
 
   const updateUserPreferences = async (): Promise<boolean> => {
     const lastOpenedNotes = useUserPreferenceStore.getState().lastOpenedNotes
+    const lastUsedSnippets = useUserPreferenceStore.getState().lastUsedSnippets
     const theme = useUserPreferenceStore.getState().theme
     const userID = useAuthStore.getState().userDetails.userID
     const version = useVersionStore.getState().version
@@ -118,6 +119,7 @@ export const useUserService = () => {
     const userPreferences: UserPreferences = {
       version,
       lastOpenedNotes,
+      lastUsedSnippets,
       theme
     }
 

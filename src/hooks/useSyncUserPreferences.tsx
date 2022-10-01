@@ -18,6 +18,7 @@ export const useAutoSyncUserPreference = () => {
       mog('User Preferences Fetched: ', { userPreferences })
       if (userPreferences) {
         const localUserPreferences = getUserPreferences()
+        mog('Local User Preferences: ', { localUserPreferences })
         const mergedUserPreferences = mergeUserPreferences(localUserPreferences, userPreferences)
         setUserPreferences(mergedUserPreferences)
       }
