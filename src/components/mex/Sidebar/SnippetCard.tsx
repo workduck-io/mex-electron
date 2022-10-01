@@ -76,7 +76,7 @@ const SnippetCard = ({ snippet, preview = true, icon, keyStr, onClick }: Snippet
     setVisible(false)
   }
 
-  mog('SnippetCard', { snippet, lastUsed })
+  // mog('SnippetCard', { snippet, lastUsed })
 
   return (
     <SnippetPreview
