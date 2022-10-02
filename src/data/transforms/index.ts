@@ -1,4 +1,4 @@
-import { Snippet } from '../../store/useSnippetStore'
+import type { Snippet } from '../../store/useSnippetStore'
 import { ArrayTransform, CustomTransformation, DataTransformation, KeysTransformation } from '../../utils/dataTransform'
 import { initialSnippets } from '../initial/snippets'
 

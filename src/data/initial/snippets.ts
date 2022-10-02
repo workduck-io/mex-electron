@@ -1,17 +1,17 @@
-import { Snippet } from '../../store/useSnippetStore'
+import type { Snippet } from '../../store/useSnippetStore'
 import { generateSnippetId } from '../Defaults/idPrefixes'
 import { ABTestingSnippet } from './ABTestingSnippet'
-import { BugReportTemplate } from './bugReportTemplate'
 import { DesignSpecSnippet } from './DesignSpecSnippet'
 import { DesignSprintSnippet } from './DesignSprint'
-import { GrowthSnippet } from './GrowthSnippet'
 import { GTMPlanSnippet } from './GTMPlanSnippet'
-import { OnboardingDoc } from './onboardingDoc'
+import { GrowthSnippet } from './GrowthSnippet'
 import { OnePagerSnippet } from './OnePagerSnippet'
 import { PRDTemplate } from './PRD_Snippet'
 import { ProductSpecSnippet } from './ProductSpecSnippet'
 import { ReleaseSnippet } from './ReleaseSnippet'
 import { SprintReviewSnippet } from './SprintReview'
+import { BugReportTemplate } from './bugReportTemplate'
+import { OnboardingDoc } from './onboardingDoc'
 
 /**
  * ## Creating Initial Snippet Templates
