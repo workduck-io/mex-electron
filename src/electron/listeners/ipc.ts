@@ -34,6 +34,7 @@ import { getAppleNotes } from '@utils/importers/appleNotes'
 import { app, globalShortcut, ipcMain } from 'electron'
 import fs from 'fs'
 
+import { AppType, spotlightShortcut } from '../../data/constants'
 import { AuthTokenData } from '../../types/auth'
 import { FileData } from '../../types/data'
 import { MentionData } from '../../types/mentions'
@@ -42,14 +43,6 @@ import { idxKey } from '../../types/search'
 import { ToastStatus, ToastType } from '../../types/toast'
 import { checkForUpdatesAndNotifyWrapper } from '../update'
 import handlePinnedWindowsIPCListener from './pinned-windows'
-
-export let SPOTLIGHT_SHORTCUT = 'CommandOrCOntrol+Shift+X'
-
-enum AppType {
-  SPOTLIGHT = 'SPOTLIGHT',
-  MEX = 'MEX',
-  TOAST = 'TOAST'
-}
 
 const handleIPCListener = () => {
   ipcMain.on('close', closeWindow)
@@ -64,10 +57,10 @@ const handleIPCListener = () => {
 
   ipcMain.on(IpcAction.SET_SPOTLIGHT_SHORTCUT, (event, arg) => {
     const newSpotlightShortcut = getGlobalShortcut(arg.shortcut)
-    if (newSpotlightShortcut !== SPOTLIGHT_SHORTCUT) {
-      globalShortcut.unregister(SPOTLIGHT_SHORTCUT)
+    if (newSpotlightShortcut !== spotlightShortcut.SPOTLIGHT_SHORTCUT) {
+      globalShortcut.unregister(spotlightShortcut.SPOTLIGHT_SHORTCUT)
       globalShortcut.register(newSpotlightShortcut, handleToggleMainWindow)
-      SPOTLIGHT_SHORTCUT = newSpotlightShortcut
+      spotlightShortcut.SPOTLIGHT_SHORTCUT = newSpotlightShortcut
     }
   })
 
@@ -106,7 +99,7 @@ const handleIPCListener = () => {
   ipcMain.on(IpcAction.DISABLE_GLOBAL_SHORTCUT, (event, arg) => {
     const { disable } = arg
     if (disable) globalShortcut.unregisterAll()
-    else globalShortcut.register(SPOTLIGHT_SHORTCUT, handleToggleMainWindow) // * If more than one global listener, use registerAll
+    else globalShortcut.register(spotlightShortcut.SPOTLIGHT_SHORTCUT, handleToggleMainWindow) // * If more than one global listener, use registerAll
   })
 
   ipcMain.on(IpcAction.GET_TOKEN_DATA, async (event) => {

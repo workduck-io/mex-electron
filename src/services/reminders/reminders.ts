@@ -1,6 +1,21 @@
 import { sub } from 'date-fns'
+
+import { generateTempId } from '@workduck-io/mex-utils'
+
 import { Reminder, ReminderGroup } from '../../types/reminders'
-import { insertId } from '../../utils/lib/content'
+
+export const insertId = (content: any[]) => {
+  if (content.length === 0) {
+    return content
+  }
+  return content.map((item) => {
+    if (item.children) item.children = insertId(item.children)
+    return {
+      ...item,
+      id: generateTempId()
+    }
+  })
+}
 
 /*
  * Only sets up reminder for the next 24 hours

@@ -4,10 +4,20 @@ import {
   SyncBlockTemplate,
   SyncStoreIntents
 } from '../editor/Components/SyncBlock/SyncBlock.types'
-import { TodosType } from '../editor/Components/Todo/types'
-import { View } from '../hooks/useTaskViews'
-import { ILink, LinkCache, MIcon, NodeEditorContent, SharedNode, Tag, TagsCache } from '../types/Types'
+import type { TodosType } from '../editor/Components/Todo/types'
+import { ILink, LinkCache, MIcon, NodeEditorContent, SharedNode, Tag, TagsCache } from './Types'
+import { Filter, GlobalFilterJoin } from './filters'
 import { Reminder } from './reminders'
+
+export interface View {
+  title: string
+  description?: string
+  id: string
+
+  filters: Filter[]
+
+  globalJoin: GlobalFilterJoin
+}
 
 export interface Snippet {
   id: string

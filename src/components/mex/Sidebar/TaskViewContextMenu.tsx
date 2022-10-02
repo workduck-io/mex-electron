@@ -1,7 +1,7 @@
 import React from 'react'
 
 import { useTaskViewModalStore } from '@components/mex/TaskViewModal'
-import { useTaskViews, useViewStore, View } from '@hooks/useTaskViews'
+import { useTaskViews, useViewStore } from '@hooks/useTaskViews'
 import trashIcon from '@iconify/icons-codicon/trash'
 import fileCopyLine from '@iconify/icons-ri/file-copy-line'
 import { Icon } from '@iconify/react'
@@ -9,6 +9,7 @@ import { ContextMenuContent, ContextMenuItem, ContextMenuSeparator } from '@ui/c
 import { mog } from '@utils/lib/mog'
 import { NavigationType, ROUTE_PATHS, useRouting } from '@views/routes/urls'
 
+import { View } from '../../../types/data'
 import { SidebarListItem } from './SidebarList.types'
 
 interface TaskViewContextMenuProps {

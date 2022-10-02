@@ -1,10 +1,9 @@
 import { trayIconBase64, twitterIconBase64 } from '@data/Defaults/images'
 import { IpcAction } from '@data/IpcAction'
-import { AppType } from '@data/constants'
+import { AppType, spotlightShortcut } from '@data/constants'
 import { nativeImage, Tray, Menu, app, shell } from 'electron'
 
 import { windowManager } from './WindowManager'
-import { SPOTLIGHT_SHORTCUT } from './listeners/ipc'
 import { createMexWindow, handleToggleMainWindow } from './utils/helper'
 
 const createTray = () => {
@@ -16,7 +15,7 @@ const createTray = () => {
   const contextMenu = Menu.buildFromTemplate([
     {
       label: 'Quick Capture',
-      accelerator: SPOTLIGHT_SHORTCUT,
+      accelerator: spotlightShortcut.SPOTLIGHT_SHORTCUT,
       click: () => {
         handleToggleMainWindow()
       }
@@ -47,7 +46,7 @@ const createTray = () => {
     },
     {
       label: 'Open Spotlight',
-      accelerator: SPOTLIGHT_SHORTCUT,
+      accelerator: spotlightShortcut.SPOTLIGHT_SHORTCUT,
       click: () => {
         windowManager.getWindow(AppType.SPOTLIGHT)?.show()
       }

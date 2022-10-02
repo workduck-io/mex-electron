@@ -1,14 +1,16 @@
-import checkboxLine from '@iconify/icons-ri/checkbox-line'
+import React, { useMemo, useState } from 'react'
+
 import { useTaskViewModalStore } from '@components/mex/TaskViewModal'
-import stackLine from '@iconify/icons-ri/stack-line'
 import { TasksHelp } from '@data/Defaults/helpText'
-import { useTaskViews, useViewStore, View } from '@hooks/useTaskViews'
+import { useTaskViews, useViewStore } from '@hooks/useTaskViews'
 import trashIcon from '@iconify/icons-codicon/trash'
 import addCircleLine from '@iconify/icons-ri/add-circle-line'
 import arrowLeftRightLine from '@iconify/icons-ri/arrow-left-right-line'
+import checkboxLine from '@iconify/icons-ri/checkbox-line'
 import dragMove2Fill from '@iconify/icons-ri/drag-move-2-fill'
 import edit2Line from '@iconify/icons-ri/edit-2-line'
 import fileCopyLine from '@iconify/icons-ri/file-copy-line'
+import stackLine from '@iconify/icons-ri/stack-line'
 import { Icon } from '@iconify/react'
 import {
   ShortcutToken,
@@ -24,7 +26,7 @@ import {
 import { Title } from '@style/Typography'
 import { useSingleton } from '@tippyjs/react'
 import { NavigationType, ROUTE_PATHS, useRouting } from '@views/routes/urls'
-import React, { useMemo, useState } from 'react'
+
 import {
   Button,
   IconButton,
@@ -33,6 +35,8 @@ import {
   DisplayShortcut,
   LoadingButton
 } from '@workduck-io/mex-components'
+
+import { View } from '../../../types/data'
 import { Filter, GlobalFilterJoin } from '../../../types/filters'
 
 interface TaskHeaderProps {
