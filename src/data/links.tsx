@@ -11,6 +11,7 @@ import { useHelpStore } from '../store/useHelpStore'
 import { ROUTE_PATHS } from '../views/routes/urls'
 import { useMatch } from 'react-router-dom'
 import { useEditorStore } from '@store/useEditorStore'
+import { useViewStore } from '@hooks/useTaskViews'
 
 /*
 Sidebar links are defined here
@@ -22,15 +23,14 @@ export const GetIcon = (icon: any): React.ReactNode => <Icon icon={icon} />
 
 const useNavlinks = () => {
   const shortcuts = useHelpStore((store) => store.shortcuts)
-  // const nodeid = useEditorStore((store) => store.node.nodeid)
-  // const reminders = useReminderStore((store) => store.reminders)
-  // const ilinks = useDataStore((store) => store.ilinks)
-  // const archive = useDataStore((store) => store.archive)
-  // const tasks = useTodoStore((store) => store.todos)
-  // const { getLinkCount } = useLinks()
 
-  const match = useMatch(`${ROUTE_PATHS.node}/:nodeid`)
-  const nodeid = match?.params?.nodeid || useEditorStore.getState().node.nodeid
+  /* Find current note if available */
+  const matchNodePath = useMatch(`${ROUTE_PATHS.node}/:nodeid`)
+  const nodeid = matchNodePath?.params?.nodeid || useEditorStore.getState().node.nodeid
+
+  /* Find current view if available */
+  const matchViewPath = useMatch(`${ROUTE_PATHS.tasks}/:viewid`)
+  const viewid = matchViewPath?.params?.viewid || useViewStore.getState().currentView?.id
 
   // const count = useMemo(() => getLinkCount(), [reminders, ilinks, archive, tasks])
 
@@ -77,7 +77,7 @@ const useNavlinks = () => {
       },
       {
         title: 'Tasks',
-        path: ROUTE_PATHS.tasks,
+        path: viewid ? `${ROUTE_PATHS.tasks}/${viewid}` : ROUTE_PATHS.tasks,
         icon: GetIcon(checkboxLine),
         shortcut: shortcuts.showTasks.keystrokes
         // count: count.tasks

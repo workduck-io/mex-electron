@@ -1,4 +1,4 @@
-import { Button, IconButton } from '@workduck-io/mex-components'
+import { Button } from '@workduck-io/mex-components'
 import { transparentize } from 'polished'
 import styled, { css } from 'styled-components'
 import { HoverSubtleGlow, SubtleGlow } from '../../../style/helpers'
@@ -19,6 +19,10 @@ export const NodeLinkTitleWrapper = styled.div<{ selected?: boolean }>`
   display: flex;
   align-items: center;
   gap: ${({ theme }) => theme.spacing.tiny};
+
+  svg {
+    flex-shrink: 0;
+  }
 `
 
 export const NodeLinkStyled = styled.div<{ selected?: boolean }>`
