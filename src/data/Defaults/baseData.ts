@@ -1,4 +1,3 @@
-import { ELEMENT_QA_BLOCK } from '../../editor/Components/QABlock/createQAPlugin'
 import { questions } from '../../editor/Components/QABlock/starters'
 import { FileData, NodeContent } from '../../types/data'
 import { generateILinks } from '../../utils/generateComboItem'
@@ -6,8 +5,7 @@ import { draftContent } from '../initial/draftDoc'
 import { onboardingContent } from '../initial/onboardingDoc'
 import { generateNodeUID, generateTempId, MEETING_PREFIX } from './idPrefixes'
 
-// import { generateTempId } from './idPrefixes'
-//]
+export const ELEMENT_QA_BLOCK = 'agent-based-question'
 
 export interface Contents {
   // Mapped with nodeid

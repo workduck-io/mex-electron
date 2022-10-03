@@ -1,4 +1,4 @@
-import type { Snippet } from '../../store/useSnippetStore'
+import type { Snippet } from '../../types/data'
 import { generateSnippetId } from '../Defaults/idPrefixes'
 import { ABTestingSnippet } from './ABTestingSnippet'
 import { DesignSpecSnippet } from './DesignSpecSnippet'
