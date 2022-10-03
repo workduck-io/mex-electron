@@ -39,7 +39,8 @@ const config: UserConfig = {
     target: `node16`,
     outDir: 'dist',
     assetsDir: '.',
-    minify: process.env.MODE !== 'development',
+    minify: false,
+    // minify: process.env.MODE !== 'development',
     rollupOptions: {
       input: {
         main: path.resolve(__dirname, 'src/electron/main.ts'),
