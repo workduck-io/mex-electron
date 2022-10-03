@@ -25,15 +25,6 @@ export interface ViewStore {
   updateView: (view: View) => void
 }
 
-// export const useFilterStoreBase = create<FilterStore<any>>((set) => ({
-//   filters: [],
-//   currentFilters: [],
-//   indexes: ['node', 'shared'],
-//   setFilters: (filters) => set((state) => ({ ...state, filters })),
-//   setCurrentFilters: (currentFilters) => set((state) => ({ ...state, currentFilters })),
-//   setIndexes: (indexes) => set((state) => ({ ...state, indexes }))
-// }))
-
 export const useViewStore = create<ViewStore>((set) => ({
   views: [],
   currentView: undefined,
@@ -77,19 +68,19 @@ export const useTaskViews = () => {
 
   const addView = async (view: View) => {
     const resp = await saveView(view)
-    mog('After Svaing that view', { resp })
+    // mog('After Svaing that view', { resp })
     addViewStore(view)
   }
 
   const updateView = async (view: View) => {
     const resp = await saveView(view)
-    mog('After update via saving that view', { resp })
+    // mog('After update via saving that view', { resp })
     updateViewStore(view)
   }
 
   const deleteView = async (viewid: string) => {
     const resp = await deleteViewApi(viewid)
-    mog('After deleting that view', { resp })
+    // mog('After deleting that view', { resp })
     removeViewStore(viewid)
   }
 
