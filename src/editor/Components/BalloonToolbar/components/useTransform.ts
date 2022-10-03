@@ -8,6 +8,7 @@ import useDataStore from '@store/useDataStore'
 import {
   deleteText,
   getNodeEntries,
+  getNodeFragment,
   getPath,
   getSelectionText,
   insertNodes,
@@ -16,14 +17,11 @@ import {
   withoutNormalizing
 } from '@udecode/plate'
 import { convertValueToTasks } from '@utils/lib/contentConvertTask'
-import { mog } from '@workduck-io/mex-utils'
 import genereateName from 'project-name-generator'
 import { SEPARATOR } from '../../../../components/mex/Sidebar/treeUtils'
-import { defaultContent } from '../../../../data/Defaults/baseData'
 import { generateSnippetId, generateTempId } from '../../../../data/Defaults/idPrefixes'
-import { useEditorStore } from '../../../../store/useEditorStore'
 import { NodeEditorContent } from '../../../../types/Types'
-import { getSlug, NODE_PATH_CHAR_LENGTH, NODE_PATH_SPACER } from '../../../../utils/lib/strings'
+import { getSlug, NODE_PATH_SPACER } from '../../../../utils/lib/strings'
 import { convertContentToRawText } from '../../../../utils/search/parseData'
 import { ELEMENT_ILINK } from '../../ilink/defaults'
 import { ILinkNode } from '../../ilink/types'
@@ -121,7 +119,7 @@ export const useTransform = () => {
       // mog('replaceSelectionWithLink  selPath', { selectionPath })
 
       if (inline) deleteText(editor)
-      else removeNodes(editor, { at: editor.selection, hanging: false })
+      else removeNodes(editor, { at: editor.selection, hanging: true, mode: 'highest' })
       // Transforms.liftNodes(editor, { at: editor.selection, mode: 'lowest' })
 
       // mog('replaceSelectionWithLink  detFrag', { selectionPath })
@@ -187,11 +185,14 @@ export const useTransform = () => {
 
       const selText = getSelectionText(editor)
 
-      const value = nodes.map(([node, _path]) => {
-        return node
-      })
       const isInline = lowest.length === 1
-      const putContent = selText.length > NODE_PATH_CHAR_LENGTH && title !== undefined
+      // Only query for lowest value if selection is inline
+      const lowestValue = isInline ? getNodeFragment(editor, editor.selection) : []
+      const value = isInline
+        ? lowestValue
+        : nodes.map(([node, _path]) => {
+            return node
+          })
 
       const text = convertContentToRawText(value, NODE_PATH_SPACER)
 
@@ -207,11 +208,21 @@ export const useTransform = () => {
         const childTitle = title ?? (isInline ? getSlug(selText) : getSlug(text))
         const path = parentPath + SEPARATOR + childTitle
 
-        // mog('selectionToNode  ', { parentPath, childTitle, path, namespace, editorId, nodeid })
+        //         mog('selectionToNode  ', {
+        //           parentPath,
+        //           lowest,
+        //           lowestValue,
+        //           value,
+        //           childTitle,
+        //           path,
+        //           namespace,
+        //           editorId,
+        //           nodeid
+        //         })
 
         const note = createNewNote({
           path,
-          noteContent: putContent ? value : defaultContent.content,
+          noteContent: value,
           namespace: namespace,
           noRedirect: true
         })
