@@ -4,11 +4,15 @@ import { ActionGroupType } from '@components/spotlight/Actions/useActionStore'
 import { WORKSPACE_HEADER } from '@data/Defaults/defaults'
 import { useAuthStore } from '@services/auth/useAuth'
 import { mog } from '@utils/lib/helper'
+
 import { client } from '@workduck-io/dwindle'
+
+import { useNamespaces } from './useNamespaces'
 
 export const usePortals = () => {
   const setApps = usePortalStore((store) => store.setApps)
   const getWorkspaceId = useAuthStore((store) => store.getWorkspaceId)
+  const { getNamespaceOfNodeid } = useNamespaces()
   const connectPortal = usePortalStore((store) => store.connectPortal)
   const updateConnectedPortals = usePortalStore((store) => store.updateConnectedPortals)
   const setConnectedPortals = usePortalStore((store) => store.setConnectedPortals)
@@ -31,8 +35,9 @@ export const usePortals = () => {
 
   const connectToPortal = async (actionGroupId: string, serviceId: string, parentNodeId: string) => {
     const workspaceId = getWorkspaceId()
+    const namespaceId = getNamespaceOfNodeid(parentNodeId)?.id
 
-    const portal: PortalType = { serviceId, parentNodeId, serviceType: actionGroupId, mexId: workspaceId }
+    const portal: PortalType = { serviceId, parentNodeId, serviceType: actionGroupId, mexId: workspaceId, namespaceId }
 
     try {
       const res = client.post(apiURLs.connectToLochService(), portal, {
