@@ -1,6 +1,6 @@
+import { ActionGroupType } from '@components/spotlight/Actions/useActionStore'
 import create from 'zustand'
 import { devtools, persist } from 'zustand/middleware'
-import { ActionGroupType } from '@components/spotlight/Actions/useActionStore'
 
 const PORTAL_STORE_KEY = 'apps-portal-store'
 
@@ -10,6 +10,7 @@ export type PortalType = {
   mexId?: string
   nodeId?: string
   parentNodeId?: string
+  namespaceId: string
   sessionStartTime?: number
 }
 
