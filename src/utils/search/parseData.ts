@@ -14,6 +14,8 @@ import { ELEMENT_EXCALIDRAW } from '@udecode/plate-excalidraw'
 import { insertId } from '@utils/lib/content'
 import { textChildren } from '@utils/lib/smallContent'
 
+import { mog } from '@workduck-io/mex-utils'
+
 import { HASH_SEPARATOR, SEPARATOR } from '../../data/Defaults/idPrefixes'
 import { diskIndex, indexNames } from '../../data/search'
 import { ELEMENT_INLINE_BLOCK } from '../../editor/Components/InlineBlock/types'
@@ -49,11 +51,12 @@ type ReplacementFunction = (blockValue: any, keyToIndex: string) => string
 
 const excalidraw_replacement: ReplacementFunction = (blockValue, keyToIndex) => {
   const rawValue = blockValue[keyToIndex]
-  const parsedExcalidrawElements = JSON.parse(rawValue).elements
+  mog('RAW VALUE OF EXCALI', { rawValue })
+  const parsedExcalidrawElements = JSON.parse(rawValue || '{}').elements
 
   const text: string[] = []
 
-  parsedExcalidrawElements.forEach((elem) => {
+  parsedExcalidrawElements?.forEach((elem) => {
     if (elem.text && elem.text !== '') {
       text.push(elem.text)
     }

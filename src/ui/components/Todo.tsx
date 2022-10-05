@@ -4,7 +4,9 @@ import { useTodoBuffer } from '@hooks/useTodoBuffer'
 import useTodoBufferStore from '@hooks/useTodoBufferStore'
 import useModalStore, { ModalsType } from '@store/useModalStore'
 import useTodoStore from '@store/useTodoStore'
-import { getPlateEditorRef, setNodes } from '@udecode/plate'
+import { findNodePath, getPlateEditorRef, setNodes, replaceNodeChildren } from '@udecode/plate'
+
+import { mog } from '@workduck-io/mex-utils'
 
 import { getNextStatus, PriorityDataType, PriorityType, TodoStatus, TodoType } from '../../editor/Components/Todo/types'
 import { MexIcon } from '../../style/Layouts'
@@ -20,6 +22,7 @@ export interface TodoControls {
 
 interface TodoProps {
   parentNodeId: string
+  element?: any
   todoid: string
   oid?: string
   controls?: TodoControls
@@ -30,7 +33,7 @@ interface TodoProps {
 }
 
 const Todo = React.forwardRef<any, TodoProps>((props, ref) => {
-  const { parentNodeId, todoid, children, readOnly, oid, controls, showDelete = true } = props
+  const { parentNodeId, todoid, children, readOnly, oid, controls, element, showDelete = true } = props
 
   const [showOptions, setShowOptions] = useState(false)
   const [animate, setAnimate] = useState(false)
@@ -58,15 +61,14 @@ const Todo = React.forwardRef<any, TodoProps>((props, ref) => {
 
     const hasChildren = children?.[0]?.props?.text?.text === ''
 
-    if (existingTodo?.entityId && hasChildren) {
-      const editor = getPlateEditorRef(parentNodeId)
-      if (editor)
-        setNodes(editor, existingTodo.content[0], {
-          at: [],
-          match: (n) => {
-            return n?.entityId === existingTodo.entityId
-          }
-        })
+    if (existingTodo?.entityId && hasChildren && existingTodo?.content && element) {
+      const editor = getPlateEditorRef()
+      console.log('EDITOR', { editor, todoid, children, parentNodeId })
+      if (editor) {
+        const path = findNodePath(editor, element)
+
+        replaceNodeChildren(editor, { at: path, nodes: existingTodo.content[0].children })
+      }
     }
   }, [todoid])
 

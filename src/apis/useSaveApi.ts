@@ -358,9 +358,9 @@ export const useApi = () => {
     { isRefresh = false, isShared = false, isUpdate = true, withEntities = true }: GetDataTypeOptions
   ) => {
     const url = isShared ? apiURLs.getSharedNode(nodeid) : apiURLs.getNode(nodeid)
-    if (!isShared && isRequestedWithin(2, url) && !isRefresh) {
-      return
-    }
+    // if (!isShared && !isRefresh) {
+    //   return
+    // }
 
     try {
       const res = await client.get(url, {

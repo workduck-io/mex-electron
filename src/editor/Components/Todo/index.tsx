@@ -25,9 +25,9 @@ const TodoElement = React.forwardRef<any, any>((props, ref) => {
     if (editor) {
       try {
         removeNodes(editor, { at: [], mode: 'highest', match: (node) => element.id === node.id })
-        
+
         useTodoBufferStore.getState().updateTodoType(nodeid, element.entityId, 'DELETE')
-        
+
         const blockPresentAbove = getBlockAbove(editor)
 
         if (!blockPresentAbove) insertNode(editor, getDefaultContent())
@@ -44,6 +44,7 @@ const TodoElement = React.forwardRef<any, any>((props, ref) => {
       {...attributes}
       readOnly={readOnly}
       oid={'EditorTodo'}
+      element={element}
       todoid={element.entityId}
       parentNodeId={nodeid}
       controls={{

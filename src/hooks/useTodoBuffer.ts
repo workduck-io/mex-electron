@@ -123,10 +123,9 @@ export const useTodoBuffer = () => {
           !checkIsEqual(existingTodo, todo, ['lastEditedBy', 'publicAccess', 'updatedAt', 'createdAt', 'createdBy'])
         ) {
           updatedTodos.push(todo)
-        } else {
         }
       } else {
-        if (todo.type !== 'PREVIEW') updatedTodos.push(todo)
+        updatedTodos.push(todo)
       }
     })
 

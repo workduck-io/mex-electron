@@ -39,9 +39,10 @@ export const GOOGLE_OAUTH2_REFRESH_URL = `${MEXIT_BACKEND_URL_BASE}/oauth2/getGo
 export const API_URL = config.constants.MEX_BACKEND_BASE_URL
 
 // * Entities
-export const ENTITIES_API_BASE_URL = IS_DEV ? 'http://localhost:4000' : 'https://entities.workduck.io/api/v1'
+export const TASK_ENTITIES_API_URL = IS_DEV ? 'http://localhost:4000' : 'https://http-test.workduck.io/task'
+
 export const ENTITIES_API = {
-  task: `${ENTITIES_API_BASE_URL}`
+  task: `${TASK_ENTITIES_API_URL}`
 }
 
 export const apiURLs = {

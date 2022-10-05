@@ -133,9 +133,9 @@ const NewTodoSection = () => {
     }
   }, [todo, updated])
 
-  const todoEditorId = useMemo(() => `${todo.nodeid}_task_${todo.entityId}`, [todo])
-
   if (!todo) return <></>
+
+  const todoEditorId = `${todo.nodeid}_task_${todo.entityId}`
 
   return (
     <TaskEditorWrapper>

@@ -53,7 +53,7 @@ const useEditorPluginConfig = (editorId: string, options?: PluginOptionType) => 
   const { openReminderModal } = useOpenReminderModal()
   const { createNewNote } = useCreateNewNote()
   // Combobox
-  const snippetConfigs = options?.comboboxOptions?.snippets === false ? [] : getSnippetsConfigs()
+  const snippetConfigs = options?.comboboxOptions?.snippets === false ? {} : getSnippetsConfigs()
   // const syncBlockConfigs = getSyncBlockConfigs()
 
   const { params, location } = useRouting()
