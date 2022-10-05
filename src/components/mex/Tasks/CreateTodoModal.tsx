@@ -1,14 +1,13 @@
-import React, { useEffect, useState } from 'react'
+import React, { useEffect, useMemo, useState } from 'react'
 
 import { useApi } from '@apis/useSaveApi'
-import { defaultContent } from '@data/Defaults/baseData'
 import { TodoType } from '@editor/Components/Todo/types'
-import { useEditorBuffer } from '@hooks/useEditorBuffer'
 import useEntityAPIs from '@hooks/useEntityAPIs'
 import { useTodoBuffer } from '@hooks/useTodoBuffer'
+import useTodoBufferStore from '@hooks/useTodoBufferStore'
 import { useUpdater } from '@hooks/useUpdater'
 import useModalStore, { ModalsType } from '@store/useModalStore'
-import { getPlateEditorRef, PlateProvider } from '@udecode/plate'
+import { PlateProvider } from '@udecode/plate'
 import { mog } from '@utils/lib/helper'
 import toast from 'react-hot-toast'
 import Modal from 'react-modal'
@@ -16,42 +15,46 @@ import Modal from 'react-modal'
 import { Button, DisplayShortcut, LoadingButton } from '@workduck-io/mex-components'
 import { tinykeys } from '@workduck-io/tinykeys'
 
-import { QuickLink } from '../NodeSelect/NodeSelect'
-import { ModalControls, ModalHeader, ModalSection } from '../Refactor/styles'
+import { ModalControls, ModalHeader } from '../Refactor/styles'
 import TaskEditor from './TaskEditor'
-import { TaskEditorWrapper } from './TaskEditor/styled'
+import { ScrollableModalSection, TaskEditorWrapper } from './TaskEditor/styled'
 
 const CreateTodoModal = () => {
   const isOpen = useModalStore((store) => store.open === ModalsType.todo)
   const setOpen = useModalStore((store) => store.toggleOpen)
   const { clearAndSaveTodo, removeTodoFromBuffer } = useTodoBuffer()
   const { createTodo } = useEntityAPIs()
+  const { getNoteTodo } = useTodoBuffer()
   const setModalData = useModalStore((store) => store.setData)
   const { updateTodoInContent } = useUpdater()
-  const { saveAndClearBuffer } = useEditorBuffer()
   const { appendToNoteAPI } = useApi()
   const [isLoading, setIsLoading] = useState<boolean>(false)
 
   const onCreateTask = async () => {
     setIsLoading(true)
-    const todo = useModalStore.getState().data
+    const openedTodo = useModalStore.getState().data
 
-    try {
-      const savedTodo = await createTodo(todo)
+    const todoBuffer = getNoteTodo(openedTodo.nodeid, openedTodo.entityId)
 
-      if (savedTodo) {
-        clearAndSaveTodo(savedTodo)
-        saveAndClearBuffer()
-        appendToNoteAPI(savedTodo.nodeid, '', savedTodo.content)
-        updateTodoInContent(savedTodo.nodeid, [savedTodo])
-        toast('Task created!')
+    if (todoBuffer) {
+      const { type, ...todo } = todoBuffer
+
+      try {
+        const savedTodo = await createTodo(todo)
+
+        if (savedTodo) {
+          clearAndSaveTodo(savedTodo)
+          appendToNoteAPI(savedTodo.nodeid, '', savedTodo.content)
+          updateTodoInContent(savedTodo.nodeid, [savedTodo])
+          toast('Task created!')
+        }
+      } catch (err) {
+        toast('Error occured while creating Task')
+        mog('Error occured while creating Task', { err })
+      } finally {
+        setIsLoading(false)
+        setOpen(undefined)
       }
-    } catch (err) {
-      toast('Error occured while creating Task')
-      mog('Error occured while creating Task', { err })
-    } finally {
-      setIsLoading(false)
-      setOpen(undefined)
     }
   }
 
@@ -93,7 +96,7 @@ const CreateTodoModal = () => {
       onRequestClose={onRequestClose}
       isOpen={isOpen}
     >
-      <ModalSection>
+      <ScrollableModalSection>
         <ModalHeader>New Task</ModalHeader>
         <NewTodoSection />
         <ModalControls>
@@ -112,43 +115,34 @@ const CreateTodoModal = () => {
             Add <DisplayShortcut shortcut={'$mod+Enter'} />
           </LoadingButton>
         </ModalControls>
-      </ModalSection>
+      </ScrollableModalSection>
     </Modal>
   )
 }
 
-const NewTodoSection = ({ onSelectNote }: { onSelectNote?: (item: QuickLink) => void }) => {
+const NewTodoSection = () => {
   const todo = useModalStore((store) => store.data)
-  const setModalData = useModalStore((store) => store.setData)
+  const [updated, setUpdated] = useState(false)
 
-  const onEditorChange = (content: any) => {
-    if (todo) {
-      setModalData({ ...todo, content })
+  const onEditorChange = () => {}
+
+  useEffect(() => {
+    if (todo && !updated) {
+      useTodoBufferStore.getState().update(todo.nodeid, todo)
+      setUpdated(true)
     }
-  }
+  }, [todo, updated])
 
-  const handleSelectItem = (item: QuickLink) => {
-    onSelectNote(item)
-  }
+  const todoEditorId = useMemo(() => `${todo.nodeid}_task_${todo.entityId}`, [todo])
 
   if (!todo) return <></>
 
-  const todoEditorId = `hello_${todo.nodeid}_task_${todo.entityId}`
-
-  const e = getPlateEditorRef()
-  mog('SOM', { f: e })
-  mog('TODO IS', { todo })
-
   return (
-    <PlateProvider id={todoEditorId}>
-      <TaskEditorWrapper>
-        <TaskEditor
-          editorId={todoEditorId}
-          content={todo?.content || defaultContent.content}
-          onChange={onEditorChange}
-        />
-      </TaskEditorWrapper>
-    </PlateProvider>
+    <TaskEditorWrapper>
+      <PlateProvider id={todoEditorId}>
+        <TaskEditor editorId={todoEditorId} content={todo?.content} onChange={onEditorChange} />
+      </PlateProvider>
+    </TaskEditorWrapper>
   )
 }
 

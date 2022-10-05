@@ -1,3 +1,4 @@
+import { BASE_DRAFT_PATH, BASE_MEETING_PATH, BASE_TASKS_PATH } from '@data/Defaults/idPrefixes'
 import toast from 'react-hot-toast'
 
 import { BreadcrumbItem } from '@workduck-io/mex-components'
@@ -9,7 +10,6 @@ import {
   isElder,
   SEPARATOR
 } from '../../components/mex/Sidebar/treeUtils'
-import { BASE_DRAFT_PATH, BASE_MEETING_PATH, BASE_TASKS_PATH } from '../../data/Defaults/baseData'
 import { FlowCommandPrefix } from '../../editor/Components/SlashCommands/useSyncConfig'
 import { SnippetCommandPrefix } from '../../hooks/useSnippets'
 import { ILink, SingleNamespace } from '../../types/Types'

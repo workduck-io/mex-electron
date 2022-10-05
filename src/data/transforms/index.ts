@@ -2,10 +2,10 @@ import { TodoBufferType } from '@hooks/useTodoBufferStore'
 import { FileData } from '@types/data'
 import { ELEMENT_TODO_LI } from '@udecode/plate'
 import { getNewTodoAndBlock } from '@utils/search/parseData'
+
 import { mog } from '@workduck-io/mex-utils'
 
 import { Snippet } from '../../store/useSnippetStore'
-import { NodeEditorContent } from '../../types/Types'
 import { ArrayTransform, CustomTransformation, DataTransformation, KeysTransformation } from '../../utils/dataTransform'
 import { initialSnippets } from '../initial/snippets'
 
@@ -37,26 +37,26 @@ const v01404 = (): CustomTransformation => {
   }
 }
 
-/** 
-  * Move Old Tasks to Task Entities
-*/
-const v01603 = (): CustomTransformation => {
+/**
+ * Move Old Tasks to Task Entities
+ */
+const v01621 = (): CustomTransformation => {
   return {
     type: 'CustomTransformation',
-    version: '0.16.0-alpha.3',
+    version: '0.16.2-alpha.1',
     custom: (data: FileData) => {
       const todosBuffer: TodoBufferType = {}
       if (data.contents) {
         Object.entries(data.contents).map(([noteId, noteContent]) => {
           const nodeTodos = {}
-          const transformedContent = (noteContent?.content)?.map((block) => {
+          const transformedContent = noteContent?.content?.map((block) => {
             if (block?.type === ELEMENT_TODO_LI && !block?.entityId) {
               const { newTodo, newBlock } = getNewTodoAndBlock(block)
               mog(`>> block ${block?.id}`, { block, newTodo, newBlock })
               nodeTodos[newTodo.entityId] = newTodo
               return newBlock
             }
-            
+
             return block
           })
 
@@ -67,8 +67,9 @@ const v01603 = (): CustomTransformation => {
         })
       }
 
-      if (!data?.saveBuffer?.todosBuffer && data?.todos) return { ...data, saveBuffer: { ...(data.saveBuffer ?? {}), todosBuffer} }
-      
+      if (!data?.saveBuffer?.todosBuffer && data?.todos)
+        return { ...data, saveBuffer: { ...(data.saveBuffer ?? {}), todosBuffer } }
+
       return data
     }
   }
@@ -176,7 +177,7 @@ export const UpdateVersionTransforms: Array<DataTransformation> = [
   v0120(),
   v01404(),
   v014010(),
-  v01603(),
+  v01621()
 ]
 
 export const DefaultTransforms: Array<DataTransformation> = [

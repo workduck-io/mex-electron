@@ -190,7 +190,7 @@ export const createAllWindows = (d: any) => {
       window.webContents.send(IpcAction.SHOW_RELEASE_NOTES, { update: d?.update })
     }
   })
-  
+
   const spotlightWindowRef = createSpotLighWindow()
 
   windows.toast = new Toast(spotlightWindowRef)

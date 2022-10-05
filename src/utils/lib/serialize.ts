@@ -1,7 +1,8 @@
 // import { generateTempId } from '../Defaults/idPrefixes'
-import { ELEMENT_TODO_LI } from '@editor/Components/Todo/createTodoPlugin'
 import { TodoType } from '@editor/Components/Todo/types'
 import { useAuthStore } from '@services/auth/useAuth'
+
+import { ELEMENT_TODO_LI, mog } from '@workduck-io/mex-utils'
 
 import { generateTempId } from '../../data/Defaults/idPrefixes'
 import { extractMetadata } from './metadata'
@@ -127,10 +128,12 @@ export const serializeSpecial: { [elementType: string]: (element: any, nodeid: s
   },
   [ELEMENT_TODO_LI]: (el: any, nodeid: string) => {
     const childId = el?.children?.at(0)?.id
+    const children = [{ text: '', id: childId ?? generateTempId() }]
+    mog('CHILD OF NOTE', { el, childId, children })
 
     return {
       id: el.id || generateTempId(),
-      children: [{ text: '', id: childId ?? generateTempId() }],
+      children,
       elementType: el.type,
       properties: {
         entityId: el.entityId

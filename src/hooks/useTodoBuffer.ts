@@ -1,11 +1,14 @@
+import { createDefaultTodo } from '@editor/Components/Todo/todoUtils'
 import { TodoType } from '@editor/Components/Todo/types'
-import useTodoStore, { createDefaultTodo } from '@store/useTodoStore'
+import useTodoStore from '@store/useTodoStore'
 import { runBatch } from '@utils/lib/batchPromise'
 import { getMentionsFromContent, getTagsFromContent } from '@utils/lib/content'
 import { mog } from '@utils/lib/helper'
 import { checkIsEqual } from '@utils/lib/objects'
 import { serializeTodo } from '@utils/lib/serialize'
 import { isEmpty } from 'lodash'
+
+import { ELEMENT_TODO_LI } from '@workduck-io/mex-utils'
 
 import { NodeEditorContent } from '../types/Types'
 import useEntityAPIs from './useEntityAPIs'
@@ -18,7 +21,7 @@ export const useTodoBuffer = () => {
   const addTodoInStore = useTodoStore((store) => store.addTodoInNode)
   const removeTodoFromBuffer = useTodoBufferStore((store) => store.removeTodo)
   const removeNoteBuffer = useTodoBufferStore((store) => store.remove)
-  const setNoteTodos = useTodoStore((store) => store.setNodeTodos)
+  const updateTodosOfNode = useTodoStore((store) => store.updateTodosOfNode)
 
   /*
     Adds given Todo to respecive Note's Todo buffer.
@@ -27,23 +30,29 @@ export const useTodoBuffer = () => {
     updateTodoBuffer(noteId, todo)
   }
 
+  const getTodoWithBlock = (noteId: string, entityId, todoBlock: NodeEditorContent): TodoType => {
+    const todo = getNoteTodo(noteId, entityId) || createDefaultTodo(noteId, todoBlock)
+    const tags = getTagsFromContent(todoBlock)
+    const mentions = getMentionsFromContent(todoBlock)
+
+    return {
+      ...todo,
+      content: todoBlock,
+      entityMetadata: { ...todo.entityMetadata, tags, mentions }
+    }
+  }
+
   /*
     Adds all Todo changes to Buffer. 
   */
   const addInBuffer = (noteId: string, todos: NodeEditorContent) => {
     const todoBuffer = todos?.reduce((prev, todoContent) => {
-      const todo = getNoteTodo(noteId, todoContent.entityId) || createDefaultTodo(noteId, [todoContent])
-      const tags = getTagsFromContent([todoContent])
-      const mentions = getMentionsFromContent([todoContent])
+      const todo = getTodoWithBlock(noteId, todoContent[0].entityId, todoContent)
 
       if (todo)
         return {
           ...prev,
-          [todo.entityId]: {
-            ...todo,
-            content: [todoContent],
-            entityMetadata: { ...todo.entityMetadata, tags, mentions }
-          }
+          [todo.entityId]: todo
         }
     }, {})
 
@@ -63,7 +72,7 @@ export const useTodoBuffer = () => {
 
       Object.entries(todosInBuffer).forEach(([noteId, todosBuffer]) => {
         if (todosInBuffer[noteId]) {
-          const existingTodo = getNodeTodos(noteId)?.reduce((prev, todo) => {
+          const existingTodo = getNodeTodos[noteId]?.reduce((prev, todo) => {
             if (todo.entityId) {
               return { ...prev, [todo.entityId]: todo }
             }
@@ -76,10 +85,8 @@ export const useTodoBuffer = () => {
           if (serializedTodos.length > 0) {
             const req = updateTodos(serializedTodos)
               .then((d) => {
-                if (isEmpty(d?.UnprocessedItems)) {
-                  setNoteTodos(noteId, Object.values(todosBuffer))
-                  removeNoteBuffer(noteId)
-                }
+                updateTodosOfNode(noteId, Object.values(todosBuffer))
+                removeNoteBuffer(noteId)
               })
               .catch((err) => {
                 mog(`Error occured while saving ${noteId} - Todos buffer`, { err })
@@ -89,8 +96,6 @@ export const useTodoBuffer = () => {
           }
         }
       })
-
-      mog('TODO SAVE REQUEST', { todosSaveRequests }, { show: true })
 
       if (todosSaveRequests.length > 0) {
         await runBatch(todosSaveRequests)
@@ -111,19 +116,18 @@ export const useTodoBuffer = () => {
   const getUpdatedTodos = (existing: NoteTodoBufferType = {}, newTodos: NoteTodoBufferType) => {
     const updatedTodos = []
 
-    Object.entries(existing).forEach(([entityId, todo]) => {
-      if (!newTodos[entityId]) updatedTodos.push(setTodoUpdateType(todo, 'DELETE'))
-    })
-
     Object.entries(newTodos).forEach(([entityId, todo]) => {
       const existingTodo = existing[entityId]
       if (existingTodo) {
         if (
           !checkIsEqual(existingTodo, todo, ['lastEditedBy', 'publicAccess', 'updatedAt', 'createdAt', 'createdBy'])
         ) {
-          updatedTodos.push(setTodoUpdateType(todo, 'UPDATE'))
+          updatedTodos.push(todo)
+        } else {
         }
-      } else updatedTodos.push(setTodoUpdateType(todo, 'UPDATE'))
+      } else {
+        if (todo.type !== 'PREVIEW') updatedTodos.push(todo)
+      }
     })
 
     return updatedTodos
@@ -203,6 +207,17 @@ export const useTodoBuffer = () => {
     }
   }
 
+  /* 
+    Checks if Note's Todos need to be fetched
+    For now, it call get all todos of Note 
+  */
+
+  const areTodosPresent = (noteId: string, content: NodeEditorContent) => {
+    return content.find(
+      (block) => block.entityId && block.type === ELEMENT_TODO_LI && !getNoteTodo(noteId, block.entityId)
+    )
+  }
+
   /*
     Checks if Todos Buffer is Empty
     If 'noteId' is present, checks status of that Note's Buffer. 
@@ -224,9 +239,11 @@ export const useTodoBuffer = () => {
     getNoteTodosBuffer,
     getTodosWithBuffer,
     addTodoInBuffer,
+    getTodoWithBlock,
     flushTodosBuffer,
     updateNoteTodo,
     isTodosBufferEmpty,
+    areTodosPresent,
     getNoteTodo,
     clearAndSaveTodo,
     removeTodoFromBuffer

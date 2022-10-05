@@ -1,6 +1,4 @@
-import { getDefaultTodo } from '@data/Defaults/baseData'
 import { ELEMENT_MENTION } from '@editor/Components/mentions/defaults'
-import { PriorityType, TodoStatus } from '@editor/Components/Todo/types'
 import { ELEMENT_TODO_LI } from '@udecode/plate'
 import { uniq } from 'lodash'
 

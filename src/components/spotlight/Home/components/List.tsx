@@ -3,12 +3,14 @@ import React, { useEffect, useMemo, useRef, useState } from 'react'
 import { isParent } from '@components/mex/Sidebar/treeUtils'
 import { getDefaultContent } from '@components/spotlight/Preview'
 import { BASE_TASKS_PATH } from '@data/Defaults/baseData'
+import { convertContentToEntities } from '@editor/Components/Todo/todoUtils'
 import { useCreateNewNote } from '@hooks/useCreateNewNote'
 import { useLastOpened, useLastUsedSnippets } from '@hooks/useLastOpened'
 import { useNodes } from '@hooks/useNodes'
 import { useSaveData } from '@hooks/useSaveData'
 import { usePlatformInfo } from '@hooks/useShortcutListener'
 import { useTaskFromSelection } from '@hooks/useTaskFromSelection'
+import useTodoBufferStore from '@hooks/useTodoBufferStore'
 import { useSpotlightSettingsStore } from '@store/settings.spotlight'
 import { useRecentsStore } from '@store/useRecentsStore'
 import { serializeHtml, createPlateEditor, createPlateUI, getPlateSelectors } from '@udecode/plate'
@@ -95,6 +97,7 @@ const List = ({
   const { getNodeType } = useNodes()
   const { addLastUsed } = useLastUsedSnippets()
 
+  const addTodosInBuffer = useTodoBufferStore((store) => store.addTodosInBuffer)
   const { getNewTaskNode } = useTaskFromSelection()
 
   const { debouncedAddLastOpened } = useLastOpened()
@@ -298,6 +301,7 @@ const List = ({
               if (isPinnedNote) {
                 if (selection) {
                   const isNewTask = isParent(nodePath, BASE_TASKS_PATH)
+
                   saveIt({
                     path: nodePath,
                     saveAndClose: true,
@@ -311,10 +315,6 @@ const List = ({
 
                 return
               }
-
-              addInRecents(node.nodeid)
-              setNormalMode(false)
-              debouncedAddLastOpened(node.nodeid)
 
               if (currentActiveItem?.extras.new && !activeItem.active) {
                 const text = getInputText(search)
@@ -330,11 +330,16 @@ const List = ({
                 // })
                 createNewNote({ path: nodePath, noteId: node.nodeid, namespace: selectedNamespace })
               }
+
+              addInRecents(node.nodeid)
+              setNormalMode(false)
+              debouncedAddLastOpened(node.nodeid)
             }
           }
         } else if (currentActiveItem.category === CategoryType.task) {
           if (event.metaKey) {
             const node = getNewTaskNode(false)
+
             if (!node) {
               saveIt({
                 beforeSave: ({ path, noteId, noteContent }) => {
@@ -366,6 +371,16 @@ const List = ({
               title: node.path ?? 'Today Tasks',
               id: node.nodeid
             })
+
+            const selectedTasks = useSpotlightEditorStore.getState().previewEntities?.tasks
+            const {
+              entities: { tasks }
+            } = convertContentToEntities(node.nodeid, selectedTasks)
+
+            if (tasks) {
+              addTodosInBuffer(node.nodeid, tasks)
+            }
+
             addInRecents(node.nodeid)
             debouncedAddLastOpened(node.nodeid)
             setNormalMode(false)
@@ -421,12 +436,14 @@ const List = ({
             isNewTask
           })
         }
+
         appNotifierWindow(IpcAction.SHOW_PINNED_NOTE_WINDOW, AppType.SPOTLIGHT, { noteId: node.nodeid })
 
         return
       }
 
       setNormalMode(false)
+
       if (currentActiveItem?.extras.new && !activeItem.active) {
         const node = useSpotlightEditorStore.getState().node
 

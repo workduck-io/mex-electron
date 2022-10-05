@@ -1,10 +1,12 @@
 import { useActionsCache } from '@components/spotlight/Actions/useActionsCache'
 import { useBufferStore } from '@hooks/useEditorBuffer'
 import { useReminderStore } from '@hooks/useReminders'
+import useTodoBufferStore from '@hooks/useTodoBufferStore'
 import { useAuthStore } from '@services/auth/useAuth'
 import { useTokenStore } from '@services/auth/useTokens'
 import { useContentStore } from '@store/useContentStore'
 import useDataStore from '@store/useDataStore'
+import useMultipleEditors from '@store/useEditorsStore'
 import { useMentionStore } from '@store/useMentionStore'
 import { useRecentsStore } from '@store/useRecentsStore'
 import { useSnippetStore } from '@store/useSnippetStore'
@@ -15,7 +17,6 @@ import { useAuthStore as useDwindleAuthStore } from '@workduck-io/dwindle'
 
 import { syncStoreState } from '.'
 import { BroadcastSyncedChannel } from './types'
-import useMultipleEditors from '@store/useEditorsStore'
 
 const syncStores = () => {
   if ('BroadcastChannel' in globalThis) {
@@ -78,6 +79,10 @@ const syncStores = () => {
     syncStoreState(useBufferStore, {
       name: BroadcastSyncedChannel.EDITOR_BUFFER,
       sync: [{ field: 'buffer' }]
+    })
+    syncStoreState(useTodoBufferStore, {
+      name: BroadcastSyncedChannel.TASKS_BUFFER,
+      sync: [{ field: 'todosBuffer' }]
     })
     syncStoreState(useTodoStore, {
       name: BroadcastSyncedChannel.TASKS,

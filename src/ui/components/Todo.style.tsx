@@ -14,27 +14,27 @@ export const SkeletonLoader = (theme) => keyframes`
   }
 `
 
-export const TodoContainer = styled.div<{ checked?: boolean, $loading?: boolean }>`
+export const TodoContainer = styled.div<{ checked?: boolean; $loading?: boolean }>`
   display: flex;
   flex-direction: row;
   position: relative;
   width: 100%;
   padding: ${({ theme }) => theme.spacing.tiny}
-
-  ${({ theme, $loading}) => $loading && css`
-    box-sizing: border-box;
-    margin: ${({ theme }) => theme.spacing.tiny};
-    padding: 0;
-    border-radius: ${({ theme }) =>theme.borderRadius.tiny};
-    animation: ${SkeletonLoader(theme)} 0.6s linear infinite alternate;
-  `}
-
-  ${({ theme, checked }) =>
-    checked &&
-    css`
-      color: ${theme.colors.gray[5]};
-      text-decoration: line-through;
-    `}
+    ${({ theme, $loading }) =>
+      $loading &&
+      css`
+        box-sizing: border-box;
+        margin: ${({ theme }) => theme.spacing.tiny};
+        padding: 0;
+        border-radius: ${({ theme }) => theme.borderRadius.tiny};
+        animation: ${SkeletonLoader(theme)} 0.6s linear infinite alternate;
+      `}
+    ${({ theme, checked }) =>
+      checked &&
+      css`
+        color: ${theme.colors.gray[5]};
+        text-decoration: line-through;
+      `};
 `
 
 export const TodoActionWrapper = styled.span`
@@ -122,10 +122,10 @@ export const TodoOptions = styled.span`
 
 export const CheckBoxWrapper = styled.span`
   display: flex;
-  padding: 0.3rem 0.3rem 0 0;
   user-select: none;
   justify-content: center;
   align-items: flex-start;
+  padding: 0.3rem 0.3rem 0 0;
 
   input {
     width: 1rem;

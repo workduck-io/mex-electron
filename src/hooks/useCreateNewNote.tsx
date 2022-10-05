@@ -6,7 +6,7 @@ import { useEditorStore } from '@store/useEditorStore'
 import { NavigationType, ROUTE_PATHS, useRouting } from '@views/routes/urls'
 import toast from 'react-hot-toast'
 
-import { DRAFT_NODE } from '@workduck-io/mex-utils'
+import { DRAFT_NODE, mog } from '@workduck-io/mex-utils'
 
 import { NodeEditorContent } from '../types/Types'
 import { useHierarchy } from './useHierarchy'
@@ -83,6 +83,8 @@ export const useCreateNewNote = () => {
       namespace
     })
 
+    mog('NAmepsp', { namespace, node })
+
     if (node === undefined) {
       toast.error('The node clashed')
 
@@ -100,6 +102,7 @@ export const useCreateNewNote = () => {
 
       addLastOpened(node.nodeid)
     })
+
     if (!options?.noRedirect) {
       push(node.nodeid, { withLoading: false, fetch: false })
 
@@ -107,6 +110,7 @@ export const useCreateNewNote = () => {
         goTo(ROUTE_PATHS.node, NavigationType.push, node.nodeid)
       }
     }
+
     return node
   }
 

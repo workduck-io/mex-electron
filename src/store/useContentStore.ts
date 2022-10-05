@@ -1,8 +1,8 @@
-import { TodoType } from '@editor/Components/Todo/types'
 import create from 'zustand'
 import { devtools } from 'zustand/middleware'
-import { NodeContent, NodeMetadata } from '../types/data'
+
 import { NodeEditorContent } from '../types/Types'
+import { NodeContent, NodeMetadata } from '../types/data'
 
 export interface Contents {
   // Mapped with nodeid
@@ -29,9 +29,7 @@ export const useContentStore = create<ContentStoreState>()(
     saved: false,
     setSaved: (saved) => set(() => ({ saved })),
     setContent: (nodeid, content, metadata) => {
-      // mog('SetContent', { nodeid, content, metadata })
       const oldContent = get().contents
-      // console.log('OldContent is here:', { oldContent: oldContent[nodeid] })
 
       const oldMetadata = oldContent[nodeid] && oldContent[nodeid].metadata ? oldContent[nodeid].metadata : undefined
       if (oldContent?.[nodeid]) delete oldContent?.[nodeid]
@@ -61,7 +59,6 @@ export const useContentStore = create<ContentStoreState>()(
       const content = oldContent[nodeid] && oldContent[nodeid].content ? oldContent[nodeid].content : undefined
       delete oldContent[nodeid]
       const nmetadata = { ...oldMetadata, ...metadata }
-      // console.log({ oldMetadata, nmetadata, metadata })
       set({
         contents: { ...oldContent, [nodeid]: { type: 'editor', content, metadata: nmetadata } }
       })

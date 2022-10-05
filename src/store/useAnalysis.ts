@@ -9,6 +9,8 @@ import { NodeEditorContent } from '@types/Types'
 import { ipcRenderer } from 'electron'
 import create from 'zustand'
 
+import { mog } from '@workduck-io/mex-utils'
+
 import { IpcAction } from '../data/IpcAction'
 import { TodoType } from '../editor/Components/Todo/types'
 import { useBufferStore, useEditorBuffer } from '../hooks/useEditorBuffer'
@@ -17,7 +19,6 @@ import { areEqual } from '../utils/lib/hash'
 import { checkIfUntitledDraftNode } from '../utils/lib/strings'
 import { useContentStore } from './useContentStore'
 import { useEditorStore } from './useEditorStore'
-import { mog } from '@workduck-io/mex-utils'
 
 export interface OutlineItem {
   id: string
@@ -50,19 +51,6 @@ export const useAnalysisStore = create<AnalysisStore>((set, get) => ({
     set({ analysis })
   }
 }))
-
-export const useAnalysisTodoAutoUpdate = () => {
-  // const { setTodo } = useEditorStore(state => state)
-  const { addInBuffer } = useTodoBuffer()
-  const analysis = useAnalysisStore((state) => state.analysis)
-  const node = useEditorStore((state) => state.node)
-
-  useEffect(() => {
-    const { editorTodos, nodeid } = useAnalysisStore.getState().analysis
-    mog('ADDING IN BUFFER', { editorTodos })
-    addInBuffer(nodeid, editorTodos)
-  }, [analysis, node])
-}
 
 export const useAnalysisIPC = () => {
   const setAnalysis = useAnalysisStore((s) => s.setAnalysis)

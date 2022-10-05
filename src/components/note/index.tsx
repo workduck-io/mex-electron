@@ -13,6 +13,8 @@ import Header from './Header'
 import Note from './Note'
 import { NoteWindowLayout } from './styled'
 import { useAnalysisIPC } from '@store/useAnalysis'
+import useTodoBufferStore from '@hooks/useTodoBufferStore'
+import useTodoStore from '@store/useTodoStore'
 
 const NoteWindow = () => {
   const [noteId, setNoteId] = useState<string>(undefined)
@@ -45,6 +47,18 @@ const NoteWindow = () => {
     syncStoreState(useUserPreferenceStore, {
       name: BroadcastSyncedChannel.USER_PROPERTIES,
       sync: [{ field: 'theme' }],
+      init: true
+    })
+
+    syncStoreState(useTodoStore, {
+      name: BroadcastSyncedChannel.TASKS,
+      sync: [{ field: 'todos'}],
+      init: true
+    })
+
+    syncStoreState(useTodoBufferStore, {
+      name: BroadcastSyncedChannel.TASKS_BUFFER,
+      sync: [{ field: 'todosBuffer' }],
       init: true
     })
 

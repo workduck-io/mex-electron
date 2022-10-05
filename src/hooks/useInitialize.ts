@@ -11,7 +11,6 @@ import useLoad from './useLoad'
 import { useNamespaces } from './useNamespaces'
 import { useSlashCommands } from './useSlashCommands'
 import { useViewStore } from './useTaskViews'
-import useTodoBufferStore from './useTodoBufferStore'
 
 export enum AppType {
   SPOTLIGHT = 'SPOTLIGHT',
@@ -26,7 +25,6 @@ export const useInitialize = () => {
   const initSyncBlocks = useSyncStore((state) => state.initSyncBlocks)
   const setReminders = useReminderStore((state) => state.setReminders)
   const setViews = useViewStore((state) => state.setViews)
-  const initializeTodosBuffer = useTodoBufferStore((store) => store.initializeTodosBuffer)
   const initSnippets = useSnippetStore((state) => state.initSnippets)
   const { generateSlashCommands } = useSlashCommands()
   const { loadNodeProps } = useLoad()

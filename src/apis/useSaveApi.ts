@@ -178,7 +178,7 @@ export const useApi = () => {
     const res = await client.patch(url, reqData, { headers: workspaceHeaders() })
 
     if (res?.data) {
-      toast('Task added!')
+      // toast('Task added!')
     }
   }
 

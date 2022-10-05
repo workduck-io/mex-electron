@@ -1,3 +1,5 @@
+import React from 'react'
+
 import fileList3Line from '@iconify/icons-ri/file-list-3-line'
 import headingIcon from '@iconify/icons-ri/heading'
 import listOrdered from '@iconify/icons-ri/list-ordered'
@@ -6,14 +8,15 @@ import taskLine from '@iconify/icons-ri/task-line'
 import { Icon } from '@iconify/react'
 import { ELEMENT_OL, ELEMENT_UL } from '@udecode/plate'
 import { ManagedOpenState } from '@ui/sidebar/Sidebar.types'
-import React from 'react'
+
+import { ELEMENT_TODO_LI } from '@workduck-io/mex-utils'
+
 import { OutlineHelp } from '../../../data/Defaults/helpText'
 import { ELEMENTS_IN_OUTLINE } from '../../../data/outline'
 import { useBlockHighlightStore, useFocusBlock } from '../../../editor/Actions/useFocusBlock'
-import { ELEMENT_TODO_LI } from '../../../editor/Components/Todo/createTodoPlugin'
 import { useAnalysisStore } from '../../../store/useAnalysis'
-import { InfoWidgetWrapper } from '../../../style/infobar'
 import { Note } from '../../../style/Typography'
+import { InfoWidgetWrapper } from '../../../style/infobar'
 import Collapse from '../../../ui/layout/Collapse/Collapse'
 import { OutlineIconWrapper, OutlineItemRender, OutlineItemText, OutlineWrapper } from './Outline.styles'
 

@@ -1,3 +1,4 @@
+import { useLastUsedSnippets } from '@hooks/useLastOpened'
 import {
   deleteText,
   getBlockAbove,
@@ -11,18 +12,17 @@ import {
   select,
   TElement
 } from '@udecode/plate'
+
+import { isElder } from '../../../components/mex/Sidebar/treeUtils'
+import { useSnippets } from '../../../hooks/useSnippets'
 import useAnalytics from '../../../services/analytics'
 import { ActionType } from '../../../services/analytics/events'
-import { isElder } from '../../../components/mex/Sidebar/treeUtils'
+import { mog } from '../../../utils/lib/helper'
 import { getEventNameFromElement } from '../../../utils/lib/strings'
-
-import { useSnippets } from '../../../hooks/useSnippets'
+import { ELEMENT_ACTION_BLOCK } from '../Actions/types'
 import { IComboboxItem } from '../combobox/components/Combobox.types'
 import { useComboboxStore } from '../combobox/useComboboxStore'
 import { SlashCommandConfig } from './Types'
-import { mog } from '../../../utils/lib/helper'
-import { ELEMENT_ACTION_BLOCK } from '../Actions/types'
-import { useLastUsedSnippets } from '@hooks/useLastOpened'
 
 export const useSlashCommandOnChange = (
   keys: Record<string, SlashCommandConfig>

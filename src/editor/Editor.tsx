@@ -1,4 +1,4 @@
-import React, { useEffect, useMemo } from 'react'
+import React, { useCallback, useEffect, useMemo } from 'react'
 
 import { useGlobalListener } from '@hooks/useGlobalListener'
 import useMultipleEditors from '@store/useEditorsStore'
@@ -96,7 +96,6 @@ export const Editor = ({
       focusBlock(hightlightedBlockIds[hightlightedBlockIds.length - 1], editorId)
 
       const clearHighlightTimeoutId = setTimeout(() => {
-        // mog('clearing highlights')
         if (!readOnly) clearHighlights()
       }, 2000)
 

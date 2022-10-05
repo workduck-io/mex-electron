@@ -13,6 +13,15 @@ export interface NodeProperties {
   namespace: string
 }
 
+
+export const getInitialNode = (): NodeProperties => ({
+  title: '__loading__',
+  id: '__loading__',
+  path: '__loading__',
+  nodeid: '__null__',
+  namespace: '__null__'
+})
+
 export type EditorContextType = {
   // State
 

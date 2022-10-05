@@ -3,10 +3,9 @@ import React, { memo, useEffect, useState } from 'react'
 // import { useActionsCache } from '../Actions/useActionsCache'
 import { useShareModalStore } from '@components/mex/Mention/ShareModalStore'
 import { useCreateNewNote } from '@hooks/useCreateNewNote'
+import { useTodoBuffer } from '@hooks/useTodoBuffer'
 // import useDwindleAuthStore from '@workduck-io/dwindle/lib/esm/AuthStore/useAuthStore'
 import syncStores from '@store/syncStore/synced'
-// import { useActionsCache } from '../Actions/useActionsCache'
-// import useDwindleAuthStore from '@workduck-io/dwindle/lib/esm/AuthStore/useAuthStore'
 import { useAnalysisIPC } from '@store/useAnalysis'
 import { getPlateSelectors } from '@udecode/plate'
 import { ipcRenderer } from 'electron'
@@ -68,6 +67,7 @@ const GlobalListener = memo(() => {
   // const clearActionStore = useActionStore((store) => store.clear)
   // const clearActionCache = useActionsCache((store) => store.clearActionCache)
   const setView = useActionStore((store) => store.setView)
+  const { flushTodosBuffer } = useTodoBuffer()
   // const { setReceiveMention } = useRecieveMentions()
   // const { getMentionData } = useMentionData()
   const { createNewNote } = useCreateNewNote()
@@ -130,6 +130,7 @@ const GlobalListener = memo(() => {
         }
 
         addRecent(node.nodeid)
+        flushTodosBuffer()
         addInRecentResearchNodes(node.nodeid)
         if (saveAfterBlur) saveIt({ saveAndClose: false, skipPathCheck: true, notify: false })
         else setSaveAfterBlur(true)

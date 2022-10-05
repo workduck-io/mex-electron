@@ -1,5 +1,6 @@
-import { ELEMENT_TODO_LI } from '@editor/Components/Todo/createTodoPlugin'
 import { PriorityType, TodoStatus } from '@editor/Components/Todo/types'
+
+import { ELEMENT_TODO_LI } from '@workduck-io/mex-utils'
 
 import { ELEMENT_QA_BLOCK } from '../../editor/Components/QABlock/createQAPlugin'
 import { questions } from '../../editor/Components/QABlock/starters'
@@ -81,7 +82,7 @@ export const getDefaultTodo = (): {
           {
             id: generateTempId(),
             type: ELEMENT_PARAGRAPH,
-            text: '',
+            text: ''
           }
         ]
       }
@@ -136,7 +137,6 @@ export const DefaultFileData = (version: string): FileData => ({
   syncBlocks: [],
   templates: [],
   intents: {},
-  todosBuffer: {},
   services: [],
   userSettings: {
     theme: 'xeM',

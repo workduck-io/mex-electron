@@ -1,11 +1,12 @@
 import create, { StoreApi } from 'zustand'
 import createContext from 'zustand/context'
+
 import { ReturnType, ActionGroup } from '@workduck-io/action-request-helper'
-import { devtools } from 'zustand/middleware'
-import { getActionIds } from '../../../utils/actions'
 
 import { ViewDataType, ViewType } from '../../../store/app.spotlight'
+import { getActionIds } from '../../../utils/actions'
 import { useActionsCache } from './useActionsCache'
+
 // eslint-disable-next-line @typescript-eslint/no-var-requires
 
 export type ActionSubType = 'form' | 'none' | undefined

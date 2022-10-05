@@ -7,11 +7,9 @@ import { Icon } from '@iconify/react'
 import { useEditorStore } from '@store/useEditorStore'
 import { EditorBreadcrumbs } from '@style/Editor'
 import IconDisplay from '@ui/components/IconPicker/IconDisplay'
-import { RESERVED_NAMESPACES } from '@utils/lib/paths'
 import { NavigationType, ROUTE_PATHS, useRouting } from '@views/routes/urls'
 
 import { Breadcrumbs } from '@workduck-io/mex-components'
-import { mog } from '@workduck-io/mex-utils'
 
 import { StyledTopNavigation } from './styled'
 

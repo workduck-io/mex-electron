@@ -3,6 +3,7 @@ import { getAllParentIds, getParentNodePath, SEPARATOR } from '@components/mex/S
 import { USE_API } from '@data/Defaults/dev_'
 import { DRAFT_PREFIX } from '@data/Defaults/idPrefixes'
 import { useBlockHighlightStore } from '@editor/Actions/useFocusBlock'
+import { updateTodoInContent } from '@editor/Components/Todo/todoUtils'
 import { useAuthStore } from '@services/auth/useAuth'
 import { useAnalysisStore } from '@store/useAnalysis'
 import { useContentStore } from '@store/useContentStore'
@@ -21,10 +22,12 @@ import toast from 'react-hot-toast'
 
 import { ILink, NodeEditorContent } from '../types/Types'
 import { useBufferStore, useEditorBuffer } from './useEditorBuffer'
+import useEntityAPIs from './useEntityAPIs'
 import { useFetchShareData } from './useFetchShareData'
 import { useLastOpened } from './useLastOpened'
 import { getLinkFromNodeIdHookless } from './useLinks'
 import { useRefactor } from './useRefactor'
+import { useTodoBuffer } from './useTodoBuffer'
 import useToggleElements from './useToggleElements'
 
 export interface LoadNodeOptions {
@@ -56,6 +59,7 @@ const useLoad = () => {
   const setHighlights = useBlockHighlightStore((store) => store.setHighlightedBlockIds)
   const { fetchSharedNodeUsers } = useFetchShareData()
   const { debouncedAddLastOpened } = useLastOpened()
+
   const changeSpace = useUserPreferenceStore((store) => store.setActiveNamespace)
 
   const setLoadingNodeid = useEditorStore((store) => store.setLoadingNodeid)
@@ -68,6 +72,8 @@ const useLoad = () => {
   // const { saveNodeAPIandFs } = useDataSaverFromContent()
   const { saveAndClearBuffer } = useEditorBuffer()
   const { execRefactorAsync } = useRefactor()
+  const { areTodosPresent } = useTodoBuffer()
+  const { getNoteTodos } = useEntityAPIs()
   // const { saveQ } = useSaveQ()
 
   const saveNodeName = (nodeId: string, title?: string) => {
@@ -206,11 +212,20 @@ const useLoad = () => {
 
           if (content) {
             updateEmptyBlockTypes(content, ELEMENT_PARAGRAPH)
+            const updateTodos = areTodosPresent(node.nodeid, content)
 
-            // mog('Fetch and load data', { data, metadata, version })
+            if (updateTodos) {
+              getNoteTodos(node.nodeid).then((s) => {
+                const newContent = updateTodoInContent(s, content)
+                mog('new content', { newContent })
+                setContent(node.nodeid, newContent, metadata)
+              })
+            } else {
+              setContent(node.nodeid, content, metadata)
+            }
+
             const loadingNodeid = useEditorStore.getState().loadingNodeid
 
-            setContent(node.nodeid, content, metadata)
             if (node.nodeid === loadingNodeid) {
               loadNodeEditor(node)
             } else {
@@ -275,12 +290,12 @@ const useLoad = () => {
       } else fetchAndSaveNode(node, { withLoading: true, isShared: false })
     }
 
+    loadNodeEditor(node)
+
     if (options.highlightBlockId) {
       setHighlights([options.highlightBlockId], 'editor')
     }
 
-    loadNodeEditor(node)
-    
     if (!localCheck.isShared) {
       const allParents = getAllParentIds(node.path)
       expandNodes(allParents)

@@ -23,6 +23,10 @@ export const NAMESPACE_ID_PREFIX = 'NAMESPACE'
 export const TASK_VIEW_PREFIX = 'TASKVIEW'
 export const FILTER_ID_PREFIX = 'FILTER'
 
+export const BASE_DRAFT_PATH = 'Drafts'
+export const BASE_TASKS_PATH = 'Daily Tasks'
+export const BASE_MEETING_PATH = MEETING_PREFIX
+
 export const HASH_SEPARATOR = '#'
 
 export const generateNodeUID = () => `${NODE_ID_PREFIX}${ID_SEPARATOR}${nanoid()}`

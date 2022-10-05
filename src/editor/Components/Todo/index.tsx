@@ -1,6 +1,7 @@
 import React from 'react'
 
 import { getDefaultContent } from '@components/spotlight/Preview'
+import useTodoBufferStore from '@hooks/useTodoBufferStore'
 import { getBlockAbove, getPlateEditorRef, insertNode, removeNodes, usePlateId } from '@udecode/plate'
 import { getRootProps } from '@udecode/plate-styled-components'
 import { getNodeIdFromEditor } from '@utils/helpers'
@@ -24,6 +25,9 @@ const TodoElement = React.forwardRef<any, any>((props, ref) => {
     if (editor) {
       try {
         removeNodes(editor, { at: [], mode: 'highest', match: (node) => element.id === node.id })
+        
+        useTodoBufferStore.getState().updateTodoType(nodeid, element.entityId, 'DELETE')
+        
         const blockPresentAbove = getBlockAbove(editor)
 
         if (!blockPresentAbove) insertNode(editor, getDefaultContent())

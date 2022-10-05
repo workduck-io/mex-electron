@@ -2,11 +2,11 @@
 //
 //
 // Use insertId to add randomized ids to the generated content
-
 import { ELEMENT_MENTION } from '@editor/Components/mentions/defaults'
 import { ELEMENT_TAG } from '@editor/Components/tag/defaults'
-import { ELEMENT_TODO_LI } from '@editor/Components/Todo/createTodoPlugin'
 import { ELEMENT_LI, ELEMENT_LIC, ELEMENT_LINK, ELEMENT_PARAGRAPH, ELEMENT_UL } from '@udecode/plate'
+
+import { ELEMENT_TODO_LI, generateTempId } from '@workduck-io/mex-utils'
 
 export const textChildren = (text: string) => [
   {
@@ -68,6 +68,7 @@ export const aLink = (url: string, text: string) => ({
 
 export const task = (text: string) => ({
   type: ELEMENT_TODO_LI,
+  entityId: generateTempId(),
   children: textChildren(text)
 })
 

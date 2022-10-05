@@ -20,7 +20,6 @@ import { useEditorBuffer } from '../hooks/useEditorBuffer'
 import useLayout from '../hooks/useLayout'
 import useLoad from '../hooks/useLoad'
 import { useKeyListener } from '../hooks/useShortcutListener'
-import { useAnalysisTodoAutoUpdate } from '../store/useAnalysis'
 import useBlockStore from '../store/useBlockStore'
 import { useEditorStore } from '../store/useEditorStore'
 import { useHelpStore } from '../store/useHelpStore'
@@ -95,8 +94,6 @@ const ContentEditor = () => {
       }
     }
   }
-
-  useAnalysisTodoAutoUpdate()
 
   useEffect(() => {
     const unsubscribe = tinykeys(window, {

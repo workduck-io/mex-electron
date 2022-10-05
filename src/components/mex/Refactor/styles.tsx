@@ -1,5 +1,5 @@
-import styled, { css } from 'styled-components'
 import { rgba, transparentize } from 'polished'
+import styled, { css } from 'styled-components'
 
 export const ModalContent = (multi = false) => css`
   width: max-content;
@@ -46,7 +46,7 @@ export const ModalStyles = css`
   .ModalOverlay {
     ${ModalOverlay}
   }
-  
+
   .SwitcherOverlay {
     backdrop-filter: none;
   }

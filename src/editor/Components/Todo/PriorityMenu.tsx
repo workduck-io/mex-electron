@@ -1,7 +1,9 @@
-import { Icon } from '@iconify/react'
 import React from 'react'
+
+import { Icon } from '@iconify/react'
 import { Item } from 'react-contexify'
 import styled from 'styled-components'
+
 import { StyledMenu } from '../../../style/Menu'
 import { Priority, PriorityDataType } from './types'
 
@@ -27,7 +29,7 @@ const PriorityMenu: React.FC<PriorityMenuType> = ({ onClick, id }) => {
         return (
           <Item key={priority.title} id={priority.title} onClick={() => onClick(priority)}>
             <StyledItem>
-              <Icon icon={priority.icon} fontSize={16} />
+              <Icon icon={priority?.icon?.value} fontSize={16} />
               <Text>{priority.title}</Text>
             </StyledItem>
 

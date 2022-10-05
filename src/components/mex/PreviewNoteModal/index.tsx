@@ -32,24 +32,6 @@ import NamespaceTag from '../NamespaceTag'
 import { TagsRelatedTiny } from '../Tags/TagsRelated'
 import { PreviewNoteContainer } from './styled'
 
-const AnalyseBuffer = (noteId) => {
-  const buffer = useBufferStore((store) => store.buffer)
-  const analysis = useAnalysisStore((store) => store.analysis)
-  const { addInBuffer } = useTodoBuffer()
-
-  useEffect(() => {
-    const { editorTodos, nodeid } = useAnalysisStore.getState().analysis
-    mog('CHANGED TODOS', { editorTodos, nodeid })
-    addInBuffer(nodeid, editorTodos)
-  }, [analysis])
-
-  useEffect(() => {
-    analyzeNote(noteId)
-  }, [buffer, noteId])
-
-  return <></>
-}
-
 const PreviewNoteModal = () => {
   const isOpen = useModalStore((store) => store.open === ModalsType.previewNote)
   const modalData = useModalStore((store) => store.data)
@@ -79,7 +61,6 @@ const PreviewNoteModal = () => {
   if (!isOpen) return <></>
 
   const onRequestClose = () => {
-
     flushTodosBuffer()
     saveAndClearBuffer(false)
     toggleModal(undefined)
@@ -110,7 +91,6 @@ const PreviewNoteModal = () => {
       <PlateProvider id={modalData?.noteId}>
         <PreviewNoteContainer>
           {/* <ModalHeader>{noteTitle}</ModalHeader> */}
-          <AnalyseBuffer noteId={modalData?.noteId} />
           <EditorPreviewControls hasTags={hasTags(modalData?.noteId)}>
             {
               <PreviewActionHeader>

@@ -1,7 +1,9 @@
-import { getPlateEditorRef } from '@udecode/plate'
-import { mog } from '@workduck-io/mex-utils'
 import { useEffect } from 'react'
+
+import { getPlateEditorRef } from '@udecode/plate'
 import create from 'zustand'
+
+import { mog } from '@workduck-io/mex-utils'
 
 import useDataStore from '../store/useDataStore'
 import { useEditorStore } from '../store/useEditorStore'
@@ -48,7 +50,7 @@ const useEditorActions = () => {
   const resetEditor = (appType: AppType = AppType.MEX) => {
     let nodeIdToLoad = node.nodeid
     const defaultNamespace = getDefaultNamespace()
-    const basenode_nodeId = getNodeidFromPath(baseNodePath, defaultNamespace.id)
+    const basenode_nodeId = getNodeidFromPath(baseNodePath, defaultNamespace?.id)
     // mog('resetEditor', { nodeIdToLoad, node, prevNode })
     const loadNodeL = (nodeIdToLoad: string) => {
       clearBuffer()

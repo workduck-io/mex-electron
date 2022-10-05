@@ -10,14 +10,13 @@ import { deserializeTodos, serializeTodo } from '@utils/lib/serialize'
 import { client } from '@workduck-io/dwindle'
 
 import { NodeEditorContent } from '../types/Types'
-import useTodoBufferStore from './useTodoBufferStore'
 
 type UpdateTodosType = {
   entityId: string
   noteId?: string
   content?: NodeEditorContent
   properties?: Record<string, any>
-  type?: 'UPDATE' | 'DELETE'
+  type?: 'UPDATE' | 'DELETE' | 'PREVIEW'
   created?: string
   modified?: string
 }
@@ -155,7 +154,6 @@ const useEntityAPIs = () => {
 
       if (res && res.status === 200) {
         const todos = deserializeTodos([res.data])
-        // mog('todos', { todos })
         return todos[0]
       }
     }
@@ -205,8 +203,6 @@ const useEntityAPIs = () => {
 
           return notesTasksMap
         }, {})
-
-        mog('After reducer', { notesTasks, buffer: useTodoBufferStore.getState().todosBuffer }, { show: true })
 
         initTodos(notesTasks)
 

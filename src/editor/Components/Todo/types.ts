@@ -50,7 +50,7 @@ export type TodoType = {
   }
   draft?: boolean
   createdAt?: number
-  type?: 'UPDATE' | 'DELETE'
+  type?: 'UPDATE' | 'DELETE' | 'PREVIEW'
   updatedAt?: number
 }
 

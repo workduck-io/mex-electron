@@ -9,13 +9,18 @@ import { ILinkElement } from '@editor/Components/ilink/components/ILinkElement'
 import { createILinkPlugin } from '@editor/Components/ilink/createILinkPlugin'
 import { ELEMENT_ILINK } from '@editor/Components/ilink/defaults'
 import { MediaEmbedElement } from '@editor/Components/media-embed-ui/src'
+import MediaIFrame, { parseRestMediaUrls } from '@editor/Components/media-embed-ui/src/MediaEmbedElement/MediaIFrame'
 import { MentionElement } from '@editor/Components/mentions/components/MentionElement'
 import { createMentionPlugin } from '@editor/Components/mentions/createMentionsPlugin'
 import { TagElement } from '@editor/Components/tag/components/TagElement'
 import { createTagPlugin } from '@editor/Components/tag/createTagPlugin'
 import { ELEMENT_TAG } from '@editor/Components/tag/defaults'
 import { createBlurSelectionPlugin } from '@editor/Plugins/blurSelection'
-import { optionsCreateNodeIdPlugin, optionsImagePlugin } from '@editor/Plugins/pluginOptions'
+import {
+  optionsCreateNodeIdPlugin,
+  optionsImagePlugin,
+  optionsSelectOnBackspacePlugin
+} from '@editor/Plugins/pluginOptions'
 import {
   createParagraphPlugin,
   createImagePlugin,
@@ -31,21 +36,28 @@ import {
   ELEMENT_MEDIA_EMBED,
   ELEMENT_MENTION,
   ELEMENT_PARAGRAPH,
-  ELEMENT_TODO_LI,
   LinkElement,
   StyledElement,
   withProps,
   createSelectOnBackspacePlugin,
   createPlugins,
-  createSingleLinePlugin
+  createSingleLinePlugin,
+  parseIframeUrl,
+  parseTwitterUrl,
+  MediaEmbedVideo,
+  parseVideoUrl,
+  MediaEmbedTweet
 } from '@udecode/plate'
 import { createExcalidrawPlugin, ExcalidrawElement } from '@udecode/plate-excalidraw'
 import { createHighlightPlugin } from '@udecode/plate-highlight'
+
+import { ELEMENT_TODO_LI, mog } from '@workduck-io/mex-utils'
 
 const generateTodoPlugins = () => {
   return [
     // elements
     createParagraphPlugin(), // paragraph element
+
     createExcalidrawPlugin({
       component: ExcalidrawElement,
       isInline: true
@@ -53,7 +65,6 @@ const generateTodoPlugins = () => {
     createSelectOnBackspacePlugin(),
     createImagePlugin(optionsImagePlugin), // Image
     createLinkPlugin(), // Link
-    createSingleLinePlugin(),
 
     // Marks
     createBoldPlugin(), // bold mark
@@ -71,21 +82,43 @@ const generateTodoPlugins = () => {
     // createDeserializeMDPlugin(),
 
     // Media and link embed
-    createMediaEmbedPlugin({ isInline: true }),
+    createMediaEmbedPlugin({
+      isInline: true,
+      options: {
+        transformUrl: parseIframeUrl,
+        rules: [
+          {
+            parser: parseTwitterUrl,
+            component: MediaEmbedTweet
+          },
+          {
+            parser: parseVideoUrl,
+            component: MediaEmbedVideo
+          },
+          {
+            parser: parseRestMediaUrls,
+            component: MediaIFrame
+          }
+        ]
+      }
+    }),
 
     // Custom Plugins
     createBlurSelectionPlugin(),
+    createTodoPlugin(true)(),
+    createSelectOnBackspacePlugin(optionsSelectOnBackspacePlugin),
 
     // Comboboxes
     createTagPlugin(), // Tags
     createMentionPlugin(), // Mentions
     createILinkPlugin(), // Internal Links ILinks
     createActionPlugin(),
-    createInlineBlockPlugin()
+    createInlineBlockPlugin(),
+    createSingleLinePlugin()
   ]
 }
 
-const getComponents = () =>
+export const getComponents = () =>
   createPlateUI({
     [ELEMENT_LINK]: withProps(LinkElement, {
       as: 'a'
@@ -105,4 +138,8 @@ const getComponents = () =>
     [ELEMENT_ACTION_BLOCK]: ActionBlock
   })
 
-export const getTodoPlugins = () => createPlugins(generateTodoPlugins(), { components: getComponents() })
+export const getTodoPlugins = () => {
+  const plugins = createPlugins(generateTodoPlugins(), { components: getComponents() })
+  mog('PLUGINS ARE', { plugins })
+  return plugins
+}

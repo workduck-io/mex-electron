@@ -1,12 +1,13 @@
 import React, { useCallback } from 'react'
-import { NavigationType, ROUTE_PATHS, useRouting } from '../views/routes/urls'
-import { useHistoryStore } from '../store/useHistoryStore'
-import { useRecentsStore } from '../store/useRecentsStore'
-import useLoad, { LoadNodeOptions } from './useLoad'
+
+import { useHistoryStore } from '@store/useHistoryStore'
+import { useRecentsStore } from '@store/useRecentsStore'
+
 import { mog } from '../utils/lib/helper'
+import { NavigationType, ROUTE_PATHS, useRouting } from '../views/routes/urls'
+import useLoad, { LoadNodeOptions } from './useLoad'
 
 export const useNavigation = () => {
-  // const loadNodeFromId = useEditorStore((store) => store.loadNodeFromId)
   const { loadNode } = useLoad()
   const pushHs = useHistoryStore((store) => store.push)
   const replaceHs = useHistoryStore((store) => store.replace)
@@ -19,7 +20,9 @@ export const useNavigation = () => {
     loadNode(nodeid, options)
     try {
       pushHs(nodeid)
-    } catch (err) { mog('Unable to push Note into history store')}
+    } catch (err) {
+      mog('Unable to push Note into history store')
+    }
     addRecent(nodeid)
   }
 

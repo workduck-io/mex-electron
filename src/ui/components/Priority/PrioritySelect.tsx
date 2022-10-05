@@ -1,6 +1,8 @@
-import Tippy from '@tippyjs/react'
 import React from 'react'
+
+import Tippy from '@tippyjs/react'
 import { useContextMenu } from 'react-contexify'
+
 import PriorityMenu from '../../../editor/Components/Todo/PriorityMenu'
 import { Priority, PriorityDataType, PriorityType } from '../../../editor/Components/Todo/types'
 import { MexIcon } from '../../../style/Layouts'
@@ -32,7 +34,7 @@ const PrioritySelect = ({ id, value, onPriorityChange, withLabel = false }: Prio
           content={Priority[value]?.title}
         >
           <TodoActionButton>
-            <MexIcon onClick={show} icon={Priority[value]?.icon} fontSize={20} cursor="pointer" />
+            <MexIcon onClick={show} icon={Priority[value]?.icon?.value} fontSize={20} cursor="pointer" />
             {withLabel && <span>{Priority[value]?.title}</span>}
           </TodoActionButton>
         </Tippy>

@@ -1,5 +1,5 @@
-import { generateTaskEntityId } from '@data/Defaults/idPrefixes'
-import { debounce } from 'lodash'
+/* eslint-disable no-fallthrough */
+import useTodoBufferStore from '@hooks/useTodoBufferStore'
 import {
   Value,
   PlateEditor,
@@ -8,57 +8,108 @@ import {
   ELEMENT_TODO_LI,
   TDescendant,
   TOperation,
-  getNode,
-  getNodeParent,
-  getParentNode
+  getParentNode,
+  getNode
 } from '@udecode/plate'
+import { getNodeIdFromEditor } from '@utils/helpers'
+import { debounce } from 'lodash'
 
 import { mog } from '@workduck-io/mex-utils'
 
 import { EntityElements } from '../../../types/entities'
+import { deleteTodoEntity, updateTodoEntity } from './todoUtils'
 
-const onNodeSet = <N extends TDescendant>(operation: TOperation<N>, apply: any): void => {
-  // clone to be able to write (read-only)
-  const nodeStateInEditor = { ...(operation.newProperties as any) }
+const onNodeSet = <N extends TDescendant>(editor, operation: TOperation<N>, apply: any, noteId: string): void => {
+  const properties = operation.properties as any
+  const newProperties = operation.newProperties as any
 
-  // the id in the new node is already being used in the editor, we need to replace it with a new id
-  const isEntity = EntityElements.includes(nodeStateInEditor.type) && !nodeStateInEditor?.entityId
-  nodeStateInEditor['entityId'] = isEntity ? generateTaskEntityId() : undefined
+  const isEntityDeleted = EntityElements.includes(properties?.type) && newProperties
+  const isEntityAdded = EntityElements.includes(newProperties?.type) && properties
 
-  return apply({
-    ...operation,
-    newProperties: nodeStateInEditor
-  })
+  if (isEntityDeleted) {
+    const node = getNode(editor, operation.path as any)
+    deleteTodoEntity(noteId, node)
+
+    return apply({
+      ...operation,
+      newProperties: {
+        ...newProperties,
+        entityId: undefined
+      }
+    })
+  } else if (isEntityAdded && !properties.entityId) {
+    const todo = updateTodoEntity(noteId)
+
+    return apply({
+      ...operation,
+      newProperties: {
+        ...newProperties,
+        entityId: todo.entityId
+      }
+    })
+  }
+
+  return apply(operation)
 }
 
-const onNodeInsert = <N extends TDescendant>(operation: TOperation<N>, apply: any): void => {
-  const node = { ...(operation?.node as any) }
+const onNodeInsert = <N extends TDescendant>(operation: TOperation<N>, apply: any, noteId: string): void => {
+  const node = operation?.node as any
 
-  if (node.type === ELEMENT_TODO_LI) {
+  if (node?.type === ELEMENT_TODO_LI) {
+    const todo = updateTodoEntity(noteId, { todoContent: [node], newEntityId: true })
+
     return apply({
       ...operation,
       node: {
         ...node,
-        entityId: generateTaskEntityId()
+        entityId: todo.entityId
       }
     })
   }
+
+  return apply(operation)
 }
 
-const onNodeSplit = <N extends TDescendant>(operation: TOperation<N>, apply: any): void => {
+const onNodeSplit = <N extends TDescendant>(operation: TOperation<N>, apply: any, noteId: string): void => {
   const node = operation.properties as TNode
 
   // only for elements (node with a type)`
   if (queryNode([node, []], {}) && node?.type === ELEMENT_TODO_LI) {
+    const todo = updateTodoEntity(noteId)
+
     return apply({
       ...operation,
       properties: {
         ...node,
-        entityId: generateTaskEntityId()
+        id: todo.id,
+        children: todo.content[0]?.children,
+        entityId: todo.entityId
       }
     })
   }
+
+  return apply(operation)
 }
+
+const onNodeRemove = <N extends TDescendant>(operation: TOperation<N>, apply: any, noteId: string): void => {
+  const node = operation.node as any
+
+  // only for elements (node with a type)`
+  if (queryNode([node, []], {}) && node?.type === ELEMENT_TODO_LI) {
+    deleteTodoEntity(noteId, node)
+  }
+
+  return apply(operation)
+}
+
+// const onNodeTextInsert = <N extends TDescendant>(operation: TOperation<N>, noteId: string): void => {
+//   const node = operation.node as any
+
+//   // only for elements (node with a type)`
+//   if (queryNode([node, []], {}) && node?.type === ELEMENT_TODO_LI) {
+//     useTodoBufferStore.getState().update(noteId, node?.entityId)
+//   }
+// }
 
 export const withTodoOverride =
   (withEntity = true) =>
@@ -67,36 +118,40 @@ export const withTodoOverride =
 
     const { apply } = editor
 
-    let hasAnyDebounce
+    let debouncedUpdate
+    const noteId = getNodeIdFromEditor(editor.id)
 
     editor.apply = (operation) => {
-      mog('OPERATION', { operation })
+      mog(`Performing ${operation.type.toLocaleUpperCase()}`, { operation })
+
       switch (operation.type) {
         case 'set_node':
-          onNodeSet(operation, apply)
+          return onNodeSet(editor, operation, apply, noteId)
 
-        // no-fallthrough
         case 'insert_node':
-          onNodeInsert(operation, apply)
+          return onNodeInsert(operation, apply, noteId)
 
-        // no-fallthrough
         case 'split_node':
-          onNodeSplit(operation, apply)
+          return onNodeSplit(operation, apply, noteId)
 
-        // no-fallthrough
-        default:
-          if (hasAnyDebounce) {
-            // hasAnyDebounce.cancel()
-            hasAnyDebounce(operation)
+        case 'remove_node':
+          return onNodeRemove(operation, apply, noteId)
+
+        case 'insert_text':
+        case 'remove_text':
+          if (debouncedUpdate) {
+            debouncedUpdate(operation)
           } else {
-            hasAnyDebounce = debounce((operation) => {
-              const node = getParentNode(editor, operation.path)
-              mog('operation performing', { operation, node })
-            }, 4000)
-          }
+            debouncedUpdate = debounce((operation) => {
+              const node = getParentNode(editor, operation.path)?.[0] as any
 
-          return apply(operation)
+              if (node && node.type === ELEMENT_TODO_LI) {
+                useTodoBufferStore.getState().updateTodoContent(noteId, node.entityId, [node])
+              }
+            }, 200)
+          }
       }
+      return apply(operation)
     }
 
     return editor

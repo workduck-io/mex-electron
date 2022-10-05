@@ -2,15 +2,14 @@ import React, { useEffect, useMemo, useState } from 'react'
 
 import { useTodoBuffer } from '@hooks/useTodoBuffer'
 import useTodoBufferStore from '@hooks/useTodoBufferStore'
+import useModalStore, { ModalsType } from '@store/useModalStore'
+import useTodoStore from '@store/useTodoStore'
+import { getPlateEditorRef, setNodes } from '@udecode/plate'
 
 import { getNextStatus, PriorityDataType, PriorityType, TodoStatus, TodoType } from '../../editor/Components/Todo/types'
 import { MexIcon } from '../../style/Layouts'
 import PrioritySelect from './Priority/PrioritySelect'
 import { CheckBoxWrapper, StyledTodoStatus, TodoContainer, TodoOptions, TodoText } from './Todo.style'
-import useEntityAPIs from '@hooks/useEntityAPIs'
-import { getPlateEditorRef, setNodes } from '@udecode/plate'
-import useTodoStore from '@store/useTodoStore'
-import { mog } from '@workduck-io/mex-utils'
 
 export interface TodoControls {
   onDeleteClick?: (todoid: string) => void
@@ -36,12 +35,11 @@ const Todo = React.forwardRef<any, TodoProps>((props, ref) => {
   const [showOptions, setShowOptions] = useState(false)
   const [animate, setAnimate] = useState(false)
 
-  const { getNoteTodos } = useEntityAPIs()
   const { getNoteTodo: getTodoFromStore, updateNoteTodo } = useTodoBuffer()
-  const isFetchingTasks = useTodoBufferStore((store) => store.isFetching)
-  const setIsFetchingTasks = useTodoBufferStore((store) => store.setIsFetching)
+
+  const isFetching = useTodoBufferStore((store) => store.isFetching)
+  const isCreateNew = useModalStore((store) => store.open === ModalsType.todo)
   const todosBuffer = useTodoBufferStore((store) => store.todosBuffer)
-  const todos = useTodoStore.getState().todos?.[parentNodeId]
 
   const todo = useMemo(() => {
     const isTodoPresent = controls && controls.getTodo
@@ -56,13 +54,12 @@ const Todo = React.forwardRef<any, TodoProps>((props, ref) => {
   }, [parentNodeId, todoid, animate, todosBuffer])
 
   useEffect(() => {
-    const existingTodo = todos?.find((t) => t.entityId === todoid)
+    const existingTodo = useTodoStore.getState().getTodoOfNode(parentNodeId, todoid)
 
     const hasChildren = children?.[0]?.props?.text?.text === ''
 
-    if (existingTodo?.entityId) {
+    if (existingTodo?.entityId && hasChildren) {
       const editor = getPlateEditorRef(parentNodeId)
-      mog('Existing Todo', { existingTodo, editor })
       if (editor)
         setNodes(editor, existingTodo.content[0], {
           at: [],
@@ -70,16 +67,8 @@ const Todo = React.forwardRef<any, TodoProps>((props, ref) => {
             return n?.entityId === existingTodo.entityId
           }
         })
-    } else if (hasChildren) {
-      if (!useTodoBufferStore.getState().isFetching) {
-        setIsFetchingTasks(true)
-        mog('CALLING API!!!')
-        getNoteTodos(parentNodeId)
-          .then(() => setIsFetchingTasks(false))
-          .catch((er) => setIsFetchingTasks(false))
-      }
     }
-  }, [todoid, todos])
+  }, [todoid])
 
   useEffect(() => {
     if (animate) setAnimate(false)
@@ -89,23 +78,28 @@ const Todo = React.forwardRef<any, TodoProps>((props, ref) => {
     if (controls && controls.onChangePriority) controls.onChangePriority(todoid, priority.type)
     else
       updateNoteTodo(parentNodeId, todoid, {
-        entityMetadata: { priority: priority.type, status: todo.entityMetadata?.status || TodoStatus.todo }
+        entityMetadata: {
+          ...(todo?.entityMetadata || {}),
+          priority: priority.type,
+          status: todo.entityMetadata?.status || TodoStatus.todo
+        }
       })
     setAnimate(true)
   }
 
   const changeStatus = () => {
-    if (controls && controls.onChangeStatus) controls.onChangeStatus(todoid, getNextStatus(todo.entityMetadata?.status))
-    else {
-      updateNoteTodo(parentNodeId, todoid, {
-        entityMetadata: {
-          priority: todo.entityMetadata?.priority || PriorityType.noPriority,
-          status: getNextStatus(todo.entityMetadata?.status)
-        }
-      })
-    }
+    updateNoteTodo(parentNodeId, todoid, {
+      entityMetadata: {
+        ...(todo?.entityMetadata || {}),
+        priority: todo.entityMetadata?.priority || PriorityType.noPriority,
+        status: getNextStatus(todo.entityMetadata?.status)
+      }
+    })
+
     setAnimate(true)
   }
+
+  const isFetchingTasks = isFetching && !todo
 
   return (
     <TodoContainer
@@ -133,28 +127,26 @@ const Todo = React.forwardRef<any, TodoProps>((props, ref) => {
         {children}
       </TodoText>
       {!isFetchingTasks && (
-        <>
-          <TodoOptions id={`TodoOptionsFor_${oid}_${todoid}`} contentEditable={false}>
-            {showOptions && showDelete && (
-              <MexIcon
-                onClick={() => {
-                  controls.onDeleteClick && controls.onDeleteClick(todo?.entityId)
-                }}
-                icon="codicon:trash"
-                cursor="pointer"
-                margin="0"
-                fontSize={20}
-              />
-            )}
-            {(showOptions || todo?.entityMetadata?.priority !== PriorityType.noPriority) && (
-              <PrioritySelect
-                value={todo?.entityMetadata?.priority || PriorityType.noPriority}
-                onPriorityChange={onPriorityChange}
-                id={todo?.entityId}
-              />
-            )}
-          </TodoOptions>
-        </>
+        <TodoOptions id={`TodoOptionsFor_${oid}_${todoid}`} contentEditable={false}>
+          {showOptions && showDelete && !isCreateNew && (
+            <MexIcon
+              onClick={() => {
+                controls.onDeleteClick && controls.onDeleteClick(todo?.entityId)
+              }}
+              icon="codicon:trash"
+              cursor="pointer"
+              margin="0"
+              fontSize={20}
+            />
+          )}
+          {(showOptions || todo?.entityMetadata?.priority !== PriorityType.noPriority) && (
+            <PrioritySelect
+              value={todo?.entityMetadata?.priority || PriorityType.noPriority}
+              onPriorityChange={onPriorityChange}
+              id={todo?.entityId}
+            />
+          )}
+        </TodoOptions>
       )}
     </TodoContainer>
   )

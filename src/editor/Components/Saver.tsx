@@ -17,7 +17,6 @@ import { useContentStore } from '@store/useContentStore'
 import { NodeProperties, useEditorStore } from '@store/useEditorStore'
 import { useHelpStore } from '@store/useHelpStore'
 import { useSnippetStore } from '@store/useSnippetStore'
-import useTodoStore from '@store/useTodoStore'
 import { TippyProps } from '@tippyjs/react'
 import { getPlateEditorRef, platesStore } from '@udecode/plate'
 import { mog } from '@utils/lib/helper'
@@ -27,6 +26,7 @@ import toast from 'react-hot-toast'
 import { IconButton } from '@workduck-io/mex-components'
 import { tinykeys } from '@workduck-io/tinykeys'
 
+import useTodoStore from '../../store/useTodoStore'
 import { getTodosFromContent } from '../../utils/lib/content'
 
 interface SaveEditorValueOptions {

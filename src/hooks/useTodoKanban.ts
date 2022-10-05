@@ -135,6 +135,7 @@ export const useTodoKanban = () => {
         options: []
       } as FilterTypeWithOptions
     )
+
     const rankedTags = todoTags.reduce((acc, tag) => {
       if (!acc[tag]) {
         acc[tag] = 1

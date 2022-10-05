@@ -1,8 +1,8 @@
 import { createPluginFactory, HotkeyPlugin, onKeyDownToggleElement } from '@udecode/plate-core'
 
-import { withTodoOverride } from './withTodoOverride'
+import { ELEMENT_TODO_LI } from '@workduck-io/mex-utils'
 
-export const ELEMENT_TODO_LI = 'action_item'
+import { withTodoOverride } from './withTodoOverride'
 
 const createTodoPlugin = (withEntity: boolean) =>
   createPluginFactory<HotkeyPlugin>({

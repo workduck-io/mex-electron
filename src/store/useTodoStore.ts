@@ -4,24 +4,11 @@ import { produce } from 'immer'
 import create from 'zustand'
 import { devtools } from 'zustand/middleware'
 
-import { defaultContent, getDefaultTodo } from '../data/Defaults/baseData'
+import { defaultContent } from '../data/Defaults/baseData'
 import { TodoType, TodoStatus, PriorityType, TodosType } from '../editor/Components/Todo/types'
 import { useReminderStore } from '../hooks/useReminders'
 import { NodeEditorContent } from '../types/Types'
 import { convertContentToRawText } from '../utils/search/parseData'
-
-export const createDefaultTodo = (nodeid: string, content?: NodeEditorContent): TodoType => {
-  const defaultTodo = getDefaultTodo()
-  const block = content?.[0]
-
-  return {
-    id: block?.id || defaultTodo.blockId,
-    entityId: block?.entityId || defaultTodo.entityId,
-    nodeid,
-    content: content || defaultTodo.content,
-    entityMetadata: block?.entityMetadata || defaultTodo.entityMetadata
-  }
-}
 
 type TodoStoreType = {
   // * For all nodes
@@ -86,12 +73,27 @@ const useTodoStore = create<TodoStoreType>()(
       updateTodosOfNode: (nodeId: string, todos: Array<TodoType>) => {
         const allTodos = get().todos || {}
         const nodeTodos = allTodos?.[nodeId]
+        const withDeleted = { deleted: [], active: [] }
+
+        todos.forEach((t) => {
+          if (t.type === 'DELETE') withDeleted.deleted.push(t)
+          else withDeleted.active.push(t)
+        })
 
         if (nodeTodos) {
-          const newTodos = nodeTodos.map((todo) => {
-            const updatedTodo = todos.find((t) => t.entityId === todo.entityId)
+          const todosAfterDeletion = nodeTodos.filter(
+            (t) => !withDeleted.deleted.find((d) => d.entityId === t.entityId)
+          )
+
+          const activeTodos = todosAfterDeletion.map((todo) => {
+            const index = withDeleted.active.findIndex((t) => t.entityId === todo.entityId)
+            const updatedTodo = withDeleted.active[index]
+
+            if (index >= 0) withDeleted.active.splice(index, 1)
             return updatedTodo || todo
           })
+
+          const newTodos = [...activeTodos, ...withDeleted.active]
 
           set(
             produce((draft) => {
@@ -101,11 +103,12 @@ const useTodoStore = create<TodoStoreType>()(
         } else {
           set(
             produce((draft) => {
-              draft.todos[nodeId] = todos
+              draft.todos[nodeId] = withDeleted.active
             })
           )
         }
       },
+
       updateTodosOfNodes: (nodesWithTodos) => {
         set(
           produce((draft) => {

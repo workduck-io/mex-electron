@@ -34,15 +34,12 @@ export const useTaskFromSelection = () => {
         })
       : undefined
 
-    // mog('getting new task node', { links, link, create, todayTaskNodePath })
     return node
   }
 
   const getNewTaskContent = (selection?: NodeEditorContent, create?: boolean) => {
     const node = getNewTaskNode(create)
     const content = node ? useContentStore.getState().getContent(node.nodeid) : defaultContent
-
-    // mog('getting new task node', { selection, create, node, content })
 
     const newTask = {
       type: 'action_item',

@@ -1,9 +1,10 @@
-import { generateTempId } from '@data/Defaults/idPrefixes'
+import { generateTaskEntityId, generateTempId } from '@data/Defaults/idPrefixes'
 import { ELEMENT_EXCALIDRAW } from '@editor/Components/Excalidraw'
-import { ELEMENT_TODO_LI } from '@editor/Components/Todo/createTodoPlugin'
 import { ELEMENT_LI, ELEMENT_LIC, ELEMENT_MEDIA_EMBED, ELEMENT_OL, ELEMENT_PARAGRAPH, ELEMENT_UL } from '@udecode/plate'
+
+import { ELEMENT_TODO_LI } from '@workduck-io/mex-utils'
+
 import { NodeEditorContent } from '../../types/Types'
-import { mog } from './helper'
 
 /**
  * Converts the content to a list of tasks
@@ -22,8 +23,10 @@ export const convertValueToTasks = (val: NodeEditorContent): NodeEditorContent =
     const basicConvertedNode = {
       type: ELEMENT_TODO_LI,
       id: generateTempId(),
+      entityId: generateTaskEntityId(),
       children: [node]
     }
+
     if (node.type === ELEMENT_TODO_LI) {
       return [...p, node]
     } else if (node.type === undefined && node.text !== '') {
@@ -74,6 +77,7 @@ export const convertValueToTasks = (val: NodeEditorContent): NodeEditorContent =
                   {
                     type: ELEMENT_TODO_LI,
                     id: generateTempId(),
+                    entityId: generateTaskEntityId(),
                     children: child2.children
                   }
                 ]
@@ -91,6 +95,7 @@ export const convertValueToTasks = (val: NodeEditorContent): NodeEditorContent =
                   {
                     type: ELEMENT_TODO_LI,
                     id: generateTempId(),
+                    entityId: generateTaskEntityId(),
                     children: [child2]
                   }
                 ]

@@ -2,9 +2,13 @@ import React, { useEffect } from 'react'
 
 import { defaultContent } from '@data/Defaults/baseData'
 import { getBlockMetadata } from '@editor/Actions/useEditorBlockSelection'
+import { convertContentToEntities } from '@editor/Components/Todo/todoUtils'
 import { getLatestContent } from '@hooks/useEditorBuffer'
+import useTodoBufferStore from '@hooks/useTodoBufferStore'
+import { PlateProvider } from '@udecode/plate'
 import { convertValueToTasks } from '@utils/lib/contentConvertTask'
 
+import { mog } from '@workduck-io/mex-utils'
 import { tinykeys } from '@workduck-io/tinykeys'
 
 import { getDefaultContent, PreviewProps } from '.'
@@ -51,6 +55,7 @@ const PreviewContainer: React.FC<PreviewContainerProps> = ({
   const showSource = useSpotlightSettingsStore((state) => state.showSource)
   const setNodeContent = useSpotlightEditorStore((state) => state.setNodeContent)
   const previewContent = useSpotlightEditorStore((state) => state.nodeContent)
+  const setPreviewEntities = useSpotlightEditorStore((state) => state.setPreviewEntities)
 
   const isOnboarding = useOnboard((s) => s.isOnboarding)
   const changeOnboarding = useOnboard((s) => s.changeOnboarding)
@@ -74,9 +79,11 @@ const PreviewContainer: React.FC<PreviewContainerProps> = ({
 
       const activeNodeContent = getLatestContent(nodeId) ?? defaultContent.content
 
-      if (!isNewTask) setNodeContent([...activeNodeContent, ...deserializedContent])
-      else {
+      if (!isNewTask) {
+        setNodeContent([...activeNodeContent, ...deserializedContent])
+      } else {
         const convertedTasks = convertValueToTasks(deserializedContent)
+        setPreviewEntities({ tasks: convertedTasks })
         setNodeContent([...activeNodeContent, ...convertedTasks])
       }
     }
@@ -117,6 +124,7 @@ const PreviewContainer: React.FC<PreviewContainerProps> = ({
       const clearHighlightTimeoutId = setTimeout(() => {
         clearHighlights('editor')
       }, 2000)
+
       return () => clearTimeout(clearHighlightTimeoutId)
     }
   }, [highlights, nodeId, normalMode, blockId])
@@ -145,20 +153,24 @@ const PreviewContainer: React.FC<PreviewContainerProps> = ({
     setNormalMode(false)
   }
 
+  mog('PREVIEW CONTENT', { previewContent })
+
   return (
-    <FadeContainer fade={blockId !== undefined} onClick={onPreviewClick}>
-      {!isNewNote && !isNewTask && showPin && <PreviewHeader noteId={nodeId} />}
-      <Editor
-        autoFocus={!normalMode}
-        padding="1rem"
-        showBalloonToolbar
-        focusAtBeginning={!normalMode}
-        options={{ exclude: { dnd: true }, withEntities: true }}
-        readOnly={normalMode}
-        content={previewContent ?? getDefaultContent()}
-        editorId={nodeId}
-      />
-    </FadeContainer>
+    <PlateProvider id={nodeId}>
+      <FadeContainer fade={blockId !== undefined} onClick={onPreviewClick}>
+        {!isNewNote && !isNewTask && showPin && <PreviewHeader noteId={nodeId} />}
+        <Editor
+          autoFocus={!normalMode}
+          padding="1rem"
+          showBalloonToolbar
+          focusAtBeginning={!normalMode}
+          options={{ exclude: { dnd: true }, withEntities: true }}
+          readOnly={normalMode}
+          content={previewContent ?? defaultContent.content}
+          editorId={nodeId}
+        />
+      </FadeContainer>
+    </PlateProvider>
   )
 }
 

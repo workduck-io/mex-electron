@@ -1,9 +1,9 @@
-import React, { useEffect } from 'react'
+import React from 'react'
 
 import { MENU_ID } from '@editor/Components/EditorContextMenu'
 import { MultiComboboxContainer } from '@editor/Components/multi-combobox/multiComboboxContainer'
 import useEditorPluginConfig from '@editor/Plugins/useEditorPluginConfig'
-import { getPlateEditorRef, Plate } from '@udecode/plate'
+import { Plate } from '@udecode/plate'
 import { debounce } from 'lodash'
 import { useContextMenu } from 'react-contexify'
 
@@ -20,16 +20,15 @@ type TaskEditorType = {
 }
 
 const TaskEditor = ({ editorId, readOnly, content, onChange }: TaskEditorType) => {
-  const { pluginConfigs, comboConfigData } = useEditorPluginConfig(editorId)
-  const { show } = useContextMenu({ id: MENU_ID })
+  const { pluginConfigs, comboConfigData } = useEditorPluginConfig(editorId, {
+    comboboxOptions: { snippets: false, table: false }
+  })
 
-  // useEffect(() => {
-  //   const editor = getPlateEditorRef(editorId)
-  //   editor && focusEditor(editor)
-  // }, [])
+  const { show } = useContextMenu({ id: MENU_ID })
+  const plugins = getTodoPlugins()
 
   const pluginsWithCombobox = [
-    ...getTodoPlugins(),
+    ...plugins,
     {
       key: 'MULTI_COMBOBOX',
       handlers: {
@@ -42,8 +41,6 @@ const TaskEditor = ({ editorId, readOnly, content, onChange }: TaskEditorType) =
     }
   ]
 
-  mog('EDITOR', { e: getPlateEditorRef() })
-
   const onDelayPerform = debounce(typeof onChange === 'function' ? onChange : () => undefined, 300)
 
   const onChangeContent = (val: NodeEditorContent) => {
@@ -51,6 +48,8 @@ const TaskEditor = ({ editorId, readOnly, content, onChange }: TaskEditorType) =
   }
 
   const editableProps = { placeholder: 'Add description...', readOnly, spellCheck: true, autoFocus: true }
+
+  mog('EDITOR', { editorId, readOnly, content })
 
   return (
     <Plate

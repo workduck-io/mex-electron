@@ -1,8 +1,11 @@
 import { SEPARATOR } from '@components/mex/Sidebar/treeUtils'
 import { defaultContent } from '@data/Defaults/baseData'
 import { getBlockMetadata } from '@editor/Actions/useEditorBlockSelection'
+import { convertContentToEntities } from '@editor/Components/Todo/todoUtils'
 import { getLatestContent } from '@hooks/useEditorBuffer'
 import { getTitleFromPath } from '@hooks/useLinks'
+import { useTodoBuffer } from '@hooks/useTodoBuffer'
+import useTodoBufferStore from '@hooks/useTodoBufferStore'
 import { getPlateSelectors } from '@udecode/plate'
 import { convertValueToTasks } from '@utils/lib/contentConvertTask'
 
@@ -22,7 +25,6 @@ import { getDeserializeSelectionToNodes } from '../../../utils/htmlDeserializer'
 import { checkIfUntitledDraftNode } from '../../../utils/lib/strings'
 import { getTitleFromContent } from '../../../utils/search/parseData'
 import { useRouting } from '../../../views/routes/urls'
-import { mog } from '@workduck-io/mex-utils'
 
 export const useSearchProps = () => {
   const currentListItem = useSpotlightEditorStore((store) => store.currentListItem)
@@ -74,12 +76,14 @@ export const useSaveChanges = () => {
   const setInput = useSpotlightAppStore((store) => store.setInput)
   const setSaveAfterBlur = useSpotlightAppStore((store) => store.setSaveAfterBlur)
   const preview = useSpotlightEditorStore((store) => store.preview)
+  const addTodosInBuffer = useTodoBufferStore((store) => store.addTodosInBuffer)
 
   const { setSearch } = useSpotlightContext()
 
   const { onSave } = useSaver()
   const { saveNodeName } = useLoad()
   const { updateDocument } = useSearch()
+  const { flushTodosBuffer } = useTodoBuffer()
 
   const saveIt = async (options?: SaveItProps) => {
     const node = useSpotlightEditorStore.getState().node
@@ -100,7 +104,13 @@ export const useSaveChanges = () => {
 
         if (options?.isNewTask) {
           const convertedContent = convertValueToTasks(previewContent)
-          editorContent = [...activeNodeContent, ...convertedContent]
+          const { entities, content } = convertContentToEntities(node.nodeid, convertedContent)
+
+          if (entities.tasks) {
+            addTodosInBuffer(node.nodeid, entities.tasks)
+          }
+
+          editorContent = [...activeNodeContent, ...content]
         } else {
           editorContent = [...activeNodeContent, ...previewContent]
         }
@@ -152,7 +162,8 @@ export const useSaveChanges = () => {
     // * Add this item in recents list of Mex
     addRecent(node.nodeid)
     addInResearchNodes(node.nodeid)
-    mog("UT", { node })
+    flushTodosBuffer()
+
     appNotifierWindow(IpcAction.REFRESH_NODE, AppType.SPOTLIGHT, { nodeid: node.nodeid })
   }
 

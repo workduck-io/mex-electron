@@ -2,7 +2,7 @@ import { SourceType } from '../components/spotlight/Source/types'
 import { defaultContent } from '../data/Defaults/baseData'
 import { useContentStore } from '../store/useContentStore'
 import { NodeEditorContent } from '../types/Types'
-import { NodeContent } from '../types/data'
+import type { NodeContent } from '../types/data'
 import { convertContentToRawText } from './search/parseData'
 
 /** Get the contents of the node with id */

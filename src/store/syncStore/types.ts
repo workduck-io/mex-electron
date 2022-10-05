@@ -12,6 +12,7 @@ export enum BroadcastSyncedChannel {
   REMINDERS = 'reminders',
   THEME = 'theme',
   TOKEN_DATA = 'token-data',
+  TASKS_BUFFER = 'tasks-buffer',
   USER_PROPERTIES = 'user-properties',
   EDITOR_BUFFER = 'editor-buffer',
   MULTIPLE_EDITORS = 'multiple-editors'

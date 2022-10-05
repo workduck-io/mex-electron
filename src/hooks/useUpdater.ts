@@ -96,12 +96,6 @@ export const useUpdater = () => {
       } else {
         setContent(noteId, contentWithNewTodos)
       }
-
-      // const currentNode = useEditorStore.getState().node
-
-      // if (currentNode.nodeid === noteId) {
-      //   setContent(currentNode.nodeid, contentWithNewTodos)
-      // }
     }
   }
 

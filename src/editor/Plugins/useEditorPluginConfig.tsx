@@ -6,6 +6,7 @@ import { ELEMENT_ACTION_BLOCK } from '@editor/Components/Actions/types'
 import { useCreateNewNote } from '@hooks/useCreateNewNote'
 import { useMentions } from '@hooks/useMentions'
 import { useMentionStore } from '@store/useMentionStore'
+import useModalStore from '@store/useModalStore'
 import { ELEMENT_MEDIA_EMBED, ELEMENT_MENTION, ELEMENT_PARAGRAPH, ELEMENT_TABLE } from '@udecode/plate'
 import { ELEMENT_EXCALIDRAW } from '@udecode/plate-excalidraw'
 import { getNodeIdFromEditor } from '@utils/helpers'
@@ -52,7 +53,7 @@ const useEditorPluginConfig = (editorId: string, options?: PluginOptionType) => 
   const { openReminderModal } = useOpenReminderModal()
   const { createNewNote } = useCreateNewNote()
   // Combobox
-  const snippetConfigs = getSnippetsConfigs()
+  const snippetConfigs = options?.comboboxOptions?.snippets === false ? [] : getSnippetsConfigs()
   // const syncBlockConfigs = getSyncBlockConfigs()
 
   const { params, location } = useRouting()
@@ -64,6 +65,8 @@ const useEditorPluginConfig = (editorId: string, options?: PluginOptionType) => 
   }, [nodeid, ilinks])
 
   const slashInternals = useMemo(() => {
+    if (options?.comboboxOptions?.snippets === false) return []
+
     const snippetName = (location?.state as any)?.title
     if (params.snippetid && snippetName) {
       return slashCommands.internal.filter((item) => snippetName !== item.text)
@@ -250,6 +253,7 @@ const useEditorPluginConfig = (editorId: string, options?: PluginOptionType) => 
         slateElementType: ELEMENT_PARAGRAPH,
         command: 'remind',
         onExtendedCommand: (newValue, editor) => {
+          useModalStore.getState().toggleOpen(undefined)
           openReminderModal(newValue)
         }
       }

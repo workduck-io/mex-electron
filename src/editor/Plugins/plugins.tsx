@@ -80,9 +80,13 @@ import {
 } from './pluginOptions'
 
 export type PluginOptionType = {
-  exclude: {
+  exclude?: {
     dnd?: boolean
     mentions?: boolean
+  }
+  comboboxOptions?: {
+    snippets: boolean
+    table: boolean
   }
   withEntities?: boolean
 }
@@ -218,7 +222,9 @@ export const generatePlugins = (options: PluginOptionType) => {
   const useEntitiesInPlugins = options?.withEntities !== false
   const withEntityPlugins = [createTodoPlugin(useEntitiesInPlugins)()]
 
-  const withPlugins = !options?.exclude?.dnd ? [...Plugins, createDndPlugin(), ...withEntityPlugins] : [...Plugins, ...withEntityPlugins]
+  const withPlugins = !options?.exclude?.dnd
+    ? [...Plugins, createDndPlugin(), ...withEntityPlugins]
+    : [...Plugins, ...withEntityPlugins]
 
   return withPlugins
 }

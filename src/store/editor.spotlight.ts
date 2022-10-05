@@ -1,14 +1,16 @@
-import { INIT_PREVIEW } from '../components/spotlight/Content'
-import { ListItemType } from '../components/spotlight/SearchResults/types'
-import { NodeEditorContent } from '../types/Types'
-import { NodeProperties, useEditorStore } from '../store/useEditorStore'
-import { PreviewType } from '../components/spotlight/Preview'
 import create from 'zustand'
-import { createNodeWithUid } from '../utils/lib/helper'
+
+import { INIT_PREVIEW } from '../components/spotlight/Content'
+import { PreviewType } from '../components/spotlight/Preview'
+import { ListItemType } from '../components/spotlight/SearchResults/types'
 import { defaultContent } from '../data/Defaults/baseData'
 import { getNewDraftKey } from '../editor/Components/SyncBlock/getNewBlockData'
+import { NodeProperties, useEditorStore } from '../store/useEditorStore'
+import { NodeEditorContent } from '../types/Types'
+import { createNodeWithUid } from '../utils/lib/helper'
 
 export type SelectionType = { text: string; metadata: string } | undefined
+type PreviewEntityRecord = { tasks: NodeEditorContent }
 
 export type SpotlightEditorStoreType = {
   node: NodeProperties
@@ -22,6 +24,8 @@ export type SpotlightEditorStoreType = {
   setCurrentListItem: (item: ListItemType) => void
   isSelection: boolean
   setIsSelection: (isSelection: boolean) => void
+  previewEntities?: PreviewEntityRecord
+  setPreviewEntities: (previewEntities: PreviewEntityRecord) => void
 }
 
 export const useSpotlightEditorStore = create<SpotlightEditorStoreType>((set, get) => ({
@@ -37,6 +41,7 @@ export const useSpotlightEditorStore = create<SpotlightEditorStoreType>((set, ge
     useEditorStore.getState().setNode(node)
     set(() => ({ node }))
   },
+  setPreviewEntities: (p) => set({ previewEntities: p }),
   loadNode: (node: NodeProperties, content: NodeEditorContent) => set({ node, nodeContent: content }),
   setIsSelection: (isSelection) => set({ isSelection })
 }))
