@@ -91,12 +91,7 @@ const Switch = () => {
         showSidebar()
         hideRHSidebar()
       } else if (location.pathname.startsWith(ROUTE_PATHS.node)) {
-        if (location.state && location.state.from) {
-          const match = matchPath(`${ROUTE_PATHS.node}/:id`, location.state.from)
-          if (match) {
-            showAllSidebars(true)
-          } else showAllSidebars(false)
-        } else showAllSidebars(false)
+        showAllSidebars()
       } else if (location.pathname.startsWith(ROUTE_PATHS.archive)) {
         showSidebar()
         hideRHSidebar()
