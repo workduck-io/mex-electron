@@ -1,13 +1,12 @@
-import React from 'react'
+import React, { useMemo } from 'react'
 
 import { MENU_ID } from '@editor/Components/EditorContextMenu'
 import { MultiComboboxContainer } from '@editor/Components/multi-combobox/multiComboboxContainer'
 import useEditorPluginConfig from '@editor/Plugins/useEditorPluginConfig'
+import { useEditorChange } from '@hooks/useEditorActions'
 import { Plate } from '@udecode/plate'
 import { debounce } from 'lodash'
 import { useContextMenu } from 'react-contexify'
-
-import { mog } from '@workduck-io/mex-utils'
 
 import { NodeEditorContent } from '../../../../types/Types'
 import { getTodoPlugins } from './plugins'
@@ -25,7 +24,7 @@ const TaskEditor = ({ editorId, readOnly, content, onChange }: TaskEditorType) =
   })
 
   const { show } = useContextMenu({ id: MENU_ID })
-  const plugins = getTodoPlugins()
+  const plugins = useMemo(() => getTodoPlugins(), [])
 
   const pluginsWithCombobox = [
     ...plugins,
@@ -41,15 +40,15 @@ const TaskEditor = ({ editorId, readOnly, content, onChange }: TaskEditorType) =
     }
   ]
 
+  useEditorChange(editorId, content)
+
   const onDelayPerform = debounce(typeof onChange === 'function' ? onChange : () => undefined, 300)
 
   const onChangeContent = (val: NodeEditorContent) => {
     onDelayPerform(val)
   }
 
-  const editableProps = { placeholder: 'Add description...', readOnly, spellCheck: true, autoFocus: true }
-
-  mog('EDITOR', { editorId, readOnly, content })
+  const editableProps = { placeholder: 'Add description...', readOnly, autoFocus: true }
 
   return (
     <Plate

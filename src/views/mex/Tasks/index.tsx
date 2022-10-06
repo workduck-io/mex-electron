@@ -11,10 +11,11 @@ import useMultipleEditors from '@store/useEditorsStore'
 import { useLayoutStore } from '@store/useLayoutStore'
 import useModalStore, { ModalsType } from '@store/useModalStore'
 import { OverlaySidebarWindowWidth } from '@style/responsive'
+import { ErrorBoundary } from 'react-error-boundary'
 import { useMediaQuery } from 'react-responsive'
 import { useMatch } from 'react-router-dom'
 
-import { mog } from '@workduck-io/mex-utils'
+import { convertContentToRawText, mog, NodeEditorContent } from '@workduck-io/mex-utils'
 import { tinykeys } from '@workduck-io/tinykeys'
 
 import SearchFilters from '../../../components/mex/Search/SearchFilters'
@@ -28,6 +29,12 @@ import { StyledTasksKanban, TaskCard } from '../../../style/Todo'
 import Todo from '../../../ui/components/Todo'
 import { NavigationType, ROUTE_PATHS, useRouting } from '../../routes/urls'
 import ColumnHeader from './ColumnHeader'
+
+const StringifiedContent = ({ content }: { content: NodeEditorContent }) => {
+  const contentString = convertContentToRawText(content)
+
+  return <>{contentString}</>
+}
 
 const Tasks = () => {
   const [selectedCard, setSelectedCard] = React.useState<TodoKanbanCard | null>(null)
@@ -360,6 +367,8 @@ const Tasks = () => {
     const pC = useMemo(() => getPureContent(todo), [id, todos])
     const toggleModal = useModalStore((store) => store.toggleOpen)
 
+    mog(`Task for ${todo.entityId}`, { pC })
+
     return (
       <TaskCard
         ref={selectedCard && id === selectedCard.id ? selectedRef : null}
@@ -381,11 +390,13 @@ const Tasks = () => {
           readOnly
           parentNodeId={todo.nodeid}
         >
-          <TaskEditor
-            readOnly
-            content={pC}
-            editorId={`${todo.nodeid}_TASK_${todo.entityId}_${todo.entityMetadata.status}`}
-          />
+          <ErrorBoundary fallback={<StringifiedContent content={pC} />}>
+            <TaskEditor
+              readOnly
+              content={pC}
+              editorId={`${todo.nodeid}_TASK_${todo.entityId}_${todo.entityMetadata.status}`}
+            />
+          </ErrorBoundary>
         </Todo>
       </TaskCard>
     )

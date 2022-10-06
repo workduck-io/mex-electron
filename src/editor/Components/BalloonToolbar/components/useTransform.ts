@@ -1,5 +1,4 @@
 import { useOpenToast } from '@components/toast/showOpenToasts'
-import { cleanEditorId } from '@editor/Components/Todo'
 import { useCreateNewNote } from '@hooks/useCreateNewNote'
 import { useSnippets } from '@hooks/useSnippets'
 import { useUpdater } from '@hooks/useUpdater'
@@ -16,6 +15,7 @@ import {
   TEditor,
   withoutNormalizing
 } from '@udecode/plate'
+import { getNodeIdFromEditor } from '@utils/helpers'
 import { convertValueToTasks } from '@utils/lib/contentConvertTask'
 import genereateName from 'project-name-generator'
 
@@ -198,7 +198,7 @@ export const useTransform = () => {
       const text = convertContentToRawText(value, NODE_PATH_SPACER)
 
       const editorId = editor.id as string
-      const nodeid = cleanEditorId(editorId)
+      const nodeid = getNodeIdFromEditor(editorId)
 
       const ilinks = useDataStore.getState().ilinks
       const node = ilinks.find((n) => n.nodeid === nodeid)

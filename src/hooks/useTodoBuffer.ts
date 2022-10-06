@@ -109,6 +109,17 @@ export const useTodoBuffer = () => {
     type
   })
 
+  const updateBlockIdFromContent = (todo: TodoType) => {
+    if (todo.id) return todo
+    const block = todo.content[0]
+    mog(`${block} ${todo.entityId}`, { todoBlockId: todo.id, id: block.id })
+
+    return {
+      ...todo,
+      id: block.id
+    }
+  }
+
   /*
     Returns Updated/Deleted todos List from existing and new todos record.
     Adds type 'UPDATE' or 'DELETE' based on change.
@@ -118,14 +129,22 @@ export const useTodoBuffer = () => {
 
     Object.entries(newTodos).forEach(([entityId, todo]) => {
       const existingTodo = existing[entityId]
+      const bufferTodo = updateBlockIdFromContent(todo)
+
       if (existingTodo) {
         if (
-          !checkIsEqual(existingTodo, todo, ['lastEditedBy', 'publicAccess', 'updatedAt', 'createdAt', 'createdBy'])
+          !checkIsEqual(existingTodo, bufferTodo, [
+            'lastEditedBy',
+            'publicAccess',
+            'updatedAt',
+            'createdAt',
+            'createdBy'
+          ])
         ) {
-          updatedTodos.push(todo)
+          updatedTodos.push(bufferTodo.type ? bufferTodo : setTodoUpdateType(bufferTodo, 'UPDATE'))
         }
       } else {
-        updatedTodos.push(todo)
+        updatedTodos.push(bufferTodo.type ? bufferTodo : setTodoUpdateType(bufferTodo, 'UPDATE'))
       }
     })
 

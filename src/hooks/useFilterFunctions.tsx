@@ -121,7 +121,7 @@ export const useTaskFilterFunctions = (): SearchFilterFunctions => {
     },
 
     tag: (item, f) => {
-      const res = filterAndJoin(f, (v) => item.tags?.includes(v.value))
+      const res = filterAndJoin(f, (v) => item.entityMetadata?.tags?.includes(v.value))
       return res
     },
 

@@ -1,8 +1,9 @@
-import { mog } from '@utils/lib/helper'
 import create from 'zustand'
 import { devtools, persist } from 'zustand/middleware'
+
 import { LastOpenedNotes, LastUsedSnippets, UserPreferences, LastOpenedData } from '../types/userPreference'
 import { indexedDbStorageZustand } from './Adapters/indexedDB'
+
 // import { baseMetaState, metaState, ZustandStoreMeta } from './middlewares/metaState'
 
 interface UserPreferenceStore extends UserPreferences {

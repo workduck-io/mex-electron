@@ -14,6 +14,8 @@ import {
 } from '@udecode/plate'
 import { mog } from '@utils/lib/helper'
 
+import { ELEMENT_PARAGRAPH } from '@workduck-io/mex-utils'
+
 import { QuickLinkType } from '../../../components/mex/NodeSelect/NodeSelect'
 import { NODE_ID_PREFIX } from '../../../data/Defaults/idPrefixes'
 import useAnalytics from '../../../services/analytics'
@@ -90,7 +92,7 @@ export const useElementOnChange = (elementComboType: SingleComboboxConfig, keys?
         // mog('Inserting from here', { item, isBlockTriggered })
         let InsertedElement: InsertableElement = {
           type,
-          children: [{ text: '' }],
+          children: [{ text: '', type: ELEMENT_PARAGRAPH }],
           value: itemValue ?? item.key
         }
         if (

@@ -40,7 +40,7 @@ export const getPureContent = (todo: TodoType) => {
     if (content[0].type !== ELEMENT_TODO_LI) return content
     else return content[0].children
   }
-  return defaultContent
+  return defaultContent.content
 }
 
 export const useKanbanFilterStore = create<FilterStore>((set) => ({
@@ -71,7 +71,6 @@ export const useTodoKanban = () => {
   const { isInArchive } = useNodes()
   const { getSearchExtra } = useSearchExtra()
   const { getUserFromUserid } = useMentions()
-  const { getTags } = useTags()
   const taskFilterFunctions = useTaskFilterFunctions()
 
   const changeStatus = (todo: TodoType, newStatus: TodoStatus) => {
@@ -91,7 +90,8 @@ export const useTodoKanban = () => {
     board.columns.forEach((column) => {
       column.cards.forEach((card) => {
         // Use tags of the node instead of tags
-        const tags = getTags(card.todo.nodeid)
+        const tags = card.todo.entityMetadata?.tags
+        mog('TAGS OF NOTE', { tags })
         todoNodes.push(card.todo.nodeid)
         todoTags.push(...(tags ?? []))
         todoMentions.push(...(card.todo.entityMetadata?.mentions ?? []))

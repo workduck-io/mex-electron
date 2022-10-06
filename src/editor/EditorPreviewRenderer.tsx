@@ -7,6 +7,8 @@ import { ErrorBoundary } from 'react-error-boundary'
 import { components } from 'react-select'
 import styled from 'styled-components'
 
+import { mog } from '@workduck-io/mex-utils'
+
 import { EditorStyles } from '../style/Editor'
 import { FadeContainer } from '../style/animation/fade'
 import { NodeEditorContent } from '../types/Types'
@@ -16,7 +18,6 @@ import { editorPreviewComponents } from './Components/components'
 import { MultiComboboxContainer } from './Components/multi-combobox/multiComboboxContainer'
 import generatePlugins from './Plugins/plugins'
 import useEditorPluginConfig from './Plugins/useEditorPluginConfig'
-import { mog } from '@workduck-io/mex-utils'
 
 interface EditorPreviewRendererProps {
   content?: any[] // eslint-disable-line @typescript-eslint/no-explicit-any
@@ -56,7 +57,6 @@ const EditorPreviewRenderer = ({
   const editableProps = useMemo(
     () => ({
       placeholder: 'Murmuring the mex hype... ',
-      spellCheck: !readOnly,
       style: noStyle
         ? {}
         : {

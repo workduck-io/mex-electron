@@ -88,7 +88,7 @@ export const useSlashCommandOnChange = (
             ...itemData
           })
 
-          insertText(editor, ' ')
+          // insertText(editor, ' ')
 
           // move the selection after the inserted content
           moveSelection(editor)

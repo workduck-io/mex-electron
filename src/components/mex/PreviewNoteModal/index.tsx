@@ -1,4 +1,4 @@
-import React, { useEffect, useMemo } from 'react'
+import React, { useMemo } from 'react'
 
 import { Tooltip } from '@components/FloatingElements/Tooltip'
 import {
@@ -13,14 +13,11 @@ import { useLinks } from '@hooks/useLinks'
 import { useNamespaces } from '@hooks/useNamespaces'
 import { useNodes } from '@hooks/useNodes'
 import { useTags } from '@hooks/useTags'
-import { useTodoBuffer } from '@hooks/useTodoBuffer'
 import closeCircleLine from '@iconify/icons-ri/close-circle-line'
 import { Icon } from '@iconify/react'
-import { analyzeNote, useAnalysisStore } from '@store/useAnalysis'
 import { useContentStore } from '@store/useContentStore'
 import useModalStore, { ModalsType } from '@store/useModalStore'
 import { PlateProvider } from '@udecode/plate'
-import { mog } from '@utils/lib/helper'
 import Modal from 'react-modal'
 import { useTheme } from 'styled-components'
 
@@ -37,18 +34,18 @@ const PreviewNoteModal = () => {
   const modalData = useModalStore((store) => store.data)
   const toggleModal = useModalStore((store) => store.toggleOpen)
   const addValueInBuffer = useBufferStore((store) => store.add)
+  const getContent = useContentStore((store) => store.getContent)
 
   const theme = useTheme()
   const { getNodeType, getSharedNode } = useNodes()
   const { saveAndClearBuffer } = useEditorBuffer()
-  const { flushTodosBuffer } = useTodoBuffer()
   const { getNamespace } = useNamespaces()
   const { hasTags } = useTags()
   const { getTitleFromNoteId, getILinkFromNodeid } = useLinks()
 
   const content = useMemo(() => {
-    const data = useContentStore.getState().getContent(modalData?.noteId)?.content
-    return data
+    const data = getContent(modalData?.noteId)
+    return data?.content
   }, [modalData])
 
   const { noteTitle, noteLink } = useMemo(() => {
@@ -61,7 +58,6 @@ const PreviewNoteModal = () => {
   if (!isOpen) return <></>
 
   const onRequestClose = () => {
-    flushTodosBuffer()
     saveAndClearBuffer(false)
     toggleModal(undefined)
   }

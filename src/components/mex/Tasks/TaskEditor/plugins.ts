@@ -140,6 +140,5 @@ export const getComponents = () =>
 
 export const getTodoPlugins = () => {
   const plugins = createPlugins(generateTodoPlugins(), { components: getComponents() })
-  mog('PLUGINS ARE', { plugins })
   return plugins
 }

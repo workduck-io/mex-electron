@@ -1,4 +1,4 @@
-import React, { useCallback, useEffect, useMemo } from 'react'
+import React, { useEffect, useMemo } from 'react'
 
 import { useGlobalListener } from '@hooks/useGlobalListener'
 import useMultipleEditors from '@store/useEditorsStore'
@@ -60,7 +60,6 @@ export const Editor = ({
   getSuggestions
 }: EditorProps) => {
   const editableProps = {
-    spellCheck: true,
     autoFocus,
     placeholder,
     style: {
@@ -91,7 +90,6 @@ export const Editor = ({
   useEffect(() => {
     const tempRef = getPlateEditorRef(editorId)
 
-    mog('THIS EVENT IS BEING CALLED')
     if (tempRef && hightlightedBlockIds.length > 0) {
       focusBlock(hightlightedBlockIds[hightlightedBlockIds.length - 1], editorId)
 
