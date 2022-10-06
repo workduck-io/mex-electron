@@ -188,6 +188,7 @@ export const useApi = () => {
       if (node.currentUserAccess[nodeid] === 'READ') return
       // Do not send namespace for shared note
       reqData['namespaceID'] = undefined
+      reqData['type'] = 'UpdateSharedNodeRequest'
     }
 
     if (!USE_API) {
