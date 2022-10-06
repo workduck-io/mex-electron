@@ -1,4 +1,4 @@
-import React, { useEffect, useMemo, useRef, useState } from 'react'
+import React, { useEffect, useMemo, useRef } from 'react'
 
 import Board from '@asseinfo/react-kanban'
 import TaskEditor from '@components/mex/Tasks/TaskEditor'
@@ -15,7 +15,7 @@ import { ErrorBoundary } from 'react-error-boundary'
 import { useMediaQuery } from 'react-responsive'
 import { useMatch } from 'react-router-dom'
 
-import { convertContentToRawText, mog, NodeEditorContent } from '@workduck-io/mex-utils'
+import { convertContentToRawText, ELEMENT_MENTION, mog, NodeEditorContent } from '@workduck-io/mex-utils'
 import { tinykeys } from '@workduck-io/tinykeys'
 
 import SearchFilters from '../../../components/mex/Search/SearchFilters'
@@ -31,7 +31,7 @@ import { NavigationType, ROUTE_PATHS, useRouting } from '../../routes/urls'
 import ColumnHeader from './ColumnHeader'
 
 const StringifiedContent = ({ content }: { content: NodeEditorContent }) => {
-  const contentString = convertContentToRawText(content)
+  const contentString = convertContentToRawText(content, ' ', { exclude: { types: new Set([ELEMENT_MENTION]) } })
 
   return <>{contentString}</>
 }

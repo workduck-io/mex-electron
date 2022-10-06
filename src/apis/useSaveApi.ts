@@ -85,8 +85,6 @@ export const useApi = () => {
       data: serializeContent(options.content, noteId)
     }
 
-    setContent(noteId, options.content)
-
     if (!USE_API) {
       return
     }

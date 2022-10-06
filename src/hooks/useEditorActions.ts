@@ -83,12 +83,12 @@ const useEditorActions = () => {
 export const useEditorChange = (editorId: string, content: NodeEditorContent, onChange?: any) => {
   useEffect(() => {
     const editor = getPlateEditorRef(editorId)
-    mog('Editor is here', { content, editor })
+
     if (editor && content?.length > 0) {
       editor.children = content
       if (onChange) onChange(content)
     }
-  }, [content])
+  }, [content, editorId])
 }
 
 export default useEditorActions
