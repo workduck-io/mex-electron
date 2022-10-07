@@ -51,7 +51,7 @@ const useLoad = () => {
   const setNodePreview = useGraphStore((store) => store.setNodePreview)
   const { getDataAPI, saveDataAPI } = useApi()
   const setSuggestions = useSuggestionStore((store) => store.setSuggestions)
-  const { toggleSuggestedNodes } = useToggleElements()
+  const { toggleSnippets } = useToggleElements()
   const infobar = useLayoutStore((store) => store.infobar)
   const setHighlights = useBlockHighlightStore((store) => store.setHighlightedBlockIds)
   const { fetchSharedNodeUsers } = useFetchShareData()
@@ -255,7 +255,7 @@ const useLoad = () => {
     quitFullscreenGraph()
     setNodePreview(false)
     setSuggestions([])
-    if (infobar.mode === 'snippets') toggleSuggestedNodes()
+    if (infobar.mode === 'snippets') toggleSnippets()
 
     // setSelectedNode(undefined)
 
