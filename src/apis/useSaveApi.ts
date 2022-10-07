@@ -18,7 +18,7 @@ import { allNamespacesHierarchyParser } from '@workduck-io/mex-utils'
 import { defaultContent } from '../data/Defaults/baseData'
 import { DEFAULT_NAMESPACE, WORKSPACE_HEADER } from '../data/Defaults/defaults'
 import { USE_API } from '../data/Defaults/dev_'
-import { useLinks } from '../hooks/useLinks'
+import { getTitleFromPath, useLinks } from '../hooks/useLinks'
 import '../services/apiClient/apiClient'
 import { useAuthStore } from '../services/auth/useAuth'
 import { isRequestedWithin } from '../store/useApiStore'
@@ -95,7 +95,8 @@ export const useApi = () => {
       })
       .then((d) => {
         const metadata = extractMetadata(d.data)
-        updateFromContent(noteId, d.data.data ?? options.content, metadata)
+        const content = deserializeContent(d.data.data ?? options.content)
+        updateFromContent(noteId, content, metadata)
         addLastOpened(noteId)
         return d.data
       })
@@ -646,7 +647,7 @@ export const useApi = () => {
               getDataAPI(ilink.nodeid, false, false, false).then((data) => {
                 mog('toUpdateLocal', { ilink, data })
                 setContent(ilink.nodeid, data.content, data.metadata)
-                updateDocument('archive', ilink.nodeid, data.content)
+                updateDocument('archive', ilink.nodeid, data.content, getTitleFromPath(ilink.path))
               })
             )
           ).then(() => {

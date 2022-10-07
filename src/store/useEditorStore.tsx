@@ -1,7 +1,9 @@
 import React from 'react'
+
+import { getInitialNode } from '@utils/initial'
 import create from 'zustand'
+
 import { ComboTriggerType } from '../editor/Components/combobox/useComboboxStore'
-import { getInitialNode } from '../utils/helpers'
 
 export interface NodeProperties {
   title: string

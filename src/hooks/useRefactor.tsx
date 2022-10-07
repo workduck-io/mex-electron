@@ -13,9 +13,10 @@ import { NodeLink } from '../types/relations'
 import { mog } from '../utils/lib/helper'
 // import { getNodeIcon } from '../utils/lib/icons'
 import { getUniquePath, isMatch } from '../utils/lib/paths'
-import { useEditorBuffer } from './useEditorBuffer'
+import { getLatestContent, useEditorBuffer } from './useEditorBuffer'
 import { hierarchyParser } from './useHierarchy'
-import { useLinks } from './useLinks'
+import { getTitleFromPath, useLinks } from './useLinks'
+import { useSearch } from './useSearch'
 
 interface RefactorPath {
   path: string
@@ -58,6 +59,7 @@ export const useRefactor = () => {
   // const { q, saveQ } = useSaveQ()
   const { saveAndClearBuffer } = useEditorBuffer()
   const { getNodeidFromPath, updateILinks } = useLinks()
+  const { updateDocument } = useSearch()
   const { refactorNotes } = useApi()
 
   /*
@@ -131,6 +133,16 @@ export const useRefactor = () => {
       })
       mog('AfterRefactor', { addedILinks, removedILinks })
       const refactored = updateILinks(addedILinks, removedILinks)
+      const content = getLatestContent(nodeId)
+
+      // * Update search Index with new Title
+      // * TODO: Make search API more flexible (Update specific fields)
+      if (content && nodeId) {
+        const title = getTitleFromPath(to.path)
+        mog('Updating search index', { title })
+        updateDocument('node', nodeId, content, title)
+      }
+
       return refactored
     })
 

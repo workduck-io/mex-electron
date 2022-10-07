@@ -3,6 +3,7 @@ import React, { useMemo } from 'react'
 import { ItemId, RenderItemParams, TreeItem } from '@atlaskit/tree'
 import { IS_DEV } from '@data/Defaults/dev_'
 import { useLastOpened } from '@hooks/useLastOpened'
+import usePinnedWindows from '@hooks/usePinnedWindow'
 import checkboxBlankCircleFill from '@iconify/icons-ri/checkbox-blank-circle-fill'
 import fileList2Line from '@iconify/icons-ri/file-list-2-line'
 // import { complexTree } from '../mockdata/complexTree'
@@ -31,7 +32,6 @@ import { MexIcon } from '@workduck-io/mex-components'
 
 import { LastOpenedState } from '../../../types/userPreference'
 import { TreeContextMenu } from './TreeWithContextMenu'
-import usePinnedWindows from '@hooks/usePinnedWindow'
 
 const defaultSnap = {
   isDragging: false,
@@ -71,8 +71,8 @@ const ItemTitleWithAnalysis = ({ item }: { item: TreeItem }) => {
     anal.nodeid && anal.nodeid === item.data.nodeid && anal.title !== undefined && anal.title !== ''
       ? anal.title
       : item.data
-        ? item.data.title
-        : 'NoTitle'
+      ? item.data.title
+      : 'NoTitle'
 
   return (
     <ItemTitle>
@@ -128,7 +128,6 @@ export const RenderTreeItem = ({
   onClick
 }: TreeItemProps) => {
   const isTrue = JSON.stringify(snapshot) !== JSON.stringify(defaultSnap)
-
   const lastOpenedNote = useUserPreferenceStore((state) => state.lastOpenedNotes[item?.data?.nodeid])
   const { getLastOpened } = useLastOpened()
 
@@ -141,6 +140,8 @@ export const RenderTreeItem = ({
     return lastOpenedState === LastOpenedState.UNREAD
   }, [lastOpenedState])
 
+  const isItemSelected = isInEditor && item.data && match?.params?.nodeid === item.data.nodeid
+
   return (
     <Tippy theme="mex" placement="right" singleton={target} content={<TooltipContent item={item} />}>
       <span>
@@ -148,13 +149,15 @@ export const RenderTreeItem = ({
           onOpenChange={(open) => {
             if (open) {
               setContextOpenNodeId(item.data.nodeid)
-            } else setContextOpenNodeId(null)
+            } else {
+              setContextOpenNodeId(null)
+            }
           }}
         >
           <ContextMenu.Trigger asChild>
             <StyledTreeItem
               ref={provided.innerRef}
-              selected={isInEditor && item.data && match?.params?.nodeid === item.data.nodeid}
+              selected={isItemSelected}
               isDragging={snapshot.isDragging}
               hasMenuOpen={contextOpenNodeId === item.data.nodeid}
               isStub={item?.data?.stub}
@@ -183,11 +186,13 @@ export const RenderTreeItem = ({
 }
 
 const TreeItemMetaInfo = ({ item, unRead }: { item: any; unRead: boolean }) => {
-  const isPinned = useMultipleEditors(store => store.pinned?.has(item?.data?.nodeid))
+  const isPinned = useMultipleEditors((store) => store.pinned?.has(item?.data?.nodeid))
   const { onUnpinNote } = usePinnedWindows()
 
   if (isPinned) {
-    return <MexIcon onClick={() => onUnpinNote(item?.data?.nodeid)} icon={PinIcon} width={16} height={16} color="white" />
+    return (
+      <MexIcon onClick={() => onUnpinNote(item?.data?.nodeid)} icon={PinIcon} width={16} height={16} color="white" />
+    )
   }
 
   return unRead ? (

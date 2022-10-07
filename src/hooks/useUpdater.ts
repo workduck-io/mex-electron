@@ -1,21 +1,23 @@
+import { useContentStore } from '@store/useContentStore'
+import useTodoStore from '@store/useTodoStore'
+import { getTodosFromContent } from '@utils/lib/content'
+import { mog } from '@utils/lib/helper'
+
 import { client } from '@workduck-io/dwindle'
+
 import { integrationURLs } from '../apis/routes'
+import { Service, SyncBlockTemplate } from '../editor/Components/SyncBlock'
+import { useAuthStore } from '../services/auth/useAuth'
 import useDataStore from '../store/useDataStore'
 import useOnboard from '../store/useOnboarding'
 import { useSnippetStore } from '../store/useSnippetStore'
 import { useSyncStore } from '../store/useSyncStore'
-import { Service, SyncBlockTemplate } from '../editor/Components/SyncBlock'
-import { useSaveData } from './useSaveData'
-import { useSlashCommands } from './useSlashCommands'
-import { useAuthStore } from '../services/auth/useAuth'
-import useTodoStore from '@store/useTodoStore'
 import { NodeEditorContent } from '../types/Types'
-import { getTodosFromContent } from '@utils/lib/content'
 import { useLinks } from './useLinks'
+import { useSaveData } from './useSaveData'
 import { useSearch } from './useSearch'
+import { useSlashCommands } from './useSlashCommands'
 import { useTags } from './useTags'
-import { mog } from '@utils/lib/helper'
-import { useContentStore } from '@store/useContentStore'
 
 export const useUpdater = () => {
   const setSlashCommands = useDataStore((state) => state.setSlashCommands)
@@ -35,7 +37,7 @@ export const useUpdater = () => {
     setSlashCommands(slashCommands)
   }
 
-  const { updateLinksFromContent } = useLinks()
+  const { updateLinksFromContent, getTitleFromNoteId } = useLinks()
   const updateNodeTodos = useTodoStore((store) => store.replaceContentOfTodos)
 
   const { updateTagsFromContent } = useTags()
@@ -49,7 +51,7 @@ export const useUpdater = () => {
       updateTagsFromContent(noteId, content)
       updateNodeTodos(noteId, getTodosFromContent(content))
 
-      updateDocument('node', noteId, content)
+      updateDocument('node', noteId, content, getTitleFromNoteId(noteId, { includeArchived: true, includeShared: true}))
     }
   }
 

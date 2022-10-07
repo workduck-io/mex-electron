@@ -101,8 +101,7 @@ export const useSearch = () => {
           )
 
           searchList = isNew ? [CREATE_NEW_ITEM, ...results] : results
-        }
-        else {
+        } else {
           searchList = quickLinks
         }
         break
@@ -121,6 +120,8 @@ export const useSearch = () => {
       case CategoryType.search:
         const nodeItems = await queryIndex(['node'], search.value)
         const snippetItems = await queryIndex(['snippet', 'template'], search.value)
+
+        mog('Node Items', { nodeItems })
 
         const actionItems = getSearchResults(search.value, actions, { keySelector: (obj) => obj.title })
         const localNodes = []

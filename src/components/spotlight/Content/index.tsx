@@ -143,7 +143,7 @@ const Content = () => {
     }
 
     if (normalMode) getSearchItems()
-  }, [search.value, actions, selection, activeItem.item, normalMode, pinned, ilinks, events])
+  }, [search.value, actions, selection, activeItem.item, normalMode, recentResearchNodes, pinned, ilinks, events])
 
   // * For setting the preview
   useEffect(() => {
