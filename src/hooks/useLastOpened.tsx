@@ -1,6 +1,6 @@
 import { useUserPreferenceStore } from '@store/userPreferenceStore'
 import { LastOpenedData, LastOpenedState } from '../types/userPreference'
-import { getInitialNode } from '@utils/helpers'
+import { getInitialNode } from '@utils/initial'
 import { mog } from '@utils/lib/helper'
 import { debounce } from 'lodash'
 import { useCallback } from 'react'
