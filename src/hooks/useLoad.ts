@@ -1,7 +1,3 @@
-import { NodeProperties, useEditorStore } from '@store/useEditorStore'
-import { mog, updateEmptyBlockTypes } from '@utils/lib/helper'
-import { ILink, NodeEditorContent } from '../types/Types'
-
 import { useApi } from '@apis/useSaveApi'
 import { getAllParentIds, getParentNodePath, SEPARATOR } from '@components/mex/Sidebar/treeUtils'
 import { USE_API } from '@data/Defaults/dev_'
@@ -11,16 +7,20 @@ import { useAuthStore } from '@services/auth/useAuth'
 import { useAnalysisStore } from '@store/useAnalysis'
 import { useContentStore } from '@store/useContentStore'
 import useDataStore from '@store/useDataStore'
+import { NodeProperties, useEditorStore } from '@store/useEditorStore'
 import { useGraphStore } from '@store/useGraphStore'
 import { useLayoutStore } from '@store/useLayoutStore'
-import { useUserPreferenceStore } from '@store/userPreferenceStore'
 import useSuggestionStore from '@store/useSuggestionStore'
 import { useTreeStore } from '@store/useTreeStore'
+import { useUserPreferenceStore } from '@store/userPreferenceStore'
 import { ELEMENT_PARAGRAPH } from '@udecode/plate-paragraph'
 import { getContent } from '@utils/helpers'
+import { mog, updateEmptyBlockTypes } from '@utils/lib/helper'
 import { checkIfUntitledDraftNode } from '@utils/lib/strings'
 import toast from 'react-hot-toast'
-import { useBufferStore, useEditorBuffer } from './useEditorBuffer'
+
+import { ILink, NodeEditorContent } from '../types/Types'
+import { getLatestContent, useBufferStore, useEditorBuffer } from './useEditorBuffer'
 import { useFetchShareData } from './useFetchShareData'
 import { useLastOpened } from './useLastOpened'
 import { getLinkFromNodeIdHookless } from './useLinks'
@@ -100,6 +100,7 @@ const useLoad = () => {
         )
 
         // execRefactor(nodePath, newNodePath, false)
+
         loadNode(nodeId, { fetch: false })
       } catch (err) {
         toast('Unable to rename node')

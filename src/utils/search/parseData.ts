@@ -1,6 +1,6 @@
 // import { FileData, NodeSearchData } from '../Types/data'
-
 import { ELEMENT_ACTION_BLOCK } from '@editor/Components/Actions/types'
+import { getTitleFromPath } from '@hooks/useLinks'
 import {
   ELEMENT_CODE_BLOCK,
   ELEMENT_IMAGE,
@@ -12,13 +12,14 @@ import {
 import { ELEMENT_EXCALIDRAW } from '@udecode/plate-excalidraw'
 import { insertId } from '@utils/lib/content'
 import { textChildren } from '@utils/lib/smallContent'
+
 import { diskIndex, indexNames } from '../../data/search'
 import { ELEMENT_INLINE_BLOCK } from '../../editor/Components/InlineBlock/types'
 import { ELEMENT_QA_BLOCK } from '../../editor/Components/QABlock/createQAPlugin'
 import { BlockType } from '../../store/useBlockStore'
 import { useContentStore } from '../../store/useContentStore'
-import { FileData } from '../../types/data'
 import { NodeEditorContent } from '../../types/Types'
+import { FileData } from '../../types/data'
 import { getBlocks } from '../helpers'
 import { camelCase, getSlug } from '../lib/strings'
 import { GenericSearchData, SearchRepExtra } from './../../types/search'
@@ -193,14 +194,16 @@ export const getTitleNodeMap = (idxName: string, data: any) => {
   switch (idxName) {
     case indexNames.node: {
       data.ilinks.forEach((entry) => {
-        titleNodeMap.set(entry.nodeid, entry.path)
+        const nodeTitle = getTitleFromPath(entry.path ?? '')
+        titleNodeMap.set(entry.nodeid, nodeTitle)
       })
       break
     }
 
     case indexNames.archive: {
       data.archive.forEach((entry) => {
-        titleNodeMap.set(entry.nodeid, entry.path)
+        const nodeTitle = getTitleFromPath(entry.path ?? '')
+        titleNodeMap.set(entry.nodeid, nodeTitle)
       })
       break
     }
@@ -215,7 +218,8 @@ export const getTitleNodeMap = (idxName: string, data: any) => {
 
     case indexNames.shared: {
       data.sharedNodes.forEach((entry) => {
-        titleNodeMap.set(entry.nodeid, entry.path)
+        const nodeTitle = getTitleFromPath(entry.path ?? '')
+        titleNodeMap.set(entry.nodeid, nodeTitle)
       })
       break
     }

@@ -1,15 +1,14 @@
-import { idxKey, SearchOptions, SearchRepExtra } from '../types/search'
-import { ipcRenderer } from 'electron'
-import { IpcAction } from '../data/IpcAction'
-
-import { useLinks } from './useLinks'
-import useDataStore from '@store/useDataStore'
-import { ELEMENT_ILINK } from '@editor/Components/ilink/defaults'
 import { ELEMENT_INLINE_BLOCK } from '@editor/Components/InlineBlock/types'
-import { useMentionStore } from '@store/useMentionStore'
+import { ELEMENT_ILINK } from '@editor/Components/ilink/defaults'
 import { ELEMENT_MENTION } from '@editor/Components/mentions/defaults'
 import { useAuthStore } from '@services/auth/useAuth'
+import useDataStore from '@store/useDataStore'
+import { useMentionStore } from '@store/useMentionStore'
+import { ipcRenderer } from 'electron'
+
+import { IpcAction } from '../data/IpcAction'
 import { ELEMENT_EXCALIDRAW } from '../editor/Components/Excalidraw/createExcalidrawPlugin'
+import { idxKey, SearchOptions, SearchRepExtra } from '../types/search'
 
 export const useSearchExtra = () => {
   const ilinks = useDataStore((s) => s.ilinks)
@@ -48,7 +47,6 @@ export const useSearchExtra = () => {
 }
 
 export const useSearch = () => {
-  const { getPathFromNodeid } = useLinks()
   const { getSearchExtra } = useSearchExtra()
 
   const addDocument = async (
@@ -65,7 +63,7 @@ export const useSearch = () => {
       key,
       nodeId,
       contents,
-      title ?? getPathFromNodeid(nodeId),
+      title,
       tags,
       extra
     )
@@ -75,20 +73,12 @@ export const useSearch = () => {
     key: idxKey,
     nodeId: string,
     contents: any[],
-    title: string | undefined = undefined,
+    title: string | undefined,
     tags?: Array<string>
   ) => {
     const extra = getSearchExtra()
     // mog('updateDocument', { key, nodeId, contents, title, tags, extra })
-    await ipcRenderer.invoke(
-      IpcAction.UPDATE_DOCUMENT,
-      key,
-      nodeId,
-      contents,
-      title ?? getPathFromNodeid(nodeId),
-      tags,
-      extra
-    )
+    await ipcRenderer.invoke(IpcAction.UPDATE_DOCUMENT, key, nodeId, contents, title, tags, extra)
   }
 
   const removeDocument = async (key: idxKey, id: string) => {

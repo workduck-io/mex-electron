@@ -1,11 +1,12 @@
 import { remove } from 'lodash'
 import create from 'zustand'
 import { devtools, persist } from 'zustand/middleware'
+
 import { MAX_RECENT_SIZE } from '../data/Defaults/navigation'
 
 export type RecentsType = {
-  lastOpened: string[]
-  recentResearchNodes: string[]
+  lastOpened: string[] // * NodeIds
+  recentResearchNodes: string[] // * NodeIds
   setRecentResearchNodes: (nodes: Array<string>) => void
   addRecent: (nodeid: string) => void
   update: (lastOpened: string[]) => void

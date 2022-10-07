@@ -2,6 +2,7 @@ import { SEPARATOR } from '@components/mex/Sidebar/treeUtils'
 import { defaultContent } from '@data/Defaults/baseData'
 import { getBlockMetadata } from '@editor/Actions/useEditorBlockSelection'
 import { getLatestContent } from '@hooks/useEditorBuffer'
+import { getTitleFromPath } from '@hooks/useLinks'
 import { getPlateSelectors } from '@udecode/plate'
 import { convertValueToTasks } from '@utils/lib/contentConvertTask'
 
@@ -140,7 +141,7 @@ export const useSaveChanges = () => {
       })
     }
 
-    await updateDocument('node', node.nodeid, editorContent)
+    await updateDocument('node', node.nodeid, editorContent, getTitleFromPath(path))
 
     setSearch({ value: '', type: CategoryType.search })
     setInput('')

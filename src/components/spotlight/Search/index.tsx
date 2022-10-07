@@ -1,28 +1,30 @@
-import { CategoryType, useSpotlightContext } from '../../../store/Context/context.spotlight'
 /* eslint-disable react/prop-types */
 import React, { useEffect, useRef } from 'react'
-import { StyledInput, StyledSearch } from './styled'
-import { useSaveChanges, useSearchProps } from './useSearchProps'
 
-import { CenterIcon } from '../../../style/spotlight/layout'
-import Message from '../Message'
-import { useContentStore } from '../../../store/useContentStore'
-import { useDebouncedCallback } from 'use-debounce'
-import { useSpotlightAppStore } from '../../../store/app.spotlight'
+import NamespaceTag from '@components/mex/NamespaceTag'
+import { useNamespaces } from '@hooks/useNamespaces'
+import { useSpotlightEditorStore } from '@store/editor.spotlight'
+import useDataStore from '@store/useDataStore'
+import { StyledCreatatbleSelect } from '@style/Form'
+import { StyledNamespaceSpotlightSelectComponents } from '@style/Select'
 import { useTheme } from 'styled-components'
+import { useDebouncedCallback } from 'use-debounce'
+
+import { mog } from '@workduck-io/mex-utils'
+
+import { CategoryType, useSpotlightContext } from '../../../store/Context/context.spotlight'
+import { useSpotlightAppStore } from '../../../store/app.spotlight'
+import { useContentStore } from '../../../store/useContentStore'
+import { CenterIcon } from '../../../style/spotlight/layout'
 import { withoutContinuousDelimiter } from '../../../utils/lib/helper'
 import { useRouting } from '../../../views/routes/urls'
-import ViewActionHandler from '../ActionStage/Forms/ViewActionHandler'
-import { useActionStore } from '../Actions/useActionStore'
 import { useActionMenuStore } from '../ActionStage/ActionMenu/useActionMenuStore'
+import ViewActionHandler from '../ActionStage/Forms/ViewActionHandler'
 import { getIconType, ProjectIconMex } from '../ActionStage/Project/ProjectIcon'
-import { StyledCreatatbleSelect } from '@style/Form'
-import useDataStore from '@store/useDataStore'
-import { useNamespaces } from '@hooks/useNamespaces'
-import { mog } from '@workduck-io/mex-utils'
-import { StyledNamespaceSpotlightSelectComponents } from '@style/Select'
-import NamespaceTag from '@components/mex/NamespaceTag'
-import { useSpotlightEditorStore } from '@store/editor.spotlight'
+import { useActionStore } from '../Actions/useActionStore'
+import Message from '../Message'
+import { StyledInput, StyledSearch } from './styled'
+import { useSaveChanges, useSearchProps } from './useSearchProps'
 
 type QueryType = {
   value: string
@@ -128,12 +130,6 @@ const Search = () => {
       ref.current.focus()
     }
   }
-
-  mog('spotlight', {
-    input,
-    placeholder,
-    editorNode
-  })
 
   return (
     <StyledSearch id="wd-mex-spotlight-search-container">

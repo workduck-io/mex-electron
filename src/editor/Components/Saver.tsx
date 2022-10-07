@@ -1,17 +1,16 @@
-import saveLine from '@iconify/icons-ri/save-line'
-import { TippyProps } from '@tippyjs/react'
-import { getPlateEditorRef, platesStore } from '@udecode/plate'
 import React, { useEffect } from 'react'
-import toast from 'react-hot-toast'
-import { tinykeys } from '@workduck-io/tinykeys'
+
 import { useApi } from '@apis/useSaveApi'
 import { useSnippetBuffer } from '@hooks/useEditorBuffer'
 import { useLinks } from '@hooks/useLinks'
+import { useNamespaces } from '@hooks/useNamespaces'
+import { useNodes } from '@hooks/useNodes'
 import { useSaveData } from '@hooks/useSaveData'
 import { useSearch } from '@hooks/useSearch'
 import { useKeyListener } from '@hooks/useShortcutListener'
 import { useTags } from '@hooks/useTags'
 import { useUpdater } from '@hooks/useUpdater'
+import saveLine from '@iconify/icons-ri/save-line'
 import useAnalytics from '@services/analytics'
 import { ActionType } from '@services/analytics/events'
 import { useContentStore } from '@store/useContentStore'
@@ -19,11 +18,15 @@ import { NodeProperties, useEditorStore } from '@store/useEditorStore'
 import { useHelpStore } from '@store/useHelpStore'
 import { useSnippetStore } from '@store/useSnippetStore'
 import useTodoStore from '@store/useTodoStore'
+import { TippyProps } from '@tippyjs/react'
+import { getPlateEditorRef, platesStore } from '@udecode/plate'
 import { getTodosFromContent } from '@utils/lib/content'
 import { mog } from '@utils/lib/helper'
 import { getEventNameFromElement } from '@utils/lib/strings'
-import { useNodes } from '@hooks/useNodes'
+import toast from 'react-hot-toast'
+
 import { IconButton } from '@workduck-io/mex-components'
+import { tinykeys } from '@workduck-io/tinykeys'
 
 interface SaveEditorValueOptions {
   // If not set, defaults to true
@@ -37,7 +40,7 @@ export const useDataSaverFromContent = () => {
   const setContent = useContentStore((state) => state.setContent)
   const getContent = useContentStore((state) => state.getContent)
 
-  const { updateLinksFromContent } = useLinks()
+  const { updateLinksFromContent, getTitleFromNoteId } = useLinks()
   const updateNodeTodos = useTodoStore((store) => store.replaceContentOfTodos)
 
   const { updateTagsFromContent } = useTags()
@@ -64,7 +67,7 @@ export const useDataSaverFromContent = () => {
       // Update operations for only notes owned by the user
       if (options?.isShared !== true) {
         updateNodeTodos(nodeId, getTodosFromContent(editorValue))
-        updateDocument('node', nodeId, editorValue)
+        updateDocument('node', nodeId, editorValue, getTitleFromNoteId(nodeId, { includeArchived: true }))
       }
     }
   }
@@ -92,7 +95,7 @@ export const useSaver = () => {
   const { isSharedNode } = useNodes()
 
   // const editorState = usePlateSelectors(usePlateId()).value(
-
+  const { getDefaultNamespaceId } = useNamespaces()
   const { saveEditorValueAndUpdateStores } = useDataSaverFromContent()
 
   /**
@@ -109,6 +112,7 @@ export const useSaver = () => {
 
     const defaultNode = useEditorStore.getState().node
     const cnode = node || defaultNode
+    const namespace = cnode.namespace || getDefaultNamespaceId()
 
     // * Editor Id is different from nodeId
     const editorId = getPlateEditorRef()?.id
@@ -117,7 +121,7 @@ export const useSaver = () => {
 
     if (hasState || content) {
       const editorState = content ?? state[editorId].get.value()
-      saveEditorValueAndUpdateStores(cnode.nodeid, cnode.namespace, editorState, { isShared })
+      saveEditorValueAndUpdateStores(cnode.nodeid, namespace, editorState, { isShared })
     }
 
     if (writeToFile !== false) {

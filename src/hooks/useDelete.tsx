@@ -1,5 +1,7 @@
-import { RefactorPath } from '@components/mex/Refactor/types'
 import React from 'react'
+
+import { RefactorPath } from '@components/mex/Refactor/types'
+
 import { getAllParentIds } from '../components/mex/Sidebar/treeUtils'
 import useDataStore from '../store/useDataStore'
 import { useEditorStore } from '../store/useEditorStore'
@@ -10,7 +12,7 @@ import { getContent } from '../utils/helpers'
 import { mog } from '../utils/lib/helper'
 import { isMatch } from '../utils/lib/paths'
 import useArchive from './useArchive'
-import { useLinks } from './useLinks'
+import { getTitleFromPath, useLinks } from './useLinks'
 import { useSearch } from './useSearch'
 
 export const useDelete = () => {
@@ -92,7 +94,7 @@ export const useDelete = () => {
         const content = getContent(nodeid)
 
         await removeDocument('node', nodeid)
-        await updateDocument('archive', nodeid, content.content, path)
+        await updateDocument('archive', nodeid, content.content, getTitleFromPath(path))
       })
 
       mog('Delete', { archivedNodes, newIlinks, newHistory, newRecents })
