@@ -1,6 +1,5 @@
 // import { FileData, NodeSearchData } from '../Types/data'
 import { ELEMENT_ACTION_BLOCK } from '@editor/Components/Actions/types'
-import { getTitleFromPath } from '@hooks/useLinks'
 import {
   ELEMENT_CODE_BLOCK,
   ELEMENT_IMAGE,
@@ -13,6 +12,7 @@ import { ELEMENT_EXCALIDRAW } from '@udecode/plate-excalidraw'
 import { insertId } from '@utils/lib/content'
 import { textChildren } from '@utils/lib/smallContent'
 
+import { HASH_SEPARATOR, SEPARATOR } from '../../data/Defaults/idPrefixes'
 import { diskIndex, indexNames } from '../../data/search'
 import { ELEMENT_INLINE_BLOCK } from '../../editor/Components/InlineBlock/types'
 import { ELEMENT_QA_BLOCK } from '../../editor/Components/QABlock/createQAPlugin'
@@ -23,6 +23,13 @@ import { FileData } from '../../types/data'
 import { getBlocks } from '../helpers'
 import { camelCase, getSlug } from '../lib/strings'
 import { GenericSearchData, SearchRepExtra } from './../../types/search'
+
+export const getTitleFromPath = (path: string, withNoteId = false) => {
+  const separator = withNoteId ? HASH_SEPARATOR : SEPARATOR
+  const titleAt = withNoteId ? -2 : -1
+
+  return path?.split(separator)?.slice(titleAt)[0]
+}
 
 type ExcludeFromTextType = {
   types?: Set<string>
