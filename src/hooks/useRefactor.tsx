@@ -137,7 +137,11 @@ export const useRefactor = () => {
 
       // * Update search Index with new Title
       // * TODO: Make search API more flexible (Update specific fields)
-      if (content && nodeId) updateDocument('node', nodeId, content, getTitleFromPath(to.path))
+      if (content && nodeId) {
+        const title = getTitleFromPath(to.path)
+        mog('Updating search index', { title })
+        updateDocument('node', nodeId, content, title)
+      }
 
       return refactored
     })

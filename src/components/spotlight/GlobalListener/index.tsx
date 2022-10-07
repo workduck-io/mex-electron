@@ -1,33 +1,35 @@
-import { AppType, useInitialize } from '../../../hooks/useInitialize'
-import { NavigationType, ROUTE_PATHS, useRouting } from '../../../views/routes/urls'
 import React, { memo, useEffect, useState } from 'react'
 
-import { IpcAction } from '../../../data/IpcAction'
-// import { appNotifierWindow } from '../../../electron/utils/notifiers'
-import { getNewDraftKey } from '../../../editor/Components/SyncBlock/getNewBlockData'
-import { getPlateSelectors } from '@udecode/plate'
-import { ipcRenderer } from 'electron'
-import useAnalytics from '../../../services/analytics'
-import { useAuthStore } from '../../../services/auth/useAuth'
-import useDataStore from '../../../store/useDataStore'
-// import useOnboard from '../../../store/useOnboarding'
-import { useRecentsStore } from '../../../store/useRecentsStore'
-import { useSaver } from '../../../editor/Components/Saver'
-import { useSpotlightAppStore } from '../../../store/app.spotlight'
-import { useSpotlightContext } from '../../../store/Context/context.spotlight'
-import { useSpotlightEditorStore } from '../../../store/editor.spotlight'
-import { useSpotlightSettingsStore } from '../../../store/settings.spotlight'
-import ReminderArmer from '../Reminder/ReminderArmer'
-import { useGoogleCalendarAutoFetch } from '../../../hooks/useCalendar'
-// import { useMentionData, useTokenData } from '../../../hooks/useLocalData'
-// import { useRecieveMentions, useRecieveTokens } from '../../../hooks/useSyncData'
-import { useActionStore } from '../Actions/useActionStore'
-import { useActionsPerfomerClient } from '../Actions/useActionPerformer'
 // import { useActionsCache } from '../Actions/useActionsCache'
 import { useShareModalStore } from '@components/mex/Mention/ShareModalStore'
 import { useCreateNewNote } from '@hooks/useCreateNewNote'
 // import useDwindleAuthStore from '@workduck-io/dwindle/lib/esm/AuthStore/useAuthStore'
 import syncStores from '@store/syncStore/synced'
+import { getPlateSelectors } from '@udecode/plate'
+import { ipcRenderer } from 'electron'
+
+import { IpcAction } from '../../../data/IpcAction'
+import { useSaver } from '../../../editor/Components/Saver'
+// import { appNotifierWindow } from '../../../electron/utils/notifiers'
+import { getNewDraftKey } from '../../../editor/Components/SyncBlock/getNewBlockData'
+import { useGoogleCalendarAutoFetch } from '../../../hooks/useCalendar'
+import { AppType, useInitialize } from '../../../hooks/useInitialize'
+import useAnalytics from '../../../services/analytics'
+import { useAuthStore } from '../../../services/auth/useAuth'
+import { useSpotlightContext } from '../../../store/Context/context.spotlight'
+import { useSpotlightAppStore } from '../../../store/app.spotlight'
+import { useSpotlightEditorStore } from '../../../store/editor.spotlight'
+import { useSpotlightSettingsStore } from '../../../store/settings.spotlight'
+import useDataStore from '../../../store/useDataStore'
+// import useOnboard from '../../../store/useOnboarding'
+import { useRecentsStore } from '../../../store/useRecentsStore'
+import { NavigationType, ROUTE_PATHS, useRouting } from '../../../views/routes/urls'
+import { useActionsPerfomerClient } from '../Actions/useActionPerformer'
+// import { useMentionData, useTokenData } from '../../../hooks/useLocalData'
+// import { useRecieveMentions, useRecieveTokens } from '../../../hooks/useSyncData'
+import { useActionStore } from '../Actions/useActionStore'
+import ReminderArmer from '../Reminder/ReminderArmer'
+import { useSaveChanges } from '../Search/useSearchProps'
 
 const GlobalListener = memo(() => {
   const [temp, setTemp] = useState<any>()
@@ -50,7 +52,7 @@ const GlobalListener = memo(() => {
   // const { getTokenData } = useTokenData()
   // const { initActionsInStore, initActionsOfGroup } = useActions()
   // const { setReceiveToken } = useRecieveTokens()
-  const { onSave } = useSaver()
+  const { saveIt } = useSaveChanges()
   const { init } = useInitialize()
   const { identifyUser } = useAnalytics()
   const { initActionPerfomerClient } = useActionsPerfomerClient()
@@ -127,7 +129,7 @@ const GlobalListener = memo(() => {
 
         addRecent(node.nodeid)
         addInRecentResearchNodes(node.nodeid)
-        if (saveAfterBlur) onSave(node, true, false, content)
+        if (saveAfterBlur) saveIt({ saveAndClose: false, skipPathCheck: true, notify: false })
         else setSaveAfterBlur(true)
         // appNotifierWindow(IpcAction.NEW_RECENT_ITEM, AppType.SPOTLIGHT, { nodeid: node.nodeid })
         setReset()

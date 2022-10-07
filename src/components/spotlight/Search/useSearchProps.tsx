@@ -57,6 +57,7 @@ type SaveItProps = {
   isNewTask?: boolean
   path?: string
   notify?: boolean
+  skipPathCheck?: boolean
   // Will not save on blur if false
   // defaults to true if absent
   saveAfterBlur?: boolean
@@ -114,7 +115,7 @@ export const useSaveChanges = () => {
     let path = node.path
     const title = getTitleFromContent(editorContent)
 
-    if (isNewDraftNode && isUntitledDraftNode) {
+    if (isNewDraftNode && isUntitledDraftNode && !options?.skipPathCheck) {
       if (options?.beforeSave) {
         path = path.split(SEPARATOR).slice(0, -1).join(SEPARATOR) + `${SEPARATOR}${title}`
       } else {
