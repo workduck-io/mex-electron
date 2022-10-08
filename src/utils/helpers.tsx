@@ -1,3 +1,5 @@
+import { NODE_ID_PREFIX, SNIPPET_PREFIX } from '@workduck-io/mex-utils'
+
 import { SourceType } from '../components/spotlight/Source/types'
 import { defaultContent } from '../data/Defaults/baseData'
 import { useContentStore } from '../store/useContentStore'
@@ -54,6 +56,26 @@ export const isFromSameSource = (oldSource: SourceType, newSource: SourceType): 
   }
 
   return false
+}
+
+export const getNodeIdFromEditor = (editorId: string) => {
+  /*
+   * Find substring of form NODE_{} in editorid
+   */
+  const nodeReg = new RegExp(`${NODE_ID_PREFIX}_[A-Za-z0-9]+`)
+  const nodeIdReg = editorId?.match(nodeReg)
+  // mog('nodeId', { nodeIdReg, editorId })
+  if (nodeIdReg) {
+    return nodeIdReg[0]
+  }
+
+  const snippetReg = new RegExp(`${SNIPPET_PREFIX}_[A-Za-z0-9]+`)
+  const snippetnodeidReg = editorId?.match(snippetReg)
+  // mog('nodeId', { snippetReg, snippetnodeidReg })
+
+  if (snippetnodeidReg) {
+    return snippetnodeidReg[0]
+  }
 }
 
 export const typeInvert = (type: string) => (type === 'from' ? 'to' : 'from')
