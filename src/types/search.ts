@@ -1,4 +1,4 @@
-import { Document } from '@workduck-io/flexsearch'
+import type { Document } from '@workduck-io/flexsearch'
 
 import { FileData } from './data'
 

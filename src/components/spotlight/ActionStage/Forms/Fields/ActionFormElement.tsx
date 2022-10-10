@@ -1,6 +1,7 @@
 import React, { useRef } from 'react'
-import styled, { css } from 'styled-components'
+
 import { darken } from 'polished'
+import styled, { css } from 'styled-components'
 
 export const ElementContainer = styled.div<{ isInline?: boolean; flex?: number }>`
   ${({ isInline }) =>
@@ -51,6 +52,7 @@ type ActionFormElementProps = {
   required?: boolean
   isInline?: boolean
   flex?: number
+  children?: React.ReactElement | React.ReactElement[]
 }
 
 const ActionFormElement: React.FC<ActionFormElementProps> = ({ label, required, children, isInline, flex }) => {

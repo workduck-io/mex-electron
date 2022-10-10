@@ -1,3 +1,5 @@
+import React, { useEffect, useMemo, useState } from 'react'
+
 import { EMAIL_REG } from '@data/Defaults/auth'
 import { replaceUserMention, replaceUserMentionEmail } from '@editor/Actions/replaceUserMention'
 import { useMentions } from '@hooks/useMentions'
@@ -9,11 +11,12 @@ import { useEditorStore } from '@store/useEditorStore'
 import { ButtonFields, Label, SelectWrapper, StyledCreatatbleSelect } from '@style/Form'
 import { Title } from '@style/Typography'
 import { getPlateEditorRef } from '@udecode/plate'
-import { mog } from '@utils/lib/helper'
-import { LoadingButton } from '@workduck-io/mex-components'
-import React, { useEffect, useMemo, useState } from 'react'
+import { mog } from '@utils/lib/mog'
 import { Controller, useForm } from 'react-hook-form'
 import toast from 'react-hot-toast'
+
+import { LoadingButton } from '@workduck-io/mex-components'
+
 import { AccessLevel, DefaultPermission, DefaultPermissionValue, permissionOptions } from '../../../types/mentions'
 import { InputFormError } from '../Forms/Input'
 import { InviteFormFieldset, InviteFormWrapper, InviteWrapper } from './ShareModal.styles'

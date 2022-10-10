@@ -1,16 +1,19 @@
-import { useTaskViews, useViewStore, View } from '@hooks/useTaskViews'
+import React from 'react'
+
+import { useTaskViewModalStore } from '@components/mex/TaskViewModal'
+import { useTaskViews, useViewStore } from '@hooks/useTaskViews'
 import trashIcon from '@iconify/icons-codicon/trash'
+import fileCopyLine from '@iconify/icons-ri/file-copy-line'
 import { Icon } from '@iconify/react'
 import { ContextMenuContent, ContextMenuItem, ContextMenuSeparator } from '@ui/components/menus/contextMenu'
+import { mog } from '@utils/lib/mog'
 import { NavigationType, ROUTE_PATHS, useRouting } from '@views/routes/urls'
-import { useTaskViewModalStore } from '@components/mex/TaskViewModal'
-import fileCopyLine from '@iconify/icons-ri/file-copy-line'
-import React from 'react'
+
+import { View } from '../../../types/data'
 import { SidebarListItem } from './SidebarList.types'
-import { mog } from '@utils/lib/helper'
 
 interface TaskViewContextMenuProps {
-  item: SidebarListItem<View<any>>
+  item: SidebarListItem<View>
 }
 
 const TaskViewContextMenu = ({ item }: TaskViewContextMenuProps) => {
@@ -20,7 +23,7 @@ const TaskViewContextMenu = ({ item }: TaskViewContextMenuProps) => {
   const { goTo } = useRouting()
   const { deleteView } = useTaskViews()
 
-  const handleDelete = async (view: View<any>) => {
+  const handleDelete = async (view: View) => {
     const currentView = useViewStore.getState().currentView
     await deleteView(view.id)
     if (currentView?.id === view.id) {
@@ -29,7 +32,7 @@ const TaskViewContextMenu = ({ item }: TaskViewContextMenuProps) => {
     }
   }
 
-  const handleClone = (view: View<any>) => {
+  const handleClone = (view: View) => {
     openModal({ filters: view.filters, cloneViewId: view.id })
   }
 

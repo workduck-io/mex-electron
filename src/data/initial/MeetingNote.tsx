@@ -10,8 +10,19 @@ import {
   task,
   text
 } from '@utils/lib/smallContent'
-import { insertId } from '../../utils/lib/content'
-import { toLocaleString } from '../../utils/time'
+
+import { insertId } from '../../utils/lib/content.main'
+
+const toLocaleString = (date: Date) => {
+  return date.toLocaleString('en-US', {
+    weekday: 'long',
+    year: 'numeric',
+    month: 'long',
+    day: 'numeric',
+    hour: 'numeric',
+    minute: 'numeric'
+  })
+}
 
 export interface MeetingTemplateData {
   title: string

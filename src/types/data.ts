@@ -1,12 +1,23 @@
-import {
+import type {
   Service,
   SyncBlockData,
   SyncBlockTemplate,
   SyncStoreIntents
 } from '../editor/Components/SyncBlock/SyncBlock.types'
-import { TodosType } from '../editor/Components/Todo/types'
-import { ILink, LinkCache, MIcon, NodeEditorContent, SharedNode, Tag, TagsCache } from '../types/Types'
+import type { TodosType } from '../editor/Components/Todo/types'
+import { ILink, LinkCache, MIcon, NodeEditorContent, SharedNode, Tag, TagsCache } from './Types'
+import { Filter, GlobalFilterJoin } from './filters'
 import { Reminder } from './reminders'
+
+export interface View {
+  title: string
+  description?: string
+  id: string
+
+  filters: Filter[]
+
+  globalJoin: GlobalFilterJoin
+}
 
 export interface Snippet {
   id: string
@@ -18,14 +29,7 @@ export interface Snippet {
 
 export type FilterKey = 'note' | 'tag' | 'date' | 'state' | 'has' | 'mention' | 'space'
 
-export interface View<Item> {
-  title: string
-  description?: string
-  id: string
-  filters: SearchFilter<Item>[]
-}
-
-export interface SearchFilter<Item> {
+export interface SearchFilter {
   key: FilterKey
   id: string
   label: string
@@ -69,7 +73,7 @@ export interface NodeContent {
 }
 
 export interface FileSaveBuffer {
-  views?: View<any>[]
+  views?: View[]
 }
 
 export interface FileData {
@@ -92,7 +96,7 @@ export interface FileData {
 
   // Tasks
   todos: TodosType
-  views: View<any>[]
+  views: View[]
 
   // Reminders
   reminders: Reminder[]

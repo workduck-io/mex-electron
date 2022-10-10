@@ -1,15 +1,17 @@
-import { useCombobox } from 'downshift'
 import React, { useState } from 'react'
+
+import { StyledCombobox, Suggestion, StyledMenu } from '@components/mex/NodeSelect/NodeSelect.styles'
+import arrowDownSLine from '@iconify/icons-ri/arrow-down-s-line'
+import fileList2Line from '@iconify/icons-ri/file-list-2-line'
+import gridLine from '@iconify/icons-ri/grid-line'
+import quillPenLine from '@iconify/icons-ri/quill-pen-line'
+import { Icon } from '@iconify/react'
+import { mog } from '@utils/lib/mog'
+import { capitalize } from '@utils/lib/strings'
+import { useCombobox } from 'downshift'
+
 import { Input } from '../../../style/Form'
 import { SearchFilterInputWrapper, SearchIndexValue } from '../../../style/Search'
-import { StyledCombobox, Suggestion, StyledMenu } from '@components/mex/NodeSelect/NodeSelect.styles'
-import { mog } from '@utils/lib/helper'
-import arrowDownSLine from '@iconify/icons-ri/arrow-down-s-line'
-import { Icon } from '@iconify/react'
-import { capitalize } from '@utils/lib/strings'
-import gridLine from '@iconify/icons-ri/grid-line'
-import fileList2Line from '@iconify/icons-ri/file-list-2-line'
-import quillPenLine from '@iconify/icons-ri/quill-pen-line'
 
 interface SearchIndexInputProps {
   indexGroups: string[]

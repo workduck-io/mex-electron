@@ -1,8 +1,10 @@
-import { addIconsToIconify } from '@components/icons/Icons'
-import { actionStore, Provider } from '@components/spotlight/Actions/useActionStore'
-import { actionMenuStore, MenuProvider } from '@components/spotlight/ActionStage/ActionMenu/useActionMenuStore'
-import Providers from '@store/Context/Providers'
 import React from 'react'
+
+import { addIconsToIconify } from '@components/icons/Icons'
+import { actionMenuStore, MenuProvider } from '@components/spotlight/ActionStage/ActionMenu/useActionMenuStore'
+import { actionStore, Provider } from '@components/spotlight/Actions/useActionStore'
+import Providers from '@store/Context/Providers'
+
 import { VersionSetter } from './components/mex/Init/VersionSetter'
 import OnBoardingTour from './components/mex/Onboarding'
 import { SpotlightOnboarding } from './components/mex/Onboarding/steps'

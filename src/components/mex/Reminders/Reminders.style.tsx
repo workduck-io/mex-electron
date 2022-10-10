@@ -1,7 +1,9 @@
 import { CollapseWrapper } from '@ui/layout/Collapse/Collapse.style'
-import { Button } from '@workduck-io/mex-components'
 import { mix, transparentize } from 'polished'
 import styled, { createGlobalStyle, css } from 'styled-components'
+
+import { Button } from '@workduck-io/mex-components'
+
 import { ReminderStatus, REMINDERS_DIMENSIONS } from '../../../services/reminders/reminders'
 import { Title } from '../../../style/Typography'
 

@@ -1,19 +1,22 @@
-import { InputFormError } from '@components/mex/Forms/Input'
-import deleteBack2Line from '@iconify/icons-ri/delete-back-2-line'
-import { ALIAS_REG } from '@data/Defaults/auth'
-import { useUserService } from '@services/auth/useUserService'
-import edit2Line from '@iconify/icons-ri/edit-2-line'
-import { AuthForm, ButtonFields } from '@style/Form'
 import React from 'react'
+
+import { InputFormError } from '@components/mex/Forms/Input'
+import { ALIAS_REG } from '@data/Defaults/auth'
+import { IS_DEV } from '@data/Defaults/dev_'
+import deleteBack2Line from '@iconify/icons-ri/delete-back-2-line'
+import edit2Line from '@iconify/icons-ri/edit-2-line'
+import { useUserService } from '@services/auth/useUserService'
+import { AuthForm, ButtonFields } from '@style/Form'
+import { mog } from '@utils/lib/mog'
 import { useForm } from 'react-hook-form'
+
+import { IconButton, LoadingButton } from '@workduck-io/mex-components'
+
 import { CopyButton } from '../../components/mex/Buttons/CopyButton'
 import { ProfileImage } from '../../components/mex/User/ProfileImage'
 import { useAuthStore } from '../../services/auth/useAuth'
 import { Title } from '../../style/Typography'
 import { Info, InfoData, InfoLabel, ProfileContainer, ProfileIcon, SettingsCard } from '../../style/UserPage'
-import { mog } from '../../utils/lib/helper'
-import { IS_DEV } from '@data/Defaults/dev_'
-import { IconButton, LoadingButton } from '@workduck-io/mex-components'
 
 export interface UpdateUserFormData {
   name: string

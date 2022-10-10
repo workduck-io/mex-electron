@@ -1,13 +1,13 @@
-import { mog } from '@utils/lib/helper'
+import getPlugins from '@editor/Plugins/plugins'
 import { createPlateEditor } from '@udecode/plate'
-
 import { getMexHTMLDeserializer } from '@utils/htmlDeserializer'
 import { AppleNote } from '@utils/importers/appleNotes'
-import { useCreateNewNote } from './useCreateNewNote'
+import { mog } from '@utils/lib/mog'
+
 import components from '../editor/Components/components'
-import getPlugins from '@editor/Plugins/plugins'
 import useDataStore from '../store/useDataStore'
 import { uploadImageToWDCDN } from '../utils/imageUpload'
+import { useCreateNewNote } from './useCreateNewNote'
 
 // export type NewNoteOptions = {
 //   path?: string

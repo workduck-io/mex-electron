@@ -7,7 +7,7 @@ type SnippetContextType = {
 const SnippetContext = createContext<SnippetContextType>(undefined!)
 export const useSnippetContext = () => useContext(SnippetContext)
 
-export const SnippetProvider: React.FC = ({ children }: any) => {
+export const SnippetProvider: React.FC<React.PropsWithChildren> = ({ children }: any) => {
   const value = {
     isSnippet: true
   }

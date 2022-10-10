@@ -1,14 +1,26 @@
-import closeCircleLine from '@iconify/icons-ri/close-circle-line'
-import { Icon } from '@iconify/react'
-import timerLine from '@iconify/icons-ri/timer-line'
 import React from 'react'
-import { Description, Title } from '../../../style/Typography'
-import { DisplayReminder, Reminder } from '../../../types/reminders'
-import { mog } from '../../../utils/lib/helper'
+
 import arrowDropRightLine from '@iconify/icons-ri/arrow-drop-right-line'
 import arrowDropUpLine from '@iconify/icons-ri/arrow-drop-up-line'
+import closeCircleLine from '@iconify/icons-ri/close-circle-line'
+import fileList2Line from '@iconify/icons-ri/file-list-2-line'
+import timerLine from '@iconify/icons-ri/timer-line'
+import { Icon } from '@iconify/react'
+import { mog } from '@utils/lib/mog'
+import { sub } from 'date-fns'
+import { add } from 'date-fns/fp'
+
+import { Button } from '@workduck-io/mex-components'
+
+import { TodoType } from '../../../editor/Components/Todo/types'
+import { useReminders } from '../../../hooks/useReminders'
+import { getReminderState, ReminderStatus } from '../../../services/reminders/reminders'
+import { Description, Title } from '../../../style/Typography'
+import { DisplayReminder, Reminder } from '../../../types/reminders'
 import { getNextReminderTime, getRelativeDate } from '../../../utils/time'
+import NotificationTodo from '../../toast/NotificationTodo'
 import { RelativeTime } from '../RelativeTime'
+import { getNameFromPath } from '../Sidebar/treeUtils'
 import {
   ReminderButtonControlsWrapper,
   ReminderControlsWrapper,
@@ -20,15 +32,6 @@ import {
   ReminderTime,
   SnoozeControls
 } from './Reminders.style'
-import { useReminders } from '../../../hooks/useReminders'
-import { sub } from 'date-fns'
-import { add } from 'date-fns/fp'
-import { getReminderState, ReminderStatus } from '../../../services/reminders/reminders'
-import fileList2Line from '@iconify/icons-ri/file-list-2-line'
-import { TodoType } from '../../../editor/Components/Todo/types'
-import NotificationTodo from '../../toast/NotificationTodo'
-import { getNameFromPath } from '../Sidebar/treeUtils'
-import { Button } from '@workduck-io/mex-components'
 
 export interface ReminderControl {
   type: 'dismiss' | 'open' | 'delete' | 'unarchive'

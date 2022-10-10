@@ -1,6 +1,4 @@
-import { insertId } from '../../utils/lib/content'
-import { toLocaleString } from '../../utils/time'
-import { generateQuestionId, generateTempId } from '../Defaults/idPrefixes'
+import { insertId } from '../../utils/lib/content.main'
 
 export const SprintReviewSnippet = insertId([
   {

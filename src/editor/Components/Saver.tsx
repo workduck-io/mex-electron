@@ -21,7 +21,7 @@ import useTodoStore from '@store/useTodoStore'
 import { TippyProps } from '@tippyjs/react'
 import { getPlateEditorRef, platesStore } from '@udecode/plate'
 import { getTodosFromContent } from '@utils/lib/content'
-import { mog } from '@utils/lib/helper'
+import { mog } from '@utils/lib/mog'
 import { getEventNameFromElement } from '@utils/lib/strings'
 import toast from 'react-hot-toast'
 

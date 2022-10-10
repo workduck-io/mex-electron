@@ -1,13 +1,14 @@
 import { useAuthStore } from '@services/auth/useAuth'
 import { usePermission } from '@services/auth/usePermission'
+import useDataStore from '@store/useDataStore'
 import { addAccessToUser, useMentionStore } from '@store/useMentionStore'
+import { useUserCacheStore } from '@store/useUserCacheStore'
+import { mog } from '@utils/lib/mog'
+
 import { UserDetails } from '../types/auth'
-import { mog } from '@utils/lib/helper'
 import { AccessLevel, DefaultPermission, InvitedUser, Mentionable, SelfMention } from '../types/mentions'
 import { useMentionData } from './useLocalData'
-import useDataStore from '@store/useDataStore'
 import { useNodes } from './useNodes'
-import { useUserCacheStore } from '@store/useUserCacheStore'
 
 export const useMentions = () => {
   const { grantUsersPermission } = usePermission()

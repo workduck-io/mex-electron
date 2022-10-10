@@ -1,4 +1,4 @@
-import { insertId } from '../../utils/lib/content'
+import { insertId } from '../../utils/lib/content.main'
 import { generateQuestionId } from '../Defaults/idPrefixes'
 
 export const ReleaseSnippet = insertId([

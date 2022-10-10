@@ -1,0 +1,10 @@
+{
+  "detectiveOptions": {
+    "es6": {
+      "mixedImports": true
+    },
+    "ts": {
+      "mixedImports": true
+    }
+  }
+}

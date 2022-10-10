@@ -1,14 +1,17 @@
 import React, { useEffect, useMemo, useState } from 'react'
-import styled from 'styled-components'
-import { mog } from '../../../../utils/lib/helper'
+
+import { useActionsCache } from '@components/spotlight/Actions/useActionsCache'
+import { mog } from '@utils/lib/mog'
 import { search as getSearchResults } from 'fast-fuzzy'
+import styled from 'styled-components'
+
+import { TemplateConfig } from '@workduck-io/action-request-helper'
+
+import { useSpotlightContext } from '../../../../store/Context/context.spotlight'
 import { useActionPerformer } from '../../Actions/useActionPerformer'
 import { useActionStore } from '../../Actions/useActionStore'
-import { TemplateConfig } from '@workduck-io/action-request-helper'
-import List from './List'
-import { useSpotlightContext } from '../../../../store/Context/context.spotlight'
 import { useActionMenuStore } from '../ActionMenu/useActionMenuStore'
-import { useActionsCache } from '@components/spotlight/Actions/useActionsCache'
+import List from './List'
 
 const StyledScreen = styled.section`
   display: flex;

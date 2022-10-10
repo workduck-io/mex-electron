@@ -1,10 +1,17 @@
-import { getAccessValue, useMentions } from '@hooks/useMentions'
-import repeatLine from '@iconify/icons-ri/repeat-line'
-import deleteBin6Line from '@iconify/icons-ri/delete-bin-6-line'
-import { useEditorStore } from '@store/useEditorStore'
-import { StyledCreatatbleSelect } from '@style/Form'
-import { mog } from '@utils/lib/helper'
 import React, { useMemo } from 'react'
+
+import { getAccessValue, useMentions } from '@hooks/useMentions'
+import deleteBin6Line from '@iconify/icons-ri/delete-bin-6-line'
+import repeatLine from '@iconify/icons-ri/repeat-line'
+import { usePermission } from '@services/auth/usePermission'
+import { useUserService } from '@services/auth/useUserService'
+import { useEditorStore } from '@store/useEditorStore'
+import { useMentionStore } from '@store/useMentionStore'
+import { StyledCreatatbleSelect } from '@style/Form'
+import { mog } from '@utils/lib/mog'
+
+import { Button, IconButton } from '@workduck-io/mex-components'
+
 import { AccessLevel, DefaultPermissionValue, InvitedUser, permissionOptions } from '../../../types/mentions'
 import { ModalControls, ModalHeader, ModalSection, ModalSectionScroll } from '../Refactor/styles'
 import {
@@ -19,10 +26,6 @@ import {
   ShareRowActionsWrapper
 } from './ShareModal.styles'
 import { useShareModalStore } from './ShareModalStore'
-import { useUserService } from '@services/auth/useUserService'
-import { usePermission } from '@services/auth/usePermission'
-import { useMentionStore } from '@store/useMentionStore'
-import { Button, IconButton } from '@workduck-io/mex-components'
 
 // Here since we don't have a specific userid we take email to be a unique key.
 export const InvitedUsersContent = (/*{}: PermissionModalContentProps*/) => {

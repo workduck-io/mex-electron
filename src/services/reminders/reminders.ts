@@ -1,6 +1,7 @@
 import { sub } from 'date-fns'
+
 import { Reminder, ReminderGroup } from '../../types/reminders'
-import { insertId } from '../../utils/lib/content'
+import {insertId} from '@utils/lib/content.main'
 
 /*
  * Only sets up reminder for the next 24 hours

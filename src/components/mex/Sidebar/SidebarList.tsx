@@ -1,13 +1,16 @@
+import React, { useEffect, useState } from 'react'
+
 import searchLine from '@iconify/icons-ri/search-line'
 import { Icon } from '@iconify/react'
 import { Input } from '@style/Form'
 import { ItemContent, ItemTitle, StyledTreeItem } from '@style/Sidebar'
 import Tippy, { useSingleton } from '@tippyjs/react'
 import { fuzzySearch } from '@utils/lib/fuzzySearch'
-import { mog } from '@utils/lib/helper'
-import { tinykeys } from '@workduck-io/tinykeys'
+import { mog } from '@utils/lib/mog'
 import { debounce } from 'lodash'
-import React, { useEffect, useState } from 'react'
+
+import { tinykeys } from '@workduck-io/tinykeys'
+
 import { EmptyMessage, FilteredItemsWrapper, SidebarListFilter, SidebarListWrapper } from './SidebarList.style'
 import { SidebarListProps } from './SidebarList.types'
 import SidebarListItemComponent from './SidebarListItem'

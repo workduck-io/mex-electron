@@ -1,17 +1,13 @@
 import { IpcAction } from '@data/IpcAction'
 import Toast from '@electron/Toast'
-import { windows } from '@electron/main'
 import MenuBuilder from '@electron/menu'
+import { windows } from '@electron/windows'
 import { sanitizeHtml } from '@utils/sanitizeHtml'
 import { session, BrowserWindow, screen } from 'electron'
 
+import { AppType } from '../../data/constants'
 import { windowManager } from '../WindowManager'
 import { SelectionType, getSelectedTextSync, getSelectedText } from './getSelectedText'
-
-export enum AppType {
-  SPOTLIGHT = 'SPOTLIGHT',
-  MEX = 'MEX'
-}
 
 const MEX_WINDOW_OPTIONS = {
   width: 1600,
@@ -116,9 +112,9 @@ export const createNoteWindow = (dataForPreviewWindow: { from: AppType; data: an
     onClose: () => {
       windowManager.sendToWindow(AppType.MEX, IpcAction.UNPIN_NOTE, { noteId: dataForPreviewWindow?.data?.noteId })
     },
-    handleCloseManually: (noteWindow => {
+    handleCloseManually: (noteWindow) => {
       noteWindow?.webContents?.send(IpcAction.SAVE_AND_QUIT, { noteId: dataForPreviewWindow?.data?.noteId })
-    }),
+    },
     deleteOnClose: true,
     alwaysOnTop: true,
     onLoad: (window) => {
@@ -189,7 +185,7 @@ export const createAllWindows = (d: any) => {
       window.webContents.send(IpcAction.SHOW_RELEASE_NOTES, { update: d?.update })
     }
   })
-  
+
   const spotlightWindowRef = createSpotLighWindow()
 
   windows.toast = new Toast(spotlightWindowRef)

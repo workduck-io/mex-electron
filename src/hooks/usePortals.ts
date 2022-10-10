@@ -3,7 +3,7 @@ import usePortalStore, { PortalType } from '@components/mex/Integrations/Portals
 import { ActionGroupType } from '@components/spotlight/Actions/useActionStore'
 import { WORKSPACE_HEADER } from '@data/Defaults/defaults'
 import { useAuthStore } from '@services/auth/useAuth'
-import { mog } from '@utils/lib/helper'
+import { mog } from '@utils/lib/mog'
 
 import { client } from '@workduck-io/dwindle'
 

@@ -1,15 +1,16 @@
-import { useApi } from '@apis/useSaveApi'
-import { Filter, GlobalFilterJoin } from '../types/filters'
-import { mog } from '@utils/lib/helper'
 import { useEffect } from 'react'
+
+import { useApi } from '@apis/useSaveApi'
+import { mog } from '@utils/lib/mog'
 import create from 'zustand'
+
+import { Filter, GlobalFilterJoin } from '../types/filters'
 
 export interface View {
   title: string
   description?: string
   id: string
 
-  // FIXME: This should use new Filter type
   filters: Filter[]
 
   globalJoin: GlobalFilterJoin

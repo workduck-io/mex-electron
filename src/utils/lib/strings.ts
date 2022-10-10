@@ -1,8 +1,9 @@
-import { CustomEvents } from '../../services/analytics/events'
+import { mog } from '@utils/lib/mog'
 import { trim } from 'lodash'
+
 import { SEPARATOR } from '../../components/mex/Sidebar/treeUtils'
 import { DRAFT_NODE, DRAFT_PREFIX } from '../../data/Defaults/idPrefixes'
-import { mog } from './helper'
+import { CustomEvents } from '../../services/analytics/events'
 
 export const capitalize = (str: string) => {
   if (!str) return ''

@@ -1,10 +1,13 @@
-import { mog } from '@utils/lib/helper'
-import { useAuth } from '@workduck-io/dwindle'
-import { Button, LoadingButton } from '@workduck-io/mex-components'
 import React, { useState } from 'react'
+
+import { mog } from '@utils/lib/mog'
 import { Controller, useForm } from 'react-hook-form'
 import toast from 'react-hot-toast'
 import { Link } from 'react-router-dom'
+
+import { useAuth } from '@workduck-io/dwindle'
+import { Button, LoadingButton } from '@workduck-io/mex-components'
+
 import { PasswordNotMatch, PasswordRequirements } from '../../components/mex/Auth/errorMessages'
 import { GoogleLoginButton } from '../../components/mex/Buttons/LoadingButton'
 import Input, { InputFormError } from '../../components/mex/Forms/Input'

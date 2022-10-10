@@ -1,12 +1,13 @@
 import { useApi } from '@apis/useSaveApi'
 import { useContentStore } from '@store/useContentStore'
+import { mog } from '@utils/lib/mog'
 import create from 'zustand'
+
 import { useDataSaverFromContent } from '../editor/Components/Saver'
 import { useSnippetStore } from '../store/useSnippetStore'
 import { NodeEditorContent } from '../types/Types'
 import { getContent } from '../utils/helpers'
 import { areEqual } from '../utils/lib/hash'
-import { mog } from '../utils/lib/helper'
 import { useNamespaces } from './useNamespaces'
 import { useNodes } from './useNodes'
 import { useSaveData } from './useSaveData'
@@ -81,10 +82,10 @@ export const useEditorBuffer = () => {
       if (!res) {
         const namespace = getNamespaceOfNodeid(noteId)
         try {
-          await saveEditorValueAndUpdateStores(noteId, namespace.id, buffer, { saveApi: true, })
+          await saveEditorValueAndUpdateStores(noteId, namespace.id, buffer, { saveApi: true })
           return true
         } catch (err) {
-          mog("Unable to save content", { err })
+          mog('Unable to save content', { err })
         }
       }
     }

@@ -1,17 +1,20 @@
+import React, { useEffect, useMemo, useState } from 'react'
+
 import { MentionTooltipComponent } from '@editor/Components/mentions/components/MentionElement'
 import { useMentions } from '@hooks/useMentions'
 import user3Line from '@iconify/icons-ri/user-3-line'
 import { Icon } from '@iconify/react'
 import { useUserService } from '@services/auth/useUserService'
 import { useCacheStore } from '@store/useRequestCache'
-import Tippy from '@tippyjs/react/headless' // different import path!
-import { mog } from '@utils/lib/helper'
+import Tippy from '@tippyjs/react/headless'
+// different import path!
+import { mog } from '@utils/lib/mog'
 import Avatar from 'boring-avatars'
 import md5 from 'md5'
-import React, { useEffect, useMemo, useState } from 'react'
 import styled, { useTheme } from 'styled-components'
-import { CardShadow } from '../../../style/helpers'
+
 import Centered from '../../../style/Layouts'
+import { CardShadow } from '../../../style/helpers'
 
 interface ProfileImageProps {
   email: string

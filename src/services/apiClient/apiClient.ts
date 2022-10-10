@@ -1,6 +1,8 @@
+import { mog } from '@utils/lib/mog'
+
 import { client } from '@workduck-io/dwindle'
+
 import { useApiStore } from '../../store/useApiStore'
-import { mog } from '../../utils/lib/helper'
 
 export const clientInterceptor = client.interceptors.response.use(
   async (response) => {

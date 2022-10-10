@@ -1,3 +1,6 @@
+// Ignore this file for linting and errors
+// eslint-disable-next-line @typescript-eslint/ban-ts-comment
+// @ts-nocheck
 import { Matrix4, Object3D, Vector3 } from 'three'
 
 /**
@@ -9,9 +12,6 @@ import { Matrix4, Object3D, Vector3 } from 'three'
  *
  * Please proceed with caution.
  */
-
-// Ignore this file for linting and errors
-// @ts-nocheck
 
 class CSS2DObject extends Object3D {
   constructor(element = document.createElement('div')) {

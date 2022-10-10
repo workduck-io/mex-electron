@@ -1,15 +1,19 @@
+import React, { useState } from 'react'
+
 import NamespaceTag from '@components/mex/NamespaceTag'
 import { useDelete } from '@hooks/useDelete'
 import { useNamespaces } from '@hooks/useNamespaces'
 import trashIcon from '@iconify/icons-codicon/trash'
 import fileList2Line from '@iconify/icons-ri/file-list-2-line'
 import { Icon } from '@iconify/react'
+import { mog } from '@utils/lib/mog'
 import { NavigationType, ROUTE_PATHS, useRouting } from '@views/routes/urls'
-import { Button, Infobox } from '@workduck-io/mex-components'
-import React, { useState } from 'react'
 import toast from 'react-hot-toast'
 import Modal from 'react-modal'
 import styled from 'styled-components'
+
+import { Button, Infobox } from '@workduck-io/mex-components'
+
 import { ModalControls, ModalHeader, MRMHead } from '../../components/mex/Refactor/styles'
 import SearchView, { RenderItemProps, RenderPreviewProps } from '../../components/mex/Search/SearchView'
 import { View } from '../../components/mex/Search/ViewSelector'
@@ -35,7 +39,6 @@ import {
 import { Title } from '../../style/Typography'
 import { GenericSearchResult } from '../../types/search'
 import { getContent } from '../../utils/helpers'
-import { mog } from '../../utils/lib/helper'
 import { convertContentToRawText } from '../../utils/search/parseData'
 
 export const ArchivedNode = styled.div`

@@ -1,12 +1,14 @@
-import { usePlateEditorRef } from '@udecode/plate'
 import { useEffect } from 'react'
+
+import { AppType } from '@data/constants'
+import { usePlateEditorRef } from '@udecode/plate'
 import create from 'zustand'
+
 import useDataStore from '../store/useDataStore'
 import { useEditorStore } from '../store/useEditorStore'
 import { NodeEditorContent } from '../types/Types'
 import { NavigationType, ROUTE_PATHS, useRouting } from '../views/routes/urls'
 import { useEditorBuffer } from './useEditorBuffer'
-import { AppType } from './useInitialize'
 import { useLinks } from './useLinks'
 import useLoad from './useLoad'
 import { useNamespaces } from './useNamespaces'

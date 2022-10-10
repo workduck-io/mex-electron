@@ -1,9 +1,10 @@
+import { app } from 'electron'
+import fs from 'fs'
+
 import { DefaultFileData } from '../../data/Defaults/baseData'
 import { UpdateVersionTransforms } from '../../data/transforms'
 import { AuthTokenData } from '../../types/auth'
 import { applyTransforms, requiresTransform } from '../../utils/dataTransform'
-import { app } from 'electron'
-import fs from 'fs'
 
 export const getFileData = (location: string) => {
   if (fs.existsSync(location)) {

@@ -1,3 +1,5 @@
+import React, { useMemo } from 'react'
+
 import { EMAIL_REG, getEmailStart } from '@data/Defaults/auth'
 import { useLinks } from '@hooks/useLinks'
 import { useMentions } from '@hooks/useMentions'
@@ -8,10 +10,11 @@ import { useEditorStore } from '@store/useEditorStore'
 import { useMentionStore } from '@store/useMentionStore'
 import { Label, SelectWrapper, StyledCreatatbleSelect } from '@style/Form'
 import { runBatch } from '@utils/lib/batchPromise'
-import { mog } from '@utils/lib/helper'
-import { LoadingButton } from '@workduck-io/mex-components'
-import React, { useMemo } from 'react'
+import { mog } from '@utils/lib/mog'
 import { Controller, useForm } from 'react-hook-form'
+
+import { LoadingButton } from '@workduck-io/mex-components'
+
 import { AccessLevel, DefaultPermission, DefaultPermissionValue, permissionOptions } from '../../../types/mentions'
 import { ModalControls, ModalHeader } from '../Refactor/styles'
 import { InviteFormFieldset, InviteFormWrapper, MultipleInviteWrapper } from './ShareModal.styles'

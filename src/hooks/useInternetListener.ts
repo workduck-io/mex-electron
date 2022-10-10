@@ -1,5 +1,7 @@
-import { mog } from '@utils/lib/helper'
 import { useEffect } from 'react'
+
+import { mog } from '@utils/lib/mog'
+
 import { useJobQueue } from './useQueue'
 
 export const useInternetListener = () => {

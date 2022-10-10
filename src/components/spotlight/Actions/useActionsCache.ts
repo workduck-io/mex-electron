@@ -1,5 +1,5 @@
 import { initActions } from '@data/Actions'
-import { mog } from '@utils/lib/helper'
+import { mog } from '@utils/lib/mog'
 import create from 'zustand'
 import { persist, devtools } from 'zustand/middleware'
 

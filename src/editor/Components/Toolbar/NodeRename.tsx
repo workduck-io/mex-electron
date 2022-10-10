@@ -33,7 +33,11 @@ const NodeRenameOnlyTitle = () => {
   const { push } = useNavigation()
   const setMockRefactored = useRenameStore((store) => store.setMockRefactored)
   const modalReset = useRenameStore((store) => store.closeModal)
-  const { path: nodeFrom, namespace: nodeFromNS } = useEditorStore((store) => store.node)
+  const { path: nodeFrom, namespace: nodeFromNS } = useMemo(() => {
+    const noteLink = ilinks.find((i) => i.nodeid === useEditorStore.getState()?.node?.nodeid)
+
+    return noteLink
+  }, [ilinks])
   const setFrom = useRenameStore((store) => store.setFrom)
   const [editable, setEditable] = useState(false)
   const [newTitle, setNewTitle] = useState(getNameFromPath(nodeFrom))

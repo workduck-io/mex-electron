@@ -1,5 +1,4 @@
-import { insertId } from '../../utils/lib/content'
-import { generateQuestionId } from '../Defaults/idPrefixes'
+import { insertId } from '../../utils/lib/content.main'
 
 export const ABTestingSnippet = insertId([
   {

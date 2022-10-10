@@ -1,13 +1,8 @@
-import { RootElement } from '../SyncBlock'
 import React, { useEffect, useRef, useState } from 'react'
-import { InputBlock } from '../../../style/Form'
-import { useDebouncedCallback } from 'use-debounce'
-import { useLayoutStore } from '../../../store/useLayoutStore'
-import { mog } from '../../../utils/lib/helper'
-import { useSearch } from '../../../hooks/useSearch'
-import chat from '@iconify/icons-ph/chats-circle-bold'
 
-import { useReadOnly, useSelected } from 'slate-react'
+import useLoad from '@hooks/useLoad'
+import chat from '@iconify/icons-ph/chats-circle-bold'
+import useSuggestionStore from '@store/useSuggestionStore'
 import {
   insertNodes,
   removeNodes,
@@ -18,23 +13,29 @@ import {
   getPreviousNode,
   getPath
 } from '@udecode/plate'
-import { KEYBOARD_KEYS } from '../../../components/spotlight/Home/components/List'
-import { QuestionInput } from './styled'
-import { useRouting } from '../../../views/routes/urls'
-import { defaultContent } from '../../../data/Defaults/baseData'
-import { getSlug } from '../../../utils/lib/strings'
-import { MexIcon } from '../../../style/Layouts'
+import { mog } from '@utils/lib/mog'
+import { useReadOnly, useSelected } from 'slate-react'
 import { useTheme } from 'styled-components'
-import { SNIPPET_PREFIX } from '../../../data/Defaults/idPrefixes'
-import { SuggestionElementType } from '../../../components/mex/Suggestions/types'
+import { useDebouncedCallback } from 'use-debounce'
 
+import { SuggestionElementType } from '../../../components/mex/Suggestions/types'
+import { KEYBOARD_KEYS } from '../../../components/spotlight/Home/components/List'
+import { defaultContent } from '../../../data/Defaults/baseData'
+import { SNIPPET_PREFIX } from '../../../data/Defaults/idPrefixes'
+import { useSearch } from '../../../hooks/useSearch'
+import { useLayoutStore } from '../../../store/useLayoutStore'
+import { InputBlock } from '../../../style/Form'
+import { MexIcon } from '../../../style/Layouts'
+import { getSlug } from '../../../utils/lib/strings'
 import { removeStopwords } from '../../../utils/stopwords'
-import useLoad from '@hooks/useLoad'
-import useSuggestionStore from '@store/useSuggestionStore'
+import { useRouting } from '../../../views/routes/urls'
+import { RootElement } from '../SyncBlock'
+import { QuestionInput } from './styled'
 
 interface QABlockProps {
   attributes: any
   element: any
+  children?: React.ReactElement | React.ReactElement[]
 }
 
 const QABlock: React.FC<QABlockProps> = ({ attributes, element, children }) => {

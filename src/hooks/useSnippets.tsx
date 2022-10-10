@@ -1,9 +1,10 @@
-import { SEPARATOR } from '../components/mex/Sidebar/treeUtils'
-import { useSnippetStore, Snippet } from '../store/useSnippetStore'
-import { SlashCommandConfig } from '../editor/Components/SlashCommands/Types'
-import { useSearch } from './useSearch'
-import { mog } from '../utils/lib/helper'
 import { useApi } from '@apis/useSaveApi'
+import { mog } from '@utils/lib/mog'
+
+import { SEPARATOR } from '../components/mex/Sidebar/treeUtils'
+import { SlashCommandConfig } from '../editor/Components/SlashCommands/Types'
+import { useSnippetStore, Snippet } from '../store/useSnippetStore'
+import { useSearch } from './useSearch'
 
 export const useSnippets = () => {
   const addSnippetZus = useSnippetStore((state) => state.addSnippet)

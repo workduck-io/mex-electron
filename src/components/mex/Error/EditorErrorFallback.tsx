@@ -1,13 +1,15 @@
 import React, { useEffect } from 'react'
-import { FallbackProps } from 'react-error-boundary'
-import { CardShadow } from '../../../style/helpers'
-import styled from 'styled-components'
-import { Title } from '../../../style/Typography'
+
 import { transparentize } from 'polished'
+import { FallbackProps } from 'react-error-boundary'
+import styled from 'styled-components'
+
+import { Button } from '@workduck-io/mex-components'
+
 import { IS_DEV } from '../../../data/Defaults/dev_'
 import { useEditorErrorStore } from '../../../hooks/useEditorActions'
-import { mog } from '../../../utils/lib/helper'
-import { Button } from '@workduck-io/mex-components'
+import { Title } from '../../../style/Typography'
+import { CardShadow } from '../../../style/helpers'
 
 const ErrorWrapper = styled.div`
   display: flex;

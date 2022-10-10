@@ -1,10 +1,12 @@
+import { mog } from '@utils/lib/mog'
+
 import { Document } from '@workduck-io/flexsearch'
 
-import { FileData } from '../../types/data'
 import { diskIndex, indexNames } from '../../data/search'
-import { convertDataToIndexable } from './parseData'
+import { FileData } from '../../types/data'
 import { GenericSearchData } from '../../types/search'
-import { mog } from '../lib/helper'
+import { convertDataToIndexable } from './parseData'
+
 export interface CreateSearchIndexData {
   node: GenericSearchData[] | null
   snippet: GenericSearchData[] | null

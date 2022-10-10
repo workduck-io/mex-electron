@@ -1,3 +1,5 @@
+import React, { useMemo } from 'react'
+
 import { useNamespaces } from '@hooks/useNamespaces'
 import { useSaveData } from '@hooks/useSaveData'
 import { useSnippets } from '@hooks/useSnippets'
@@ -8,10 +10,11 @@ import quillPenLine from '@iconify/icons-ri/quill-pen-line'
 import shareLine from '@iconify/icons-ri/share-line'
 import { Icon } from '@iconify/react'
 import { useSnippetStore } from '@store/useSnippetStore'
-import { mog } from '@utils/lib/helper'
+import { mog } from '@utils/lib/mog'
 import { convertContentToRawText } from '@utils/search/parseData'
+
 import { IconButton, Infobox } from '@workduck-io/mex-components'
-import React, { useMemo } from 'react'
+
 import { defaultContent } from '../../../data/Defaults/baseData'
 import { SearchHelp } from '../../../data/Defaults/helpText'
 import { useBlockHighlightStore } from '../../../editor/Actions/useFocusBlock'
@@ -40,8 +43,8 @@ import {
   SplitSearchPreviewWrapper
 } from '../../../style/Search'
 import { Title, TitleText } from '../../../style/Typography'
-import { GenericSearchResult, idxKey } from '../../../types/search'
 import { NodeType } from '../../../types/Types'
+import { GenericSearchResult, idxKey } from '../../../types/search'
 import { SplitType } from '../../../ui/layout/splitView'
 import { getInitialNode } from '@utils/initial'
 import { NavigationType, ROUTE_PATHS, useRouting } from '../../../views/routes/urls'
