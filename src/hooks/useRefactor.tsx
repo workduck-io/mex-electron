@@ -113,10 +113,13 @@ export const useRefactor = () => {
   const execRefactorAsync = async (from: RefactorPath, to: RefactorPath, clearBuffer = true) => {
     mog('FROM < TO', { from, to })
     const nodeId = getNodeidFromPath(from.path, from.namespaceID)
+    const uniquePath = useDataStore
+      .getState()
+      .checkValidILink({ notePath: to.path, namespace: to.namespaceID, showAlert: false })
 
     const res = await refactorNotes(
       { path: from.path.split('.').join('#'), namespaceID: from.namespaceID },
-      { path: to.path.split('.').join('#'), namespaceID: to.namespaceID ?? from.namespaceID },
+      { path: uniquePath.split('.').join('#'), namespaceID: to.namespaceID ?? from.namespaceID },
       nodeId
     ).then((response: RefactorResponse) => {
       const addedILinks = []
@@ -138,7 +141,7 @@ export const useRefactor = () => {
       // * Update search Index with new Title
       // * TODO: Make search API more flexible (Update specific fields)
       if (content && nodeId) {
-        const title = getTitleFromPath(to.path)
+        const title = getTitleFromPath(uniquePath)
         mog('Updating search index', { title })
         updateDocument('node', nodeId, content, title)
       }

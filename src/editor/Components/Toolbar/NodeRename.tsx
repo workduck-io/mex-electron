@@ -1,6 +1,7 @@
 import React, { useEffect, useMemo, useRef, useState } from 'react'
 
 import { getNameFromPath, getParentFromPath, SEPARATOR } from '@components/mex/Sidebar/treeUtils'
+import { useNamespaces } from '@hooks/useNamespaces'
 import { useNodes } from '@hooks/useNodes'
 import { useKeyListener } from '@hooks/useShortcutListener'
 import useDataStore from '@store/useDataStore'
@@ -33,11 +34,12 @@ const NodeRenameOnlyTitle = () => {
   const { push } = useNavigation()
   const setMockRefactored = useRenameStore((store) => store.setMockRefactored)
   const modalReset = useRenameStore((store) => store.closeModal)
+  const node = useEditorStore((store) => store.node)
   const { path: nodeFrom, namespace: nodeFromNS } = useMemo(() => {
-    const noteLink = ilinks.find((i) => i.nodeid === useEditorStore.getState()?.node?.nodeid)
-
-    return noteLink
-  }, [ilinks])
+    const noteLink = ilinks.find((i) => i.nodeid === node?.nodeid)
+    if (noteLink) return noteLink
+    return node
+  }, [ilinks, node])
   const setFrom = useRenameStore((store) => store.setFrom)
   const [editable, setEditable] = useState(false)
   const [newTitle, setNewTitle] = useState(getNameFromPath(nodeFrom))
@@ -46,6 +48,7 @@ const NodeRenameOnlyTitle = () => {
   //
   //
   //
+  const { getNodesOfNamespace } = useNamespaces()
 
   const reset = () => {
     if (editable) modalReset()
@@ -61,11 +64,12 @@ const NodeRenameOnlyTitle = () => {
   }
 
   const isClashed = useMemo(() => {
-    return isClash(
+    const checkClash = isClash(
       getTo(newTitle),
-      ilinks.map((n) => n.path)
+      getNodesOfNamespace(nodeFromNS)?.map((l) => l.path)
     )
-  }, [ilinks, newTitle])
+    return checkClash
+  }, [ilinks, newTitle, nodeFromNS])
 
   const { shortcutHandler } = useKeyListener()
   const shortcuts = useHelpStore((store) => store.shortcuts)
