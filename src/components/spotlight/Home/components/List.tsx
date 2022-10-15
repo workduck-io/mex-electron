@@ -232,6 +232,11 @@ const List = ({
 
     if (!normalMode) unsubscribe()
 
+    const indexOutOfBounds = activeIndex >= data.length
+    if (indexOutOfBounds) {
+      setActiveIndex(data.length - 1)
+    }
+
     return () => unsubscribe()
   }, [activeIndex, data, normalMode])
 

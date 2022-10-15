@@ -132,6 +132,11 @@ const List: React.FC<ListProps> = ({ items, context }) => {
     if (isMenuOpen || isActionMenuOpen) window?.removeEventListener('keydown', handler)
     else window?.addEventListener('keydown', handler)
 
+    const indexOutOfBounds = activeIndex >= items.length
+    if (indexOutOfBounds) {
+      setActiveIndex(items.length - 1)
+    }
+
     return () => window.removeEventListener('keydown', handler)
   }, [activeIndex, items, isMenuOpen, isActionMenuOpen])
 
