@@ -5,6 +5,10 @@ import { GlobalNoteStyles } from '@components/note/styled'
 import Providers from '@store/Context/Providers'
 import { HashRouter, Route, Routes } from 'react-router-dom'
 
+import { initializeSentry } from './services/sentry'
+
+initializeSentry()
+
 export default function App() {
   return (
     <Providers>
