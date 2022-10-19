@@ -8,9 +8,7 @@ import { initializeSentry } from '../services/sentry'
 import appEventListeners from './listeners/app'
 import handleIPCListener from './listeners/ipc'
 
-if (process.env.MODE === 'production' || process.env.FORCE_PRODUCTION) {
-  initializeSentry()
-}
+initializeSentry()
 
 // On windows doesn't work without disabling HW Acceleration
 if (process.platform === 'win32') {

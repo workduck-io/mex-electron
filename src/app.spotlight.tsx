@@ -8,12 +8,11 @@ import Providers from '@store/Context/Providers'
 import { VersionSetter } from './components/mex/Init/VersionSetter'
 import OnBoardingTour from './components/mex/Onboarding'
 import { SpotlightOnboarding } from './components/mex/Onboarding/steps'
-import { IS_DEV } from './data/Defaults/dev_'
 import { initializeSentry } from './services/sentry'
 import { SpotlightProvider } from './store/Context/context.spotlight'
 import Routes from './views/spotlight/routes'
 
-if (!IS_DEV) initializeSentry()
+initializeSentry()
 
 export default function App() {
   addIconsToIconify()
