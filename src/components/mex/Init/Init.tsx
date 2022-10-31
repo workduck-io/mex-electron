@@ -45,10 +45,16 @@ const Init = () => {
    * */
   useEffect(() => {
     const initUserAndApp = () => {
-      const authenticatedUserEmail = initCognito({
-        UserPoolId: config.cognito.USER_POOL_ID,
-        ClientId: config.cognito.APP_CLIENT_ID
-      })
+      const authenticatedUserEmail = initCognito(
+        {
+          UserPoolId: config.cognito.USER_POOL_ID,
+          ClientId: config.cognito.APP_CLIENT_ID
+        },
+        {
+          identityPoolID: config.cognito.IDENTITY_POOL_ID,
+          CDN_BASE_URL: config.constants.CDN_BASE_URL
+        }
+      )
 
       if (authenticatedUserEmail) {
         initActionPerfomerClient(useAuthStore.getState().userDetails?.userID)
