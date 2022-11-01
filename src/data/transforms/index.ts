@@ -2,7 +2,7 @@ import type { Snippet } from '../../types/data'
 import { ArrayTransform, CustomTransformation, DataTransformation, KeysTransformation } from '../../utils/dataTransform'
 import { initialSnippets } from '../initial/snippets'
 
-export const ForceLogutVersion = '0.14.0-alpha.1'
+export const ForceLogutVersion = '0.16.2-alpha.3'
 // export const TaskViewExpiryTime = '2022-09-16T12:33:46.090Z'
 
 /**
