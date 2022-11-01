@@ -2,9 +2,7 @@ import { mog } from '@utils/lib/mog'
 import Compress from 'compress.js'
 import toast from 'react-hot-toast'
 
-import { client } from '@workduck-io/dwindle'
-
-import { apiURLs } from '../apis/routes'
+import { S3UploadClient } from '@workduck-io/dwindle'
 
 export const uploadImageToWDCDN = async (
   data: string | ArrayBuffer,
@@ -16,7 +14,6 @@ export const uploadImageToWDCDN = async (
       const parsedImage = data.split(',')[1]
 
       const file = Compress.convertBase64ToFile(parsedImage)
-      mog('FileSizeBeforeCompression', { size: `${file.size / 1000} KB` })
       const compressedImg = (
         await compress.compress([file], {
           size: 4,
@@ -24,15 +21,15 @@ export const uploadImageToWDCDN = async (
         })
       )[0]
 
-      mog('FileSizeAfterCompression', { size: `${compressedImg.endSizeInMb * 1000} KB` })
-
+      mog('FileAfterCompression', { compressedImg })
       if (showAlert !== false) toast('Uploading image')
-      const resp = await client.post(apiURLs.createImageURL, {
-        encodedString: compressedImg.data
+      const resp = await S3UploadClient(compressedImg.data, {
+        giveCloudFrontURL: true,
+        bucket: 'workduck-app-files',
+        fileType: compressedImg.ext,
+        parseBase64String: false
       })
-      const path = await resp.data
-      if (showAlert !== false) toast('Image Uploaded')
-      return apiURLs.getImagePublicURL(path)
+      return resp
     } catch (error) {
       mog('UploadImageFailed', { error })
       return data
