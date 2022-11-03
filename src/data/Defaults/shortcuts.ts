@@ -120,7 +120,8 @@ export const defaultShortcuts = {
   showRefactor: {
     title: 'Refactor',
     keystrokes: '$mod+Shift+KeyR',
-    category: 'Actions'
+    category: 'Actions',
+    disabled: true
   },
   showRename: {
     title: 'Rename',

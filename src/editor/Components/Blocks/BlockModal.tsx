@@ -1,12 +1,14 @@
+import React from 'react'
+
+import { QuickLink, WrappedNodeSelect } from '@components/mex/NodeSelect/NodeSelect'
 import { useEditorBlockSelection } from '@editor/Actions/useEditorBlockSelection'
 import { useCreateNewNote } from '@hooks/useCreateNewNote'
-import React from 'react'
-import Modal from 'react-modal'
-import { QuickLink, WrappedNodeSelect } from '@components/mex/NodeSelect/NodeSelect'
 import { useLinks } from '@hooks/useLinks'
-import useBlockStore from '@store/useBlockStore'
-import { useDataSaverFromContent } from '../Saver'
 import { useNamespaces } from '@hooks/useNamespaces'
+import useBlockStore, { ContextMenuActionType } from '@store/useBlockStore'
+import Modal from 'react-modal'
+
+import { useDataSaverFromContent } from '../Saver'
 
 const BlockModal = () => {
   const blocksFromStore = useBlockStore((store) => store.blocks)
@@ -25,15 +27,19 @@ const BlockModal = () => {
   }
 
   const onNodeCreate = (quickLink: QuickLink): void => {
-    const editorBlocks = deleteSelectedBlock()
+    const editorBlocks = deleteSelectedBlock(isDeleteBlock())
     const blocksContent = getContentWithNewBlocks(quickLink.value, editorBlocks, false)
     createNewNote({ path: quickLink.value, noteContent: blocksContent, namespace: quickLink.namespace })
     setIsModalOpen(undefined)
   }
 
+  const isDeleteBlock = () => {
+    return isModalOpen === ContextMenuActionType.move
+  }
+
   const onNodeSelect = (quickLink: QuickLink) => {
     const nodeid = getNodeidFromPath(quickLink.value, quickLink.namespace)
-    const editorBlocks = deleteSelectedBlock()
+    const editorBlocks = deleteSelectedBlock(isDeleteBlock())
     const content = getContentWithNewBlocks(nodeid, editorBlocks)
     const namespace = quickLink.namespace ?? getDefaultNamespaceId()
 

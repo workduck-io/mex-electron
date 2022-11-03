@@ -1,7 +1,7 @@
 {
   "name": "mex-alpha",
   "productName": "Mex Alpha",
-  "version": "0.16.2-alpha.4",
+  "version": "0.16.2-alpha.5",
   "description": "Mex it to flex it",
   "main": "dist/main.cjs",
   "scripts": {

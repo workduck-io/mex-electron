@@ -10,6 +10,7 @@ import quillPenLine from '@iconify/icons-ri/quill-pen-line'
 import shareLine from '@iconify/icons-ri/share-line'
 import { Icon } from '@iconify/react'
 import { useSnippetStore } from '@store/useSnippetStore'
+import { getInitialNode } from '@utils/initial'
 import { mog } from '@utils/lib/mog'
 import { convertContentToRawText } from '@utils/search/parseData'
 
@@ -46,7 +47,6 @@ import { Title, TitleText } from '../../../style/Typography'
 import { NodeType } from '../../../types/Types'
 import { GenericSearchResult, idxKey } from '../../../types/search'
 import { SplitType } from '../../../ui/layout/splitView'
-import { getInitialNode } from '@utils/initial'
 import { NavigationType, ROUTE_PATHS, useRouting } from '../../../views/routes/urls'
 import Backlinks from '../Backlinks'
 import Metadata from '../Metadata/Metadata'
@@ -331,6 +331,7 @@ const Search = () => {
           </SplitSearchPreviewWrapper>
         )
     }
+
     if (item.index === 'node' || item.index === 'shared') {
       const con = contents[item.id]
       const content = con ? con.content : defaultContent.content
