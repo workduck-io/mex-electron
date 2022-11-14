@@ -15,6 +15,7 @@ import { useMediaQuery } from 'react-responsive'
 import { matchPath, Outlet, Route, Routes, useLocation } from 'react-router-dom'
 import { animated } from 'react-spring'
 import styled from 'styled-components'
+import useWebSocket from 'react-use-websocket'
 
 import SnippetEditor from '../../components/Snippets/SnippetEditor'
 import Search from '../../components/mex/Search/Search'
@@ -50,6 +51,7 @@ export const SwitchWrapper = styled(animated.div)<{ $isAuth?: boolean }>`
   overflow-x: hidden;
   overflow-y: auto;
 `
+const socketUrl = 'ws://localhost:3001'
 
 const Home = () => (
   <>
@@ -72,9 +74,16 @@ const Switch = () => {
   const hideSidebar = useLayoutStore((s) => s.hideSidebar)
   const collapseAllSidebars = useLayoutStore((s) => s.collapseAllSidebars)
   const hideRHSidebar = useLayoutStore((s) => s.hideRHSidebar)
+  const {userID} = useAuthStore((s)=> s.userDetails)
 
   const overlaySidebar = useMediaQuery({ maxWidth: OverlaySidebarWindowWidth })
 
+
+  const { sendJsonMessage } = useWebSocket(socketUrl, {
+    onOpen: () => mog('CONNECTION OPENED'),
+    queryParams: { userId: userID }
+  })
+  
   useEffect(() => {
     const editorNode = useEditorStore.getState().node
     // ? Do we need to save data locally on every route change?

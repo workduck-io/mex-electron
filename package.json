@@ -159,6 +159,7 @@
     "react-sortablejs": "^6.0.0",
     "react-spring": "^9.2.4",
     "react-universal-interface": "^0.6.2",
+    "react-use-websocket": "^4.2.0",
     "react-virtuoso": "^2.11.0",
     "react-window": "^1.8.6",
     "reactour": "^1.18.6",
