@@ -5,7 +5,7 @@ import { Plate } from '@udecode/plate'
 import { debounce } from 'lodash'
 import { ErrorBoundary } from 'react-error-boundary'
 import { components } from 'react-select'
-import styled from 'styled-components'
+import styled, { css } from 'styled-components'
 
 import { EditorStyles } from '../style/Editor'
 import { FadeContainer } from '../style/animation/fade'
@@ -25,15 +25,23 @@ interface EditorPreviewRendererProps {
   blockId?: string
   noMouseEvents?: boolean
   readOnly?: boolean
+  draftView?: boolean
   onChange?: (val: NodeEditorContent) => void
   onClick?: (ev: React.MouseEvent<HTMLDivElement, MouseEvent>) => void
   onDoubleClick?: (ev: React.MouseEvent<HTMLDivElement, MouseEvent>) => void
 }
 
-const PreviewStyles = styled(EditorStyles)<{ noMouseEvents: boolean }>`
+const PreviewStyles = styled(EditorStyles)<{ noMouseEvents: boolean; draftView?: boolean }>`
   ${({ noMouseEvents }) => noMouseEvents && 'pointer-events: none;'};
   /* user-select: none; */
   font-size: 0.9rem;
+  ${({ draftView }) =>
+    draftView &&
+    css`
+      * {
+        font-size: 0.9rem !important;
+      }
+    `}
 
   ${TodoContainer}, button, input, textarea, select, option {
     pointer-events: none;
@@ -49,6 +57,7 @@ const EditorPreviewRenderer = ({
   noMouseEvents,
   onClick,
   onChange,
+  draftView=true,
   readOnly = true,
   onDoubleClick
 }: EditorPreviewRendererProps) => {
@@ -115,6 +124,7 @@ const EditorPreviewRenderer = ({
     <ErrorBoundary fallbackRender={() => <></>}>
       <PreviewStyles
         noMouseEvents={noMouseEvents}
+        draftView={draftView}
         onClick={(ev) => {
           if (onClick) onClick(ev)
           if (onDoubleClick && ev.detail === 2) {

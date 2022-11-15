@@ -102,6 +102,23 @@ interface ProfileImageWithToolTipProps {
   placement?: string
 }
 
+export const ProfileAvatar: React.FC<{ userId: string; size: number }> = ({ userId, size }) => {
+  const { getUserFromUserid } = useMentions()
+  const { getUserDetailsUserId } = useUserService()
+
+  const user = useMemo(() => {
+    const u = getUserFromUserid(userId)
+    if (u) return u
+    else {
+      getUserDetailsUserId(userId)
+        .then((d) => mog('GOT userId', { d }))
+        .catch((err) => mog('GOT ERROR', { err }))
+    }
+  }, [userId])
+
+  return <ProfileImage size={size} email={user?.email} />
+}
+
 export const ProfileImageWithToolTip = ({ props, placement }: ProfileImageWithToolTipProps) => {
   const { userid, size, DefaultFallback } = props // eslint-disable-line react/prop-types
   const { getUserFromUserid } = useMentions()

@@ -14,6 +14,7 @@ import useBlockStore from '../store/useBlockStore'
 import { useEditorStore } from '../store/useEditorStore'
 import { useHelpStore } from '../store/useHelpStore'
 import { useLayoutStore } from '../store/useLayoutStore'
+import useRouteStore, { BannerType } from '@store/useRouteStore'
 import { EditorWrapper, StyledEditor } from '../style/Editor'
 import { getEditorId } from '../utils/lib/EditorId'
 import BlockInfoBar from './Components/Blocks/BlockInfoBar'
@@ -21,7 +22,6 @@ import { useComboboxOpen } from './Components/combobox/hooks/useComboboxOpen'
 import { BlockOptionsMenu } from './Components/EditorContextMenu'
 import { default as Editor } from './Editor'
 import Toolbar from './Toolbar'
-
 import { useNodes } from '@hooks/useNodes'
 import { useApi } from '@apis/useSaveApi'
 import { getContent } from '@utils/helpers'
@@ -30,6 +30,9 @@ import toast from 'react-hot-toast'
 import { useLastOpened } from '@hooks/useLastOpened'
 import NavBreadCrumbs from '@components/mex/NavBreadcrumbs'
 import { useContentStore } from '@store/useContentStore'
+import { NavigationType,ROUTE_PATHS,useRouting } from '@views/routes/urls'
+import { useLocation, useParams } from 'react-router-dom'
+import Banner from './Components/Banner'
 
 const ContentEditor = () => {
   const fetchingContent = useEditorStore((state) => state.fetchingContent)
@@ -48,8 +51,15 @@ const ContentEditor = () => {
 
   const { addOrUpdateValBuffer, getBufferVal, saveAndClearBuffer } = useEditorBuffer()
   const { node } = useEditorStore((state) => ({ nodeid: state.node.nodeid, node: state.node }), shallow)
+  const location = useLocation()
+  const nodeid = useParams()?.nodeId
   const fsContent = useContentStore((state) => state.contents[node.nodeid])
 
+  const isBannerVisible = useRouteStore((s) =>
+  s.routes?.[`${ROUTE_PATHS.node}/${nodeid}`]?.banners?.includes(BannerType.editor)
+)
+
+  const { goTo } = useRouting()
   const { shortcutHandler } = useKeyListener()
   const { getSuggestions } = useSuggestions()
   const shortcuts = useHelpStore((store) => store.shortcuts)
@@ -138,10 +148,19 @@ const ContentEditor = () => {
   // const readOnly = !!fetchingContent
 
   // mog('ContentEditor', { node, fsContent, nodeContent })
-
+  const handleBannerButtonClick = (e) => {
+    goTo(ROUTE_PATHS.namespaceShare, NavigationType.replace, 'NODE_ID_OF_SHARED_NODE') // have to create new route namespaceShare in the ROUTE_PATHS
+  }
   return (
     <>
       <StyledEditor showGraph={infobar.mode === 'graph'} className="mex_editor">
+        {isBannerVisible && (
+            <Banner
+              route={location.pathname}
+              onClick={handleBannerButtonClick}
+              title="Same Note is being accessed by multiple users. Data may get lost!"
+            />
+          )}
         <NavBreadCrumbs nodeId={node.nodeid} />
         <Toolbar />
 

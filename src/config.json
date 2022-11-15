@@ -14,6 +14,6 @@
     "CDN_BASE_URL": "https://cdn.workduck.io"
   },
   "websocket": {
-    "URL": "ws://localhost:3001"
+    "URL": "wss://ws.workduck.io/route"
   }
 }

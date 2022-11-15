@@ -32,7 +32,7 @@ const Toolbar = () => {
     <NodeInfo>
       <NodeRenameOnlyTitle />
       {fetchingContent && <Loading transparent dots={3} />}
-      <InfoTools {...getFocusProps(focusMode)}>
+      {/* <InfoTools {...getFocusProps(focusMode)}>
         <ToolbarTooltip singleton={source} />
         <IconButton
           size={24}
@@ -53,7 +53,7 @@ const Toolbar = () => {
           highlight={focusMode.on}
           onClick={toggleFocusMode}
         />
-      </InfoTools>
+      </InfoTools> */}
     </NodeInfo>
   )
 }

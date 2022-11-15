@@ -32,6 +32,7 @@ export const ROUTE_PATHS = {
   integrations: '/integrations',
   snippets: '/snippets',
   snippet: '/snippets/node', // * /snippets/node/:snippetid
+  namespaceShare: '/share/namespace', // please check this or s
   forgotpassword: '/forgotpassword',
   actions: '/actions'
 }

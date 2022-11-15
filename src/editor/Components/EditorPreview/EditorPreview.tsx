@@ -7,7 +7,7 @@ import fileList2Line from '@iconify/icons-ri/file-list-2-line'
 import { Icon } from '@iconify/react'
 import useMultipleEditors from '@store/useEditorsStore'
 import { getPlateEditorRef, selectEditor } from '@udecode/plate'
-import { useMatch } from 'react-router-dom'
+import { useLocation, useMatch } from 'react-router-dom'
 
 import { Button, MexIcon } from '@workduck-io/mex-components'
 import { tinykeys } from '@workduck-io/tinykeys'
@@ -31,6 +31,11 @@ import {
 import { useTheme } from 'styled-components'
 import { useNamespaces } from '@hooks/useNamespaces'
 import NamespaceTag from '@components/mex/NamespaceTag'
+import useRouteStore, { BannerType } from '@store/useRouteStore'
+import useSocket from '@hooks/useSocket'
+import { SocketActionType } from '../../../types/socket'
+import Banner from '../Banner'
+import { mog } from '@utils/lib/mog'
 
 export interface EditorPreviewProps {
   nodeid: string
@@ -171,15 +176,30 @@ const EditablePreview = ({ content, editable, editorId, id: nodeId, onClose, hov
   const presentEditor = useMultipleEditors((store) => store.editors)?.[nodeId]
   const changeEditorState = useMultipleEditors((store) => store.changeEditorState)
   const lastOpenedEditorId = useMultipleEditors((store) => store.lastOpenedEditor)
-
+  const removePreviousRouteInfo = useRouteStore((r) => r.removePreviousRouteInfo)
   const { saveAndClearBuffer } = useEditorBuffer()
+  const fromSocket = useSocket()
+  const location = useLocation()
   const ref = useRef()
+  const routePath = `${ROUTE_PATHS.node}/${nodeId}`
+
+  const removeRouteInfo = useRouteStore((r) => r.removeRouteInfo)
+  const isBannerVisible = useRouteStore((r) => r.routes?.[routePath]?.banners?.includes(BannerType.editor))
 
   const onEditorClick = (e: any) => {
     e.preventDefault()
     e.stopPropagation()
 
-    if (editable) changeEditorState(nodeId, { editing: true })
+    if (editable) {
+      changeEditorState(nodeId, { editing: true })
+
+      removePreviousRouteInfo()
+      fromSocket.sendJsonMessage({
+        action: SocketActionType.ROUTE_CHANGE,
+        data: { route: routePath }
+      })
+    }
+
   }
 
   useEffect(() => {
@@ -188,6 +208,8 @@ const EditablePreview = ({ content, editable, editorId, id: nodeId, onClose, hov
 
       saveAndClearBuffer(false)
       removeEditor(nodeId)
+      removeRouteInfo(routePath)
+      fromSocket.sendJsonMessage({ action: SocketActionType.ROUTE_CHANGE, data: { route: location.pathname } })
     }
   }, [])
 
@@ -212,27 +234,44 @@ const EditablePreview = ({ content, editable, editorId, id: nodeId, onClose, hov
     addToBuffer(nodeId, val)
   }
 
+  const handleBannerButtonClick = () => {
+    mog("handleBannerButtonClick")
+  }
+
   return (
-    <EditorPreviewEditorWrapper
-      ref={ref}
-      tabIndex={-1}
-      id={nodeId}
-      blink={presentEditor?.blink}
-      editable={!!presentEditor?.editing}
-      onClick={(ev) => {
-        if (ev.detail === 2) {
-          onEditorClick(ev)
-        }
-      }}
-    >
-      <EditorPreviewRenderer
-        onChange={onChange}
-        content={content}
-      blockId={blockId}
-        readOnly={!editable || !presentEditor?.editing}
-        editorId={editorId}
-      />
-    </EditorPreviewEditorWrapper>
+     <>
+      {isBannerVisible && (
+        <Banner
+          route={routePath}
+          onClick={handleBannerButtonClick}
+          title="Same Note is being accessed by multiple users. Data may get lost!"
+          withDetails={false}
+        />
+      )}
+      <EditorPreviewEditorWrapper
+        ref={ref}
+        tabIndex={-1}
+        id={editorId}
+        blink={presentEditor?.blink}
+        editable={!!presentEditor?.editing}
+        onClick={(ev) => {
+          ev.stopPropagation()
+
+          if (ev.detail === 2) {
+            onEditorClick(ev)
+          }
+        }}
+      >
+        <EditorPreviewRenderer
+          onChange={onChange}
+          content={content}
+          blockId={blockId}
+          draftView={false} // theres no draftView prop in the JSX element have to add it 
+          readOnly={!editable || !presentEditor?.editing}
+          editorId={editorId}
+        />
+      </EditorPreviewEditorWrapper>
+    </>
   )
 }
 
