@@ -1,12 +1,14 @@
 import React from 'react'
 
-import { ProfileAvatar } from '@components/mex/User/ProfileImage'
+import { AccessLevel } from '../../types/mentions'
+import { ProfileImageWithToolTip } from '@components/mex/User/ProfileImage'
+
 import { AvatarGroupContainer, ProfileAvatarContainer } from './styled'
 
 type UserAvatarType = {
   userId: string
   active?: boolean
-  shared?: boolean
+  access?: AccessLevel
 }
 
 type AvatarGroupsPropsType = {
@@ -23,12 +25,18 @@ const AvatarGroups: React.FC<AvatarGroupsPropsType> = ({ users, margin, limit = 
   return (
     <AvatarGroupContainer margin={margin}>
       {list.map((user, index) => {
-        if (user)
+        if (user) {
           return (
             <ProfileAvatarContainer offline={!user.active} key={`mex-user-${user.userId}${index}`}>
-              <ProfileAvatar userId={user.userId} size={20} />
+              <ProfileImageWithToolTip
+                interactive
+                placement="bottom"
+                props={{ userid: user.userId, size: 20 }}
+              />
             </ProfileAvatarContainer>
           )
+        }
+
         return <></>
       })}
     </AvatarGroupContainer>

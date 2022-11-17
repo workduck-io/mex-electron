@@ -24,7 +24,7 @@ export const ROUTE_PATHS = {
   register: '/register',
   archive: '/archive',
   tag: '/tag', // * /tag/:tag
-  node: '/node', // * /node/:nodeid
+  node: '/editor', // * /node/:nodeid
   search: '/search',
   settings: '/settings',
   tasks: '/tasks',

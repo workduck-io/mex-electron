@@ -1,8 +1,22 @@
-import { useSuggestions } from '@components/mex/Suggestions/useSuggestions'
-import { selectEditor, useFloatingTree, usePlateEditorRef } from '@udecode/plate'
 import React, { useCallback, useEffect, useMemo, useRef } from 'react'
-import { tinykeys } from '@workduck-io/tinykeys'
+
+import { useApi } from '@apis/useSaveApi'
+import NavBreadCrumbs from '@components/mex/NavBreadcrumbs'
+import { useSuggestions } from '@components/mex/Suggestions/useSuggestions'
+import { useLastOpened } from '@hooks/useLastOpened'
+import { useNodes } from '@hooks/useNodes'
+import { useContentStore } from '@store/useContentStore'
+import useRouteStore, { BannerType } from '@store/useRouteStore'
+import { selectEditor, useFloatingTree, usePlateEditorRef } from '@udecode/plate'
+import { getContent } from '@utils/helpers'
+import { areEqual } from '@utils/lib/hash'
+import { NavigationType, ROUTE_PATHS, useRouting } from '@views/routes/urls'
+import toast from 'react-hot-toast'
+import { useLocation, useParams } from 'react-router-dom'
 import shallow from 'zustand/shallow'
+
+import { tinykeys } from '@workduck-io/tinykeys'
+
 import Metadata from '../components/mex/Metadata/Metadata'
 import { defaultContent } from '../data/Defaults/baseData'
 import { useEditorBuffer } from '../hooks/useEditorBuffer'
@@ -14,31 +28,21 @@ import useBlockStore from '../store/useBlockStore'
 import { useEditorStore } from '../store/useEditorStore'
 import { useHelpStore } from '../store/useHelpStore'
 import { useLayoutStore } from '../store/useLayoutStore'
-import useRouteStore, { BannerType } from '@store/useRouteStore'
 import { EditorWrapper, StyledEditor } from '../style/Editor'
 import { getEditorId } from '../utils/lib/EditorId'
+import Banner from './Components/Banner'
 import BlockInfoBar from './Components/Blocks/BlockInfoBar'
-import { useComboboxOpen } from './Components/combobox/hooks/useComboboxOpen'
 import { BlockOptionsMenu } from './Components/EditorContextMenu'
+import { useComboboxOpen } from './Components/combobox/hooks/useComboboxOpen'
 import { default as Editor } from './Editor'
 import Toolbar from './Toolbar'
-import { useNodes } from '@hooks/useNodes'
-import { useApi } from '@apis/useSaveApi'
-import { getContent } from '@utils/helpers'
-import { areEqual } from '@utils/lib/hash'
-import toast from 'react-hot-toast'
-import { useLastOpened } from '@hooks/useLastOpened'
-import NavBreadCrumbs from '@components/mex/NavBreadcrumbs'
-import { useContentStore } from '@store/useContentStore'
-import { NavigationType,ROUTE_PATHS,useRouting } from '@views/routes/urls'
-import { useLocation, useParams } from 'react-router-dom'
-import Banner from './Components/Banner'
+import { usePermissions , compareAccessLevel } from '@hooks/usePermissions'
 
 const ContentEditor = () => {
   const fetchingContent = useEditorStore((state) => state.fetchingContent)
   const { toggleFocusMode } = useLayout()
   const { saveApiAndUpdate } = useLoad()
-  const { accessWhenShared } = useNodes()
+  const { accessWhenShared } = usePermissions()
 
   const { getDataAPI } = useApi()
   const isBlockMode = useBlockStore((store) => store.isBlockMode)
@@ -52,12 +56,12 @@ const ContentEditor = () => {
   const { addOrUpdateValBuffer, getBufferVal, saveAndClearBuffer } = useEditorBuffer()
   const { node } = useEditorStore((state) => ({ nodeid: state.node.nodeid, node: state.node }), shallow)
   const location = useLocation()
-  const nodeid = useParams()?.nodeId
+  const nodeid = node.nodeid
   const fsContent = useContentStore((state) => state.contents[node.nodeid])
 
   const isBannerVisible = useRouteStore((s) =>
-  s.routes?.[`${ROUTE_PATHS.node}/${nodeid}`]?.banners?.includes(BannerType.editor)
-)
+    s.routes?.[`${ROUTE_PATHS.node}/${nodeid}`]?.banners?.includes(BannerType.editor)
+  )
 
   const { goTo } = useRouting()
   const { shortcutHandler } = useKeyListener()
@@ -151,22 +155,43 @@ const ContentEditor = () => {
   const handleBannerButtonClick = (e) => {
     goTo(ROUTE_PATHS.namespaceShare, NavigationType.replace, 'NODE_ID_OF_SHARED_NODE') // have to create new route namespaceShare in the ROUTE_PATHS
   }
+  const hideShareDetails = () => {
+    const access = accessWhenShared(nodeid)
+    const accessPriority = compareAccessLevel(access?.note, access?.space)
+
+    return accessPriority !== 'MANAGE' && accessPriority !== 'OWNER'
+  }
+
   return (
     <>
       <StyledEditor showGraph={infobar.mode === 'graph'} className="mex_editor">
-        {isBannerVisible && (
-            <Banner
-              route={location.pathname}
-              onClick={handleBannerButtonClick}
-              title="Same Note is being accessed by multiple users. Data may get lost!"
-            />
-          )}
+        {
+        isBannerVisible && (
+          <Banner
+            route={location.pathname}
+            onClick={handleBannerButtonClick}
+            title="Same Note is being accessed by multiple users. Data may get lost!"
+          />
+        )}
         <NavBreadCrumbs nodeId={node.nodeid} />
         <Toolbar />
 
-        {isBlockMode ? <BlockInfoBar /> : <Metadata node={node} />}
+        {/* {isBlockMode ? (
+          <BlockInfoBar />
+        ) : (
+          <Metadata
+            hideShareDetails={hideShareDetails()}
+            namespaceId={getNamespaceOfNodeid(nodeid)?.id}
+            nodeId={nodeid}
+          />
+        )} */}
 
-        <EditorWrapper comboboxOpen={isComboOpen} isUserEditing={isUserEditing} ref={editorWrapperRef} onClick={onFocusClick}>
+        <EditorWrapper
+          comboboxOpen={isComboOpen}
+          isUserEditing={isUserEditing}
+          ref={editorWrapperRef}
+          onClick={onFocusClick}
+        >
           <Editor
             showBalloonToolbar
             onAutoSave={onAutoSave}

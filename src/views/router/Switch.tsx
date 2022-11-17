@@ -6,6 +6,7 @@ import CalendarIntegrations from '@components/mex/Integrations/Calendar'
 import Portals from '@components/mex/Integrations/Portals'
 import { useEditorBuffer, useSnippetBuffer } from '@hooks/useEditorBuffer'
 import { useSaveNodeName } from '@hooks/useSaveNodeName'
+import useSocket from '@hooks/useSocket'
 import useBlockStore from '@store/useBlockStore'
 import { useEditorStore } from '@store/useEditorStore'
 import { useLayoutStore } from '@store/useLayoutStore'
@@ -15,7 +16,6 @@ import { useMediaQuery } from 'react-responsive'
 import { matchPath, Outlet, Route, Routes, useLocation } from 'react-router-dom'
 import { animated } from 'react-spring'
 import styled from 'styled-components'
-import useWebSocket from 'react-use-websocket'
 
 import SnippetEditor from '../../components/Snippets/SnippetEditor'
 import Search from '../../components/mex/Search/Search'
@@ -26,6 +26,7 @@ import Shortcuts from '../../components/mex/Settings/Shortcuts'
 import Themes from '../../components/mex/Settings/Themes'
 import ContentEditor from '../../editor/ContentEditor'
 import { useAuthStore } from '../../services/auth/useAuth'
+import { SocketActionType } from '../../types/socket'
 import NotFound from '../NotFound'
 import ActionGroupsPage from '../mex/Actions'
 import Archive from '../mex/Archive'
@@ -51,7 +52,7 @@ export const SwitchWrapper = styled(animated.div)<{ $isAuth?: boolean }>`
   overflow-x: hidden;
   overflow-y: auto;
 `
-const socketUrl = 'ws://localhost:3001'
+// const socketUrl = 'ws://localhost:3001'
 
 const Home = () => (
   <>
@@ -74,16 +75,19 @@ const Switch = () => {
   const hideSidebar = useLayoutStore((s) => s.hideSidebar)
   const collapseAllSidebars = useLayoutStore((s) => s.collapseAllSidebars)
   const hideRHSidebar = useLayoutStore((s) => s.hideRHSidebar)
-  const {userID} = useAuthStore((s)=> s.userDetails)
 
   const overlaySidebar = useMediaQuery({ maxWidth: OverlaySidebarWindowWidth })
 
+  const fromSocket = useSocket()
 
-  const { sendJsonMessage } = useWebSocket(socketUrl, {
-    onOpen: () => mog('CONNECTION OPENED'),
-    queryParams: { userId: userID }
-  })
-  
+  // const connectionStatus = {
+  //   [ReadyState.CONNECTING]: 'Connecting',
+  //   [ReadyState.OPEN]: 'Open',
+  //   [ReadyState.CLOSING]: 'Closing',
+  //   [ReadyState.CLOSED]: 'Closed',
+  //   [ReadyState.UNINSTANTIATED]: 'Uninstantiated'
+  // }[readyState]
+
   useEffect(() => {
     const editorNode = useEditorStore.getState().node
     // ? Do we need to save data locally on every route change?
@@ -99,9 +103,11 @@ const Switch = () => {
     if (location.pathname) {
       if (location.pathname.startsWith(ROUTE_PATHS.snippets)) {
         // mog('Showing Sidebar', { location })
+        fromSocket.sendJsonMessage({ action: SocketActionType.ROUTE_CHANGE, data: { route: location.pathname } })
         showSidebar()
         hideRHSidebar()
       } else if (location.pathname.startsWith(ROUTE_PATHS.node)) {
+        fromSocket.sendJsonMessage({ action: SocketActionType.ROUTE_CHANGE, data: { route: location.pathname } })
         showAllSidebars()
       } else if (location.pathname.startsWith(ROUTE_PATHS.archive)) {
         showSidebar()
@@ -110,6 +116,7 @@ const Switch = () => {
         showSidebar()
         hideRHSidebar()
       } else if (location.pathname.startsWith(ROUTE_PATHS.tasks)) {
+        fromSocket.sendJsonMessage({ action: SocketActionType.ROUTE_CHANGE, data: { route: '' } })
         showSidebar()
         hideRHSidebar()
       } else {

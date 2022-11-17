@@ -146,10 +146,18 @@ const DateTooptip = styled.div`
 
 interface MetadataProps {
   node: NodeProperties
+  namespaceId: string
   fadeOnHover?: boolean
   publicMetadata?: NodeMetadata
+  hideShareDetails?: boolean
 }
-const Metadata = ({ node, fadeOnHover = true, publicMetadata }: MetadataProps) => { // have included publicMetadata just like that wasn't sure if its the correct way or not
+const Metadata = ({
+  node,
+  namespaceId,
+  hideShareDetails = false,
+  fadeOnHover = true,
+  publicMetadata // have included publicMetadata just like that wasn't sure if its the correct way or not
+}: MetadataProps) => {
   // const node = useEditorStore((state) => state.node)
   const getContent = useContentStore((state) => state.getContent)
   const location = useLocation()
