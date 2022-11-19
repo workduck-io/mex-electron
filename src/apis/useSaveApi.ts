@@ -759,6 +759,7 @@ export const useApi = () => {
     getAllNamespaces,
     changeNamespaceName,
     changeNamespaceIcon,
+    workspaceHeaders,
     createNewNamespace
   }
 }

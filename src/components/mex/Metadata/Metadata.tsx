@@ -29,6 +29,7 @@ import { ProfileImageWithToolTip } from '../User/ProfileImage'
 import AvatarGroups from '@components/AvatarGroups'
 import { Menu, MenuItem } from '@components/FloatingElements/Dropdown'
 import { FlexBetween } from '@components/spotlight/Actions/styled'
+import { useAuthStore } from '@services/auth/useAuth'
 
 export const Data = styled.div`
   display: flex;
@@ -145,28 +146,28 @@ const DateTooptip = styled.div`
 `
 
 interface MetadataProps {
-  node: NodeProperties
+  nodeId: string
   namespaceId: string
   fadeOnHover?: boolean
   publicMetadata?: NodeMetadata
   hideShareDetails?: boolean
 }
 const Metadata = ({
-  node,
+  nodeId,
   namespaceId,
   hideShareDetails = false,
   fadeOnHover = true,
-  publicMetadata // have included publicMetadata just like that wasn't sure if its the correct way or not
+  publicMetadata
 }: MetadataProps) => {
   // const node = useEditorStore((state) => state.node)
   const getContent = useContentStore((state) => state.getContent)
   const location = useLocation()
-  const content = getContent(node.nodeid)
+  const content = getContent(nodeId)
   const openShareModal = useShareModalStore((store) => store.openModal)
   const [metadata, setMetadata] = useState<NodeMetadata | undefined>(undefined)
   const isUserEditing = useEditorStore((store) => store.isEditing)
   const mentionable = useMentionStore((s) => s.mentionable)
-  const activeUsers = useRouteStore.getState().routes[location.pathname]?.users ?? []
+  const activeUsers = useRouteStore(s => s.routes[location.pathname]?.users ?? [])
   const { getSharedUsersForNode } = useMentions()
 
   const isEmpty =
@@ -181,29 +182,34 @@ const Metadata = ({
     if (content === undefined || content.metadata === undefined) return
     const { metadata: contentMetadata } = content
     setMetadata(contentMetadata)
-  }, [node, content])
+  }, [nodeId, content, content?.metadata])
 
   mog('ACTIVE USERS', { activeUsers, mentionable })
 
   const sharedUsers = useMemo(() => {
-    const sharedUsersOfNode = getSharedUsersForNode(node.id)
+    const sharedUsersOfNode = getSharedUsersForNode(nodeId)
+    const currentUser = useAuthStore.getState().userDetails
+    const usersWithStatus = sharedUsersOfNode
+    .map((user) => {
+      const isUserActive = currentUser?.userID === user.userID || activeUsers?.includes(user.userID)
+      return { userId: user.userID, active: isUserActive }
+    })
+    .sort((a, b) => Number(a.active) - Number(b.active))
 
-    return sharedUsersOfNode
-      .map((user) => ({ userId: user.userID, active: activeUsers.includes(user.userID) }))
-      .sort((a, b) => Number(a.active) - Number(b.active))
-  }, [location, activeUsers, mentionable, node.id])
+  return usersWithStatus
+  }, [location, activeUsers, mentionable, namespaceId, nodeId])
 
   // mog({ node, metadata })
 
   if (content === undefined || content.metadata === undefined || metadata === undefined || isEmpty) return null
 
   return (
-    <MetadataWrapper fadeOnHover={fadeOnHover} isVisible={!isUserEditing}>
+    <MetadataWrapper isVisible={!isUserEditing}>
       <FlexBetween>
         <DataGroup>
           {metadata.lastEditedBy !== undefined && (
             <DataWrapper interactive={metadata.updatedAt !== undefined}>
-              {metadata.lastEditedBy !== undefined && !publicMetadata ? ( // publicMetadata needs to be added to the function params
+              {metadata?.lastEditedBy !== undefined && !publicMetadata ? (
                 <ProfileIcon data-title={metadata.lastEditedBy}>
                   <ProfileImageWithToolTip props={{ userid: metadata.lastEditedBy, size: 16 }} placement="bottom" />
                 </ProfileIcon>
@@ -220,14 +226,17 @@ const Metadata = ({
             </DataWrapper>
           )}
         </DataGroup>
-        {!publicMetadata && ( // publicMetadata needs to be added to the function params
+        {(
           <Data>
             <AvatarGroups users={sharedUsers} limit={5} margin="0 1.5rem 0" />
-            <Menu values={<MexIcon noHover icon="bi:three-dots-vertical" width={20} height={20} />}>
+            <Menu
+              key={`Share-modal-menu-${nodeId}`}
+              values={<MexIcon noHover icon="bi:three-dots-vertical" width={20} height={20} />}
+            >
               <MenuItem
                 key="share-menu"
                 icon={{ type: 'ICON', value: 'ri:share-line' }}
-                onClick={() => openShareModal('permission', node.id)}
+                onClick={() => openShareModal('permission', nodeId)}
                 label="Share"
               />
             </Menu>

@@ -1,3 +1,4 @@
+import { produce } from 'immer'
 import create from 'zustand'
 import { devtools } from 'zustand/middleware'
 
@@ -23,6 +24,7 @@ type RouteStoreType = {
   showBannerInRoute: (route: Route, banner: BannerType) => void
   removePreviousRouteInfo: () => void
   removeRouteInfo: (route: Route) => void
+  clear: () => void
 }
 
 const useRouteStore = create<RouteStoreType>(
@@ -31,8 +33,11 @@ const useRouteStore = create<RouteStoreType>(
       routes: {},
       setRoute: (routes) => set({ routes }),
       addRouteInfo: (route, info) => {
-        const routes = get().routes
-        set({ routes: { ...routes, [route]: info } })
+        set(
+          produce((draft) => {
+            draft.routes[route] = info
+          })
+        )
       },
       removePreviousRouteInfo: () => {
         const routes = get().routes
@@ -46,28 +51,30 @@ const useRouteStore = create<RouteStoreType>(
 
         return banners?.includes(banner)
       },
+      clear: () => set({ routes: {} }),
       addUserInRoute: (route, userId) => {
         const routes = get().routes
 
         if (routes[route]) {
           const users = routes[route].users
           const banners = routes[route].banners
-          set({
-            routes: {
-              ...routes,
-              [route]: {
-                users: [...users, userId],
-                banners: [...banners.filter((f) => f !== BannerType.editor), BannerType.editor]
-              }
-            }
-          })
+          set(
+            produce((draft) => {
+              draft.routes[route]['users'] = [...users, userId]
+              draft.routes[route]['banners'] = [...banners.filter((f) => f !== BannerType.editor), BannerType.editor]
+            })
+          )
         } else {
           const routeInfo: RouteInformation = {
             users: [userId],
             banners: [BannerType.editor]
           }
 
-          set({ routes: { ...routes, [route]: routeInfo } })
+          set(
+            produce((draft) => {
+              draft.routes[route] = routeInfo
+            })
+          )
         }
       },
       removeUserFromRoute: (route, userId) => {
@@ -75,22 +82,19 @@ const useRouteStore = create<RouteStoreType>(
 
         if (routes[route]) {
           const users = routes[route].users
-          const banners = routes[route].banners
-          const userToRemoveAtIndex = users.findIndex((id) => id === userId)
+          const banners = routes[route].banners?.filter((f) => f !== BannerType.editor) ?? []
+          const userToRemoveAtIndex = users?.findIndex((id) => id === userId)
 
           if (userToRemoveAtIndex >= 0) {
-            users.splice(userToRemoveAtIndex, 1)
-            const newBanners =
-              users.length > 0 ? [...banners, BannerType.editor] : banners.filter((f) => f !== BannerType.editor)
-            set({
-              routes: {
-                ...routes,
-                [route]: {
-                  users,
-                  banners: newBanners
-                }
-              }
-            })
+            const newUsers = users.filter((user, i) => i !== userToRemoveAtIndex)
+            const newBanners = newUsers.length > 0 ? [...banners, BannerType.editor] : banners
+
+            set(
+              produce((draft) => {
+                draft.routes[route].users = newUsers
+                draft.routes[route].banners = newBanners
+              })
+            )
           }
         }
       },

@@ -24,7 +24,8 @@ const AvatarGroups: React.FC<AvatarGroupsPropsType> = ({ users, margin, limit = 
 
   return (
     <AvatarGroupContainer margin={margin}>
-      {list.map((user, index) => {
+      {
+      list?.map((user, index) => {
         if (user) {
           return (
             <ProfileAvatarContainer offline={!user.active} key={`mex-user-${user.userId}${index}`}>

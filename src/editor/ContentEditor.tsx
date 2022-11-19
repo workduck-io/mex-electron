@@ -36,6 +36,7 @@ import { BlockOptionsMenu } from './Components/EditorContextMenu'
 import { useComboboxOpen } from './Components/combobox/hooks/useComboboxOpen'
 import { default as Editor } from './Editor'
 import Toolbar from './Toolbar'
+import { useNamespaces } from '../hooks/useNamespaces'
 import { usePermissions , compareAccessLevel } from '@hooks/usePermissions'
 
 const ContentEditor = () => {
@@ -52,6 +53,7 @@ const ContentEditor = () => {
 
   const editorWrapperRef = useRef<HTMLDivElement>(null)
   const { debouncedAddLastOpened } = useLastOpened()
+  const { getNamespaceOfNodeid } = useNamespaces()
 
   const { addOrUpdateValBuffer, getBufferVal, saveAndClearBuffer } = useEditorBuffer()
   const { node } = useEditorStore((state) => ({ nodeid: state.node.nodeid, node: state.node }), shallow)
@@ -176,7 +178,7 @@ const ContentEditor = () => {
         <NavBreadCrumbs nodeId={node.nodeid} />
         <Toolbar />
 
-        {/* {isBlockMode ? (
+        {isBlockMode ? (
           <BlockInfoBar />
         ) : (
           <Metadata
@@ -184,7 +186,7 @@ const ContentEditor = () => {
             namespaceId={getNamespaceOfNodeid(nodeid)?.id}
             nodeId={nodeid}
           />
-        )} */}
+        )}
 
         <EditorWrapper
           comboboxOpen={isComboOpen}

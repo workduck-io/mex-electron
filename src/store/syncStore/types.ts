@@ -14,7 +14,8 @@ export enum BroadcastSyncedChannel {
   TOKEN_DATA = 'token-data',
   USER_PROPERTIES = 'user-properties',
   EDITOR_BUFFER = 'editor-buffer',
-  MULTIPLE_EDITORS = 'multiple-editors'
+  MULTIPLE_EDITORS = 'multiple-editors',
+  ROUTES_INFO = 'routes-information'
 }
 
 export type SyncField<Field> = {

@@ -5,10 +5,10 @@ import { useVersionStore } from '@store/useAppDataStore'
 import { useUserCacheStore } from '@store/useUserCacheStore'
 import { useUserPreferenceStore } from '@store/userPreferenceStore'
 import { mog } from '@utils/lib/mog'
-import { useDebouncedCallback } from 'use-debounce'
 
 import { client } from '@workduck-io/dwindle'
 
+import { useApi } from '../../apis/useSaveApi'
 import { UserPreferences } from '../../types/userPreference'
 import { useAuthStore } from './useAuth'
 
@@ -40,6 +40,7 @@ export interface UserDetails {
 
 export const useUserService = () => {
   const addUser = useUserCacheStore((s) => s.addUser)
+  const { workspaceHeaders } = useApi()
   const getUser = useUserCacheStore((s) => s.getUser)
   const updateUserDetails = useAuthStore((s) => s.updateUserDetails)
   const getUserDetails = async (email: string): Promise<TempUser> => {
@@ -75,23 +76,27 @@ export const useUserService = () => {
     if (user) return user
 
     try {
-      return await client.get(apiURLs.user.getFromUserId(userID)).then((resp) => {
-        // mog('Response', { data: resp.data })
-        if (resp?.data?.email && resp?.data?.name) {
-          addUser({
+      return await client
+        .get(apiURLs.user.getFromUserId(userID), {
+          headers: workspaceHeaders()
+        })
+        .then((resp: any) => {
+          mog('Response', { data: resp?.data })
+          if (resp?.data?.email && resp?.data?.name) {
+            addUser({
+              userID,
+              email: resp?.data?.email,
+              alias: resp?.data?.alias ?? resp?.data?.name,
+              name: resp?.data?.name
+            })
+          }
+          return {
             userID,
-            email: resp?.data?.email,
+            email: resp?.data?.email ?? undefined,
             alias: resp?.data?.alias ?? resp?.data?.name,
             name: resp?.data?.name
-          })
-        }
-        return {
-          userID,
-          email: resp?.data?.email ?? undefined,
-          alias: resp?.data?.alias ?? resp?.data?.name,
-          name: resp?.data?.name
-        }
-      })
+          }
+        })
     } catch (e) {
       mog('Error Fetching User Details', { error: e, userID })
       return { userID }

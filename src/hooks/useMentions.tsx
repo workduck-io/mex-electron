@@ -180,7 +180,6 @@ export const useMentions = () => {
         return access.note[nodeid] !== undefined || access.space[spaceId] !== undefined
       })
       .sort((a, b) => (a.access.note[nodeid] === 'OWNER' ? -1 : b.access.note[nodeid] === 'OWNER' ? 1 : 0))
-    mog('USERS FOR SPACE', { users })
     return users
   }
   const getUserFromUserid = (userid: string): Mentionable | InvitedUser | SelfMention | undefined => {

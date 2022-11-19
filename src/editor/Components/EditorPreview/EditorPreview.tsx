@@ -87,7 +87,7 @@ const EditorPreview = ({
 
   const ilink = getILinkFromNodeid(nodeid, true)
 
-  const namespace = getNamespace(ilink.namespace)
+  const namespace = getNamespace(ilink?.namespace)
 
   const editorId = `${nodeid}_Preview`
 

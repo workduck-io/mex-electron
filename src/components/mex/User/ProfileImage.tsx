@@ -15,6 +15,7 @@ import styled, { useTheme } from 'styled-components'
 
 import Centered from '../../../style/Layouts'
 import { CardShadow } from '../../../style/helpers'
+import { AccessLevel } from '../../../types/mentions'
 
 interface ProfileImageProps {
   email: string
@@ -93,7 +94,7 @@ export const ProfileImage = ({ email, size, DefaultFallback }: ProfileImageProps
 interface ProfileImageTooltipProps {
   userid: string
   size: number
-  hideAccess?: boolean
+  access?: AccessLevel
   // Component to replace the default image
   DefaultFallback?: React.ComponentType
 }
@@ -122,7 +123,7 @@ export const ProfileAvatar: React.FC<{ userId: string; size: number }> = ({ user
 }
 
 export const ProfileImageWithToolTip = ({ props, placement, interactive }: ProfileImageWithToolTipProps) => {
-  const { userid, size, DefaultFallback, hideAccess = true } = props // eslint-disable-line react/prop-types
+  const { userid, size, DefaultFallback, access } = props // eslint-disable-line react/prop-types
   const { getUserFromUserid } = useMentions()
   const { getUserDetailsUserId } = useUserService()
 
@@ -143,7 +144,7 @@ export const ProfileImageWithToolTip = ({ props, placement, interactive }: Profi
       interactive={interactive}
       placement={(placement as any) ?? 'auto'}
       appendTo={() => document.body}
-      render={(attrs) => <MentionTooltipComponent user={user} hideAccess={hideAccess} />}
+      render={(attrs) => <MentionTooltipComponent user={user} access={access} hideAccess={!access}/>}
     >
       <Centered style={{ width: `${size}px`, height: `${size}px` }}>
         <ProfileImage size={size} email={user?.email} DefaultFallback={DefaultFallback} />
