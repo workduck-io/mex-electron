@@ -3,7 +3,7 @@ import { useApi } from '@apis/useSaveApi'
 import { useAuthStore } from '@services/auth/useAuth'
 import useDataStore from '@store/useDataStore'
 import { iLinksToUpdate } from '@utils/hierarchy'
-import { runBatch } from '@utils/lib/batchPromise'
+import { batchArray, runBatch } from '@utils/lib/batchPromise'
 import { mog } from '@utils/lib/mog'
 import { SHARED_NAMESPACE } from '@utils/lib/paths'
 
@@ -26,7 +26,7 @@ interface SharedNodesErrorPreset {
 export const usePermission = () => {
   // const authDetails = useAuthStore()
   const workspaceDetails = useAuthStore((s) => s.workspaceDetails)
-  const { getDataAPI } = useApi()
+  const { bulkGetNodes } = useApi()
 
   const grantUsersPermission = async (nodeid: string, userids: string[], access: AccessLevel) => {
     // mog('changeThat permission')
@@ -91,7 +91,7 @@ export const usePermission = () => {
 
   const getAllSharedNodes = async (): Promise<SharedNodesPreset | SharedNodesErrorPreset> => {
     try {
-      return await client
+      const sharedNodesRaw = await client
         .get(apiURLs.share.allSharedNodes, {
           headers: {
             [WORKSPACE_HEADER]: workspaceDetails.id
@@ -101,47 +101,48 @@ export const usePermission = () => {
           mog('getAllSharedNodes resp', { resp })
           return resp.data
         })
-        .then((sharedNodesRaw) => {
-          const sharedNodes = sharedNodesRaw.map((n): SharedNode => {
-            let metadata = undefined
-            try {
-              const basemetadata = n?.nodeMetadata
-              metadata = JSON.parse(basemetadata ?? '{}')
-              // mog('metadata', { basemetadata, metadata })
-              if (metadata?.createdAt && metadata.updatedAt) {
-                return {
-                  path: n.nodeTitle,
-                  nodeid: n.nodeID,
-                  currentUserAccess: n.accessType,
-                  owner: n.ownerID,
-                  sharedBy: n.granterID,
-                  createdAt: metadata.createdAt,
-                  updatedAt: metadata.updatedAt,
-                  namespace: SHARED_NAMESPACE.id
-                }
-              }
-            } catch (e) {
-              mog('Error parsing metadata', { e })
-            }
 
+      const sharedNodes = sharedNodesRaw.map((n): SharedNode => {
+        let metadata = undefined
+        try {
+          const basemetadata = n?.nodeMetadata
+          metadata = JSON.parse(basemetadata ?? '{}')
+          // mog('metadata', { basemetadata, metadata })
+          if (metadata?.createdAt && metadata.updatedAt) {
             return {
               path: n.nodeTitle,
               nodeid: n.nodeID,
               currentUserAccess: n.accessType,
               owner: n.ownerID,
-              sharedBy: n.grantedID,
+              sharedBy: n.granterID,
+              createdAt: metadata.createdAt,
+              updatedAt: metadata.updatedAt,
               namespace: SHARED_NAMESPACE.id
             }
-          })
+          }
+        } catch (e) {
+          mog('Error parsing metadata', { e })
+        }
 
-          const localSharedNodes = useDataStore.getState().sharedNodes
-          const { toUpdateLocal } = iLinksToUpdate(localSharedNodes, sharedNodes)
+        return {
+          path: n.nodeTitle,
+          nodeid: n.nodeID,
+          currentUserAccess: n.accessType,
+          owner: n.ownerID,
+          sharedBy: n.grantedID,
+          namespace: SHARED_NAMESPACE.id
+        }
+      })
 
-          runBatch(toUpdateLocal.map((ilink) => getDataAPI(ilink.nodeid, true)))
+      const localSharedNodes = useDataStore.getState().sharedNodes
+      const { toUpdateLocal } = iLinksToUpdate(localSharedNodes, sharedNodes)
 
-          mog('SharedNodes', { sharedNodes })
-          return { status: 'success', data: sharedNodes }
-        })
+      const batches = batchArray(
+        toUpdateLocal.map((val) => val.nodeid),
+        10
+      )
+      const promises = batches.map((ids) => bulkGetNodes(ids, undefined, true))
+      await runBatch(promises)
     } catch (e) {
       mog('Error Fetching Shared Nodes', { e })
       return { data: [], status: 'error' }
