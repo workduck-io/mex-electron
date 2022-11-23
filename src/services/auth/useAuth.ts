@@ -115,7 +115,7 @@ export const useAuthentication = () => {
 
     if (getWorkspace && data !== undefined) {
       authDetails = await client
-        .get(apiURLs.getUserRecords)
+        .get(apiURLs.user.getUserRecords)
         .then(async (d) => {
           const userDetails = { email, alias: d.data.alias ?? d.data.name, userID: d.data.id, name: d.data.name }
           mog('DATA AFTER LOGGING IN', { d })
@@ -166,7 +166,7 @@ export const useAuthentication = () => {
       const result: any = await googleSignIn(code, clientId, redirectURI)
       if (getWorkspace && result !== undefined) {
         await client
-          .get(apiURLs.getUserRecords)
+          .get(apiURLs.user.getUserRecords)
           /*
            * If the user is present in the database, then we will add properties
            */
@@ -236,7 +236,7 @@ export const useAuthentication = () => {
     // console.error('catch', { e })
     await client
       .post(
-        apiURLs.registerUser,
+        apiURLs.user.registerUser,
         {
           type: 'RegisterUserRequest',
           user: {
@@ -344,7 +344,7 @@ export const useAuthentication = () => {
 
     await client
       .post(
-        apiURLs.registerUser,
+        apiURLs.user.registerUser,
         {
           type: 'RegisterUserRequest',
           user: {

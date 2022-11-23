@@ -13,7 +13,6 @@ import { mog } from '@utils/lib/mog'
 import toast from 'react-hot-toast'
 
 import { client } from '@workduck-io/dwindle'
-import { allNamespacesHierarchyParser } from '@workduck-io/mex-utils'
 
 import { defaultContent } from '../data/Defaults/baseData'
 import { DEFAULT_NAMESPACE, WORKSPACE_HEADER } from '../data/Defaults/defaults'
@@ -90,7 +89,7 @@ export const useApi = () => {
     }
 
     const data = await client
-      .post(apiURLs.saveNode, reqData, {
+      .post(apiURLs.node.create, reqData, {
         headers: workspaceHeaders()
       })
       .then((d) => {
@@ -130,7 +129,7 @@ export const useApi = () => {
     setContent(noteId, options.content)
 
     const data = await client
-      .post(apiURLs.bulkSaveNodes, reqData, {
+      .post(apiURLs.node.bulkCreate, reqData, {
         headers: workspaceHeaders()
       })
       .then((d: any) => {
@@ -195,7 +194,7 @@ export const useApi = () => {
     if (!USE_API) {
       return
     }
-    const url = isShared ? apiURLs.updateSharedNode : apiURLs.saveNode
+    const url = isShared ? apiURLs.share.updateNode : apiURLs.node.create
     const data = await client
       .post(url, reqData, {
         headers: workspaceHeaders()
@@ -213,7 +212,7 @@ export const useApi = () => {
   }
 
   const makeNotePublic = async (nodeId: string) => {
-    const URL = apiURLs.makeNotePublic(nodeId)
+    const URL = apiURLs.node.makePublic(nodeId)
     return await client
       .patch(URL, null, {
         withCredentials: false,
@@ -233,7 +232,7 @@ export const useApi = () => {
   }
 
   const makeNotePrivate = async (nodeId: string) => {
-    const URL = apiURLs.makeNotePrivate(nodeId)
+    const URL = apiURLs.node.makePrivate(nodeId)
 
     return await client
       .patch(URL, null, {
@@ -265,7 +264,7 @@ export const useApi = () => {
     }
 
     const data = await client
-      .post(apiURLs.refactor, reqData, {
+      .post(apiURLs.node.refactor, reqData, {
         headers: workspaceHeaders()
       })
       .then((response) => {
@@ -281,7 +280,7 @@ export const useApi = () => {
 
   const getPublicNoteApi = async (noteId: string) => {
     const res = await client
-      .get(apiURLs.getPublicNote(noteId), {
+      .get(apiURLs.public.getPublicNode(noteId), {
         headers: {
           Accept: 'application/json, text/plain, */*'
         }
@@ -310,11 +309,11 @@ export const useApi = () => {
   const getPublicURL = (nodeid: string) => {
     const meta = useContentStore.getState().getAllMetadata()
     mog('META', { m: meta?.[nodeid] })
-    if (meta?.[nodeid]?.publicAccess) return apiURLs.getNotePublicURL(nodeid)
+    if (meta?.[nodeid]?.publicAccess) return apiURLs.frontend.getPublicNodePath(nodeid)
   }
 
   const getDataAPI = async (nodeid: string, isShared = false, isRefresh = false, isUpdate = true) => {
-    const url = isShared ? apiURLs.getSharedNode(nodeid) : apiURLs.getNode(nodeid)
+    const url = isShared ? apiURLs.share.getSharedNode(nodeid) : apiURLs.node.get(nodeid)
     if (!isShared && isRequestedWithin(2, url) && !isRefresh) {
       console.log(API_CACHE_LOG)
       return
@@ -349,15 +348,12 @@ export const useApi = () => {
       })
       .then(async (d) => {
         if (d.data) {
-          const hierarchy = d.data.hierarchy || {}
-          const nodesMetadata = d.data.nodesMetadata || {}
-
-          const parsedHierarchies = allNamespacesHierarchyParser(hierarchy)
+          const parsedHierarchies: any = d.data
 
           // We create the list of nodes with their respective namespaces
           // And the details of the namespaces from parsed data
           const { nodes, namespaces } = Object.entries(parsedHierarchies).reduce(
-            (p, [namespaceid, namespaceData]) => {
+            (p, [namespaceid, namespaceData]: any) => {
               return {
                 namespaces: [
                   ...p.namespaces,
@@ -371,8 +367,8 @@ export const useApi = () => {
                   ...namespaceData.nodeHierarchy.map((ilink) => ({
                     ...ilink,
                     namespace: namespaceid,
-                    createdAt: nodesMetadata[ilink.nodeid]?.createdAt || Infinity,
-                    updatedAt: nodesMetadata[ilink.nodeid]?.updatedAt || Infinity
+                    createdAt: ilink?.createdAt || Infinity,
+                    updatedAt: ilink?.updatedAt || Infinity
                   }))
                 ]
               }
@@ -432,7 +428,7 @@ export const useApi = () => {
     }
 
     const data = await client
-      .post(apiURLs.createSnippet, reqData, {
+      .post(apiURLs.snippet.create, reqData, {
         headers: workspaceHeaders()
       })
       .then((d) => {
@@ -448,7 +444,7 @@ export const useApi = () => {
 
   const getAllSnippetsByWorkspace = async () => {
     const data = await client
-      .get(apiURLs.getAllSnippetsByWorkspace, {
+      .get(apiURLs.snippet.getAllSnippetsByWorkspace, {
         headers: workspaceHeaders()
       })
       .then((d) => {
@@ -507,7 +503,7 @@ export const useApi = () => {
   }
 
   const deleteSnippetById = async (id: string) => {
-    const url = apiURLs.deleteSnippetById(id)
+    const url = apiURLs.snippet.deleteAllVersionsOfSnippet(id)
     try {
       const res = await client.delete(url, {
         headers: workspaceHeaders()
@@ -520,7 +516,7 @@ export const useApi = () => {
   }
 
   const getSnippetById = async (id: string) => {
-    const url = apiURLs.getSnippetById(id)
+    const url = apiURLs.snippet.getById(id)
 
     const data = await client
       .get(url, {
@@ -535,7 +531,7 @@ export const useApi = () => {
   }
 
   const saveView = async (view: View) => {
-    // POST https://http-test.workduck.io/task/view
+    // POST https://http-staging.workduck.io/task/view
 
     const reqData = {
       workspaceId: getWorkspaceId(),
@@ -607,7 +603,7 @@ export const useApi = () => {
 
   const getAllNamespaces = async () => {
     const namespaces = await client
-      .get(apiURLs.namespaces.getAll, {
+      .get(apiURLs.namespaces.getAll(), {
         headers: workspaceHeaders()
       })
       .then((d) => {

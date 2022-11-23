@@ -9,6 +9,7 @@ import { SHARED_NAMESPACE } from '@utils/lib/paths'
 
 import { client } from '@workduck-io/dwindle'
 
+import { WORKSPACE_HEADER } from '../../data/Defaults/defaults'
 import { SharedNode } from '../../types/Types'
 import { AccessLevel } from '../../types/mentions'
 
@@ -36,9 +37,9 @@ export const usePermission = () => {
       accessType: access
     }
     return await client
-      .post(apiURLs.sharedNode, payload, {
+      .post(apiURLs.share.sharedNode, payload, {
         headers: {
-          'mex-workspace-id': workspaceDetails.id
+          [WORKSPACE_HEADER]: workspaceDetails.id
         }
       })
       .then((resp) => {
@@ -56,9 +57,9 @@ export const usePermission = () => {
     // mog('changeThat permission', { payload })
     // return 'escaped'
     return await client
-      .put(apiURLs.sharedNode, payload, {
+      .put(apiURLs.share.sharedNode, payload, {
         headers: {
-          'mex-workspace-id': workspaceDetails.id
+          [WORKSPACE_HEADER]: workspaceDetails.id
         }
       })
       .then((resp) => {
@@ -76,10 +77,10 @@ export const usePermission = () => {
     // mog('revokeThat permission', { payload })
     // return 'escaped'
     return await client
-      .delete(apiURLs.sharedNode, {
+      .delete(apiURLs.share.sharedNode, {
         data: payload,
         headers: {
-          'mex-workspace-id': workspaceDetails.id
+          [WORKSPACE_HEADER]: workspaceDetails.id
         }
       })
       .then((resp) => {
@@ -91,9 +92,9 @@ export const usePermission = () => {
   const getAllSharedNodes = async (): Promise<SharedNodesPreset | SharedNodesErrorPreset> => {
     try {
       return await client
-        .get(apiURLs.allSharedNodes, {
+        .get(apiURLs.share.allSharedNodes, {
           headers: {
-            'mex-workspace-id': workspaceDetails.id
+            [WORKSPACE_HEADER]: workspaceDetails.id
           }
         })
         .then((resp) => {
@@ -150,9 +151,9 @@ export const usePermission = () => {
   const getUsersOfSharedNode = async (nodeid: string): Promise<{ nodeid: string; users: Record<string, string> }> => {
     try {
       return await client
-        .get(apiURLs.getUsersOfSharedNode(nodeid), {
+        .get(apiURLs.share.getUsersOfSharedNode(nodeid), {
           headers: {
-            'mex-workspace-id': workspaceDetails.id
+            [WORKSPACE_HEADER]: workspaceDetails.id
           }
         })
         .then((resp) => {
