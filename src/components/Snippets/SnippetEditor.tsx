@@ -3,9 +3,11 @@ import React, { useEffect, useMemo, useState } from 'react'
 import arrowLeftLine from '@iconify/icons-ri/arrow-left-line'
 import magicLine from '@iconify/icons-ri/magic-line'
 import { SnippetProvider } from '@store/Context/context.snippet'
+import useRouteStore, { BannerType } from '@store/useRouteStore'
 import { selectEditor, usePlateEditorRef, usePlateEditorState } from '@udecode/plate'
 import { mog } from '@utils/lib/mog'
 import { debounce } from 'lodash'
+import { useLocation } from 'react-router-dom'
 
 import { IconButton } from '@workduck-io/mex-components'
 import { tinykeys } from '@workduck-io/tinykeys'
@@ -24,6 +26,7 @@ import ItemTag from '../../ui/components/ItemTag/ItemTag'
 import { getSlug } from '../../utils/lib/strings'
 import { NavigationType, ROUTE_PATHS, useRouting } from '../../views/routes/urls'
 import { SnippetCopierButton } from './SnippetContentCopier'
+import Banner from '@editor/Components/Banner'
 
 const SnippetEditor = () => {
   const snippet = useSnippetStore((store) => store.editor.snippet)
@@ -34,6 +37,9 @@ const SnippetEditor = () => {
   // const [value, setValue] = useState('')
 
   const loadSnippet = useSnippetStore((store) => store.loadSnippet)
+  const location = useLocation()
+  const isBannerVisible = useRouteStore((s) => s.routes?.[location.pathname]?.banners?.includes(BannerType.editor))
+
   const { updater } = useUpdater()
   const { addOrUpdateValBuffer, saveAndClearBuffer, getBufferVal } = useSnippetBuffer()
   const addTitle = useSnippetBufferStore((store) => store.addTitle)
@@ -129,9 +135,19 @@ const SnippetEditor = () => {
     onDelay(value)
   }
 
+  const handleBannerButtonClick = () => {
+    mog("handleBannerButtonClick");
+  }
+
   return (
     <SnippetProvider>
       <StyledEditor className="snippets_editor">
+        {isBannerVisible && (
+          <Banner
+            onClick={handleBannerButtonClick}
+            title="Same Snippet is being accessed by multiple users. Data may get lost!"
+          />
+        )}
         <NodeInfo>
           <IconButton
             size={24}

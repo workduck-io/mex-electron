@@ -137,13 +137,14 @@ export const useMentions = () => {
 
   const getUserAccessLevelForNode = (userid: string, nodeid: string): AccessLevel | undefined => {
     const mentionable = useMentionStore.getState().mentionable
+    const localUserDetails = useAuthStore.getState().userDetails
     const user = mentionable.find((mention) => mention.userID === userid)
     if (user && user.access[nodeid]) {
       return user.access[nodeid]
     }
     const sharedNodes = useDataStore.getState().sharedNodes
     const sharedNode = sharedNodes.find((node) => node.nodeid === nodeid)
-    if (userid === localUserDetails.userID) {
+    if (userid === localUserDetails?.userID) {
       if (sharedNode) {
         return sharedNode.currentUserAccess
       } else {
@@ -157,26 +158,10 @@ export const useMentions = () => {
 
   const getSharedUsersForNode = (nodeid: string): Mentionable[] => {
     const mentionable = useMentionStore.getState().mentionable
-    const isShared = isSharedNode(nodeid)
     const users = mentionable
       .filter((mention) => mention.access[nodeid] !== undefined)
       // Get the owner to the top
       .sort((a, b) => (a.access[nodeid] === 'OWNER' ? -1 : b.access[nodeid] === 'OWNER' ? 1 : 0))
-
-    const currentUser = useAuthStore.getState().userDetails
-    // const sharedNodes = useDataStore.getState().sharedNodes
-
-    if (!isShared) {
-      const curUser: Mentionable = {
-        type: 'mentionable',
-        access: { [nodeid]: 'OWNER' },
-        email: currentUser.email,
-        alias: currentUser.alias,
-        name: currentUser.name,
-        userID: currentUser.userID
-      }
-      return [curUser, ...users]
-    }
 
     return users
   }
@@ -186,7 +171,17 @@ export const useMentions = () => {
     const users = invitedUsers.filter((mention) => mention.access[nodeid] !== undefined)
     return users
   }
+  const getSharedUsersOfNodeOfSpace = (nodeid: string, spaceId: string) => {
+    const mentionable = useMentionStore.getState().mentionable
+    const users = mentionable
+      .filter((mention) => {
+        const access = mention.access
 
+        return access.note[nodeid] !== undefined || access.space[spaceId] !== undefined
+      })
+      .sort((a, b) => (a.access.note[nodeid] === 'OWNER' ? -1 : b.access.note[nodeid] === 'OWNER' ? 1 : 0))
+    return users
+  }
   const getUserFromUserid = (userid: string): Mentionable | InvitedUser | SelfMention | undefined => {
     const currentUser = useAuthStore.getState().userDetails
     if (currentUser.userID === userid) {
@@ -260,6 +255,7 @@ export const useMentions = () => {
     addMentionable,
     getUserAccessLevelForNode,
     getSharedUsersForNode,
+    getSharedUsersOfNodeOfSpace,
     getInvitedUsersForNode,
     grantUserAccessOnMention,
     applyChangesMentionable,

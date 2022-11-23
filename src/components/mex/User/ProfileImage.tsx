@@ -15,6 +15,7 @@ import styled, { useTheme } from 'styled-components'
 
 import Centered from '../../../style/Layouts'
 import { CardShadow } from '../../../style/helpers'
+import { AccessLevel } from '../../../types/mentions'
 
 interface ProfileImageProps {
   email: string
@@ -93,6 +94,7 @@ export const ProfileImage = ({ email, size, DefaultFallback }: ProfileImageProps
 interface ProfileImageTooltipProps {
   userid: string
   size: number
+  access?: AccessLevel
   // Component to replace the default image
   DefaultFallback?: React.ComponentType
 }
@@ -100,10 +102,28 @@ interface ProfileImageTooltipProps {
 interface ProfileImageWithToolTipProps {
   props: ProfileImageTooltipProps
   placement?: string
+  interactive?: boolean
 }
 
-export const ProfileImageWithToolTip = ({ props, placement }: ProfileImageWithToolTipProps) => {
-  const { userid, size, DefaultFallback } = props // eslint-disable-line react/prop-types
+export const ProfileAvatar: React.FC<{ userId: string; size: number }> = ({ userId, size }) => {
+  const { getUserFromUserid } = useMentions()
+  const { getUserDetailsUserId } = useUserService()
+
+  const user = useMemo(() => {
+    const u = getUserFromUserid(userId)
+    if (u) return u
+    else {
+      getUserDetailsUserId(userId)
+        .then((d) => mog('GOT userId', { d }))
+        .catch((err) => mog('GOT ERROR', { err }))
+    }
+  }, [userId])
+
+  return <ProfileImage size={size} email={user?.email} />
+}
+
+export const ProfileImageWithToolTip = ({ props, placement, interactive }: ProfileImageWithToolTipProps) => {
+  const { userid, size, DefaultFallback, access } = props // eslint-disable-line react/prop-types
   const { getUserFromUserid } = useMentions()
   const { getUserDetailsUserId } = useUserService()
 
@@ -121,9 +141,10 @@ export const ProfileImageWithToolTip = ({ props, placement }: ProfileImageWithTo
     <Tippy
       delay={500}
       interactiveDebounce={100}
+      interactive={interactive}
       placement={(placement as any) ?? 'auto'}
       appendTo={() => document.body}
-      render={(attrs) => <MentionTooltipComponent user={user} hideAccess />}
+      render={(attrs) => <MentionTooltipComponent user={user} access={access} hideAccess={!access}/>}
     >
       <Centered style={{ width: `${size}px`, height: `${size}px` }}>
         <ProfileImage size={size} email={user?.email} DefaultFallback={DefaultFallback} />

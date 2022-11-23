@@ -16,6 +16,13 @@ export interface InvitedUser extends IUser {
 
 export type AccessLevel = 'MANAGE' | 'WRITE' | 'READ' | 'OWNER'
 
+export enum AccessLevelPrority {
+  READ,
+  WRITE,
+  MANAGE,
+  OWNER
+}
+
 export const permissionOptions: {
   value: AccessLevel
   label: string
@@ -37,6 +44,8 @@ export interface Mentionable extends IUser {
   userID: string
   name: string
 }
+
+export type ShareContext = 'note' | 'space'
 
 export interface MentionData {
   mentionable: Mentionable[]

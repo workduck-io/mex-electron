@@ -12,5 +12,8 @@
     "MEX_BACKEND_BASE_URL": "https://http-test.workduck.io/mex",
     "USER_SERVICE_BASE_URL": "https://http.workduck.io/user",
     "CDN_BASE_URL": "https://cdn.workduck.io"
+  },
+  "websocket": {
+    "URL": "wss://ws.workduck.io/route"
   }
 }

@@ -680,7 +680,8 @@ export const useApi = () => {
           name: d?.data?.name,
           iconUrl: d?.data?.metadata?.iconUrl,
           createdAt: d?.data?.createdAt,
-          updatedAt: d?.data?.updatedAt
+          updatedAt: d?.data?.updatedAt,
+          access: 'OWNER' as const
         }))
 
       mog('We created a namespace', { res })
@@ -758,6 +759,7 @@ export const useApi = () => {
     getAllNamespaces,
     changeNamespaceName,
     changeNamespaceIcon,
+    workspaceHeaders,
     createNewNamespace
   }
 }

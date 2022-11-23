@@ -12,6 +12,8 @@ import { ipcRenderer } from 'electron'
 import Header from './Header'
 import Note from './Note'
 import { NoteWindowLayout } from './styled'
+import useRouteStore from '@store/useRouteStore'
+import { useAuthStore } from '@services/auth/useAuth'
 
 const NoteWindow = () => {
   const [noteId, setNoteId] = useState<string>(undefined)
@@ -50,6 +52,16 @@ const NoteWindow = () => {
     syncStoreState(useMultipleEditors, {
       name: BroadcastSyncedChannel.MULTIPLE_EDITORS,
       sync: [{ field: 'pinned' }],
+      init: true
+    })
+    syncStoreState(useRouteStore, {
+      name: BroadcastSyncedChannel.ROUTES_INFO,
+      sync: [{ field: 'routes' }],
+      init: true
+    })
+    syncStoreState(useAuthStore, {
+      name: BroadcastSyncedChannel.AUTH,
+      sync: [{ field: 'userDetails' }],
       init: true
     })
 

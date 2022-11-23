@@ -44,14 +44,45 @@ export type EditorContextType = {
 
   setFetchingContent: (value: boolean) => void
 
+  activeUsers?: Array<string>
+  setActiveUsers?: (users: Array<string>) => void
+  addUser: (userId: string) => void
+  removeUser: (usersId: string) => void
+
+  isBannerVisible?: boolean
+  notifyWithBanner: (showBanner: boolean) => void
+
   setReadOnly: (isReadOnly: boolean) => void
 }
 
 export const useEditorStore = create<EditorContextType>((set, get) => ({
   node: getInitialNode(),
   readOnly: false,
+
+  isBannerVisible: false,
+  notifyWithBanner: (showBanner: boolean) => set({ isBannerVisible: showBanner }),
+
   fetchingContent: false,
   setTrigger: (trigger) => set({ trigger }),
+
+  activeUsers: [],
+  setActiveUsers: (users) => {
+    set({ activeUsers: users, isBannerVisible: users.length !== 0 })
+  },
+  addUser: (userId) => {
+    const s = get().activeUsers
+    set({ activeUsers: [...s, userId], isBannerVisible: true })
+  },
+  removeUser: (userId) => {
+    const userToRemoveAtIndex = get().activeUsers.findIndex((id) => id === userId)
+
+    if (userToRemoveAtIndex >= 0) {
+      const newUsers = get().activeUsers
+      newUsers.splice(userToRemoveAtIndex, 1)
+
+      set({ activeUsers: newUsers, isBannerVisible: newUsers.length !== 0 })
+    }
+  },
 
   setReadOnly: (isReadOnly: boolean) => {
     set({ readOnly: isReadOnly })

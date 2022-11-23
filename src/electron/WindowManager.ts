@@ -39,11 +39,11 @@ class WindowManager {
 
       if (options.onLoadShow) {
         window.focus()
-        window.show()
+        window?.show()
       }
 
-      if (!app.dock.isVisible()) {
-        app.dock.show()
+      if (!app.dock?.isVisible()) {
+        app.dock?.show()
       }
     })
 
@@ -79,7 +79,7 @@ class WindowManager {
       window.setVisibleOnAllWorkspaces(true, { visibleOnFullScreen: true })
     }
 
-    if (!app.dock.isVisible()) app.dock.show()
+    if (!app.dock?.isVisible()) app.dock?.show()
 
     return window
   }

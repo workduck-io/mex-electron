@@ -24,7 +24,7 @@ export const ROUTE_PATHS = {
   register: '/register',
   archive: '/archive',
   tag: '/tag', // * /tag/:tag
-  node: '/node', // * /node/:nodeid
+  node: '/editor', // * /node/:nodeid
   search: '/search',
   settings: '/settings',
   tasks: '/tasks',
@@ -32,6 +32,7 @@ export const ROUTE_PATHS = {
   integrations: '/integrations',
   snippets: '/snippets',
   snippet: '/snippets/node', // * /snippets/node/:snippetid
+  namespaceShare: '/share/namespace', // please check this or s
   forgotpassword: '/forgotpassword',
   actions: '/actions'
 }
