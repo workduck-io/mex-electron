@@ -59,6 +59,7 @@ export const useEditorBuffer = () => {
           const isShared = isSharedNode(nodeid)
           const namespace = getNamespaceOfNodeid(nodeid)
           // const mT = measureTime(() => areEqual(content.content, val))
+          mog('Saving Buffer', { val, nodeid, namespace })
           if (!res) {
             saveEditorValueAndUpdateStores(nodeid, namespace.id, val, { saveApi: true, isShared })
           }

@@ -248,6 +248,7 @@ export const useLinks = () => {
     })
 
     const newILinks = [...links]
+    mog('Setting ILinks: ', { newILinks, links, intersection })
 
     setILinks(newILinks)
 

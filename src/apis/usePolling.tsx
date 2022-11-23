@@ -10,14 +10,15 @@ import { useApi } from './useSaveApi'
 export const PollingInterval = {
   [PollActions.shared]: 5 * 60 * 1000, // 5 minutes
   [PollActions.hierarchy]: 5 * 60 * 1000, // 5 minutes
-  [PollActions.bookmarks]: 30 * 60 * 1000 // 30 minutes
+  [PollActions.bookmarks]: 30 * 60 * 1000, // 30 minutes
+  [PollActions.snippets]: 30 * 60 * 1000 // 30 minutes
 }
 
 export const usePolling = () => {
   const polling = useApiStore((store) => store.polling)
   const isAuthenticated = useAuthStore((store) => store.authenticated)
 
-  const { getNodesByWorkspace } = useApi()
+  const { getAllNamespaces, getAllSnippetsByWorkspace } = useApi()
   const { getAllBookmarks } = useBookmarks()
   const { fetchShareData } = useFetchShareData()
 
@@ -37,8 +38,15 @@ export const usePolling = () => {
 
   useIntervalWithTimeout(
     () => {
-      getNodesByWorkspace().then(() => mog('Successfully fetched hierarchy'))
+      getAllNamespaces().then(() => mog('Successfully fetched hierarchy and missing notes'))
     },
     isAuthenticated && polling.has(PollActions.hierarchy) ? PollingInterval[PollActions.hierarchy] : null
+  )
+
+  useIntervalWithTimeout(
+    () => {
+      getAllSnippetsByWorkspace()
+    },
+    isAuthenticated && polling.has(PollActions.snippets) ? PollingInterval[PollActions.snippets] : null
   )
 }

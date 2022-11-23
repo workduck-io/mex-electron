@@ -126,9 +126,13 @@ export interface SingleNamespace {
   name: string
   createdAt: number
   updatedAt: number
-  icon?: MIcon
   // Manage for owner if granterId is absent
   access: AccessLevel
+
+  icon?: MIcon
+
+  publicAccess?: boolean
+  granterID?: string
 }
 
 export interface DataStoreState {

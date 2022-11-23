@@ -49,7 +49,7 @@ const useActions = () => {
 
   // * For Integrations page, get all Action groups and all actions of each group
   const getGroupsToView = async () => {
-    const groups = await fetchActionGroups()
+    const groups = (await fetchActionGroups()) ?? {}
 
     try {
       await Promise.allSettled(
