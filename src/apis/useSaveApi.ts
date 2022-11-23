@@ -442,22 +442,20 @@ export const useApi = () => {
     return client.post(url, { ids: ids }, { headers: workspaceHeaders() }).then((d: any) => {
       if (d) {
         if (d.data.failed.length > 0) mog('Failed API Requests: ', { url, ids: d.data.failed })
-        d.data.successful.forEach(async (snippets) => {
-          if (snippets) {
-            snippets.forEach(async (snippet) => {
-              updateSnippet(snippet.id, snippet)
-              const tags = snippet.template ? ['template'] : ['snippet']
-              const idxName = snippet.template ? 'template' : 'snippet'
-              mog('Update snippet', { snippet, tags })
+        d.data.successful.forEach(async (snippet) => {
+          if (snippet) {
+            updateSnippet(snippet.id, snippet)
+            const tags = snippet.template ? ['template'] : ['snippet']
+            const idxName = snippet.template ? 'template' : 'snippet'
+            mog('Update snippet', { snippet, tags })
 
-              if (snippet.template) {
-                await removeDocument('snippet', snippet.id)
-              } else {
-                await removeDocument('template', snippet.id)
-              }
+            if (snippet.template) {
+              await removeDocument('snippet', snippet.id)
+            } else {
+              await removeDocument('template', snippet.id)
+            }
 
-              await updateDocument(idxName, snippet.id, snippet.content, snippet.title, tags)
-            })
+            await updateDocument(idxName, snippet.id, snippet.content, snippet.title, tags)
           }
         })
 
@@ -607,10 +605,10 @@ export const useApi = () => {
     return resp
   }
 
-  const bulkGetNodes = async (ids: string[], namespaceID?: string) => {
+  const bulkGetNodes = async (ids: string[], namespaceID?: string, isShared = false) => {
     namespaceID = namespaceID && namespaceID !== 'NOT_SHARED' ? namespaceID : undefined
 
-    const url = apiURLs.node.getMultipleNode(namespaceID)
+    const url = isShared ? apiURLs.share.getBulk : apiURLs.node.getMultipleNode(namespaceID)
     return client
       .post(
         url,
