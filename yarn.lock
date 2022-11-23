@@ -3674,10 +3674,10 @@
     object-hash "^3.0.0"
     riot-tmpl "^3.0.8"
 
-"@workduck-io/dwindle@^0.0.22":
-  version "0.0.22"
-  resolved "https://npm.pkg.github.com/download/@workduck-io/dwindle/0.0.22/d1ac992d36671222094aaea65b6ce93f6fadb8e9#d1ac992d36671222094aaea65b6ce93f6fadb8e9"
-  integrity sha512-1x83qfgVtXT3XT8SPLxeuQSBFjRmq1XpzCCOsHwOaKDzNeOGtSPpPDWZ/zS1a4Las0c1OjorYfXczE6DcLEOyg==
+"@workduck-io/dwindle@^0.0.24":
+  version "0.0.24"
+  resolved "https://npm.pkg.github.com/download/@workduck-io/dwindle/0.0.24/81337aad4265efff359d74fa1bb76a703143997b#81337aad4265efff359d74fa1bb76a703143997b"
+  integrity sha512-3RigfTnSetrYapFcGyyJQmb3VOF1UcuSh+il6qNB44gVCpKhqkOzGvwS3RxEasJI6w0wtQ/95DahgfH/7V2wjQ==
   dependencies:
     "@aws-sdk/client-cognito-identity" "^3.17.0"
     "@aws-sdk/client-s3" "^3.17.0"

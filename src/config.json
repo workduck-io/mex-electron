@@ -9,7 +9,7 @@
   "constants": {
     "STAGE": "alpha",
     "USE_API": true,
-    "MEX_BACKEND_BASE_URL": "https://http-test.workduck.io/mex",
+    "MEX_BACKEND_BASE_URL": "https://http-staging.workduck.io/mex",
     "USER_SERVICE_BASE_URL": "https://http.workduck.io/user",
     "CDN_BASE_URL": "https://cdn.workduck.io"
   },

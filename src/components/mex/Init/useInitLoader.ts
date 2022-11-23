@@ -15,6 +15,8 @@ import { mog } from '@utils/lib/mog'
 import { useRouting, ROUTE_PATHS, NavigationType } from '@views/routes/urls'
 import toast from 'react-hot-toast'
 
+import { useSyncTaskViews, useTaskViews } from '../../../hooks/useTaskViews'
+
 export const useInitLoader = () => {
   const isAuthenticated = useAuthStore((store) => store.authenticated)
   const setShowLoader = useLayoutStore((store) => store.setShowLoader)
@@ -25,7 +27,7 @@ export const useInitLoader = () => {
 
   const { initActionPerfomerClient } = useActionsPerfomerClient()
 
-  const { getNodesByWorkspace, getAllSnippetsByWorkspace, getAllNamespaces } = useApi()
+  const { getAllSnippetsByWorkspace, getAllNamespaces, getAllViews } = useApi()
   const { getArchiveNotesHierarchy } = useArchive()
   const { getGroupsToView } = useActions()
   const { logout } = useAuthentication()
@@ -34,7 +36,7 @@ export const useInitLoader = () => {
 
   const backgroundFetch = async () => {
     try {
-      runBatch<any>([fetchShareData(), getArchiveNotesHierarchy()])
+      runBatch<any>([fetchShareData(), getArchiveNotesHierarchy(), initPortals(), getAllViews()])
     } catch (err) {
       mog('Background fetch failed')
     }
@@ -44,13 +46,7 @@ export const useInitLoader = () => {
     initActionPerfomerClient(useAuthStore.getState().userDetails?.userID)
     setShowLoader(true)
     try {
-      const res = await runBatch<any>([
-        getNodesByWorkspace(),
-        getAllSnippetsByWorkspace(),
-        getAllNamespaces(),
-        getGroupsToView(),
-        initPortals()
-      ])
+      await runBatch<any>([getAllSnippetsByWorkspace(), getAllNamespaces(), getGroupsToView()])
 
       const baseNode = updateBaseNode()
       loadNode(baseNode?.nodeid, { savePrev: false, fetch: false })

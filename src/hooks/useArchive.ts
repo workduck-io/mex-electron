@@ -1,7 +1,5 @@
 import { useApi } from '@apis/useSaveApi'
 import { useContentStore } from '@store/useContentStore'
-import { iLinksToUpdate } from '@utils/hierarchy'
-import { runBatch } from '@utils/lib/batchPromise'
 import { mog } from '@utils/lib/mog'
 
 import { client, useAuth } from '@workduck-io/dwindle'
@@ -12,7 +10,6 @@ import { useAuthStore } from '../services/auth/useAuth'
 import useDataStore from '../store/useDataStore'
 import { ILink } from '../types/Types'
 import { WORKSPACE_HEADER } from './../data/Defaults/defaults'
-import { hierarchyParser } from './useHierarchy'
 import { getTitleFromPath } from './useLinks'
 import { useSaveData } from './useSaveData'
 import { useSearch } from './useSearch'
@@ -65,7 +62,7 @@ const useArchive = () => {
     if (userCred) {
       return await client
         .put(
-          apiURLs.archiveInNamesapce(namespaceID),
+          apiURLs.archive.archiveInNamespace(namespaceID),
           {
             ids: nodes.map((i) => i.nodeid)
           },
@@ -123,7 +120,7 @@ const useArchive = () => {
     }
     await client
       .put(
-        apiURLs.unArchiveNodes(),
+        apiURLs.archive.unArchiveNodes,
         {
           ids: nodes.map((i) => i.nodeid)
         },
@@ -209,7 +206,7 @@ const useArchive = () => {
     if (userCred) {
       const res = await client
         .post(
-          apiURLs.deleteArchiveNodes(),
+          apiURLs.archive.deleteArchivedNodes,
           {
             ids: nodeids.map((i) => i.nodeid)
           },

@@ -10,6 +10,7 @@ import { mog } from '@utils/lib/mog'
 // import useAnalytics from '../services/analytics'
 // import { CustomEvents } from '../services/analytics/events'
 import useDataStore from '../store/useDataStore'
+import { ILink } from '../types/Types'
 import { NodeLink } from '../types/relations'
 // import { getNodeIcon } from '../utils/lib/icons'
 import { getUniquePath, isMatch } from '../utils/lib/paths'
@@ -24,12 +25,12 @@ interface RefactorPath {
 }
 
 interface NamespaceChangedPaths {
-  removedPaths: string[]
-  addedPaths: string[]
+  removedPaths: ILink[]
+  addedPaths: ILink[]
 }
 
 interface RefactorResponse {
-  changedPaths: Array<Record<string, NamespaceChangedPaths>>
+  changedPaths: Record<string, NamespaceChangedPaths>
 }
 
 export const useRefactor = () => {
@@ -122,17 +123,18 @@ export const useRefactor = () => {
       { path: uniquePath.split('.').join('#'), namespaceID: to.namespaceID ?? from.namespaceID },
       nodeId
     ).then((response: RefactorResponse) => {
-      const addedILinks = []
-      const removedILinks = []
+      const addedILinks: ILink[] = []
+      const removedILinks: ILink[] = []
 
-      response.changedPaths.forEach((nsObject) => {
-        Object.entries(nsObject).forEach(([nsId, addedRemovedPathObj]) => {
-          const nsAddedILinks = hierarchyParser(addedRemovedPathObj.addedPaths, nsId)
-          const nsRemovedILinks = hierarchyParser(addedRemovedPathObj.removedPaths, nsId)
-
-          addedILinks.push(...nsAddedILinks)
-          removedILinks.push(...nsRemovedILinks)
+      Object.entries(response.changedPaths).forEach(([nsId, nsObject]) => {
+        nsObject.addedPaths.forEach((ilink) => {
+          ilink.namespace = nsId
         })
+        nsObject.removedPaths.forEach((ilink) => {
+          ilink.namespace = nsId
+        })
+        addedILinks.push(...nsObject.addedPaths)
+        removedILinks.push(...nsObject.removedPaths)
       })
       mog('AfterRefactor', { addedILinks, removedILinks })
       const refactored = updateILinks(addedILinks, removedILinks)
@@ -145,7 +147,6 @@ export const useRefactor = () => {
         mog('Updating search index', { title })
         updateDocument('node', nodeId, content, title)
       }
-
       return refactored
     })
 

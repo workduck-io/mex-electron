@@ -1,5 +1,3 @@
-import { useEffect } from 'react'
-
 import { apiURLs } from '@apis/routes'
 import { useVersionStore } from '@store/useAppDataStore'
 import { useUserCacheStore } from '@store/useUserCacheStore'
@@ -143,7 +141,7 @@ export const useUserService = () => {
 
   const getCurrentUser = async (): Promise<UserDetails | undefined> => {
     try {
-      return await client.get(apiURLs.getUserRecords).then((resp) => {
+      return await client.get(apiURLs.user.getUserRecords).then((resp) => {
         mog('Response', { data: resp.data })
         return resp?.data
       })

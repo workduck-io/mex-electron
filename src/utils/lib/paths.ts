@@ -11,9 +11,10 @@ import {
   SEPARATOR
 } from '../../components/mex/Sidebar/treeUtils'
 import { BASE_DRAFT_PATH, BASE_MEETING_PATH, BASE_TASKS_PATH } from '../../data/Defaults/baseData'
-import { FlowCommandPrefix } from '../../editor/Components/SlashCommands/useSyncConfig'
 import { SnippetCommandPrefix } from '../../hooks/useSnippets'
 import { ILink, SingleNamespace } from '../../types/Types'
+
+const FlowCommandPrefix = 'flow'
 
 const RESERVED_PATHS: string[] = [
   BASE_DRAFT_PATH,
@@ -36,7 +37,8 @@ export const SHARED_NAMESPACE: SingleNamespace = {
   name: RESERVED_NAMESPACES.shared,
   createdAt: 0,
   updatedAt: 0,
-  icon: { type: 'ICON', value: 'mex:shared-note' }
+  icon: { type: 'ICON', value: 'mex:shared-note' },
+  access: 'OWNER'
 }
 
 export const getNewNamespaceName = (num: number): string => {

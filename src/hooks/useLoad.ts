@@ -247,6 +247,7 @@ const useLoad = () => {
     const localCheck = isLocalNode(nodeid)
 
     if (!options.node && !localCheck.isLocal && !localCheck.isShared) {
+      mog('Loading Node: ', { options })
       toast.error('Selected note does not exist.')
       nodeid = currentNodeId
     }

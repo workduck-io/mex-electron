@@ -42,7 +42,7 @@ const packageJsonValues = {
 const configValues = {
   [BUILD_TYPE.ALPHA]: {
     STAGE: 'alpha',
-    MEX_BACKEND_BASE_URL: 'https://http-test.workduck.io/mex'
+    MEX_BACKEND_BASE_URL: 'https://http-staging.workduck.io/mex'
   },
   [BUILD_TYPE.STABLE]: {
     STAGE: 'stable',

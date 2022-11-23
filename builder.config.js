@@ -10,7 +10,7 @@ const checkAlpha = (version) => {
 const isAlpha = checkAlpha(version)
 
 const appBundleId = isAlpha ? 'com.workduck.mex-alpha' : 'com.workduck.mex'
-const updateServerPath = isAlpha ? 'https://http-test.workduck.io/updates/' : 'https://http.workduck.io/updates/'
+const updateServerPath = isAlpha ? 'https://http-staging.workduck.io/updates/' : 'https://http.workduck.io/updates/'
 
 /** @type {import('electron-builder').Configuration} */
 const configuration = {

@@ -7,13 +7,12 @@ import { useUpdater } from '@hooks/useUpdater'
 import useDataStore from '@store/useDataStore'
 import { useSnippetStore } from '@store/useSnippetStore'
 import { iLinksToUpdate } from '@utils/hierarchy'
-import { runBatch } from '@utils/lib/batchPromise'
+import { batchArray, batchArrayWithNamespaces, runBatch } from '@utils/lib/batchPromise'
 import { getTagsFromContent } from '@utils/lib/content'
 import { mog } from '@utils/lib/mog'
 import toast from 'react-hot-toast'
 
 import { client } from '@workduck-io/dwindle'
-import { allNamespacesHierarchyParser } from '@workduck-io/mex-utils'
 
 import { defaultContent } from '../data/Defaults/baseData'
 import { DEFAULT_NAMESPACE, WORKSPACE_HEADER } from '../data/Defaults/defaults'
@@ -90,7 +89,7 @@ export const useApi = () => {
     }
 
     const data = await client
-      .post(apiURLs.saveNode, reqData, {
+      .post(apiURLs.node.create, reqData, {
         headers: workspaceHeaders()
       })
       .then((d) => {
@@ -120,6 +119,7 @@ export const useApi = () => {
         path: options.path,
         namespaceID: namespace
       },
+      id: noteId,
       title: getTitleFromNoteId(noteId),
       namespaceID: namespace,
       type: 'NodeBulkRequest',
@@ -130,27 +130,21 @@ export const useApi = () => {
     setContent(noteId, options.content)
 
     const data = await client
-      .post(apiURLs.bulkSaveNodes, reqData, {
+      .post(apiURLs.node.bulkCreate, reqData, {
         headers: workspaceHeaders()
       })
       .then((d: any) => {
-        // mog('bulkSaveNodes', d)
-        const { changedPaths, node } = d.data
         const addedILinks = []
         const removedILinks = []
-        changedPaths.forEach((nsObject) => {
-          Object.entries(nsObject).forEach(([nsId, addedRemovedPathObj]: any) => {
-            const nsAddedILinks = hierarchyParser(addedRemovedPathObj.addedPaths, nsId)
-            const nsRemovedILinks = hierarchyParser(addedRemovedPathObj.removedPaths, nsId)
-
-            addedILinks.push(...nsAddedILinks)
-            removedILinks.push(...nsRemovedILinks)
-          })
+        const { changedPaths, node } = d.data
+        Object.entries(changedPaths).forEach(([nsId, changed]: [string, any]) => {
+          const { addedPaths: nsAddedILinks, removedPaths: nsRemovedILinks } = changed
+          addedILinks.push(...nsAddedILinks)
+          removedILinks.push(...nsRemovedILinks)
         })
+
         updateILinks(addedILinks, removedILinks)
         setMetadata(noteId, extractMetadata(node))
-
-        // * set the new hierarchy in the tree
         addLastOpened(noteId)
 
         return d.data
@@ -195,7 +189,7 @@ export const useApi = () => {
     if (!USE_API) {
       return
     }
-    const url = isShared ? apiURLs.updateSharedNode : apiURLs.saveNode
+    const url = isShared ? apiURLs.share.updateNode : apiURLs.node.create
     const data = await client
       .post(url, reqData, {
         headers: workspaceHeaders()
@@ -213,7 +207,7 @@ export const useApi = () => {
   }
 
   const makeNotePublic = async (nodeId: string) => {
-    const URL = apiURLs.makeNotePublic(nodeId)
+    const URL = apiURLs.node.makePublic(nodeId)
     return await client
       .patch(URL, null, {
         withCredentials: false,
@@ -233,7 +227,7 @@ export const useApi = () => {
   }
 
   const makeNotePrivate = async (nodeId: string) => {
-    const URL = apiURLs.makeNotePrivate(nodeId)
+    const URL = apiURLs.node.makePrivate(nodeId)
 
     return await client
       .patch(URL, null, {
@@ -265,7 +259,7 @@ export const useApi = () => {
     }
 
     const data = await client
-      .post(apiURLs.refactor, reqData, {
+      .post(apiURLs.node.refactor, reqData, {
         headers: workspaceHeaders()
       })
       .then((response) => {
@@ -281,7 +275,7 @@ export const useApi = () => {
 
   const getPublicNoteApi = async (noteId: string) => {
     const res = await client
-      .get(apiURLs.getPublicNote(noteId), {
+      .get(apiURLs.public.getPublicNode(noteId), {
         headers: {
           Accept: 'application/json, text/plain, */*'
         }
@@ -310,11 +304,11 @@ export const useApi = () => {
   const getPublicURL = (nodeid: string) => {
     const meta = useContentStore.getState().getAllMetadata()
     mog('META', { m: meta?.[nodeid] })
-    if (meta?.[nodeid]?.publicAccess) return apiURLs.getNotePublicURL(nodeid)
+    if (meta?.[nodeid]?.publicAccess) return apiURLs.frontend.getPublicNodePath(nodeid)
   }
 
   const getDataAPI = async (nodeid: string, isShared = false, isRefresh = false, isUpdate = true) => {
-    const url = isShared ? apiURLs.getSharedNode(nodeid) : apiURLs.getNode(nodeid)
+    const url = isShared ? apiURLs.share.getSharedNode(nodeid) : apiURLs.node.get(nodeid)
     if (!isShared && isRequestedWithin(2, url) && !isRefresh) {
       console.log(API_CACHE_LOG)
       return
@@ -349,15 +343,12 @@ export const useApi = () => {
       })
       .then(async (d) => {
         if (d.data) {
-          const hierarchy = d.data.hierarchy || {}
-          const nodesMetadata = d.data.nodesMetadata || {}
-
-          const parsedHierarchies = allNamespacesHierarchyParser(hierarchy)
+          const parsedHierarchies: any = d.data
 
           // We create the list of nodes with their respective namespaces
           // And the details of the namespaces from parsed data
           const { nodes, namespaces } = Object.entries(parsedHierarchies).reduce(
-            (p, [namespaceid, namespaceData]) => {
+            (p, [namespaceid, namespaceData]: any) => {
               return {
                 namespaces: [
                   ...p.namespaces,
@@ -371,8 +362,8 @@ export const useApi = () => {
                   ...namespaceData.nodeHierarchy.map((ilink) => ({
                     ...ilink,
                     namespace: namespaceid,
-                    createdAt: nodesMetadata[ilink.nodeid]?.createdAt || Infinity,
-                    updatedAt: nodesMetadata[ilink.nodeid]?.updatedAt || Infinity
+                    createdAt: ilink?.createdAt || Infinity,
+                    updatedAt: ilink?.updatedAt || Infinity
                   }))
                 ]
               }
@@ -432,7 +423,7 @@ export const useApi = () => {
     }
 
     const data = await client
-      .post(apiURLs.createSnippet, reqData, {
+      .post(apiURLs.snippet.create, reqData, {
         headers: workspaceHeaders()
       })
       .then((d) => {
@@ -446,15 +437,42 @@ export const useApi = () => {
     return data
   }
 
+  const bulkGetSnippets = async (ids: string[]) => {
+    const url = apiURLs.snippet.bulkGet
+    return client.post(url, { ids: ids }, { headers: workspaceHeaders() }).then((d: any) => {
+      if (d) {
+        if (d.data.failed.length > 0) mog('Failed API Requests: ', { url, ids: d.data.failed })
+        d.data.successful.forEach(async (snippet) => {
+          if (snippet) {
+            updateSnippet(snippet.id, snippet)
+            const tags = snippet.template ? ['template'] : ['snippet']
+            const idxName = snippet.template ? 'template' : 'snippet'
+            mog('Update snippet', { snippet, tags })
+
+            if (snippet.template) {
+              await removeDocument('snippet', snippet.id)
+            } else {
+              await removeDocument('template', snippet.id)
+            }
+
+            await updateDocument(idxName, snippet.id, snippet.content, snippet.title, tags)
+          }
+        })
+
+        return d.data.successful
+      }
+    })
+  }
+
   const getAllSnippetsByWorkspace = async () => {
     const data = await client
-      .get(apiURLs.getAllSnippetsByWorkspace, {
+      .get(apiURLs.snippet.getAllSnippetsByWorkspace, {
         headers: workspaceHeaders()
       })
       .then((d) => {
         return d.data
       })
-      .then((d) => {
+      .then((d: any) => {
         const snippets = useSnippetStore.getState().snippets
 
         const newSnippets = d.filter((snippet) => {
@@ -469,37 +487,19 @@ export const useApi = () => {
             id: item.snippetID,
             template: item.template,
             title: item.title,
-            content: []
+            content: defaultContent.content
           }))
         ])
 
         return newSnippets
       })
       .then(async (newSnippets) => {
-        mog('Snippets', { newSnippets })
-        const requests = newSnippets?.map(async (item) =>
-          getSnippetById(item.snippetID).then(async (snippet) => {
-            if (snippet) {
-              updateSnippet(snippet.id, snippet)
-              const tags = snippet.template ? ['template'] : ['snippet']
-              const idxName = snippet.template ? 'template' : 'snippet'
-              mog('Update snippet', { snippet, tags })
-
-              if (snippet.template) {
-                await removeDocument('snippet', snippet.id)
-              } else {
-                await removeDocument('template', snippet.id)
-              }
-
-              await updateDocument(idxName, snippet.id, snippet.content, snippet.title, tags)
-            }
-          })
-        )
-
-        if (requests?.length > 0) {
-          runBatch(requests).catch((err) => {
-            mog('Failed to fetch snippets', { err })
-          })
+        const toUpdateSnippets = newSnippets?.map((item) => item.snippetID)
+        mog('NewSnippets', { newSnippets, toUpdateSnippets })
+        if (toUpdateSnippets && toUpdateSnippets.length > 0) {
+          const batches = batchArray(toUpdateSnippets, 10)
+          const promises = batches.map((ids) => bulkGetSnippets(ids))
+          await runBatch(promises)
         }
       })
 
@@ -507,7 +507,7 @@ export const useApi = () => {
   }
 
   const deleteSnippetById = async (id: string) => {
-    const url = apiURLs.deleteSnippetById(id)
+    const url = apiURLs.snippet.deleteAllVersionsOfSnippet(id)
     try {
       const res = await client.delete(url, {
         headers: workspaceHeaders()
@@ -520,7 +520,7 @@ export const useApi = () => {
   }
 
   const getSnippetById = async (id: string) => {
-    const url = apiURLs.getSnippetById(id)
+    const url = apiURLs.snippet.getById(id)
 
     const data = await client
       .get(url, {
@@ -535,7 +535,7 @@ export const useApi = () => {
   }
 
   const saveView = async (view: View) => {
-    // POST https://http-test.workduck.io/task/view
+    // POST https://http-staging.workduck.io/task/view
 
     const reqData = {
       workspaceId: getWorkspaceId(),
@@ -605,68 +605,98 @@ export const useApi = () => {
     return resp
   }
 
+  const bulkGetNodes = async (ids: string[], namespaceID?: string, isShared = false) => {
+    namespaceID = namespaceID && namespaceID !== 'NOT_SHARED' ? namespaceID : undefined
+
+    const url = isShared ? apiURLs.share.getBulk : apiURLs.node.getMultipleNode(namespaceID)
+    return client
+      .post(
+        url,
+        { ids: ids },
+        {
+          headers: workspaceHeaders()
+        }
+      )
+      .then((d) => {
+        if (d) {
+          if (d.data.failed.length > 0) mog('Failed API Requests: ', { url, ids: d.data.failed })
+
+          d.data.successful.forEach((node) => {
+            const content = deserializeContent(node.data)
+            const metadata = extractMetadata(node)
+
+            updateFromContent(node.id, content, metadata)
+          })
+
+          return d.data.successful
+        }
+      })
+  }
+
   const getAllNamespaces = async () => {
     const namespaces = await client
-      .get(apiURLs.namespaces.getAll, {
+      .get(apiURLs.namespaces.getAll(), {
         headers: workspaceHeaders()
       })
-      .then((d) => {
-        mog('namespaces all', d.data)
-        return d.data.map((item: any) => ({
-          ns: {
-            id: item.id,
-            name: item.name,
-            icon: item.namespaceMetadata?.icon ?? undefined,
-            createdAt: item.createdAt,
-            updatedAt: item.updatedAt
-          },
-          archiveHierarchy: item.archivedNodeHierarchyInformation
-        }))
+      .then((d: any) => {
+        // mog('namespaces all', d.data)
+        return d.data.map((item: any) => {
+          // metadata is json string parse to object
+          return {
+            ns: {
+              id: item.id,
+              name: item.name,
+              icon: item.metadata?.icon ?? undefined,
+              access: item.accessType,
+              createdAt: item.createdAt,
+              updatedAt: item.updatedAt,
+              granterID: item.granterID ?? undefined,
+              publicAccess: item.publicAccess
+            },
+            nodeHierarchy: item.nodeHierarchy.map((i) => ({ ...i, namespace: item.id })),
+            archiveHierarchy: item?.archivedNodeHierarchyInformation
+          }
+        })
       })
       .catch((e) => {
-        mog('Save error', e)
+        mog('Error fetching all namespaces', e)
         return undefined
       })
 
     if (namespaces) {
-      setNamespaces(namespaces.map((n) => n.ns))
-      namespaces.map((n) => {
-        const archivedNotes = hierarchyParser(n.archiveHierarchy, n.ns.id, {
-          withParentNodeId: true,
-          allowDuplicates: true
-        })
+      const newILinks = namespaces.reduce((arr, { nodeHierarchy }) => {
+        return [...arr, ...nodeHierarchy]
+      }, [])
+      const localILinks = useDataStore.getState().ilinks
 
-        if (archivedNotes && archivedNotes.length > 0) {
-          const localILinks = useDataStore.getState().archive
-          const { toUpdateLocal } = iLinksToUpdate(localILinks, archivedNotes)
+      // mog('update namespaces and ILinks', { namespaces, newILinks })
+      const ns = namespaces.map((n) => n.ns)
+      setNamespaces(ns)
 
-          mog('toUpdateLocal', { n, toUpdateLocal, archivedNotes })
+      const { toUpdateLocal } = iLinksToUpdate(localILinks, newILinks)
 
-          runBatch(
-            toUpdateLocal.map((ilink) =>
-              getDataAPI(ilink.nodeid, false, false, false).then((data) => {
-                mog('toUpdateLocal', { ilink, data })
-                setContent(ilink.nodeid, data.content, data.metadata)
-                updateDocument('archive', ilink.nodeid, data.content, getTitleFromPath(ilink.path))
-              })
-            )
-          ).then(() => {
-            addInArchive(archivedNotes)
-          })
-        }
+      const batches = batchArrayWithNamespaces(toUpdateLocal, ns, 10)
+      mog('BatchesInGetAllNamespaces', { batches, toUpdateLocal, localILinks, newILinks })
+      const promises = []
+      Object.entries(batches).forEach(([namespaceID, idBatches]) => {
+        idBatches.forEach((ids) => promises.push(bulkGetNodes(ids, namespaceID)))
       })
+      setILinks(newILinks)
+      await runBatch(promises)
     }
   }
 
   const createNewNamespace = async (name: string) => {
     try {
+      const namespaceID = generateNamespaceId()
+      const t = Date.now()
       const res = await client
         .post(
           apiURLs.namespaces.create,
           {
             type: 'NamespaceRequest',
             name,
-            id: generateNamespaceId(),
+            id: namespaceID,
             metadata: {
               iconUrl: 'heroicons-outline:view-grid'
             }
@@ -675,12 +705,12 @@ export const useApi = () => {
             headers: workspaceHeaders()
           }
         )
-        .then((d) => ({
-          id: d?.data?.id,
-          name: d?.data?.name,
-          iconUrl: d?.data?.metadata?.iconUrl,
-          createdAt: d?.data?.createdAt,
-          updatedAt: d?.data?.updatedAt,
+        .then((_d) => ({
+          id: namespaceID,
+          name: name,
+          iconUrl: 'heroicons-outline:view-grid',
+          createdAt: t,
+          updatedAt: t,
           access: 'OWNER' as const
         }))
 
@@ -760,7 +790,8 @@ export const useApi = () => {
     changeNamespaceName,
     changeNamespaceIcon,
     workspaceHeaders,
-    createNewNamespace
+    createNewNamespace,
+    bulkGetNodes
   }
 }
 
