@@ -5,6 +5,7 @@ import TaskHeader from '@components/mex/Tasks/TaskHeader'
 import { useEnableShortcutHandler } from '@hooks/useShortcutListener'
 import { useSyncTaskViews, useViewStore } from '@hooks/useTaskViews'
 import { useLayoutStore } from '@store/useLayoutStore'
+import useModalStore, { ModalsType } from '@store/useModalStore'
 import { OverlaySidebarWindowWidth } from '@style/responsive'
 import { useMediaQuery } from 'react-responsive'
 import { useMatch } from 'react-router-dom'
@@ -21,7 +22,6 @@ import { PageContainer } from '../../style/Layouts'
 import { StyledTasksKanban, TaskCard, TaskColumnHeader } from '../../style/Todo'
 import Todo from '../../ui/components/Todo'
 import { NavigationType, ROUTE_PATHS, useRouting } from '../routes/urls'
-import useModalStore, { ModalsType } from '@store/useModalStore'
 import Plateless from '@editor/Plateless'
 import { isReadonly, usePermissions } from '@hooks/usePermissions'
 import toast from 'react-hot-toast'
@@ -397,18 +397,6 @@ const Tasks = () => {
       setCurrentFilters([])
     }
   }, [match])
-
-  const onDoubleClick = (event: React.MouseEvent<HTMLDivElement, MouseEvent>, nodeid: string) => {
-    event.preventDefault()
-    //double click
-    // mog('double click', { event })
-    if (event.detail === 2) {
-      push(nodeid)
-      goTo(ROUTE_PATHS.node, NavigationType.push, nodeid)
-    }
-  }
-
-  // mog('Tasks', { nodesTodo, board, selectedCard, match, currentFilters })
 
   const RenderCard = ({ id, todo }: { id: string; todo: TodoType }, { dragging }: { dragging: boolean }) => {
     return (

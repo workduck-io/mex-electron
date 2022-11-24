@@ -1,7 +1,7 @@
+import useUpdateBlock from '@hooks/useUpdateBlock'
 import React, { useEffect, useMemo, useState } from 'react'
 
 import { getNextStatus, PriorityDataType, PriorityType, TodoStatus, TodoType } from '../../editor/Components/Todo/types'
-import useUpdateBlock from '../../hooks/useUpdateBlock'
 // import { useReminders } from '../../hooks/useReminders'
 // import { getPureContent } from '../../hooks/useTodoKanban'
 import useTodoStore from '../../store/useTodoStore'
@@ -55,13 +55,12 @@ const Todo = ({
   const [showOptions, setShowOptions] = useState(false)
 
   const [animate, setAnimate] = useState(false)
+  const { insertInEditor } = useUpdateBlock()
 
   const updatePriority = useTodoStore((store) => store.updatePriorityOfTodo)
   const updateStatus = useTodoStore((store) => store.updateStatusOfTodo)
   const getTodoFromStore = useTodoStore((store) => store.getTodoOfNode)
   const todos = useTodoStore((store) => store.todos)
-
-  const { insertInEditor } = useUpdateBlock() 
 
   const todo = useMemo(() => {
     return controls && controls.getTodo
