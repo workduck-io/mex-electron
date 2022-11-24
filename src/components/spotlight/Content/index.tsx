@@ -18,7 +18,6 @@ import { BASE_TASKS_PATH, defaultContent } from '../../../data/Defaults/baseData
 import { DEFAULT_PREVIEW_TEXT } from '../../../data/IpcAction'
 import { MeetingSnippetContent } from '../../../data/initial/MeetingNote'
 // FIXME import
-import { getUntitledDraftKey } from '../../../editor/Components/SyncBlock/getNewBlockData'
 import { getAttendeeUserIDsFromCalendarEvent, useCalendar, useCalendarStore } from '../../../hooks/useCalendar'
 import useEditorActions from '../../../hooks/useEditorActions'
 import useLoad from '../../../hooks/useLoad'
@@ -37,6 +36,7 @@ import Preview, { PreviewType } from '../Preview'
 import { ListItemType } from '../SearchResults/types'
 import SideBar from '../SideBar'
 import { StyledContent } from './styled'
+import { getUntitledDraftKey } from '@utils/initDraftKeys'
 
 export const INIT_PREVIEW: PreviewType = {
   text: DEFAULT_PREVIEW_TEXT,

@@ -29,8 +29,8 @@ import { MexIcon } from '../../../style/Layouts'
 import { getSlug } from '../../../utils/lib/strings'
 import { removeStopwords } from '../../../utils/stopwords'
 import { useRouting } from '../../../views/routes/urls'
-import { RootElement } from '../SyncBlock'
 import { QuestionInput } from './styled'
+import { RootElement } from '../Actions/styled'
 
 interface QABlockProps {
   attributes: any

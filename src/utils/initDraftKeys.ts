@@ -1,6 +1,4 @@
-import { SEPARATOR } from '../../../components/mex/Sidebar/treeUtils'
-import { DRAFT_NODE, DRAFT_PREFIX } from '../../../data/Defaults/idPrefixes'
-import { getCurrentTimeString } from '../../../utils/time'
+import { DRAFT_NODE, DRAFT_PREFIX, getCurrentTimeString, SEPARATOR } from '@workduck-io/mex-utils'
 
 export const getNewDraftKey = (): string => {
   // Mar 16, 2022 10:24:29 PM

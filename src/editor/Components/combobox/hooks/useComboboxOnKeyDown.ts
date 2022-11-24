@@ -10,7 +10,6 @@ import { isElder } from '../../../../components/mex/Sidebar/treeUtils'
 import { SnippetCommandPrefix } from '../../../../hooks/useSnippets'
 import { useEditorStore } from '../../../../store/useEditorStore'
 import { useSlashCommandOnChange } from '../../SlashCommands/useSlashCommandOnChange'
-import { FlowCommandPrefix } from '../../SlashCommands/useSyncConfig'
 import { ComboConfigData } from '../../multi-combobox/multiComboboxContainer'
 import { ComboSearchType } from '../../multi-combobox/types'
 import { CreateNewPrefix } from '../../multi-combobox/useMultiComboboxChange'
@@ -33,9 +32,7 @@ const pure = (id: string) => {
 export const isInternalCommand = (search?: string) => {
   if (search !== undefined && search !== '')
     return (
-      isElder(search, FlowCommandPrefix) ||
       isElder(search, SnippetCommandPrefix) ||
-      FlowCommandPrefix.startsWith(search) ||
       SnippetCommandPrefix.startsWith(search)
     )
 

@@ -8,7 +8,6 @@ import { useVersionStore } from '../store/useAppDataStore'
 import { useContentStore } from '../store/useContentStore'
 import useDataStore from '../store/useDataStore'
 import { useSnippetStore } from '../store/useSnippetStore'
-import { useSyncStore } from '../store/useSyncStore'
 import useTodoStore from '../store/useTodoStore'
 import { FileData } from '../types/data'
 import { useReminderStore } from './useReminders'
@@ -19,7 +18,6 @@ export const useSaveData = () => {
   // const { updater } = useUpdater()
   const saveData = () => {
     const { baseNodeId, ilinks, linkCache, tags, tagsCache, archive, bookmarks, sharedNodes } = useDataStore.getState()
-    const { syncBlocks, templates, intents, services } = useSyncStore.getState()
     const { reminders } = useReminderStore.getState()
     const { views } = useViewStore.getState()
     const { version } = useVersionStore.getState()
@@ -39,10 +37,6 @@ export const useSaveData = () => {
       bookmarks,
       sharedNodes,
       contents: useContentStore.getState().contents,
-      syncBlocks,
-      templates,
-      intents,
-      services,
 
       snippets: useSnippetStore.getState().snippets,
       userSettings: {

@@ -19,7 +19,6 @@ import { useContentStore } from '../../../store/useContentStore'
 import { NodeType } from '../../../types/Types'
 import { getBlock } from '../../../utils/search/parseData'
 import EditorPreviewRenderer from '../../EditorPreviewRenderer'
-import { RootElement } from '../SyncBlock'
 import {
   Chip,
   FlexBetween,
@@ -29,6 +28,7 @@ import {
   StyledInlineBlock,
   StyledInlineBlockPreview
 } from './styled'
+import { RootElement } from '../Actions/styled'
 
 const StyledArchiveText = styled.text`
   border-radius: ${({ theme }) => theme.borderRadius.small};

@@ -9,7 +9,6 @@ import { useEditorStore } from '../store/useEditorStore'
 import { useGraphStore } from '../store/useGraphStore'
 import { NodeLink } from '../types/relations'
 import { getEdgeGlobalStyles, getEdgeLocalStyles, getNodeStyles } from '../utils/GraphHelpers'
-import useIntents from './useIntents'
 import { useLinks } from './useLinks'
 import { useNamespaces } from './useNamespaces'
 
@@ -33,7 +32,6 @@ export const useGraphData = () => {
   // * Service Nodes
   // const serviceNodes = useGraphStore((store) => store.serviceNodes)
   // const showServices = useGraphStore((store) => store.showServices)
-  const { getNodeIntents } = useIntents()
 
   const showLocal = useGraphStore((state) => state.showLocal)
 
@@ -138,49 +136,49 @@ export const useGraphData = () => {
 
   if (selectedNode) {
     const nodeid = getNodeidFromPath(selectedNode.path, selectedNode.namespace)
-    if (nodeid) {
-      const nodeIntents = getNodeIntents(nodeid) ?? []
-      nodeIntents.forEach((nodeIntent, index) => {
-        const serviceId = newNodes.length + (index + 1) * 3
+    // if (nodeid) {
+    //   const nodeIntents = getNodeIntents(nodeid) ?? []
+    //   nodeIntents.forEach((nodeIntent, index) => {
+    //     const serviceId = newNodes.length + (index + 1) * 3
 
-        if (nodeIntent.intent) {
-          // * Create service node
-          newNodes.push({
-            id: serviceId,
-            // label: nodeIntent.service.name,
-            path: `SERVICE_${nodeIntent.service.id}`,
-            ...{
-              ...getNodeStyles(0, theme),
-              shape: 'circularImage',
-              image: ServiceImg[nodeIntent.service.name.toUpperCase()]
-            }
-          })
+    //     if (nodeIntent.intent) {
+    //       // * Create service node
+    //       newNodes.push({
+    //         id: serviceId,
+    //         // label: nodeIntent.service.name,
+    //         path: `SERVICE_${nodeIntent.service.id}`,
+    //         ...{
+    //           ...getNodeStyles(0, theme),
+    //           shape: 'circularImage',
+    //           image: ServiceImg[nodeIntent.service.name.toUpperCase()]
+    //         }
+    //       })
 
-          // * Attach this service node with Selected Node
-          edges.push({
-            source: serviceId,
-            target: selectedNode.id,
-            ...getEdgeGlobalStyles(0, theme)
-          })
+    //       // * Attach this service node with Selected Node
+    //       edges.push({
+    //         source: serviceId,
+    //         target: selectedNode.id,
+    //         ...getEdgeGlobalStyles(0, theme)
+    //       })
 
-          const newServiceId = serviceId * 3
-          // * Create Intent Type node
-          newNodes.push({
-            id: newServiceId,
-            // label: nodeIntent.intent.name,
-            path: `SERVICE_${nodeIntent.intent.value}`,
-            ...getNodeStyles(0, theme)
-          })
+    //       const newServiceId = serviceId * 3
+    //       // * Create Intent Type node
+    //       newNodes.push({
+    //         id: newServiceId,
+    //         // label: nodeIntent.intent.name,
+    //         path: `SERVICE_${nodeIntent.intent.value}`,
+    //         ...getNodeStyles(0, theme)
+    //       })
 
-          // * Attach this intent type with service node
-          edges.push({
-            source: newServiceId,
-            target: serviceId,
-            ...getEdgeGlobalStyles(2, theme)
-          })
-        }
-      })
-    }
+    //       // * Attach this intent type with service node
+    //       edges.push({
+    //         source: newServiceId,
+    //         target: serviceId,
+    //         ...getEdgeGlobalStyles(2, theme)
+    //       })
+    //     }
+    //   })
+    // }
   }
 
   /**

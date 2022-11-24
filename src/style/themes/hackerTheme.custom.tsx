@@ -7,7 +7,6 @@ import { ComingSoonCard, ImporterCard } from '../../components/mex/Settings/Impo
 import { DataInfobarWrapper } from '../../components/mex/Sidebar/DataInfoBar'
 import { ActionDraggableIcon } from '../../editor/Actions/withDraggable'
 import { EditorPreviewWrapper } from '../../editor/Components/EditorPreview/EditorPreview.styles'
-import { Widget } from '../../editor/Components/SyncBlock'
 import { ComboboxItem, ComboboxRoot } from '../../editor/Components/tag/components/TagCombobox.styles'
 import { ArchivedNode } from '../../views/mex/Archive'
 import { SettingsOptions, SettingTitle } from '../../views/mex/Settings'
@@ -82,10 +81,6 @@ const edStyles = css`
       color: ${({ theme }) => theme.colors.primary};
       backdrop-filter: blur(10px);
     }
-  }
-  ${Widget} {
-    ${hackerBorderThin}
-    background-color: ${grayMixerTrans(8)};
   }
   ${DataInfobarWrapper} {
     height: ${heightMain};

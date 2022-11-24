@@ -4,7 +4,6 @@ import { useSpotlightSettingsStore } from '../store/settings.spotlight'
 import { useContentStore } from '../store/useContentStore'
 import useDataStore from '../store/useDataStore'
 import { useSnippetStore } from '../store/useSnippetStore'
-import { useSyncStore } from '../store/useSyncStore'
 import useTodoStore from '../store/useTodoStore'
 import { FileData } from '../types/data'
 import { createNodeWithUid } from '../utils/lib/helper'
@@ -18,7 +17,6 @@ export const useInitialize = () => {
   const initTodos = useTodoStore((store) => store.initTodos)
   const initContents = useContentStore((state) => state.initContents)
   const initSpotlightSettings = useSpotlightSettingsStore((state) => state.initSpotlightSettings)
-  const initSyncBlocks = useSyncStore((state) => state.initSyncBlocks)
   const setReminders = useReminderStore((state) => state.setReminders)
   const setViews = useViewStore((state) => state.setViews)
   const initSnippets = useSnippetStore((state) => state.initSnippets)
@@ -38,17 +36,13 @@ export const useInitialize = () => {
       sharedNodes,
       contents,
       archive,
-      syncBlocks,
       snippets,
-      templates,
-      services,
-      intents,
       views,
       baseNodeId
     } = data
     // const snippetCommands = extractSnippetCommands(snippets)
     // const syncCommands = extractSyncBlockCommands(templates)
-    const slashCommands = generateSlashCommands(snippets, templates)
+    const slashCommands = generateSlashCommands(snippets)
 
     const initData = {
       tags,
@@ -65,7 +59,6 @@ export const useInitialize = () => {
     initializeDataStore(initData)
     initSpotlightSettings(data.userSettings.spotlight)
     initContents(contents)
-    initSyncBlocks(syncBlocks, templates, services, intents)
     initSnippets(snippets)
     initTodos(todos)
     setViews(views)

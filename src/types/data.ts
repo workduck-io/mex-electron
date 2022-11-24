@@ -101,12 +101,6 @@ export interface FileData {
   // Reminders
   reminders: Reminder[]
 
-  // Sync
-  syncBlocks: SyncBlockData[]
-  templates: SyncBlockTemplate[]
-  intents: SyncStoreIntents
-  services: Service[]
-
   // Misc
   userSettings: {
     theme: string

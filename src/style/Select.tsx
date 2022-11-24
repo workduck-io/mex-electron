@@ -2,7 +2,6 @@ import { Icon } from '@iconify/react'
 import React from 'react'
 import { components } from 'react-select'
 import styled, { css } from 'styled-components'
-import { getSyncServiceIcon } from '../editor/Components/SyncBlock/SyncIcons'
 
 /* eslint-disable @typescript-eslint/no-explicit-any */
 
@@ -45,15 +44,6 @@ const StyledLabel = styled.div`
   }
 `
 
-export const MultiValueLabel = (props: any) => {
-  return (
-    <StyledLabel>
-      <Icon icon={getSyncServiceIcon(props.data.icon)} />
-      <components.MultiValueLabel {...props} />
-    </StyledLabel>
-  )
-}
-
 const StyledOption = styled.div`
   display: flex;
   justify-content: flex-start;
@@ -64,18 +54,6 @@ const StyledOption = styled.div`
   }
 `
 
-const Option = (props: any) => {
-  // console.log({ props })
-
-  return (
-    <components.Option {...props}>
-      <StyledOption>
-        <Icon icon={getSyncServiceIcon(props.data.icon)} />
-        {props.children}
-      </StyledOption>
-    </components.Option>
-  )
-}
 const StyledValueContainer = styled(components.ValueContainer)`
   display: flex;
   justify-content: flex-start;
@@ -122,7 +100,6 @@ const Input = (props: any) => {
   )
 }
 
-export const StyledServiceSelectComponents = { Control, MultiValueLabel, Option, ValueContainer, Input, Placeholder }
 export const StyledRolesSelectComponents = { Control, Input, ValueContainer, Placeholder }
 export const StyledNamespaceSelectComponents = { Control: NamespaceControl }
 export const StyledNamespaceSpotlightSelectComponents = { Control: SpotlightNamespaceControl }

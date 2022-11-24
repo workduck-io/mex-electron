@@ -14,7 +14,6 @@ import { FOCUS_MODE_OPACITY } from '../../../style/consts'
 import { MexIcon } from '../../../style/Layouts'
 import { FocusModeProp } from '../../../style/props'
 import { FlexBetween } from '../../spotlight/Actions/styled'
-import { useTourData } from '../Onboarding/hooks'
 import useModalStore, { ModalsType } from '@store/useModalStore'
 import { Button } from '@workduck-io/mex-components'
 
@@ -89,13 +88,10 @@ const FloatingButton = () => {
   const authenticated = useAuthStore((store) => store.authenticated)
   const toggleModal = useModalStore((store) => store.toggleOpen)
 
-  const { setOnboardData } = useTourData()
-
   // * For release notes
   // useInitOlvy(showMenu)
 
   const onGettingStartedClick = () => {
-    setOnboardData()
     changeOnboarding(true)
   }
 

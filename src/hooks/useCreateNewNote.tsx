@@ -1,4 +1,3 @@
-import { getUntitledDraftKey, getUntitledKey } from '@editor/Components/SyncBlock/getNewBlockData'
 import useDataStore from '@store/useDataStore'
 import { useEditorStore } from '@store/useEditorStore'
 import { NodeEditorContent } from '../types/Types'
@@ -14,6 +13,7 @@ import { useNamespaces } from './useNamespaces'
 import { DRAFT_NODE, mog } from '@workduck-io/mex-utils'
 import { NavigationType, ROUTE_PATHS, useRouting } from '@views/routes/urls'
 import { useSpotlightContext } from '@store/Context/context.spotlight'
+import { getUntitledDraftKey, getUntitledKey } from '@utils/initDraftKeys'
 
 export type NewNoteOptions = {
   path?: string
