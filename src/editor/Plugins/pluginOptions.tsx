@@ -45,7 +45,6 @@ import {
   autoformatSuperscriptSymbols
 } from '@udecode/plate'
 
-import { ELEMENT_SYNC_BLOCK } from '../Components/SyncBlock'
 import { generateTempId } from '../../data/Defaults/idPrefixes'
 
 import { uploadImageToWDCDN } from '../../utils/imageUpload'
@@ -318,7 +317,7 @@ export const optionsCreateNodeIdPlugin = {
     reuseId: true,
     filterText: false,
     idCreator: () => generateTempId(),
-    exclude: [ELEMENT_SYNC_BLOCK]
+    exclude: []
   }
 }
 

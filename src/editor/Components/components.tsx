@@ -15,7 +15,6 @@ import InlineBlock from './InlineBlock'
 import { ELEMENT_INLINE_BLOCK } from './InlineBlock/types'
 import LinkElement from './Link'
 import { MediaEmbedElement } from './media-embed-ui/src'
-import { SyncBlock, ELEMENT_SYNC_BLOCK } from './SyncBlock'
 import { TagElement } from './tag/components/TagElement'
 import { ELEMENT_TAG } from './tag/defaults'
 import { StyledElement } from '@udecode/plate-styled-components'
@@ -46,7 +45,6 @@ export const editorPreviewComponents = createPlateUI({
   [ELEMENT_INLINE_BLOCK]: ILinkElement as any,
   [ELEMENT_MEDIA_EMBED]: MediaEmbedElement as any,
   [ELEMENT_QA_BLOCK]: QABlock as any,
-  [ELEMENT_SYNC_BLOCK]: SyncBlock as any,
   [ELEMENT_ACTION_BLOCK]: ActionBlock,
   [ELEMENT_TABLE]: TableWrapper
 })

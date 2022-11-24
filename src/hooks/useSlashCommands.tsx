@@ -1,14 +1,13 @@
 import { uniq } from 'lodash'
 import { QuickLinkType } from '../components/mex/NodeSelect/NodeSelect'
 import { defaultCommands } from '../data/Defaults/slashCommands'
-import { SyncBlockTemplate } from '../editor/Components/SyncBlock'
 import { Snippet } from '../store/useSnippetStore'
 import { SlashCommand } from '../types/Types'
 import { addIconToSlashCommand, generatorCombo } from '../utils/generateComboItem'
 import { extractSnippetCommands } from './useSnippets'
 
 export const useSlashCommands = () => {
-  const generateInternalSlashCommands = (snippets: Snippet[], templates: SyncBlockTemplate[]) => {
+  const generateInternalSlashCommands = (snippets: Snippet[]) => {
     const snippetCommands = extractSnippetCommands(snippets)
     // const syncCommands = extractSyncBlockCommands(templates)
 
@@ -38,9 +37,9 @@ export const useSlashCommands = () => {
     return Array.from(commands)
   }
 
-  const generateSlashCommands = (snippets: Snippet[], templates: SyncBlockTemplate[]) => {
+  const generateSlashCommands = (snippets: Snippet[]) => {
     return {
-      internal: generateInternalSlashCommands(snippets, templates),
+      internal: generateInternalSlashCommands(snippets),
       default: generateDefaultSlashCommands()
     }
   }

@@ -3,20 +3,6 @@ import { IS_DEV } from '../data/Defaults/dev_'
 
 type AllNamespaceOption = 'onlyShared' | 'onlyWorkspace'
 
-//TODO: Need to remove
-export const BASE_INTEGRATION_URL = 'https://http.workduck.io/integration'
-
-export const integrationURLs = {
-  createTemplate: `${BASE_INTEGRATION_URL}/sync/template`,
-  getIntentValues: `${BASE_INTEGRATION_URL}/intents/value`,
-  listen: (param: string) => `${BASE_INTEGRATION_URL}/listen?${param}`,
-  intentGroup: (isNew: boolean) => `${BASE_INTEGRATION_URL}/sync/intent/multiple?isNew=${isNew ? 'true' : 'false'}`,
-  getWorkspaceAuth: (workspaceId: string) => `${BASE_INTEGRATION_URL}/workspace/${workspaceId}/auth`,
-  getAllServiceData: (workspaceId: string) => `${BASE_INTEGRATION_URL}/workspace/${workspaceId}/services/all`,
-  getTemplateDetails: (templateId: string) => `${BASE_INTEGRATION_URL}/templates/${templateId}/details`,
-  getAllTemplates: (workspaceId: string) => `${BASE_INTEGRATION_URL}/workspace/${workspaceId}/templates/all`
-}
-
 export const MEXIT_FRONTEND_BASE_URL = IS_DEV ? 'http://localhost:3333' : 'https://mexit.workduck.io'
 
 export const MEXIT_BACKEND_URL_BASE = IS_DEV

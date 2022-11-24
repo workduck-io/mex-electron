@@ -8,7 +8,6 @@ import { DataInfobarWrapper } from '../../components/mex/Sidebar/DataInfoBar'
 import { BalloonToolbarBase } from '../../editor/Components/BalloonToolbar'
 import { EditorPreviewWrapper } from '../../editor/Components/EditorPreview/EditorPreview.styles'
 import { SILink } from '../../editor/Components/ilink/components/ILinkElement.styles'
-import { Widget } from '../../editor/Components/SyncBlock'
 import { ComboboxItem, ComboboxRoot } from '../../editor/Components/tag/components/TagCombobox.styles'
 import { TodoContainer } from '../../ui/components/Todo.style'
 import { ArchivedNode } from '../../views/mex/Archive'
@@ -103,9 +102,6 @@ const edStyles = css`
         color: ${({ theme }) => theme.colors.primary};
       }
     }
-  }
-  ${Widget} {
-    background-color: ${grayMixerTrans(9)};
   }
   ${DataInfobarWrapper} {
     border-radius: ${({ theme }) => theme.borderRadius.small};

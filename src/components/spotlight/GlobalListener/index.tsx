@@ -10,7 +10,6 @@ import { getPlateSelectors } from '@udecode/plate'
 import { ipcRenderer } from 'electron'
 
 import { IpcAction } from '../../../data/IpcAction'
-import { getNewDraftKey } from '../../../editor/Components/SyncBlock/getNewBlockData'
 import { useGoogleCalendarAutoFetch } from '../../../hooks/useCalendar'
 import useAnalytics from '../../../services/analytics'
 import { useAuthStore } from '../../../services/auth/useAuth'
@@ -28,6 +27,7 @@ import { useActionsPerfomerClient } from '../Actions/useActionPerformer'
 import { useActionStore } from '../Actions/useActionStore'
 import ReminderArmer from '../Reminder/ReminderArmer'
 import { useSaveChanges } from '../Search/useSearchProps'
+import { getNewDraftKey } from '@utils/initDraftKeys'
 
 const GlobalListener = memo(() => {
   const [temp, setTemp] = useState<any>()

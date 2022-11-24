@@ -60,7 +60,6 @@ import { withStyledPlaceHolders } from '../Actions/withPlaceholder'
 import { ExcalidrawElement } from '../Components/Excalidraw'
 import { createInlineBlockPlugin } from '../Components/InlineBlock/createInlineBlockPlugin'
 import { createQAPlugin } from '../Components/QABlock/createQAPlugin'
-import { createSyncBlockPlugin } from '../Components/SyncBlock/createSyncBlockPlugin'
 import TableWrapper from '../Components/TableWrapper'
 import createTodoPlugin from '../Components/Todo/createTodoPlugin'
 import { createILinkPlugin } from '../Components/ilink/createILinkPlugin'
@@ -201,9 +200,6 @@ export const generatePlugins = (options: PluginOptionType) => {
     createTagPlugin(), // Tags
     createMentionPlugin(), // Mentions
     createILinkPlugin(), // Internal Links ILinks
-
-    // Sync Blocks
-    createSyncBlockPlugin(),
 
     createQAPlugin(),
     createActionPlugin(),

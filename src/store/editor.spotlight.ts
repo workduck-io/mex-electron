@@ -6,7 +6,7 @@ import { PreviewType } from '../components/spotlight/Preview'
 import create from 'zustand'
 import { createNodeWithUid } from '../utils/lib/helper'
 import { defaultContent } from '../data/Defaults/baseData'
-import { getNewDraftKey } from '../editor/Components/SyncBlock/getNewBlockData'
+import { getNewDraftKey } from '@utils/initDraftKeys'
 
 export type SelectionType = { text: string; metadata: string } | undefined
 

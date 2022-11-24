@@ -26,7 +26,6 @@ import { convertContentToRawText } from '../../../../utils/search/parseData'
 import { ELEMENT_ILINK } from '../../ilink/defaults'
 import { ILinkNode } from '../../ilink/types'
 import { ELEMENT_QA_BLOCK } from '../../QABlock/createQAPlugin'
-import { ELEMENT_SYNC_BLOCK } from '../../SyncBlock'
 
 export const useTransform = () => {
   // const addSnippet = useSnippetStore((s) => s.addSnippet)
@@ -38,17 +37,6 @@ export const useTransform = () => {
   const pinnedNoteCtx = useNoteContext()
   // const { toast } = useToast()
 
-  // Checks whether a node is a flowblock
-  const isFlowBlock = (node: any): boolean => {
-    if (node.type === ELEMENT_SYNC_BLOCK) return true
-    if (node.children) {
-      if (node.children.length > 0)
-        return node.children.map(isFlowBlock).reduce((p: boolean, c: boolean) => p || c, false)
-    }
-    return false
-  }
-
-  // Checks whether current editor selection can be converted
   const addQABlock = (editor: TEditor, block: { question: string; questionId: string }): boolean => {
     if (!editor) return false
     if (!editor?.selection) return false
@@ -107,8 +95,8 @@ export const useTransform = () => {
         block: true
       })
     ).reduce((p: boolean, [node, _path]: any) => {
-      // mog('isConvertable', { editor, p, node, ifb: isFlowBlock(node) })
-      return p || isFlowBlock(node)
+      // mog('isConvertable', { editor, p, node })
+      return p
     }, false)
   }
 
@@ -312,7 +300,6 @@ export const useTransform = () => {
     selectionToNode,
     convertSelectionToQABlock,
     isConvertable,
-    isFlowBlock,
     selectionToSnippet,
     selectionToTask,
     selectionToValue

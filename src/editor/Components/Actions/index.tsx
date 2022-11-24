@@ -4,8 +4,8 @@ import { actionMenuStore, MenuProvider } from '@components/spotlight/ActionStage
 import { actionStore, Provider } from '@components/spotlight/Actions/useActionStore'
 import styled, { css } from 'styled-components'
 
-import { RootElement } from '../SyncBlock'
 import ActionBlockContainer from './ActionBlock'
+import { RootElement } from './styled'
 
 interface ActionBlockProps {
   attributes: any
