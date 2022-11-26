@@ -31,7 +31,7 @@ export const useUpdater = () => {
   const updateFromContent = async (noteId: string, content: NodeEditorContent, metadata?: any) => {
     if (content) {
       setContent(noteId, content)
-      setMetadata(noteId, metadata)
+      if(metadata) setMetadata(noteId, metadata)
       updateLinksFromContent(noteId, content)
       updateTagsFromContent(noteId, content)
       updateNodeTodos(noteId, getTodosFromContent(content))

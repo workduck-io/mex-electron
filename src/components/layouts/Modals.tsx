@@ -13,6 +13,7 @@ import Lookup from '../mex/Lookup'
 import Delete from '../mex/Refactor/DeleteModal'
 import Rename from '../mex/Refactor/Rename'
 import CreateReminderModal from '../mex/Reminders/CreateReminderModal'
+import CreateTodoModal from '@components/Modals/CreateTodoModal'
 
 export interface ModalOpenAction {
   type: 'share-invite-prefill'
@@ -34,6 +35,7 @@ const Modals = () => {
       <ShareModal />
       <ReleaseNotesModal />
       <CreateReminderModal />
+      <CreateTodoModal/>
       <TaskViewModal />
       <TemplateModal />
       <FleetContainer />

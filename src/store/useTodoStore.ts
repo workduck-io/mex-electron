@@ -8,7 +8,7 @@ import { useReminders, useReminderStore } from '../hooks/useReminders'
 import { NodeEditorContent } from '../types/Types'
 import { convertContentToRawText } from '../utils/search/parseData'
 
-const createTodo = (
+export const createTodo = (
   nodeid: string,
   todoId: string,
   content: NodeEditorContent = defaultContent.content,

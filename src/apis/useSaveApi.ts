@@ -106,6 +106,24 @@ export const useApi = () => {
     return data
   }
 
+
+  const appendToNode = async (noteId: string, content: NodeEditorContent, options?: { isShared?: boolean }) => {
+    const reqData = {
+      type: 'ElementRequest',
+      elements: serializeContent(content, noteId)
+    }
+
+    // * TODO: Add append to Note for shared notes
+    const url = apiURLs.node.append(noteId)
+
+    const res = await client.patch(url, reqData, { headers: workspaceHeaders() })
+
+    if (res?.data) {
+      // toast('Task added!')
+    }
+  }
+
+
   const bulkSaveNodes = async (
     noteId: string,
     namespace: string,
@@ -778,6 +796,7 @@ export const useApi = () => {
     getSnippetById,
     makeNotePublic,
     getPublicNoteApi,
+    appendToNode,
     getPublicURL,
     bulkSaveNodes,
     saveNewNodeAPI,

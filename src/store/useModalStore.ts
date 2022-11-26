@@ -12,6 +12,7 @@ export enum ModalsType {
   reminders,
   share,
   help,
+  todo,
   template,
   quickNew
 }
@@ -22,6 +23,7 @@ type ModalStoreType = {
   // Would be better if data is of type [typeof ModalsType]: {whatever data needed for specific modal}
   // Keeping it as any as only template modal data type is known for now
   data: any
+  setData: (data:any) => void
   toggleOpen: (modalType: ModalsType, modalData?: any, initialize?: boolean) => void
 }
 
@@ -31,6 +33,7 @@ const useModalStore = create<ModalStoreType>((set, get) => ({
   open: undefined,
   init: undefined,
   data: undefined,
+  setData: (modalData) => set({ data: modalData }),
   toggleOpen: (modalType, modalData, initialize) => {
     const open = get().open
     const init = get().init

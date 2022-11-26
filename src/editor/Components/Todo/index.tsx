@@ -1,3 +1,4 @@
+import useModalStore, { ModalsType } from '@store/useModalStore'
 import { deleteText, getNodeEntries, getNodes, getPlateEditorRef, usePlateId } from '@udecode/plate'
 import { getRootProps } from '@udecode/plate-styled-components'
 import React from 'react'
@@ -30,6 +31,7 @@ const Todo = (props: any) => {
   const { attributes, children, element } = props
 
   const rootProps = getRootProps(props)
+  const hideDelete = useModalStore((m) => m.open === ModalsType.todo)
 
   const readOnly = useReadOnly()
   const editorId = usePlateId()
@@ -60,7 +62,8 @@ const Todo = (props: any) => {
       {...attributes}
       readOnly={readOnly}
       oid={'EditorTodo'}
-      todoid={element.id}
+      todoid={element?.id}
+      showDelete={!hideDelete}
       parentNodeId={nodeid}
       controls={{
         onDeleteClick
