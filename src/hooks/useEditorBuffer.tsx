@@ -66,7 +66,7 @@ export const useEditorBuffer = () => {
           // const mT = measureTime(() => areEqual(content.content, val))
           mog('Saving Buffer', { val, nodeid, namespace })
           if (!res) {
-            saveEditorValueAndUpdateStores(nodeid, namespace.id, val, { saveApi: true, isShared })
+            saveEditorValueAndUpdateStores(nodeid, namespace?.id, val, { saveApi: true, isShared })
           }
           return !res
         })

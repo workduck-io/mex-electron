@@ -1,19 +1,24 @@
-import React , { useMemo } from 'react'
+import React, { useMemo } from 'react'
+
+import { Tooltip } from '@components/FloatingElements/Tooltip'
+import { sharedAccessIcon } from '@components/icons/access'
+// import { defaultContent, mog, NodeEditorContent, NodeType } from '@mexit/core'
+import { defaultContent } from '@data/Defaults/baseData'
+import {
+  EditorPreviewControls,
+  EditorPreviewNoteName,
+  PreviewActionHeader
+} from '@editor/Components/EditorPreview/EditorPreview.styles'
 import closeCircleLine from '@iconify/icons-ri/close-circle-line'
+import { Icon } from '@iconify/react'
 import { PlateProvider } from '@udecode/plate'
+import { mog } from '@utils/lib/mog'
 import Modal from 'react-modal'
 import { useTheme } from 'styled-components'
 
 import { Button, MexIcon } from '@workduck-io/mex-components'
 
-// import { defaultContent, mog, NodeEditorContent, NodeType } from '@mexit/core'
-import { defaultContent } from '@data/Defaults/baseData'
-import { NodeType,NodeEditorContent } from '../../../types/Types'
-import { mog } from '@utils/lib/mog'
-import { EditorPreviewControls, EditorPreviewNoteName, PreviewActionHeader } from '@editor/Components/EditorPreview/EditorPreview.styles'
-import { Tooltip } from '@components/FloatingElements/Tooltip'
-
-
+import Editor from '../../../editor/Editor'
 import { useBufferStore, useEditorBuffer } from '../../../hooks/useEditorBuffer'
 import { useLinks } from '../../../hooks/useLinks'
 import { useNamespaces } from '../../../hooks/useNamespaces'
@@ -21,12 +26,11 @@ import { useNodes } from '../../../hooks/useNodes'
 import { useTags } from '../../../hooks/useTags'
 import { useContentStore } from '../../../store/useContentStore'
 import useModalStore, { ModalsType } from '../../../store/useModalStore'
-import Editor from '../../../editor/Editor'
-import { TagsRelatedTiny } from '../Tags/TagsRelated'
+import { NodeType, NodeEditorContent } from '../../../types/Types'
 import NamespaceTag from '../NamespaceTag'
+import { TagsRelatedTiny } from '../Tags/TagsRelated'
 import { PreviewNoteContainer } from './styled'
-import { sharedAccessIcon } from '@components/icons/access'
-import { Icon } from '@iconify/react'
+
 // import { isReadonly, usePermissions } from '../../../hooks/usePermissions'
 
 const PreviewNoteModal = () => {
@@ -92,13 +96,13 @@ const PreviewNoteModal = () => {
             {
               <PreviewActionHeader>
                 <EditorPreviewNoteName onClick={onClickNoteTitle}>
-                  <Icon icon={noteLink?.icon} />
+                  <MexIcon height={20} width={20} noHover icon={noteLink?.icon || 'ri:file-list-2-line'} />
                   {noteTitle}
                   {namespace && <NamespaceTag namespace={namespace} />}
                 </EditorPreviewNoteName>
                 {icon && iconTooltip && (
-                  <Tooltip key="hello" content={iconTooltip}>
-                    <MexIcon color={theme.colors.gray[5]} noHover icon={icon} height="14" width="14" />
+                  <Tooltip key="close-icon" content={iconTooltip}>
+                    <MexIcon color={theme.colors.gray[5]} noHover icon={icon} height={16} width={16} />
                   </Tooltip>
                 )}
               </PreviewActionHeader>
@@ -114,11 +118,18 @@ const PreviewNoteModal = () => {
                   onRequestClose()
                 }}
               >
-                <Icon icon={closeCircleLine} />
+                <MexIcon noHover height={20} width={20} icon={closeCircleLine} />
               </Button>
             </PreviewActionHeader>
           </EditorPreviewControls>
-          <Editor focusBlockId={modalData?.blockId} content={content} onChange={onChange} options={{ focusOptions: false }} autoFocus nodeUID={modalData?.noteId} />
+          <Editor
+            focusBlockId={modalData?.blockId}
+            content={content}
+            onChange={onChange}
+            options={{ exclude: { dnd: true } }}
+            autoFocus
+            editorId={modalData?.noteId}
+          />
         </PreviewNoteContainer>
       </PlateProvider>
     </Modal>

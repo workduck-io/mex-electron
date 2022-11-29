@@ -136,29 +136,29 @@ const useEditorPluginConfig = (editorId: string, options?: PluginOptionType) => 
     () =>
       userDetails
         ? [
-          {
-            value: userDetails.userID,
-            text: `${userDetails.alias} (you)`,
-            icon: 'ri:user-line',
-            type: QuickLinkType.mentions
-          },
-          ...mentionable
-            .filter((m) => m.alias !== undefined)
-            .filter((m) => m.userID !== userDetails.userID)
-            .map((m) => ({
-              value: m.userID,
-              text: m.alias,
+            {
+              value: userDetails.userID,
+              text: `${userDetails.alias} (you)`,
               icon: 'ri:user-line',
               type: QuickLinkType.mentions
-            })),
-          ...invitedUsers.map((m) => ({
-            value: m.alias,
-            text: m.alias,
-            icon: 'ri:user-line',
-            type: QuickLinkType.mentions,
-            additional: { email: m.email }
-          }))
-        ]
+            },
+            ...mentionable
+              .filter((m) => m.userID !== userDetails.userID)
+              .filter((m) => m.alias !== undefined)
+              .map((m) => ({
+                value: m.userID,
+                text: m.alias,
+                icon: 'ri:user-line',
+                type: QuickLinkType.mentions
+              })),
+            ...invitedUsers.map((m) => ({
+              value: m.alias,
+              text: m.alias,
+              icon: 'ri:user-line',
+              type: QuickLinkType.mentions,
+              additional: { email: m.email }
+            }))
+          ]
         : [],
     [mentionable, invitedUsers, userDetails]
   )
@@ -184,17 +184,18 @@ const useEditorPluginConfig = (editorId: string, options?: PluginOptionType) => 
       },
       mention: !options?.exclude?.mentions
         ? {
-          slateElementType: ELEMENT_MENTION,
-          onItemInsert: (alias) => {
-            mog('Inserted new item', { alias })
-            grantUserAccessOnMention(alias, nodeid)
-          },
-          newItemHandler: (newAlias) => {
-            prefillShareModal('invite', { alias: newAlias, fromEditor: true })
-            return newAlias
-          },
-          renderElement: TagComboboxItem
-        }
+            slateElementType: ELEMENT_MENTION,
+            onItemInsert: (alias) => {
+              // mog('Inserted new item', { alias })
+              grantUserAccessOnMention(alias, nodeid)
+            },
+            newItemHandler: (newAlias) => {
+              // mog('ELEMENT_MENTIONS', { newAlias, spotlightCtx })
+              prefillShareModal('invite', { alias: newAlias, fromEditor: true })
+              return newAlias
+            },
+            renderElement: TagComboboxItem
+          }
         : undefined,
       slash_command: {
         slateElementType: 'slash_command',
