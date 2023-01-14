@@ -15,6 +15,8 @@ import create, { State } from 'zustand'
 import { devtools, persist } from 'zustand/middleware'
 
 import { client, useAuth } from '@workduck-io/dwindle'
+// import { UserCred } from '@workduck-io/dwindle/lib/esm/AuthStore/useAuthStore'
+import { getEmailStart } from '@data/Defaults/auth'
 
 import { apiURLs } from '../../apis/routes'
 import useActions from '../../components/spotlight/Actions/useActions'
@@ -23,6 +25,7 @@ import { RegisterFormData } from '../../views/mex/Register'
 import useAnalytics from '../analytics'
 import { CustomEvents, Properties } from '../analytics/events'
 import { useTokenStore } from './useTokens'
+import { UserCred } from '@workduck-io/mex-utils'
 
 interface WorkspaceDetails {
   name: string
@@ -209,6 +212,7 @@ export const useAuthentication = () => {
               addEventProperties({ [CustomEvents.LOGGED_IN]: true })
 
               setAuthenticated(userDetails, workspaceDetails)
+              return result
             }
           })
       }
@@ -236,7 +240,7 @@ export const useAuthentication = () => {
     // console.error('catch', { e })
     await client
       .post(
-        apiURLs.user.registerUser,
+        apiURLs.user.registerStatus,
         {
           type: 'RegisterUserRequest',
           user: {
@@ -344,7 +348,7 @@ export const useAuthentication = () => {
 
     await client
       .post(
-        apiURLs.user.registerUser,
+        apiURLs.user.registerStatus,
         {
           type: 'RegisterUserRequest',
           user: {
@@ -417,6 +421,105 @@ export const useAuthentication = () => {
       goTo(ROUTE_PATHS.login, NavigationType.push)
     }
   }
+  const registerNewUser = async (loginResult: UserCred) => {
+    const { email, userId } = loginResult
+    const name = getEmailStart(email)
 
-  return { login, registerDetails, logout, verifySignup, loginViaGoogle }
+    let workspaceID = null
+    for (let i = 0; i < 7; i++) {
+      try {
+        // const result = await API.user.registerStatus(undefined, { throwHttpErrors: false })
+        await client.get(apiURLs.user.registerStatus).then(async (d: any) => {
+          if (d.status === 'SUCCESS') {
+            workspaceID = d.workspaceID
+          }
+        })
+      } catch (error) {
+        await new Promise((resolve) => setTimeout(resolve, 2 * 1000))
+      }
+    }
+
+    if (!workspaceID) {
+      toast('Could not sign-up new user')
+      throw new Error('Did not receive status SUCCESS from backend; Could not signup')
+    }
+
+    const userDetails = {
+      email: email,
+      alias: name,
+      userID: userId,
+      name: name
+    }
+    const workspaceDetails = { id: workspaceID, name: 'WORKSPACE_NAME' }
+
+    return { userDetails, workspaceDetails }
+  }
+
+  return { login, registerDetails, logout, verifySignup, loginViaGoogle, registerNewUser }
+}
+
+export const useInitializeAfterAuth = () => {
+  const setShowLoader = useLayoutStore((store) => store.setShowLoader)
+  const setAuthenticated = useAuthStore((store) => store.setAuthenticated)
+  const addUser = useUserCacheStore((s) => s.addUser)
+
+  const { refreshToken } = useAuth()
+  const { registerNewUser } = useAuthentication()
+
+  const initializeAfterAuth = async (
+    loginData: UserCred,
+    forceRefreshToken = false,
+    isGoogle = false,
+    registerUser = false
+  ) => {
+    try {
+      const { email } = loginData
+      const { userDetails, workspaceDetails } = registerUser
+        ? await registerNewUser(loginData)
+        : await client
+            .get(apiURLs.user.getUserRecords)
+            .then(async (res) => {
+              if (res) {
+                if (isGoogle && res.data.group === undefined) {
+                  forceRefreshToken = true
+                  return await registerNewUser(loginData)
+                } else if (res.data.group) {
+                  const userDetails = {
+                    email: email,
+                    alias: res.data.alias ?? res.data.properties?.alias ?? res.data.name,
+                    userID: res.data.id,
+                    name: res.data.name
+                  }
+                  const workspaceDetails = { id: res.data.group, name: 'WORKSPACE_NAME' }
+                  return { workspaceDetails, userDetails }
+                } else {
+                  throw new Error('Could Not Fetch User Records')
+                }
+              }
+            })
+            .catch((error) => {
+              if (error.status === 404) {
+                return registerNewUser(loginData)
+              }
+            })
+
+      addUser({
+        userID: userDetails.userID,
+        email: userDetails.email,
+        name: userDetails.name,
+        alias: userDetails.alias
+      })
+
+      if (forceRefreshToken) await refreshToken()
+      setAuthenticated(userDetails, workspaceDetails)
+      setShowLoader(true)
+    } catch (error) {
+      mog('InitializeAfterAuthError', { error })
+    } finally {
+      // Loader would be stopped inside useInitLoader
+      // setShowLoader(false)
+    }
+  }
+
+  return { initializeAfterAuth }
 }
