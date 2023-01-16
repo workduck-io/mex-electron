@@ -3,6 +3,8 @@ import { useState } from 'react'
 // import { useApi } from '../../apis/useSaveApi'
 import { useActionsPerfomerClient } from '@components/spotlight/Actions/useActionPerformer'
 import { useActionsCache } from '@components/spotlight/Actions/useActionsCache'
+// import { UserCred } from '@workduck-io/dwindle/lib/esm/AuthStore/useAuthStore'
+import { getEmailStart } from '@data/Defaults/auth'
 import { useHelpStore } from '@store/useHelpStore'
 import { useLayoutStore } from '@store/useLayoutStore'
 import { useRecentsStore } from '@store/useRecentsStore'
@@ -15,8 +17,7 @@ import create, { State } from 'zustand'
 import { devtools, persist } from 'zustand/middleware'
 
 import { client, useAuth } from '@workduck-io/dwindle'
-// import { UserCred } from '@workduck-io/dwindle/lib/esm/AuthStore/useAuthStore'
-import { getEmailStart } from '@data/Defaults/auth'
+import { UserCred } from '@workduck-io/mex-utils'
 
 import { apiURLs } from '../../apis/routes'
 import useActions from '../../components/spotlight/Actions/useActions'
@@ -25,7 +26,6 @@ import { RegisterFormData } from '../../views/mex/Register'
 import useAnalytics from '../analytics'
 import { CustomEvents, Properties } from '../analytics/events'
 import { useTokenStore } from './useTokens'
-import { UserCred } from '@workduck-io/mex-utils'
 
 interface WorkspaceDetails {
   name: string
@@ -239,24 +239,7 @@ export const useAuthentication = () => {
     mog('Login Google Need to create user', { uCred })
     // console.error('catch', { e })
     await client
-      .post(
-        apiURLs.user.registerStatus,
-        {
-          type: 'RegisterUserRequest',
-          user: {
-            id: uCred.userId,
-            name: data.name,
-            alias: data.alias ?? data.name,
-            email: uCred.email
-          },
-          workspaceName: newWorkspaceName
-        },
-        {
-          headers: {
-            'mex-workspace-id': ''
-          }
-        }
-      )
+      .get(apiURLs.user.registerStatus)
       .then(async (d: any) => {
         try {
           await refreshToken()
@@ -347,24 +330,7 @@ export const useAuthentication = () => {
     const newWorkspaceName = `WD_${nanoid()}`
 
     await client
-      .post(
-        apiURLs.user.registerStatus,
-        {
-          type: 'RegisterUserRequest',
-          user: {
-            id: uCred.userId,
-            name: sensitiveData.name,
-            email: uCred.email,
-            alias: sensitiveData.alias
-          },
-          workspaceName: newWorkspaceName
-        },
-        {
-          headers: {
-            'mex-workspace-id': ''
-          }
-        }
-      )
+      .get(apiURLs.user.registerStatus)
       .then(async (d: any) => {
         try {
           await refreshToken()
