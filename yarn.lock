@@ -3784,10 +3784,10 @@
   dependencies:
     lodash "^4"
 
-"@workduck-io/action-request-helper@^0.1.6":
-  version "0.1.9"
-  resolved "https://npm.pkg.github.com/download/@workduck-io/action-request-helper/0.1.9/43ffdd95635ebf93eb3b9097cfe516fde8f772ca#43ffdd95635ebf93eb3b9097cfe516fde8f772ca"
-  integrity sha512-lo17trrZVVwWJUZqQHbk2SM57RqUMHT0jcto3L+YiJn6dVelYPP9oPH6cUO0MBF/bRsoFvvEXdCSQ+VYIOsrCw==
+"@workduck-io/action-request-helper@^0.1.8":
+  version "0.1.8"
+  resolved "https://npm.pkg.github.com/download/@workduck-io/action-request-helper/0.1.8/2cfe59e7bb801f008566b19a278f3b50a23c7585#2cfe59e7bb801f008566b19a278f3b50a23c7585"
+  integrity sha512-zfdP6bfHjECaKRARADAn/r9o8iY4dNaXNzINNgz1Sf7oWVRsAQg+CbM4fOGSQfm+IrL/qsD13MZRvrNK9aF0XQ==
   dependencies:
     axios "^0.26.1"
     dot-prop "6"
@@ -5226,7 +5226,7 @@ debug@^3.1.0, debug@^3.2.7:
   dependencies:
     ms "^2.1.1"
 
-"debug@github:ngokevin/debug#noTimestamp":
+debug@ngokevin/debug#noTimestamp:
   version "2.2.0"
   resolved "https://codeload.github.com/ngokevin/debug/tar.gz/ef5f8e66d49ce8bc64c6f282c15f8b7164409e3a"
 
@@ -10985,7 +10985,7 @@ threads@^1.7.0:
   optionalDependencies:
     tiny-worker ">= 2"
 
-"three-bmfont-text@github:dmarcos/three-bmfont-text#21d017046216e318362c48abd1a48bddfb6e0733":
+three-bmfont-text@dmarcos/three-bmfont-text#21d017046216e318362c48abd1a48bddfb6e0733:
   version "2.4.0"
   resolved "https://codeload.github.com/dmarcos/three-bmfont-text/tar.gz/21d017046216e318362c48abd1a48bddfb6e0733"
   dependencies:
