@@ -1,6 +1,7 @@
 import React, { useEffect, useMemo, useState } from 'react'
 
 import { getNextStatus, PriorityDataType, PriorityType, TodoStatus, TodoType } from '../../editor/Components/Todo/types'
+import useUpdateBlock from '../../hooks/useUpdateBlock'
 // import { useReminders } from '../../hooks/useReminders'
 // import { getPureContent } from '../../hooks/useTodoKanban'
 import useTodoStore from '../../store/useTodoStore'
@@ -15,13 +16,14 @@ import { CheckBoxWrapper, StyledTodoStatus, TodoContainer, TodoOptions, TodoText
 
 export interface TodoControls {
   onDeleteClick?: (todoid: string) => void
-  onChangeStatus?: (todoid: string, status: TodoStatus) => void
-  onChangePriority?: (todoid: string, priority: PriorityType) => void
+  onChangeStatus?: (todoid: string, status: TodoStatus, element?: any) => void
+  onChangePriority?: (todoid: string, priority: PriorityType, element?: any) => void
   getTodo?: (parentNodeId: string, todoId: string) => TodoType
 }
 
 interface TodoProps {
   parentNodeId: string
+  element?: any
   todoid: string
   oid?: string
   controls?: TodoControls
@@ -30,7 +32,7 @@ interface TodoProps {
   showDelete?: boolean
 }
 
-const Todo = ({ parentNodeId, todoid, children, readOnly, oid, controls, showDelete = true }: TodoProps) => {
+const Todo = ({ parentNodeId, element, todoid, children, readOnly, oid, controls, showDelete = true }: TodoProps) => {
   // mog('Todo', { parentNodeId, todoid, readOnly })
   const [showOptions, setShowOptions] = useState(false)
 
@@ -40,6 +42,8 @@ const Todo = ({ parentNodeId, todoid, children, readOnly, oid, controls, showDel
   const updateStatus = useTodoStore((store) => store.updateStatusOfTodo)
   const getTodoFromStore = useTodoStore((store) => store.getTodoOfNode)
   const todos = useTodoStore((store) => store.todos)
+
+  const { insertInEditor } = useUpdateBlock() 
 
   const todo = useMemo(() => {
     return controls && controls.getTodo
@@ -55,14 +59,23 @@ const Todo = ({ parentNodeId, todoid, children, readOnly, oid, controls, showDel
   }, [animate])
 
   const onPriorityChange = (priority: PriorityDataType) => {
-    if (controls && controls.onChangePriority) controls.onChangePriority(todoid, priority.type)
-    else updatePriority(parentNodeId, todoid, priority.type)
+    if (controls && controls.onChangePriority) controls.onChangePriority(todoid, priority.type, element)
+    else {
+      updatePriority(parentNodeId, todoid, priority.type)
+      element && insertInEditor(element, {priority: priority.type})
+    } 
     setAnimate(true)
   }
 
   const changeStatus = () => {
-    if (controls && controls.onChangeStatus) controls.onChangeStatus(todoid, getNextStatus(todo.metadata.status))
-    else updateStatus(parentNodeId, todoid, getNextStatus(todo.metadata.status))
+    if (readOnly) return
+    const nextStatus = getNextStatus(todo.metadata.status)
+
+    if (controls && controls.onChangeStatus) controls.onChangeStatus(todoid, nextStatus, element)
+    else {
+      element && insertInEditor(element, { status: nextStatus })
+      updateStatus(parentNodeId, todoid, nextStatus)
+    }
     setAnimate(true)
   }
 
