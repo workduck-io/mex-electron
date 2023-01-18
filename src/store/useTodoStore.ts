@@ -4,6 +4,7 @@ import create from 'zustand'
 
 import { defaultContent } from '../data/Defaults/baseData'
 import { TodoType, TodoStatus, PriorityType, TodosType } from '../editor/Components/Todo/types'
+import { getTodoMetadata } from '../editor/Plugins/todoUtils'
 import { useReminders, useReminderStore } from '../hooks/useReminders'
 import { NodeEditorContent } from '../types/Types'
 import { convertContentToRawText } from '../utils/search/parseData'
@@ -16,18 +17,19 @@ export const createTodo = (
   tags: string[] = []
 ) => {
   // mog('createTodo', { nodeid, todoId, content })
+  const metaData = getTodoMetadata(content)
   return {
     id: todoId,
     nodeid,
     content,
     metadata: {
-      status: TodoStatus.todo,
-      priority: PriorityType.noPriority
+      status: metaData?.status ?? TodoStatus.todo,
+      priority: metaData?.priority ?? PriorityType.noPriority
     },
     mentions,
     tags,
-    createdAt: Date.now(),
-    updatedAt: Date.now()
+    createdAt: metaData?.createdAt ?? Date.now(),
+    updatedAt: metaData?.updatedAt ?? Date.now()
   }
 }
 

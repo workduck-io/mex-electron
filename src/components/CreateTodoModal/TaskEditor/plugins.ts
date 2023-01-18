@@ -26,7 +26,6 @@ import {
   MediaEmbedTweet,
   MediaEmbedElement,
   MentionElement,
-  createTodoListPlugin
 } from '@udecode/plate'
 import { createHighlightPlugin } from '@udecode/plate-highlight'
 
@@ -41,11 +40,11 @@ import { createBlockModifierPlugin } from '@editor/Components/Blocks/createBlock
 import { createILinkPlugin } from '@editor/Components/ilink/createILinkPlugin'
 import { createInlineBlockPlugin } from '@editor/Components/InlineBlock/createInlineBlockPlugin'
 import { createTagPlugin } from '@editor/Components/tag/createTagPlugin'
-import Todo from '@ui/components/Todo'
 import { optionsCreateNodeIdPlugin, optionsImagePlugin, optionsSelectOnBackspacePlugin } from '@editor/Plugins/pluginOptions'
 import createTodoPlugin from '@editor/Components/Todo/createTodoPlugin'
 import { createMentionPlugin } from '@editor/Components/mentions/createMentionsPlugin'
 import { ILinkElement } from '@editor/Components/ilink/components/ILinkElement'
+import Todo from '../../../editor/Components/Todo'
 
 
 

@@ -116,6 +116,7 @@ const CreateTodoModal = () => {
 const NewTodoSection = () => {
   const todo = useModalStore((store) => store.data)
 
+  // eslint-disable-next-line @typescript-eslint/no-empty-function
   const onEditorChange = (val) => {}
 
   if (!todo) return <></>
