@@ -4,14 +4,13 @@ import { useState } from 'react'
 import { useActionsPerfomerClient } from '@components/spotlight/Actions/useActionPerformer'
 import { useActionsCache } from '@components/spotlight/Actions/useActionsCache'
 // import { UserCred } from '@workduck-io/dwindle/lib/esm/AuthStore/useAuthStore'
-import { getEmailStart } from '@data/Defaults/auth'
+import { getEmailStart, MEX_TAG } from '@data/Defaults/auth'
 import { useHelpStore } from '@store/useHelpStore'
 import { useLayoutStore } from '@store/useLayoutStore'
 import { useRecentsStore } from '@store/useRecentsStore'
 import { useUserCacheStore } from '@store/useUserCacheStore'
 import { mog } from '@utils/lib/mog'
 import { NavigationType, ROUTE_PATHS, useRouting } from '@views/routes/urls'
-import { nanoid } from 'nanoid'
 import toast from 'react-hot-toast'
 import create, { State } from 'zustand'
 import { devtools, persist } from 'zustand/middleware'
@@ -77,222 +76,59 @@ export const useAuthStore = create<AuthStoreState>(
   )
 )
 
-interface AuthDetails {
-  userDetails: UserDetails
-  workspaceDetails: WorkspaceDetails
-}
+type LoginResult = { loginData: UserCred; loginStatus: string }
 
 export const useAuthentication = () => {
   const [sensitiveData, setSensitiveData] = useState<RegisterFormData | undefined>()
-  const setAuthenticated = useAuthStore((store) => store.setAuthenticated)
   const setUnAuthenticated = useAuthStore((store) => store.setUnAuthenticated)
   const setRegistered = useAuthStore((store) => store.setRegistered)
   const clearActionCache = useActionsCache((store) => store.clearActionCache)
-  const { signIn, signUp, verifySignUp, signOut, googleSignIn, refreshToken } = useAuth()
-  const { identifyUser, addUserProperties, addEventProperties } = useAnalytics()
-  const addUser = useUserCacheStore((s) => s.addUser)
+  const { signIn, signUp, verifySignUp, signOut, googleSignIn } = useAuth()
+  const { addEventProperties } = useAnalytics()
   const { clearActionStore } = useActions()
-  const { initActionPerfomerClient } = useActionsPerfomerClient()
-  const setShowLoader = useLayoutStore((store) => store.setShowLoader)
   const clearRecents = useRecentsStore((store) => store.clear)
 
   const { goTo } = useRouting()
   const clearShortcuts = useHelpStore((store) => store.clearShortcuts)
   const removeGoogleCalendarToken = useTokenStore((store) => store.removeGoogleCalendarToken)
-  const login = async (
-    email: string,
-    password: string,
-    getWorkspace = false
-  ): Promise<{ data: any; v: string; authDetails: AuthDetails }> => {
-    let data: any // eslint-disable-line @typescript-eslint/no-explicit-any
-    let authDetails: any // eslint-disable-line @typescript-eslint/no-explicit-any
-    const v = await signIn(email, password)
+
+  const login = async (email: string, password: string): Promise<LoginResult> => {
+    const loginResult = await signIn(email, password)
       .then((d) => {
-        data = d
-        return 'success'
+        return { loginStatus: 'success', loginData: d }
       })
       .catch((e) => {
         console.error({ e })
-        return e.toString() as string
+        return { loginStatus: e.toString(), loginData: {} as UserCred }
       })
 
-    if (getWorkspace && data !== undefined) {
-      authDetails = await client
-        .get(apiURLs.user.getUserRecords)
-        .then(async (d) => {
-          const userDetails = { email, alias: d.data.alias ?? d.data.name, userID: d.data.id, name: d.data.name }
-          mog('DATA AFTER LOGGING IN', { d })
-          const workspaceDetails = { id: d.data.group, name: 'WORKSPACE_NAME' }
-          initActionPerfomerClient(userDetails?.userID)
-          mog('UserDetails', { userDetails, d, data: d.data })
-          userDetails['name'] = d.data.metadata.name
-
-          // * For Heap analytics
-          identifyUser(email)
-          addUserProperties({
-            [Properties.EMAIL]: email,
-            [Properties.NAME]: d.data.metadata.name,
-            [Properties.ROLE]: d.data.metadata.roles,
-            [Properties.WORKSPACE_ID]: d.data.group,
-            [Properties.ALIAS]: d.data.metadata.alias
-          })
-
-          addEventProperties({ [CustomEvents.LOGGED_IN]: true })
-
-          addUser({
-            userID: userDetails.userID,
-            email: userDetails.email,
-            name: userDetails.name,
-            alias: userDetails.alias
-          })
-          return { userDetails, workspaceDetails }
-        })
-        // .then(updateDefaultServices)
-        // .then(updateServices)
-        // .then()
-        .catch((e) => {
-          console.error({ e })
-          setShowLoader(false)
-          return e.toString() as string
-        })
-    }
-
-    return { data, v, authDetails }
+    return loginResult
   }
 
-  /*
-   * Login via google
-   */
-  const loginViaGoogle = async (code: string, clientId: string, redirectURI: string, getWorkspace = true) => {
-    // TODO: Fix for alias
+  const loginViaGoogle = async (code: string, clientId: string, redirectURI: string): Promise<LoginResult> => {
     try {
-      const result: any = await googleSignIn(code, clientId, redirectURI)
-      if (getWorkspace && result !== undefined) {
-        await client
-          .get(apiURLs.user.getUserRecords)
-          /*
-           * If the user is present in the database, then we will add properties
-           */
-          .then(async (d: any) => {
-            /**
-             * If workspaceId is not present then we calling the register endpoint of the backend
-             */
-            const userDetails = {
-              email: result.userCred.email,
-              userID: result.userCred.userId,
-              alias: d.data.alias ?? d.data.name,
-              name: d.data.name
-            }
-            initActionPerfomerClient(userDetails.userID)
-            if (!d.data.group) {
-              await registerUserForGoogle(result, d.data)
-            } else {
-              /**
-               * Else we will add properties
-               */
-              mog('UserDetails', { userDetails: result })
-              const userDetails = {
-                email: result.userCred.email,
-                name: d.data.name,
-                userID: result.userCred.userId,
-                alias: d.data.alias ?? d.data.name
-              }
-              const workspaceDetails = { id: d.data.group, name: 'WORKSPACE_NAME' }
-              initActionPerfomerClient(userDetails.userID)
-
-              identifyUser(userDetails.email)
-              mog('Login Google BIG success', { d, userDetails, workspaceDetails })
-              addUserProperties({
-                [Properties.EMAIL]: userDetails.email,
-                [Properties.NAME]: userDetails.name,
-                [Properties.ALIAS]: d.data.alias,
-                [Properties.ROLE]: '',
-                [Properties.WORKSPACE_ID]: d.data.group
-              })
-              addEventProperties({ [CustomEvents.LOGGED_IN]: true })
-
-              setAuthenticated(userDetails, workspaceDetails)
-              return result
-            }
-          })
-      }
-    } catch (error) {
-      console.log(error)
-      setShowLoader(false)
-    }
-  }
-
-  async function registerUserForGoogle(result: any, data: any) {
-    mog('Registering user for google', { result })
-    setSensitiveData({ email: result.email, name: data.name, password: '', roles: [], alias: data.alias ?? data.name })
-    const uCred: any = {
-      username: result.userCred.username,
-      email: result.userCred.email,
-      userId: result.userCred.userId,
-      expiry: result.userCred.expiry,
-      token: result.userCred.token,
-      url: result.userCred.url
-    }
-
-    const newWorkspaceName = `WD_${nanoid()}`
-
-    mog('Login Google Need to create user', { uCred })
-    // console.error('catch', { e })
-    await client
-      .get(apiURLs.user.registerStatus)
-      .then(async (d: any) => {
-        try {
-          await refreshToken()
-        } catch (error) {
-          // setShowLoader(false)
-          mog('Error: ', { error: JSON.stringify(error) })
-        }
-        const userDetails = {
-          userID: uCred.userId,
-          name: data.name,
-          alias: data.alias ?? data.name,
-          email: uCred.email
-        }
-        const workspaceDetails = { id: d.data.id, name: 'WORKSPACE_NAME' }
-        mog('Register Google BIG success', { d, data, userDetails, workspaceDetails })
-
-        initActionPerfomerClient(userDetails.userID)
-
-        identifyUser(userDetails.email)
-        mog('Login Google BIG success created user', { userDetails, workspaceDetails })
-        addUserProperties({
-          [Properties.EMAIL]: userDetails.email,
-          [Properties.NAME]: userDetails.name,
-          [Properties.ALIAS]: userDetails.alias,
-          [Properties.ROLE]: '',
-          [Properties.WORKSPACE_ID]: d.data.group
+      const loginResult = await googleSignIn(code, clientId, redirectURI)
+        .then(({ userCred }: { userCred: UserCred }) => {
+          return { loginStatus: 'success', loginData: userCred }
         })
-        addEventProperties({ [CustomEvents.LOGGED_IN]: true })
-        setAuthenticated(userDetails, workspaceDetails)
-      })
-      .catch((err) => {
-        toast('Registeration failed')
-        setShowLoader(false)
-      })
+        .catch((e: Error) => {
+          console.error('GoogleLoginError', { error: e })
+          return { loginStatus: e.toString(), loginData: {} as UserCred }
+        })
+
+      return loginResult
+    } catch (error) {
+      mog('ErrorInGoogleLogin', { error })
+    }
   }
 
-  const registerDetails = (data: RegisterFormData): Promise<string> => {
-    const { email, password, roles, name, alias } = data
-    const userRole = roles.map((r) => r.value).join(', ') ?? ''
+  const registerDetails = (data: RegisterFormData): Promise<any> => {
+    const customAttributes = [{ name: 'user_type', value: MEX_TAG }]
+    const { email, password } = data
 
-    const status = signUp(email, password)
+    const status = signUp(email, password, customAttributes)
       .then(() => {
         setRegistered(true)
-        // * Identify user
-        identifyUser(email)
-
-        // * Add extra user related properties
-        addUserProperties({
-          [Properties.EMAIL]: email,
-          [Properties.NAME]: name,
-          [Properties.ALIAS]: alias,
-          [Properties.ROLE]: userRole
-        })
         setSensitiveData(data)
         return data.email
       })
@@ -306,64 +142,20 @@ export const useAuthentication = () => {
     return status
   }
 
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  const verifySignup = async (code: string, metadata: any): Promise<string> => {
-    const formMetaData = {
+  const verifySignup = async (code: string, metadata: any): Promise<any> => {
+    const formMetadata = {
       ...metadata,
       name: sensitiveData.name,
-      alias: sensitiveData.alias,
       email: sensitiveData.email,
-      roles: sensitiveData.roles.reduce((prev, cur) => `${prev},${cur.value}`, '').slice(1)
+      roles: sensitiveData.roles.reduce((prev, cur) => `${prev},${cur.value}`, '').slice(1),
+      alias: sensitiveData.alias
     }
-    setShowLoader(true)
+    await verifySignUp(code, formMetadata).catch(console.error)
+    const { loginStatus, loginData } = await login(sensitiveData.email, sensitiveData.password)
 
-    const vSign = await verifySignUp(code, formMetaData).catch(console.error)
-    console.log({ vSign })
+    if (loginStatus !== 'success') throw new Error('Could Not Verify Signup')
 
-    const loginData = await login(sensitiveData.email, sensitiveData.password).catch(console.error)
-
-    if (!loginData) {
-      return
-    }
-
-    const uCred = loginData.data
-    const newWorkspaceName = `WD_${nanoid()}`
-
-    await client
-      .get(apiURLs.user.registerStatus)
-      .then(async (d: any) => {
-        try {
-          await refreshToken()
-        } catch (error) {
-          // setShowLoader(false)
-          mog('Error: ', { error: JSON.stringify(error) })
-        }
-
-        const userDetails = {
-          email: uCred.email,
-          userID: uCred.userId,
-          name: sensitiveData.name,
-          alias: sensitiveData.alias
-        }
-        initActionPerfomerClient(userDetails?.userID)
-
-        addUser({
-          userID: userDetails.userID,
-          email: userDetails.email,
-          name: userDetails.name,
-          alias: userDetails.alias
-        })
-        setAuthenticated(userDetails, { id: d.data.id, name: d.data.name })
-      })
-      .catch((err) => {
-        setShowLoader(false)
-        mog('Error: ', { error: 'Unable to create workspace' })
-      })
-
-    if (vSign) {
-      setRegistered(false)
-    }
-    return vSign
+    return loginData
   }
 
   const logout = () => {
@@ -387,6 +179,7 @@ export const useAuthentication = () => {
       goTo(ROUTE_PATHS.login, NavigationType.push)
     }
   }
+
   const registerNewUser = async (loginResult: UserCred) => {
     const { email, userId } = loginResult
     const name = getEmailStart(email)
@@ -394,12 +187,11 @@ export const useAuthentication = () => {
     let workspaceID = null
     for (let i = 0; i < 7; i++) {
       try {
-        // const result = await API.user.registerStatus(undefined, { throwHttpErrors: false })
-        await client.get(apiURLs.user.registerStatus).then(async (d: any) => {
-          if (d.status === 'SUCCESS') {
-            workspaceID = d.workspaceID
-          }
-        })
+        const result = await client.get(apiURLs.user.registerStatus)
+        if (result.status === 200) {
+          workspaceID = result.data.workspaceID
+          break
+        }
       } catch (error) {
         await new Promise((resolve) => setTimeout(resolve, 2 * 1000))
       }
@@ -409,7 +201,6 @@ export const useAuthentication = () => {
       toast('Could not sign-up new user')
       throw new Error('Did not receive status SUCCESS from backend; Could not signup')
     }
-
     const userDetails = {
       email: email,
       alias: name,
@@ -429,17 +220,20 @@ export const useInitializeAfterAuth = () => {
   const setAuthenticated = useAuthStore((store) => store.setAuthenticated)
   const addUser = useUserCacheStore((s) => s.addUser)
 
+  const { identifyUser, addUserProperties, addEventProperties } = useAnalytics()
+
   const { refreshToken } = useAuth()
   const { registerNewUser } = useAuthentication()
+  const { initActionPerfomerClient } = useActionsPerfomerClient()
 
   const initializeAfterAuth = async (
     loginData: UserCred,
     forceRefreshToken = false,
     isGoogle = false,
-    registerUser = false
+    registerUser = false,
+    roles?: string
   ) => {
     try {
-      const { email } = loginData
       const { userDetails, workspaceDetails } = registerUser
         ? await registerNewUser(loginData)
         : await client
@@ -451,10 +245,11 @@ export const useInitializeAfterAuth = () => {
                   return await registerNewUser(loginData)
                 } else if (res.data.group) {
                   const userDetails = {
-                    email: email,
+                    email: loginData.email,
                     alias: res.data.alias ?? res.data.properties?.alias ?? res.data.name,
                     userID: res.data.id,
-                    name: res.data.name
+                    name: res.data.name,
+                    roles: res.data?.metadata?.roles ?? ''
                   }
                   const workspaceDetails = { id: res.data.group, name: 'WORKSPACE_NAME' }
                   return { workspaceDetails, userDetails }
@@ -469,12 +264,23 @@ export const useInitializeAfterAuth = () => {
               }
             })
 
+      identifyUser(userDetails.email)
+      initActionPerfomerClient(userDetails.userID)
       addUser({
         userID: userDetails.userID,
         email: userDetails.email,
         name: userDetails.name,
         alias: userDetails.alias
       })
+
+      addUserProperties({
+        [Properties.EMAIL]: userDetails.email,
+        [Properties.NAME]: userDetails.name,
+        [Properties.ROLE]: registerUser ? roles : (userDetails as any)?.roles,
+        [Properties.WORKSPACE_ID]: workspaceDetails.id,
+        [Properties.ALIAS]: userDetails.alias
+      })
+      addEventProperties({ [CustomEvents.LOGGED_IN]: true })
 
       if (forceRefreshToken) await refreshToken()
       setAuthenticated(userDetails, workspaceDetails)

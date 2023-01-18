@@ -34,28 +34,17 @@ const Login = () => {
   // const setAuthenticated = useAuthStore((s) => s.setAuthenticated)
 
   const onSubmit = async (data: LoginFormData): Promise<void> => {
-    await login(data.email, data.password, true)
-      .then(async (s) => {
-        mog('Login result', { s })
-        if (s.v === 'Incorrect username or password.') {
-          toast.error(s.v)
-        }
-        if (s.v === 'success') {
-          // const { userDetails, workspaceDetails } = s.authDetails
-          // const node = useEditorStore.getState().node
+    try {
+      const { loginData, loginStatus } = await login(data.email, data.password)
+      if (loginStatus === 'Incorrect username or password.') {
+        toast('Invalid Username or Password')
+      }
 
-          // if (node?.nodeid === '__null__') {
-          //   const baseNode = updateBaseNode()
-          //   loadNode(baseNode?.nodeid, { savePrev: false, fetch: false })
-          //   goTo(ROUTE_PATHS.node, NavigationType.push, baseNode?.nodeid)
-          // }
-          await initializeAfterAuth(s.data, false, false, false)
-        }
-      })
-      .catch((e) => {
-        mog('ERROR OCCURED', { e })
-        toast.error(e)
-      })
+      if (loginStatus === 'success') await initializeAfterAuth(loginData, false, false, false)
+    } catch (error) {
+      toast('An Error Occured. Please Try Again Later')
+      mog('LoginError', { error })
+    }
   }
 
   return (
