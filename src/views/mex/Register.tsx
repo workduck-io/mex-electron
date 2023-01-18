@@ -12,7 +12,7 @@ import { PasswordNotMatch, PasswordRequirements } from '../../components/mex/Aut
 import { GoogleLoginButton } from '../../components/mex/Buttons/LoadingButton'
 import Input, { InputFormError } from '../../components/mex/Forms/Input'
 import { ALIAS_REG, EMAIL_REG, MEX_TAG, PASSWORD } from '../../data/Defaults/auth'
-import { useAuthentication, useAuthStore } from '../../services/auth/useAuth'
+import { useAuthentication, useAuthStore, useInitializeAfterAuth } from '../../services/auth/useAuth'
 import { BackCard, FooterCard } from '../../style/Card'
 import { AuthForm, ButtonFields, Label, StyledCreatatbleSelect } from '../../style/Form'
 import { CenteredColumn } from '../../style/Layouts'
@@ -52,6 +52,8 @@ const Register = () => {
   const registerForm = useForm<RegisterFormData>()
   const verifyForm = useForm<VerifyFormData>()
 
+  const [regFormData, setRegFormData] = useState<RegisterFormData>()
+
   const { registerDetails, verifySignup } = useAuthentication()
   const registered = useAuthStore((store) => store.registered)
   const setRegistered = useAuthStore((store) => store.setRegistered)
@@ -65,6 +67,8 @@ const Register = () => {
   const regSubmitting = registerForm.formState.isSubmitting
   const verSubmitting = verifyForm.formState.isSubmitting
 
+  const { initializeAfterAuth } = useInitializeAfterAuth()
+
   const onResendRequest = async (e) => {
     e.preventDefault()
     setReqCode(true)
@@ -74,9 +78,7 @@ const Register = () => {
       })
       .catch(() => toast.error('Code could not be sent'))
 
-    // setTimeout(() => {
     setReqCode(false)
-    // }, 20000)
   }
 
   const onRegisterSubmit = async (data: RegisterFormData) => {
@@ -84,14 +86,16 @@ const Register = () => {
       if (s === 'UsernameExistsException') {
         toast('You have already registered, please verify code.')
       }
+      setRegFormData(data)
     })
   }
 
   const onVerifySubmit = async (data: VerifyFormData) => {
     const metadata = { tag: MEX_TAG }
     try {
-      mog('CODE', { data })
-      await verifySignup(data.code, metadata)
+      const loginData = await verifySignup(data.code, metadata)
+      const userRole = regFormData.roles.map((r) => r.value).join(', ') ?? ''
+      await initializeAfterAuth(loginData, true, false, true, userRole)
 
       // TODO: Uncomment this when we've new flow for onboarding
       // setOnboardData()

@@ -10,7 +10,7 @@ import { LoadingButton } from '@workduck-io/mex-components'
 import { GoogleLoginButton } from '../../components/mex/Buttons/LoadingButton'
 import { InputFormError } from '../../components/mex/Forms/Input'
 import { EMAIL_REG } from '../../data/Defaults/auth'
-import { useAuthentication, useAuthStore } from '../../services/auth/useAuth'
+import { useAuthentication, useAuthStore, useInitializeAfterAuth } from '../../services/auth/useAuth'
 import { BackCard, FooterCard } from '../../style/Card'
 import { AuthForm, ButtonFields } from '../../style/Form'
 import { CenteredColumn } from '../../style/Layouts'
@@ -29,34 +29,22 @@ const Login = () => {
     formState: { errors, isSubmitting }
   } = useForm<LoginFormData>()
   const { login } = useAuthentication()
+  const { initializeAfterAuth } = useInitializeAfterAuth()
 
-  const setAuthenticated = useAuthStore((s) => s.setAuthenticated)
+  // const setAuthenticated = useAuthStore((s) => s.setAuthenticated)
 
   const onSubmit = async (data: LoginFormData): Promise<void> => {
-    await login(data.email, data.password, true)
-      .then((s) => {
-        mog('Login result', { s })
-        if (s.v === 'Incorrect username or password.') {
-          toast.error(s.v)
-        }
+    try {
+      const { loginData, loginStatus } = await login(data.email, data.password)
+      if (loginStatus === 'Incorrect username or password.') {
+        toast('Invalid Username or Password')
+      }
 
-        if (s.v === 'success') {
-          const { userDetails, workspaceDetails } = s.authDetails
-          // const node = useEditorStore.getState().node
-
-          // if (node?.nodeid === '__null__') {
-          //   const baseNode = updateBaseNode()
-          //   loadNode(baseNode?.nodeid, { savePrev: false, fetch: false })
-          //   goTo(ROUTE_PATHS.node, NavigationType.push, baseNode?.nodeid)
-          // }
-
-          setAuthenticated(userDetails, workspaceDetails)
-        }
-      })
-      .catch((e) => {
-        mog('ERROR OCCURED', { e })
-        toast.error(e)
-      })
+      if (loginStatus === 'success') await initializeAfterAuth(loginData, false, false, false)
+    } catch (error) {
+      toast('An Error Occured. Please Try Again Later')
+      mog('LoginError', { error })
+    }
   }
 
   return (
