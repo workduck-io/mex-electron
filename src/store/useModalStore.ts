@@ -12,9 +12,10 @@ export enum ModalsType {
   reminders,
   share,
   help,
-  todo,
   template,
-  quickNew
+  quickNew,
+  previewNote,
+  todo
 }
 
 type ModalStoreType = {

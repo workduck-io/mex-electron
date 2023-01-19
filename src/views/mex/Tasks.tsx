@@ -14,7 +14,6 @@ import { tinykeys } from '@workduck-io/tinykeys'
 import SearchFilters from '../../components/mex/Search/SearchFilters'
 import { Heading } from '../../components/spotlight/SearchResults/styled'
 import { getNextStatus, getPrevStatus, PriorityType, TodoType } from '../../editor/Components/Todo/types'
-import EditorPreviewRenderer from '../../editor/EditorPreviewRenderer'
 import { useNavigation } from '../../hooks/useNavigation'
 import { KanbanBoardColumn, TodoKanbanCard, useTodoKanban } from '../../hooks/useTodoKanban'
 import useTodoStore from '../../store/useTodoStore'
@@ -22,6 +21,83 @@ import { PageContainer } from '../../style/Layouts'
 import { StyledTasksKanban, TaskCard, TaskColumnHeader } from '../../style/Todo'
 import Todo from '../../ui/components/Todo'
 import { NavigationType, ROUTE_PATHS, useRouting } from '../routes/urls'
+import useModalStore, { ModalsType } from '@store/useModalStore'
+import Plateless from '@editor/Plateless'
+import { isReadonly, usePermissions } from '@hooks/usePermissions'
+import toast from 'react-hot-toast'
+
+interface RenderTaskProps {
+  id: string
+  todo: TodoType
+  selectedRef: React.RefObject<HTMLDivElement>
+  selectedCard: TodoKanbanCard | null
+  overlaySidebar: boolean
+  dragging: boolean
+}
+
+export const RenderTask = React.memo<RenderTaskProps>(
+  ({ id, overlaySidebar, todo, selectedCard, selectedRef, dragging }: RenderTaskProps) => {
+    const { changeStatus, changePriority, getPureContent } = useTodoKanban()
+
+    const sidebar = useLayoutStore((store) => store.sidebar)
+    const todos = useTodoStore((store) => store.todos)
+    const pC = useMemo(() => getPureContent(todo), [id, todo])
+    const { accessWhenShared } = usePermissions()
+    const readOnly = useMemo(() => isReadonly(accessWhenShared(todo?.nodeid)), [todo])
+
+    const controls = useMemo(
+      () => ({
+        onChangePriority: (todoId: string, priority) => {
+          changePriority(todo, priority)
+        },
+        onChangeStatus: (todoId: string, status) => {
+          changeStatus(todo, status)
+        }
+      }),
+      []
+    )
+
+    const toggleModal = useModalStore((store) => store.toggleOpen)
+    const priorityShown = todo.metadata.priority !== PriorityType.noPriority
+
+    return (
+      <TaskCard
+        ref={selectedCard && id === selectedCard.id ? selectedRef : null}
+        selected={selectedCard && selectedCard.id === id}
+        dragging={dragging}
+        sidebarExpanded={sidebar.show && sidebar.expanded && !overlaySidebar}
+        priorityShown={priorityShown}
+        onMouseDown={(event) => {
+          event.preventDefault()
+          if (event.detail === 2) {
+            toggleModal(ModalsType.previewNote, { noteId: todo.nodeid, blockId: todo.id })
+          }
+        }}
+      >
+        <Todo
+          showDelete={false}
+          key={`TODO_PREVIEW_${todo.nodeid}_${todo.id}`}
+          todoid={todo.id}
+          readOnly={readOnly}
+          readOnlyContent
+          showPriority
+          controls={controls}
+          parentNodeId={todo.nodeid}
+        >
+          {/*
+          <EditorPreviewRenderer
+            noStyle
+            content={pC}
+            editorId={`NodeTodoPreview_${todo.nodeid}_${todo.id}_${todo.metadata.status}`}
+          /> */}
+          <Plateless content={pC} />
+        </Todo>
+      </TaskCard>
+    )
+  }
+)
+
+RenderTask.displayName= 'RenderTask'
 
 const Tasks = () => {
   const [selectedCard, setSelectedCard] = React.useState<TodoKanbanCard | null>(null)
@@ -32,6 +108,7 @@ const Tasks = () => {
   const currentView = useViewStore((store) => store.currentView)
   const setCurrentView = useViewStore((store) => store.setCurrentView)
   const { enableShortcutHandler } = useEnableShortcutHandler()
+  const { accessWhenShared } = usePermissions()
 
   const { goTo } = useRouting()
 
@@ -45,7 +122,6 @@ const Tasks = () => {
     getTodoBoard,
     changeStatus,
     changePriority,
-    getPureContent,
     addCurrentFilter,
     changeCurrentFilter,
     removeCurrentFilter,
@@ -61,8 +137,13 @@ const Tasks = () => {
 
   const selectedRef = useRef<HTMLDivElement>(null)
   const handleCardMove = (card, source, destination) => {
-    // mog('card moved', { card, source, destination })
-    changeStatus(card.todo, destination.toColumnId)
+    const readOnly = card?.todo?.nodeid && isReadonly(accessWhenShared(card?.todo?.nodeid))
+    // mog('card moved', { card, source, destination, readOnly })
+    if (!readOnly) {
+      changeStatus(card.todo, destination.toColumnId)
+    } else {
+      toast('Cannot move task in a note with Read only permission')
+    }
   }
 
   const onClearClick = () => {
@@ -330,33 +411,15 @@ const Tasks = () => {
   // mog('Tasks', { nodesTodo, board, selectedCard, match, currentFilters })
 
   const RenderCard = ({ id, todo }: { id: string; todo: TodoType }, { dragging }: { dragging: boolean }) => {
-    const pC = getPureContent(todo)
-    // mog('RenderTodo', { id, todo, dragging, sidebar })
     return (
-      <TaskCard
-        ref={selectedCard && id === selectedCard.id ? selectedRef : null}
-        selected={selectedCard && selectedCard.id === id}
+      <RenderTask
+        id={id}
+        todo={todo}
+        selectedRef={selectedRef}
+        selectedCard={selectedCard}
+        overlaySidebar={overlaySidebar}
         dragging={dragging}
-        sidebarExpanded={sidebar.show && sidebar.expanded && !overlaySidebar}
-        onMouseDown={(event) => {
-          event.preventDefault()
-          onDoubleClick(event, todo.nodeid)
-        }}
-      >
-        <Todo
-          showDelete={false}
-          key={`TODO_PREVIEW_${todo.nodeid}_${todo.id}`}
-          todoid={todo.id}
-          readOnly
-          parentNodeId={todo.nodeid}
-        >
-          <EditorPreviewRenderer
-            noStyle
-            content={pC}
-            editorId={`NodeTodoPreview_${todo.nodeid}_${todo.id}_${todo.metadata.status}`}
-          />
-        </Todo>
-      </TaskCard>
+      />
     )
   }
 

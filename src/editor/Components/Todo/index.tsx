@@ -1,6 +1,7 @@
 import useModalStore, { ModalsType } from '@store/useModalStore'
 import { deleteText, getNodeEntries, getNodes, getPlateEditorRef, usePlateId } from '@udecode/plate'
 import { getRootProps } from '@udecode/plate-styled-components'
+import { mog } from '@workduck-io/mex-utils'
 import React from 'react'
 import toast from 'react-hot-toast'
 import { useReadOnly } from 'slate-react'
@@ -38,7 +39,9 @@ const Todo = (props: any) => {
   // const nodeid = useEditorStore((store) => store.node.nodeid)
   const nodeid = cleanEditorId(editorId)
 
-  // mog('Todo', { nodeid, editorId, readOnly })
+  const showDelete = !hideDelete && !readOnly
+
+  // mog('Todo', { nodeid, editorId, readOnly, hideDelete, showDelete })
 
   const onDeleteClick = () => {
     const editor = getPlateEditorRef()
@@ -64,7 +67,9 @@ const Todo = (props: any) => {
       oid={'EditorTodo'}
       todoid={element?.id}
       element={element}
-      showDelete={!hideDelete}
+      readOnlyContent={readOnly}
+      showDelete={showDelete}
+      showPriority
       parentNodeId={nodeid}
       controls={{
         onDeleteClick
