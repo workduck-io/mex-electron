@@ -25,50 +25,50 @@ const InfoBarItems = () => {
 
   mog('infobar', { shortcuts })
   // Ensure the tabs have InfobarType in type
-  // const tabs: Array<TabType> = useMemo(
-  //   () => [
-  //     {
-  //       label: <MexIcon noHover icon="fluent:content-view-gallery-24-regular" width={24} height={24} />,
-  //       type: 'default',
-  //       component: <DataInfoBar wrapRef={wrapperRef} />,
-  //       tooltip: 'Context'
-  //     },
-  //     {
-  //       label: <MexIcon noHover icon={quillPenLine} width={24} height={24} />,
-  //       type: 'snippets',
-  //       component: <SnippetSidebar />,
-  //       tooltip: 'Snippets',
-  //       shortcut: shortcuts.showSnippetSidebar.keystrokes
-  //     },
-  //     {
-  //       label: <MexIcon noHover icon={timerFlashLine} width={24} height={24} />,
-  //       type: 'reminders',
-  //       component: <RemindersInfobar />,
-  //       tooltip: 'Reminders'
-  //     },
-  //     {
-  //       label: <MexIcon noHover icon={bubbleChartLine} width={24} height={24} />,
-  //       type: 'graph',
-  //       component: <Graph graphData={graphData} />,
-  //       tooltip: 'Graph',
-  //       shortcut: shortcuts.showGraph.keystrokes
-  //     }
-  //   ],
-  //   [graphData]
-  // )
+  const tabs: Array<TabType> = useMemo(
+    () => [
+      {
+        label: <MexIcon noHover icon="fluent:content-view-gallery-24-regular" width={24} height={24} />,
+        type: 'default',
+        component: <DataInfoBar wrapRef={wrapperRef} />,
+        tooltip: 'Context'
+      },
+      {
+        label: <MexIcon noHover icon={quillPenLine} width={24} height={24} />,
+        type: 'snippets',
+        component: <SnippetSidebar />,
+        tooltip: 'Snippets',
+        shortcut: shortcuts.showSnippetSidebar.keystrokes
+      },
+      {
+        label: <MexIcon noHover icon={timerFlashLine} width={24} height={24} />,
+        type: 'reminders',
+        component: <RemindersInfobar />,
+        tooltip: 'Reminders'
+      },
+      {
+        label: <MexIcon noHover icon={bubbleChartLine} width={24} height={24} />,
+        type: 'graph',
+        component: <Graph graphData={graphData} />,
+        tooltip: 'Graph',
+        shortcut: shortcuts.showGraph.keystrokes
+      }
+    ],
+    [graphData]
+  )
 
-  // return (
-  //   <Tabs
-  //     visible={true}
-  //     openedTab={infobar.mode}
-  //     wrapperRef={wrapperRef}
-  //     onChange={(tab) => {
-  //       setInfobarMode(tab as InfobarMode)
-  //     }}
-  //     tabs={tabs}
-  //   />
-  // )
-  return <DataInfoBar wrapRef={wrapperRef} />
+  return (
+    <Tabs
+      visible={true}
+      openedTab={infobar.mode}
+      wrapperRef={wrapperRef}
+      onChange={(tab) => {
+        setInfobarMode(tab as InfobarMode)
+      }}
+      tabs={tabs}
+    />
+  )
+  // return <DataInfoBar wrapRef={wrapperRef} />
 }
 
 const InfoBar = () => {
