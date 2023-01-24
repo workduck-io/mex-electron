@@ -4,6 +4,8 @@ import RemindersInfobar from '@components/mex/Reminders/Reminders'
 import DataInfoBar from '@components/mex/Sidebar/DataInfoBar'
 import { useGraphData } from '@hooks/useGraphData'
 import useLayout from '@hooks/useLayout'
+import { useKeyListener } from '@hooks/useShortcutListener'
+import useToggleElements from '@hooks/useToggleElements'
 import bubbleChartLine from '@iconify/icons-ri/bubble-chart-line'
 import quillPenLine from '@iconify/icons-ri/quill-pen-line'
 import timerFlashLine from '@iconify/icons-ri/timer-flash-line'
@@ -13,7 +15,8 @@ import useSuggestionStore from '@store/useSuggestionStore'
 import { InfoBarWrapper } from '@style/infobar'
 import { MexIcon } from '@style/Layouts'
 import { mog } from '@workduck-io/mex-utils'
-import React, { useMemo } from 'react'
+import { tinykeys } from '@workduck-io/tinykeys'
+import React, { useEffect, useMemo } from 'react'
 import SnippetSidebar from '../Sidebar/SnippetSidebar'
 
 const InfoBarItems = () => {
@@ -73,46 +76,47 @@ const InfoBarItems = () => {
 
 const InfoBar = () => {
   const focusMode = useLayoutStore((s) => s.focusMode)
-  // const shortcuts = useHelpStore((store) => store.shortcuts)
+  const shortcuts = useHelpStore((store) => store.shortcuts)
   const { getFocusProps } = useLayout()
 
   const infobar = useLayoutStore((s) => s.infobar)
   const pinnedSuggestions = useSuggestionStore((s) => s.pinnedSuggestions)
-  // const { toggleGraph, toggleSnippets, toggleReminder } = useToggleElements()
-  // const { shortcutHandler } = useKeyListener()
+  const { toggleGraph, toggleSnippets } = useToggleElements()
+  // const { toggleReminder } = useToggleElements() 
+  const { shortcutHandler } = useKeyListener()
 
-  // useEffect(() => {
-  //   const unsubscribe = tinykeys(window, {
-  //     [shortcuts.showGraph.keystrokes]: (event) => {
-  //       event.preventDefault()
-  //       shortcutHandler(shortcuts.showGraph, () => {
-  //         toggleGraph()
-  //       })
-  //     },
-  //     // [shortcuts.showSyncBlocks.keystrokes]: (event) => {
-  //     //   event.preventDefault()
-  //     //   shortcutHandler(shortcuts.showSyncBlocks, () => {
-  //     //     toggleSyncBlocks()
-  //     //   })
-  //     // },
-  //     [shortcuts.showSnippetSidebar.keystrokes]: (event) => {
-  //       event.preventDefault()
-  //       shortcutHandler(shortcuts.showSnippetSidebar, () => {
-  //         toggleSnippets()
-  //       })
-  //     },
-  //     [shortcuts.showReminder.keystrokes]: (event) => {
-  //       event.preventDefault()
-  //       shortcutHandler(shortcuts.showReminder, () => {
-  //         toggleReminder()
-  //       })
-  //     }
-  //   })
+  useEffect(() => {
+    const unsubscribe = tinykeys(window, {
+      [shortcuts.showGraph.keystrokes]: (event) => {
+        event.preventDefault()
+        shortcutHandler(shortcuts.showGraph, () => {
+          toggleGraph()
+        })
+      },
+      // [shortcuts.showSyncBlocks.keystrokes]: (event) => {
+      //   event.preventDefault()
+      //   shortcutHandler(shortcuts.showSyncBlocks, () => {
+      //     toggleSyncBlocks()
+      //   })
+      // },
+      [shortcuts.showSnippetSidebar.keystrokes]: (event) => {
+        event.preventDefault()
+        shortcutHandler(shortcuts.showSnippetSidebar, () => {
+          toggleSnippets()
+        })
+      },
+      // [shortcuts.showReminder.keystrokes]: (event) => {
+      //   event.preventDefault()
+      //   shortcutHandler(shortcuts.showReminder, () => {
+      //     toggleReminder()
+      //   })
+      // }
+    })
 
-  //   return () => {
-  //     unsubscribe()
-  //   }
-  // }, [shortcuts])
+    return () => {
+      unsubscribe()
+    }
+  }, [shortcuts])
 
   return (
     <InfoBarWrapper
