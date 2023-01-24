@@ -42,6 +42,8 @@ export const RenderTask = React.memo<RenderTaskProps>(
     const { changeStatus, changePriority, getPureContent } = useTodoKanban()
 
     const sidebar = useLayoutStore((store) => store.sidebar)
+    const { selectBlock } = useFocusBlock()
+    const setHighlights = useBlockHighlightStore((state) => state.setHighlightedBlockIds)
     const todos = useTodoStore((store) => store.todos)
     const pC = useMemo(() => getPureContent(todo), [id, todo])
     const { accessWhenShared } = usePermissions()
@@ -62,6 +64,8 @@ export const RenderTask = React.memo<RenderTaskProps>(
     const toggleModal = useModalStore((store) => store.toggleOpen)
     const priorityShown = todo.metadata.priority !== PriorityType.noPriority
 
+    
+
     return (
       <TaskCard
         ref={selectedCard && id === selectedCard.id ? selectedRef : null}
@@ -72,6 +76,9 @@ export const RenderTask = React.memo<RenderTaskProps>(
         onMouseDown={(event) => {
           event.preventDefault()
           if (event.detail === 2) {
+            // toggleModal(ModalsType.previewNote, { noteId: todo.nodeid, blockId: todo.id })
+            selectBlock(todo.id)
+            setHighlights([todo.id], 'editor')
             toggleModal(ModalsType.previewNote, { noteId: todo.nodeid, blockId: todo.id })
           }
         }}
