@@ -28,6 +28,7 @@ export const ROUTE_PATHS = {
   search: '/search',
   settings: '/settings',
   tasks: '/tasks',
+  // reminders: '/tasks/reminders',
   reminders: '/reminders',
   integrations: '/integrations',
   snippets: '/snippets',

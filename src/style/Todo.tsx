@@ -152,7 +152,7 @@ export const TaskColumnHeader = styled.div`
   font-size: 1.5rem;
 `
 
-export const TaskCard = styled.div<{ dragging: boolean; selected: boolean; sidebarExpanded?: boolean }>`
+export const TaskCard = styled.div<{ dragging: boolean; selected: boolean; sidebarExpanded?: boolean; priorityShown?: boolean }>`
   ${TodoContainer} {
     width: ${({ sidebarExpanded, theme }) =>
       css`calc(${KANBAN_CARD_WIDTH(sidebarExpanded)} - ${theme.additional.hasBlocks ? '1.33rem' : '0px'})`};

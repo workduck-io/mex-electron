@@ -71,6 +71,7 @@ const InfoBarItems = () => {
       tabs={tabs}
     />
   )
+  // return <DataInfoBar wrapRef={wrapperRef} />
 }
 
 const InfoBar = () => {
@@ -80,7 +81,8 @@ const InfoBar = () => {
 
   const infobar = useLayoutStore((s) => s.infobar)
   const pinnedSuggestions = useSuggestionStore((s) => s.pinnedSuggestions)
-  const { toggleGraph, toggleSnippets, toggleReminder } = useToggleElements()
+  const { toggleGraph, toggleSnippets } = useToggleElements()
+  // const { toggleReminder } = useToggleElements() 
   const { shortcutHandler } = useKeyListener()
 
   useEffect(() => {
@@ -103,12 +105,12 @@ const InfoBar = () => {
           toggleSnippets()
         })
       },
-      [shortcuts.showReminder.keystrokes]: (event) => {
-        event.preventDefault()
-        shortcutHandler(shortcuts.showReminder, () => {
-          toggleReminder()
-        })
-      }
+      // [shortcuts.showReminder.keystrokes]: (event) => {
+      //   event.preventDefault()
+      //   shortcutHandler(shortcuts.showReminder, () => {
+      //     toggleReminder()
+      //   })
+      // }
     })
 
     return () => {

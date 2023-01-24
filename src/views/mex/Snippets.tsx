@@ -42,6 +42,7 @@ import { GenericSearchResult } from '../../types/search'
 // import { mog } from '@utils/lib/mog'
 import { convertContentToRawText } from '../../utils/search/parseData'
 import { NavigationType, ROUTE_PATHS, useRouting } from '../routes/urls'
+import Plateless from '@editor/Plateless'
 
 export type SnippetsProps = {
   title?: string
@@ -181,8 +182,10 @@ const Snippets = () => {
           <SearchPreviewWrapper
             onClick={() => onSelect({ id: snip.id, title: snip.title })}
             active={item.matchField?.includes('text')}
+            padding
           >
-            <EditorPreviewRenderer content={snip.content} editorId={`editor_${item.id}`} />
+            {/* <EditorPreviewRenderer content={snip.content} editorId={`editor_${item.id}`} /> */}
+            <Plateless content={snip.content} multiline />
           </SearchPreviewWrapper>
         </Result>
       )

@@ -1,6 +1,6 @@
 import { CompleteWave, WaterWave } from '../../components/mex/Onboarding/components/Welcome'
 import styled, { css } from 'styled-components'
-import { transparentize } from 'polished'
+import { mix, transparentize } from 'polished'
 import { TodoStatus } from '../../editor/Components/Todo/types'
 
 export const TodoContainer = styled.div<{ checked?: boolean }>`
@@ -35,7 +35,7 @@ export const TodoActionButton = styled.button`
   align-items: center;
   border-radius: 1rem;
   border: none;
-  background-color: transparent;
+  background-color: ${({ theme }) => mix(0.8, theme.colors.gray[8], theme.colors.secondary)};
   color: ${({ theme }) => theme.colors.secondary};
   :hover {
     background-color: ${({ theme }) => theme.colors.background.card};
