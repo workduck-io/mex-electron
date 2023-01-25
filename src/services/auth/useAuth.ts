@@ -5,9 +5,11 @@ import { useActionsPerfomerClient } from '@components/spotlight/Actions/useActio
 import { useActionsCache } from '@components/spotlight/Actions/useActionsCache'
 // import { UserCred } from '@workduck-io/dwindle/lib/esm/AuthStore/useAuthStore'
 import { getEmailStart, MEX_TAG } from '@data/Defaults/auth'
+import useDataStore from '@store/useDataStore'
 import { useHelpStore } from '@store/useHelpStore'
 import { useLayoutStore } from '@store/useLayoutStore'
 import { useRecentsStore } from '@store/useRecentsStore'
+import useTodoStore from '@store/useTodoStore'
 import { useUserCacheStore } from '@store/useUserCacheStore'
 import { mog } from '@utils/lib/mog'
 import { NavigationType, ROUTE_PATHS, useRouting } from '@views/routes/urls'
@@ -83,10 +85,12 @@ export const useAuthentication = () => {
   const setUnAuthenticated = useAuthStore((store) => store.setUnAuthenticated)
   const setRegistered = useAuthStore((store) => store.setRegistered)
   const clearActionCache = useActionsCache((store) => store.clearActionCache)
+  const resetDataStore = useDataStore((s) => s.resetDataStore)
   const { signIn, signUp, verifySignUp, signOut, googleSignIn } = useAuth()
   const { addEventProperties } = useAnalytics()
   const { clearActionStore } = useActions()
   const clearRecents = useRecentsStore((store) => store.clear)
+  const clearTodos = useTodoStore((s) => s.clearTodos)
 
   const { goTo } = useRouting()
   const clearShortcuts = useHelpStore((store) => store.clearShortcuts)
@@ -169,6 +173,8 @@ export const useAuthentication = () => {
       clearActionCache()
       clearShortcuts()
       clearRecents()
+      clearTodos()
+      resetDataStore()
       removeGoogleCalendarToken()
 
       addEventProperties({ [CustomEvents.LOGGED_IN]: false })

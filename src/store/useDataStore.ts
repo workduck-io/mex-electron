@@ -71,6 +71,23 @@ const useDataStore = create<DataStoreState>(
         set({ tags })
       },
 
+      resetDataStore: () => {
+        set({
+          tags: [],
+          ilinks: [],
+          linkCache: {},
+          tagsCache: {},
+          namespaces: [],
+          bookmarks: [],
+          archive: [],
+          baseNodeId: '__loading__',
+          slashCommands: {
+            default: [],
+            internal: []
+          }
+        })
+      },
+
       /*
    * Add a new ILink to the store
    * ## Rules
