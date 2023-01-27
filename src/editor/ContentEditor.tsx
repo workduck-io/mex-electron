@@ -5,6 +5,7 @@ import NavBreadCrumbs from '@components/mex/NavBreadcrumbs'
 import { useSuggestions } from '@components/mex/Suggestions/useSuggestions'
 import { useLastOpened } from '@hooks/useLastOpened'
 import { useNodes } from '@hooks/useNodes'
+import { usePermissions, compareAccessLevel } from '@hooks/usePermissions'
 import { useContentStore } from '@store/useContentStore'
 import useRouteStore, { BannerType } from '@store/useRouteStore'
 import { selectEditor, useFloatingTree, usePlateEditorRef } from '@udecode/plate'
@@ -22,6 +23,7 @@ import { defaultContent } from '../data/Defaults/baseData'
 import { useEditorBuffer } from '../hooks/useEditorBuffer'
 import useLayout from '../hooks/useLayout'
 import useLoad from '../hooks/useLoad'
+import { useNamespaces } from '../hooks/useNamespaces'
 import { useKeyListener } from '../hooks/useShortcutListener'
 import { useAnalysisTodoAutoUpdate } from '../store/useAnalysis'
 import useBlockStore from '../store/useBlockStore'
@@ -36,8 +38,6 @@ import { BlockOptionsMenu } from './Components/EditorContextMenu'
 import { useComboboxOpen } from './Components/combobox/hooks/useComboboxOpen'
 import { default as Editor } from './Editor'
 import Toolbar from './Toolbar'
-import { useNamespaces } from '../hooks/useNamespaces'
-import { usePermissions , compareAccessLevel } from '@hooks/usePermissions'
 
 const ContentEditor = () => {
   const fetchingContent = useEditorStore((state) => state.fetchingContent)
@@ -150,7 +150,7 @@ const ContentEditor = () => {
     }
   }, [shortcuts, toggleFocusMode])
 
-  const viewOnly = accessWhenShared(node.nodeid) === 'READ'
+  const viewOnly = accessWhenShared(node.nodeid)?.note === 'READ'
   // const readOnly = !!fetchingContent
 
   // mog('ContentEditor', { node, fsContent, nodeContent })
@@ -167,8 +167,7 @@ const ContentEditor = () => {
   return (
     <>
       <StyledEditor showGraph={infobar.mode === 'graph'} className="mex_editor">
-        {
-        isBannerVisible && (
+        {isBannerVisible && (
           <Banner
             route={location.pathname}
             onClick={handleBannerButtonClick}

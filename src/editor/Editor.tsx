@@ -42,7 +42,7 @@ interface EditorProps {
 
 // High performance guaranteed
 export const Editor = ({
-  content, 
+  content,
   editorId,
   autoFocus = true,
   options,
@@ -66,7 +66,7 @@ export const Editor = ({
     },
     readOnly
   }
-  
+
   const setNodePreview = useGraphStore((store) => store.setNodePreview)
   const headingQASearch = useSuggestionStore((store) => store.headingQASearch)
   const isEmpty = useMultipleEditors((store) => store.isEmpty)
@@ -76,11 +76,6 @@ export const Editor = ({
   const { focusBlock } = useFocusBlock()
   const clearHighlights = useBlockHighlightStore((store) => store.clearAllHighlightedBlockIds)
   const hightlightedBlockIds = useBlockHighlightStore((store) => store.hightlighted.editor)
-  useEffect(() => {
-    if (focusBlockId) {
-      focusBlock(focusBlockId, editorId)
-    }
-  }, [focusBlockId, editorId])
 
   useEffect(() => {
     const hightlightedBlockIds = useBlockHighlightStore.getState().hightlighted.editor
