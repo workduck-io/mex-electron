@@ -168,7 +168,7 @@ const TaskViewModal = () => {
     closeModal()
   }
 
-  // mog('TaskViewModal', { open, curView })
+  mog('TaskViewModal', { open, curView })
   return (
     <Modal className="ModalContent" overlayClassName="ModalOverlay" onRequestClose={closeModal} isOpen={open}>
       <ModalHeader>{updateViewId ? 'Update' : cloneViewId ? 'Clone' : 'New'} Task View</ModalHeader>
