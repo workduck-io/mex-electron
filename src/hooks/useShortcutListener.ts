@@ -172,7 +172,7 @@ interface LocalSkipOptions {
 
 export const useEnableShortcutHandler = () => {
   const isEditingPreview = useMultipleEditors((store) => store.isEditingAnyPreview)
-  const isModalOpen = useModalStore((store) => store.open)
+  // const isModalOpen = useModalStore((store) => store.open)
 
   const isOnElementClass = (ignoreClasses?: IgnoreClasses) => {
     const allIgnore: IgnoreClasses = ignoreClasses ?? 'all'
@@ -200,6 +200,7 @@ export const useEnableShortcutHandler = () => {
       skipLocal: false,
       ignoreModals: false
     }
+    const isModalOpen = useModalStore.getState().open
     // mog('enableShortcutHandler', {
     //   allOp,
     //   isModalOpen,

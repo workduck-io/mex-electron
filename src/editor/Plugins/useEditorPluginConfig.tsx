@@ -31,6 +31,7 @@ import useMultiComboboxOnKeyDown from '../Components/multi-combobox/useMultiComb
 import { TagComboboxItem } from '../Components/tag/components/TagComboboxItem'
 import { ELEMENT_TAG } from '../Components/tag/defaults'
 import { PluginOptionType } from './plugins'
+import { SEPARATOR } from '@workduck-io/mex-utils'
 
 const useEditorPluginConfig = (editorId: string, options?: PluginOptionType) => {
   const tags = useDataStore((state) => state.tags)
@@ -167,9 +168,9 @@ const useEditorPluginConfig = (editorId: string, options?: PluginOptionType) => 
     keys: {
       inline_block: {
         slateElementType: ELEMENT_INLINE_BLOCK,
-        newItemHandler: (path, openedNotePath?) => {
-          const openedNode = useDataStore.getState().ilinks.find((l) => l.path === openedNotePath)
-          const note = createNewNote({ path, openedNotePath, noRedirect: true, namespace: openedNode?.namespace })
+        newItemHandler: (path, openedNoteId?) => {
+          const openedNode = useDataStore.getState().ilinks.find((l) => l.nodeid === openedNoteId)
+          const note = createNewNote({ path, parent : { path: openedNode.path, namespace: openedNode.namespace} , noRedirect: true, namespace: openedNode?.namespace })
           return note?.nodeid
         },
         renderElement: ILinkComboboxItem
@@ -204,10 +205,20 @@ const useEditorPluginConfig = (editorId: string, options?: PluginOptionType) => 
       },
       internal: {
         slateElementType: 'internal',
-        newItemHandler: (path, openedNotePath?) => {
-          mog('new item here is', { path, openedNotePath })
-          const openedNode = useDataStore.getState().ilinks.find((l) => l.path === openedNotePath)
-          const note = createNewNote({ path, openedNotePath, noRedirect: true, namespace: openedNode?.namespace })
+        newItemHandler: (path, openedNoteId?) => {
+          const openedNode = useDataStore.getState().ilinks.find((l) => l.nodeid === openedNoteId)
+          mog('new item here is', { path, openedNoteId, openedNode })
+          const note = createNewNote({
+            path: path.startsWith(SEPARATOR) ? `${openedNode?.path}${path}` : path,
+            parent: path.startsWith(SEPARATOR)
+              ? {
+                  path: openedNode?.path,
+                  namespace: openedNode?.namespace
+                }
+              : undefined,
+            noRedirect: true,
+            namespace: openedNode?.namespace
+          })
           return note?.nodeid
         },
         renderElement: SlashComboboxItem
@@ -216,11 +227,20 @@ const useEditorPluginConfig = (editorId: string, options?: PluginOptionType) => 
     internal: {
       ilink: {
         slateElementType: ELEMENT_ILINK,
-        newItemHandler: (path, openedNotePath?) => {
-          mog('new item here is', { path, openedNotePath })
-          // TODO: check for path in combination with namespace
-          const openedNode = useDataStore.getState().ilinks.find((l) => l.path === openedNotePath)
-          const note = createNewNote({ path, openedNotePath, noRedirect: true, namespace: openedNode?.namespace })
+        newItemHandler: (path, openedNoteId?) => {
+          const openedNode = useDataStore.getState().ilinks.find((l) => l.nodeid === openedNoteId)
+          mog('new item here is', { path, openedNoteId, openedNode })
+          const note = createNewNote({
+            path: path.startsWith(SEPARATOR) ? `${openedNode?.path}${path}` : path,
+            parent: path.startsWith(SEPARATOR)
+              ? {
+                  path: openedNode?.path,
+                  namespace: openedNode?.namespace
+                }
+              : undefined,
+            noRedirect: true,
+            namespace: openedNode?.namespace
+          })
           return note?.nodeid
         },
         renderElement: ILinkComboboxItem

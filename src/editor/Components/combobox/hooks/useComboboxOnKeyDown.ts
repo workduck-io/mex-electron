@@ -48,6 +48,7 @@ export const getCreateableOnSelect = (onSelectItem: OnSelectItem, onNewItem: OnN
     const editorNoteId = cleanEditorId(editor?.id)
     const currentNodeKey = useDataStore.getState().ilinks.find((l) => l.nodeid === editorNoteId)?.path
     const itemIndex = useComboboxStore.getState().itemIndex
+    
 
     const item = items[itemIndex]
 
@@ -56,7 +57,7 @@ export const getCreateableOnSelect = (onSelectItem: OnSelectItem, onNewItem: OnN
       if (item.key === '__create_new' && selectVal) {
         // mog('getCreatableInSelect using OnNewItem', { item, selectVal, creatable })
         const val = pure(typeof selectVal === 'string' ? selectVal : selectVal.text)
-        const res = onNewItem(val, currentNodeKey)
+        const res = onNewItem(val, editorNoteId)
         if (res) {
           onSelectItem(editor, { key: String(items.length), text: res }, elementType, tab)
         }
@@ -66,7 +67,7 @@ export const getCreateableOnSelect = (onSelectItem: OnSelectItem, onNewItem: OnN
       }
     } else if (selectVal && creatable) {
       const val = pure(typeof selectVal === 'string' ? selectVal : selectVal.text)
-      const res = onNewItem(val, currentNodeKey)
+      const res = onNewItem(val, editorNoteId)
       // onSelectItem(editor, { key: String(items.length), text: res ?? val })
       if (res) onSelectItem(editor, { key: String(items.length), text: val }, elementType, tab)
     }
@@ -103,7 +104,7 @@ export const useComboboxOnKeyDown = (config: ComboConfigData): KeyboardHandler =
 
   return (editor) => (e) => {
     const comboboxKey: string = useComboboxStore.getState().key
-
+    const editorNoteId = cleanEditorId(editor?.id)
     const comboType = keys[comboboxKey]
 
     const itemIndex = useComboboxStore.getState().itemIndex
@@ -125,12 +126,12 @@ export const useComboboxOnKeyDown = (config: ComboConfigData): KeyboardHandler =
       onSelectItemHandler,
       (newItem, parentId?) => {
         if (comboboxKey === ComboboxKey.INTERNAL && !isInternalCommand(search)) {
-          return internal.ilink.newItemHandler(newItem, parentId)
+          return internal.ilink.newItemHandler(newItem, editorNoteId)
         }
 
         if (comboType) {
           // mog('comoboType', { newItem, comboType, parentId })
-          return comboType.newItemHandler(newItem, parentId)
+          return comboType.newItemHandler(newItem, editorNoteId)
         }
       },
       comboboxKey !== ComboboxKey.SLASH_COMMAND
