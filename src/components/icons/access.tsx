@@ -19,3 +19,10 @@ export const AccessIcon = ({ access }: AccessIconProps) => {
   if (accessIcons[access]) return accessIcons[access]
   return null
 }
+
+export const sharedAccessIcon: Record<AccessLevel, string> = {
+  READ: 'bi:eye-fill',
+  WRITE: 'fa-solid:user-edit',
+  MANAGE: 'fa6-solid:user-lock',
+  OWNER: 'fa:user'
+}

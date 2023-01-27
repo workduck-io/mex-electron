@@ -29,6 +29,7 @@ interface EditorProps {
   editorId: string
   readOnly?: boolean
   onChange?: any
+  focusBlockId?: string // * Block to focus
   autoFocus?: boolean
   comboboxOptions?: ComboboxOptions
   focusAtBeginning?: boolean
@@ -46,6 +47,7 @@ export const Editor = ({
   autoFocus = true,
   options,
   readOnly = false,
+  focusBlockId,
   onChange,
   onAutoSave,
   padding = '32px',

@@ -30,6 +30,7 @@ import EditorPreview from '../../EditorPreview/EditorPreview'
 import { useHotkeys } from '../hooks/useHotkeys'
 import { SILink, SILinkRoot, StyledIcon } from './ILinkElement.styles'
 import { ILinkElementProps } from './ILinkElement.types'
+import { sharedAccessIcon } from '@components/icons/access'
 
 /**
  * ILinkElement with no default styles. [Use the `styles` API to add your own styles.](https://github.com/OfficeDev/office-ui-fabric-react/wiki/Component-Styling) */
@@ -210,13 +211,6 @@ export const ILinkElement = ({ attributes, children, element }: ILinkElementProp
   const namespaceIcon = showNamespace ? getNamespaceIconForNode(element?.value) : undefined
 
   // mog('ILinkElement', { element, namespace, currentNodeNamespace })
-
-  const sharedAccessIcon: Record<AccessLevel, string> = {
-    READ: 'bi:eye-fill',
-    WRITE: 'fa-solid:user-edit',
-    MANAGE: 'fa6-solid:user-lock',
-    OWNER: 'fa:user'
-  }
 
   return (
     <SILinkRoot

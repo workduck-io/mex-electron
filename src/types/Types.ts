@@ -149,6 +149,8 @@ export interface DataStoreState {
 
   initializeDataStore: (initData: InitData) => void
 
+  resetDataStore: () => void
+
   // Namespaces
   namespaces: SingleNamespace[]
   setNamespaces: (namespaces: SingleNamespace[]) => void

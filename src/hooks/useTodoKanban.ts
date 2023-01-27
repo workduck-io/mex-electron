@@ -18,6 +18,7 @@ import { useMentions } from './useMentions'
 import { useNodes } from './useNodes'
 import { useSearchExtra } from './useSearch'
 import { useTags } from './useTags'
+import useUpdateBlock from './useUpdateBlock'
 
 export interface TodoKanbanCard extends KanbanCard {
   todo: TodoType
@@ -67,6 +68,7 @@ export const useTodoKanban = () => {
   const ilinks = useDataStore((state) => state.ilinks)
   const namespaces = useDataStore((state) => state.namespaces)
 
+  const { setInfoOfBlockInContent } = useUpdateBlock()
   const { getPathFromNodeid, getILinkFromNodeid } = useLinks()
   const { isInArchive } = useNodes()
   const { getSearchExtra } = useSearchExtra()
@@ -74,12 +76,20 @@ export const useTodoKanban = () => {
   const { getTags } = useTags()
   const taskFilterFunctions = useTaskFilterFunctions()
 
+  const updateTodoLocally = (todo: TodoType, blockData: any) => {
+    updateTodo(todo.nodeid, { ...todo, metadata: { ...todo.metadata, ...blockData } })
+    setInfoOfBlockInContent(todo.nodeid, {
+      blockId: todo.id,
+      blockData,
+      useBuffer: true
+    })
+  }
   const changeStatus = (todo: TodoType, newStatus: TodoStatus) => {
-    updateTodo(todo.nodeid, { ...todo, metadata: { ...todo.metadata, status: newStatus } })
+    updateTodoLocally(todo, { status: newStatus })
   }
 
   const changePriority = (todo: TodoType, newPriority: PriorityType) => {
-    updateTodo(todo.nodeid, { ...todo, metadata: { ...todo.metadata, priority: newPriority } })
+    updateTodoLocally(todo, { status: newPriority })
   }
 
   const generateTodoFilters = (board: TodoKanbanBoard) => {

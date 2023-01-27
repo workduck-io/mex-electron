@@ -5,6 +5,7 @@ import TaskHeader from '@components/mex/Tasks/TaskHeader'
 import { useEnableShortcutHandler } from '@hooks/useShortcutListener'
 import { useSyncTaskViews, useViewStore } from '@hooks/useTaskViews'
 import { useLayoutStore } from '@store/useLayoutStore'
+import useModalStore, { ModalsType } from '@store/useModalStore'
 import { OverlaySidebarWindowWidth } from '@style/responsive'
 import { useMediaQuery } from 'react-responsive'
 import { useMatch } from 'react-router-dom'
@@ -21,10 +22,11 @@ import { PageContainer } from '../../style/Layouts'
 import { StyledTasksKanban, TaskCard, TaskColumnHeader } from '../../style/Todo'
 import Todo from '../../ui/components/Todo'
 import { NavigationType, ROUTE_PATHS, useRouting } from '../routes/urls'
-import useModalStore, { ModalsType } from '@store/useModalStore'
 import Plateless from '@editor/Plateless'
 import { isReadonly, usePermissions } from '@hooks/usePermissions'
 import toast from 'react-hot-toast'
+import { useBlockHighlightStore, useFocusBlock } from '@editor/Actions/useFocusBlock'
+import useMultipleEditors from '@store/useEditorsStore'
 
 interface RenderTaskProps {
   id: string
@@ -40,6 +42,8 @@ export const RenderTask = React.memo<RenderTaskProps>(
     const { changeStatus, changePriority, getPureContent } = useTodoKanban()
 
     const sidebar = useLayoutStore((store) => store.sidebar)
+    const { selectBlock } = useFocusBlock()
+    const setHighlights = useBlockHighlightStore((state) => state.setHighlightedBlockIds)
     const todos = useTodoStore((store) => store.todos)
     const pC = useMemo(() => getPureContent(todo), [id, todo])
     const { accessWhenShared } = usePermissions()
@@ -60,6 +64,8 @@ export const RenderTask = React.memo<RenderTaskProps>(
     const toggleModal = useModalStore((store) => store.toggleOpen)
     const priorityShown = todo.metadata.priority !== PriorityType.noPriority
 
+    
+
     return (
       <TaskCard
         ref={selectedCard && id === selectedCard.id ? selectedRef : null}
@@ -70,6 +76,9 @@ export const RenderTask = React.memo<RenderTaskProps>(
         onMouseDown={(event) => {
           event.preventDefault()
           if (event.detail === 2) {
+            // toggleModal(ModalsType.previewNote, { noteId: todo.nodeid, blockId: todo.id })
+            selectBlock(todo.id)
+            setHighlights([todo.id], 'editor')
             toggleModal(ModalsType.previewNote, { noteId: todo.nodeid, blockId: todo.id })
           }
         }}
@@ -109,6 +118,7 @@ const Tasks = () => {
   const setCurrentView = useViewStore((store) => store.setCurrentView)
   const { enableShortcutHandler } = useEnableShortcutHandler()
   const { accessWhenShared } = usePermissions()
+  const isModalOpen = useModalStore((store) => store.open)
 
   const { goTo } = useRouting()
 
@@ -134,8 +144,10 @@ const Tasks = () => {
   } = useTodoKanban()
 
   const board = useMemo(() => getTodoBoard(), [nodesTodo, globalJoin, currentFilters])
-
+  const { selectBlock } = useFocusBlock()
+  const setHighlights = useBlockHighlightStore((state) => state.setHighlightedBlockIds)
   const selectedRef = useRef<HTMLDivElement>(null)
+  const isPreviewEditors = useMultipleEditors((store) => store.editors)
   const handleCardMove = (card, source, destination) => {
     const readOnly = card?.todo?.nodeid && isReadonly(accessWhenShared(card?.todo?.nodeid))
     // mog('card moved', { card, source, destination, readOnly })
@@ -295,93 +307,100 @@ const Tasks = () => {
   }, [selectedCard])
 
   useEffect(() => {
-    const unsubscribe = tinykeys(window, {
-      Escape: (event) => {
-        enableShortcutHandler(() => {
+    const shorcutConfig = () => {
+      if (isModalOpen !== undefined) return {}
+
+      return {
+        Escape: (event) => {
+          enableShortcutHandler(() => {
+            event.preventDefault()
+            if (selectedCard) {
+              setSelectedCard(null)
+            }
+            // else {
+            // mog('LOAD NODE')
+            // // const nodeid = nodeUID ?? lastOpened[0] ?? baseNodeId
+            // // loadNode(nodeid)
+            // // goTo(ROUTE_PATHS.node, NavigationType.push, nodeid)
+            // }
+          })
+        },
+
+        'Shift+ArrowRight': (event) => {
+          enableShortcutHandler(() => {
+            event.preventDefault()
+            handleCardMoveNext()
+          })
+        },
+
+        'Shift+ArrowLeft': (event) => {
+          enableShortcutHandler(() => {
+            event.preventDefault()
+            handleCardMovePrev()
+          })
+        },
+
+        ArrowRight: (event) => {
+          enableShortcutHandler(() => {
+            event.preventDefault()
+            selectNewCard('right')
+          })
+        },
+
+        ArrowLeft: (event) => {
+          enableShortcutHandler(() => {
+            event.preventDefault()
+            selectNewCard('left')
+          })
+        },
+        ArrowDown: (event) => {
+          enableShortcutHandler(() => {
+            event.preventDefault()
+            selectNewCard('down')
+          })
+        },
+
+        ArrowUp: (event) => {
+          enableShortcutHandler(() => {
+            event.preventDefault()
+            selectNewCard('up')
+          })
+        },
+
+        '$mod+1': (event) => {
           event.preventDefault()
-          if (selectedCard) {
-            setSelectedCard(null)
-          }
-          // else {
-          // mog('LOAD NODE')
-          // // const nodeid = nodeUID ?? lastOpened[0] ?? baseNodeId
-          // // loadNode(nodeid)
-          // // goTo(ROUTE_PATHS.node, NavigationType.push, nodeid)
-          // }
-        })
-      },
+          changeSelectedPriority(PriorityType.low)
+        },
 
-      'Shift+ArrowRight': (event) => {
-        enableShortcutHandler(() => {
+        '$mod+2': (event) => {
           event.preventDefault()
-          handleCardMoveNext()
-        })
-      },
+          changeSelectedPriority(PriorityType.medium)
+        },
 
-      'Shift+ArrowLeft': (event) => {
-        enableShortcutHandler(() => {
+        '$mod+3': (event) => {
           event.preventDefault()
-          handleCardMovePrev()
-        })
-      },
+          changeSelectedPriority(PriorityType.high)
+        },
 
-      ArrowRight: (event) => {
-        enableShortcutHandler(() => {
+        '$mod+0': (event) => {
           event.preventDefault()
-          selectNewCard('right')
-        })
-      },
+          changeSelectedPriority(PriorityType.noPriority)
+        },
 
-      ArrowLeft: (event) => {
-        enableShortcutHandler(() => {
+        '$mod+Enter': (event) => {
           event.preventDefault()
-          selectNewCard('left')
-        })
-      },
-
-      ArrowDown: (event) => {
-        enableShortcutHandler(() => {
-          event.preventDefault()
-          selectNewCard('down')
-        })
-      },
-
-      ArrowUp: (event) => {
-        enableShortcutHandler(() => {
-          event.preventDefault()
-          selectNewCard('up')
-        })
-      },
-
-      '$mod+1': (event) => {
-        event.preventDefault()
-        changeSelectedPriority(PriorityType.low)
-      },
-
-      '$mod+2': (event) => {
-        event.preventDefault()
-        changeSelectedPriority(PriorityType.medium)
-      },
-
-      '$mod+3': (event) => {
-        event.preventDefault()
-        changeSelectedPriority(PriorityType.high)
-      },
-
-      '$mod+0': (event) => {
-        event.preventDefault()
-        changeSelectedPriority(PriorityType.noPriority)
-      },
-
-      '$mod+Enter': (event) => {
-        event.preventDefault()
-        onNavigateToNode()
+          onNavigateToNode()
+        }
       }
-    })
-    return () => {
-      unsubscribe()
     }
-  }, [board, selectedCard])
+
+    if (!isPreviewEditors || (isPreviewEditors && !Object.entries(isPreviewEditors).length)) {
+      const unsubscribe = tinykeys(window, shorcutConfig())
+      return () => {
+        unsubscribe()
+      }
+    }
+  }, [board, selectedCard, isModalOpen, isPreviewEditors])
 
   useEffect(() => {
     if (match && match.params && match.params.viewid) {
@@ -397,18 +416,6 @@ const Tasks = () => {
       setCurrentFilters([])
     }
   }, [match])
-
-  const onDoubleClick = (event: React.MouseEvent<HTMLDivElement, MouseEvent>, nodeid: string) => {
-    event.preventDefault()
-    //double click
-    // mog('double click', { event })
-    if (event.detail === 2) {
-      push(nodeid)
-      goTo(ROUTE_PATHS.node, NavigationType.push, nodeid)
-    }
-  }
-
-  // mog('Tasks', { nodesTodo, board, selectedCard, match, currentFilters })
 
   const RenderCard = ({ id, todo }: { id: string; todo: TodoType }, { dragging }: { dragging: boolean }) => {
     return (

@@ -29,13 +29,15 @@ const directPropertyKeys = [
   'question',
   'answer',
   'actionContext',
-  'blockMeta'
+  'blockMeta',
+  'status',
+  'priority'
 ]
 const PropKeysArray = [...directPropertyKeys] as const
 type PropKeys = typeof PropKeysArray[number]
 type DirectProperties = Record<PropKeys, boolean | string>
 
-// Keys that will be replicated as is
+// Keys that will be replicated as <D-b>
 const directKeys = []
 
 // Keys that will be mapped to different key
