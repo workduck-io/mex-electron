@@ -1,11 +1,8 @@
-import { apiURLs } from '@apis/routes'
 import usePortalStore, { PortalType } from '@components/mex/Integrations/Portals/usePortalStore'
-import { ActionGroupType } from '@components/spotlight/Actions/useActionStore'
-import { WORKSPACE_HEADER } from '@data/Defaults/defaults'
 import { useAuthStore } from '@services/auth/useAuth'
 import { mog } from '@utils/lib/mog'
 
-import { client } from '@workduck-io/dwindle'
+import { API } from '../../src/API'
 
 import { useNamespaces } from './useNamespaces'
 
@@ -19,14 +16,9 @@ export const usePortals = () => {
 
   const getPortals = async () => {
     try {
-      const res = await client.get<Record<string, ActionGroupType>>(apiURLs.loch.getAllServices, {
-        headers: {
-          [WORKSPACE_HEADER]: getWorkspaceId()
-        }
-      })
-
+      const res = await API.loch.getAllServices()
       if (res) {
-        setApps(res.data)
+        setApps(res)
       }
     } catch (err) {
       mog('Unable to get apps')
@@ -40,11 +32,7 @@ export const usePortals = () => {
     const portal: PortalType = { serviceId, parentNodeId, serviceType: actionGroupId, mexId: workspaceId, namespaceId }
 
     try {
-      const res = client.post(apiURLs.loch.connectToService, portal, {
-        headers: {
-          [WORKSPACE_HEADER]: getWorkspaceId()
-        }
-      })
+      const res = await API.loch.connect(portal)
       if (res) {
         connectPortal(portal)
       }
@@ -61,11 +49,7 @@ export const usePortals = () => {
     }
 
     try {
-      const res = await client.put(apiURLs.loch.updateParentNoteOfService, reqBody, {
-        headers: {
-          [WORKSPACE_HEADER]: getWorkspaceId()
-        }
-      })
+      const res = await API.loch.updateParent(reqBody)
       if (res) {
         updateConnectedPortals(actionGroupId, serviceId, parentNodeId)
       }
@@ -76,14 +60,9 @@ export const usePortals = () => {
 
   const getConnectedPortals = async () => {
     try {
-      const res = await client.get(apiURLs.loch.getConnectedServices, {
-        headers: {
-          [WORKSPACE_HEADER]: getWorkspaceId()
-        }
-      })
-
+      const res = await API.loch.getAllConnected()
       if (res) {
-        setConnectedPortals(res.data)
+        setConnectedPortals(res)
       }
     } catch (err) {
       mog('Unable to get connected portals', { err })

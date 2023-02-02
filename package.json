@@ -129,6 +129,7 @@
     "iconv-lite": "^0.6.3",
     "idb-keyval": "^6.1.0",
     "jwt-decode": "^3.1.2",
+    "ky": "^0.33.2",
     "lottie-react": "^2.2.1",
     "match-sorter": "^6.3.0",
     "md5": "^2.3.0",

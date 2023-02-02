@@ -246,10 +246,10 @@ export const useInitializeAfterAuth = () => {
             .get(apiURLs.user.getUserRecords)
             .then(async (res) => {
               if (res) {
-                if (isGoogle && res.data.group === undefined) {
+                if (isGoogle && res.data.activeWorkspace === undefined) {
                   forceRefreshToken = true
                   return await registerNewUser(loginData)
-                } else if (res.data.group) {
+                } else if (res.data.activeWorkspace) {
                   const userDetails = {
                     email: loginData.email,
                     alias: res.data.alias ?? res.data.properties?.alias ?? res.data.name,
@@ -257,7 +257,7 @@ export const useInitializeAfterAuth = () => {
                     name: res.data.name,
                     roles: res.data?.metadata?.roles ?? ''
                   }
-                  const workspaceDetails = { id: res.data.group, name: 'WORKSPACE_NAME' }
+                  const workspaceDetails = { id: res.data.activeWorkspace, name: 'WORKSPACE_NAME' }
                   return { workspaceDetails, userDetails }
                 } else {
                   throw new Error('Could Not Fetch User Records')

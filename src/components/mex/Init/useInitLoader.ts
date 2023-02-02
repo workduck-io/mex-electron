@@ -15,11 +15,13 @@ import { mog } from '@utils/lib/mog'
 import { useRouting, ROUTE_PATHS, NavigationType } from '@views/routes/urls'
 import toast from 'react-hot-toast'
 
-import { useSyncTaskViews, useTaskViews } from '../../../hooks/useTaskViews'
+import { API } from '../../../API'
+
 
 export const useInitLoader = () => {
   const isAuthenticated = useAuthStore((store) => store.authenticated)
   const setShowLoader = useLayoutStore((store) => store.setShowLoader)
+  const getWorkspaceId = useAuthStore((store) => store.getWorkspaceId)
   const { loadNode } = useLoad()
   const { updateBaseNode } = useNodes()
 
@@ -62,6 +64,7 @@ export const useInitLoader = () => {
 
   useEffect(() => {
     if (isAuthenticated) {
+      API.setWorkspaceHeader(getWorkspaceId())
       backgroundFetch()
       fetchAll()
     }
