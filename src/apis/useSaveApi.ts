@@ -26,6 +26,18 @@ import { View } from '../types/data'
 import { extractMetadata } from '../utils/lib/metadata'
 import { deserializeContent, serializeContent } from '../utils/lib/serialize'
 import { apiURLs } from './routes'
+import { AccessLevel } from '../types/mentions'
+import { Reminder } from '../types/reminders'
+import { getReminderAssociatedId } from '@hooks/useReminders'
+import { APIReaction } from '../types/reaction'
+import { APIComment } from '../types/comment'
+
+interface ReactionRequests {
+  nodeId: string
+  blockId: string
+  reaction: MIcon
+  action: 'ADD' | 'DELETE'
+}
 
 
 export const useApi = () => {
@@ -636,6 +648,46 @@ export const useApi = () => {
     }
   }
 
+  const getNamespace = async (id: string) => {
+    const namespace = await API.namespace
+      .get(id)
+      .then((d: any) => {
+        mog('namespaces specific', { data: d, id })
+        // return d?.nodeHierarchy
+
+        return {
+          id: d?.id,
+          name: d?.name,
+          icon: d?.metadata?.icon ?? undefined,
+          nodeHierarchy: d?.nodeHierarchy,
+          createdAt: d?.createdAt,
+          updatedAt: d?.updatedAt,
+          publicAccess: d?.publicAccess
+        }
+      })
+      .catch((e) => {
+        mog('Save error', e)
+        return undefined
+      })
+
+    return namespace
+  }
+
+  const getPublicNamespaceAPI = async (namespaceID: string) => {
+    const res = await API.namespace.getPublic(namespaceID)
+    return res
+  }
+
+  const makeNamespacePublic = async (namespaceID: string) => {
+    const res = await API.namespace.makePublic(namespaceID)
+    return res
+  }
+
+  const makeNamespacePrivate = async (namespaceID: string) => {
+    const res = await API.namespace.makePrivate(namespaceID)
+    return res
+  }
+
   const createNewNamespace = async (name: string) => {
     try {
       const namespaceID = generateNamespaceId()
@@ -648,6 +700,7 @@ export const useApi = () => {
           iconUrl: 'heroicons-outline:view-grid'
         }
       }
+      mog("req",{req});
       const res = await API.namespace.create(req).then((d: any) => ({
         id: req.id,
         name: name,
@@ -689,6 +742,188 @@ export const useApi = () => {
     }
   }
 
+  const shareNamespace = async (id: string, userIDs: string[], accessType: AccessLevel) => {
+    try {
+      const res = await API.namespace.share(id, userIDs, accessType)
+      mog('Shared a namespace', { res })
+      return res
+    } catch (err) {
+      throw new Error(`Unable to share namespace: ${err}`)
+    }
+  }
+  const revokeNamespaceShare = async (id: string, userIDs: string[]) => {
+    try {
+      const res = await API.namespace.revokeAccess(id, userIDs)
+      mog('revoke access users', res)
+      return res
+    } catch (err) {
+      throw new Error(`Unable to revoke namespace access: ${err}`)
+    }
+  }
+
+  const updateNamespaceShare = async (id: string, userIDToAccessTypeMap: { [userid: string]: AccessLevel }) => {
+    try {
+      return await API.namespace.updateAccess(id, userIDToAccessTypeMap).then((resp) => {
+        mog('changeUsers resp', { resp })
+        return resp
+      })
+    } catch (err) {
+      throw new Error(`Unable to update namespace access: ${err}`)
+    }
+  }
+
+  const getAllSharedUsers = async (id: string): Promise<{ users: Record<string, string> }> => {
+    try {
+      return await API.share.getNamespacePermissions(id).then((resp: any) => {
+        mog('get all shared users', resp)
+        return { users: resp }
+      })
+    } catch (err) {
+      mog(`Unable to get shared namespace users: ${err}`)
+      return { users: {} }
+    }
+  }
+
+  // reminder
+  const getReminder = async (id: string) => {
+    const res = await API.reminder.get(id)
+    return res
+  }
+  const getAllWorkspaceReminders = async () => {
+    const res = await API.reminder.getAllOfWorkspace()
+    return res
+  }
+
+  const getAllNodeReminders = async (nodeId: string) => {
+    const res = await API.reminder.getAllOfNode(nodeId)
+    return res
+  }
+
+  const saveReminder = async (reminder: Reminder) => {
+    const workspaceIdStr = getWorkspaceId()
+    const reqData = {
+      workspaceId: workspaceIdStr,
+      // This is entity id
+      nodeId: getReminderAssociatedId(reminder, workspaceIdStr),
+      entityId: reminder.id,
+      properties: reminder
+    }
+
+    // mog('Saving reminder', { reminder, reqData })
+    const res = await API.reminder.save(reqData)
+    return res
+  }
+
+  const deleteReminder = async (id: string) => {
+    const res = await API.reminder.delete(id)
+    return res
+  }
+
+  const deleteAllNode = async (nodeId: string) => {
+    const res = await API.reminder.deleteAllOfNode(nodeId)
+    return res
+  }
+
+  const addReaction = async (reaction: APIReaction) => {
+    const reqData: ReactionRequests = {
+      action: 'ADD',
+      nodeId: reaction.nodeId,
+      blockId: reaction.blockId,
+      reaction: reaction.reaction
+    }
+    mog('Saving reaction', { reaction, reqData })
+    const res = await API.reaction.react(reqData)
+    return res
+  }
+
+  const deleteReaction = async (reaction: APIReaction) => {
+    const reqData: ReactionRequests = {
+      action: 'DELETE',
+      nodeId: reaction.nodeId,
+      blockId: reaction.blockId,
+      reaction: reaction.reaction
+    }
+    mog('Deleting reaction', { reaction, reqData })
+    const res = await API.reaction.react(reqData)
+    return res
+  }
+
+  const getReactionsOfNote = async (nodeId: string, force = false) => {
+    const res = await API.reaction.getAllOfNode(nodeId, {
+      cache: true,
+      expiry: GET_REQUEST_MINIMUM_GAP_IN_MS
+    })
+    return res
+  }
+
+  const getReactionsOfBlock = async (nodeId: string, blockId: string) => {
+    const res = await API.reaction.getAllOfBlock(nodeId, blockId)
+    return res
+  }
+
+  const getBlockReactionDetails = async (nodeId: string, blockId: string) => {
+    const res = await API.reaction.getDetailedOfBlock(nodeId, blockId)
+    return res
+  }
+  
+  // comment
+  const saveComment = async (comment: APIComment) => {
+    const reqData = {
+      nodeId: comment.nodeId,
+      blockId: comment.blockId,
+      threadId: comment.threadId,
+      content: comment.content,
+      entityId: comment.entityId
+    }
+
+    mog('Saving comment', { comment, reqData })
+    const res = await API.comment.create(reqData)
+    return res
+  }
+
+  const getComment = async (nodeid: string, id: string) => {
+    const res = await API.comment.get(nodeid, id)
+    return res
+  }
+
+  const deleteComment = async (nodeid: string, id: string) => {
+    const res = await API.comment.delete(nodeid, id)
+    return res
+  }
+
+  const getCommentsByNodeId = async (nodeId: string, force = false) => {
+    const res = await API.comment.getAllOfNode(nodeId, {
+      cache: true,
+      expiry: GET_REQUEST_MINIMUM_GAP_IN_MS
+    })
+    return res
+  }
+
+  const deleteCommentsByNodeId = async (nodeId: string) => {
+    const res = await API.comment.deleteAllOfNode(nodeId)
+    return res
+  }
+
+  const getCommentsByBlockId = async (nodeId: string, blockId: string) => {
+    const res = await API.comment.getAllOfBlock(nodeId, blockId)
+    return res
+  }
+
+  const deleteCommentsByBlockId = async (nodeId: string, blockId: string) => {
+    const res = await API.comment.deleteAllOfBlock(nodeId, blockId)
+    return res
+  }
+
+  const getCommentsByThreadId = async (nodeId: string, blockId: string, threadId: string) => {
+    const res = await API.comment.getAllOfThread(nodeId, blockId, threadId)
+    return res
+  }
+
+  const deleteCommentsByThreadId = async (nodeId: string, blockId: string, threadId: string) => {
+    const res = await API.comment.deleteAllOfThread(nodeId, blockId, threadId)
+    return res
+  }
+
   return {
     saveDataAPI,
     getDataAPI,
@@ -714,7 +949,35 @@ export const useApi = () => {
     changeNamespaceIcon,
     workspaceHeaders,
     createNewNamespace,
-    bulkGetNodes
+    bulkGetNodes,
+    getPublicNamespaceAPI,
+    makeNamespacePublic,
+    shareNamespace,
+    revokeNamespaceShare,
+    getAllSharedUsers,
+    updateNamespaceShare,
+    getNamespace,
+    makeNamespacePrivate,
+    getReminder,
+    getAllWorkspaceReminders,
+    getAllNodeReminders,
+    saveReminder,
+    deleteReminder,
+    deleteAllNode,
+    addReaction,
+    deleteReaction,
+    getReactionsOfNote,
+    getReactionsOfBlock,
+    getBlockReactionDetails,
+    saveComment,
+    getComment,
+    deleteComment,
+    getCommentsByNodeId,
+    deleteCommentsByNodeId,
+    getCommentsByBlockId,
+    deleteCommentsByBlockId,
+    getCommentsByThreadId,
+    deleteCommentsByThreadId
   }
 }
 

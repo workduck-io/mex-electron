@@ -2,6 +2,7 @@ import { AppType } from '@data/constants'
 import { mog } from '@utils/lib/mog'
 import { add, startOfTomorrow, sub } from 'date-fns'
 import { uniqBy } from 'lodash'
+import md5 from 'md5'
 import create from 'zustand'
 
 import { ReminderControls, SnoozeControl } from '../components/mex/Reminders/Reminder'
@@ -607,5 +608,20 @@ export const useReminders = () => {
     getReminderControls,
     attachBlockData,
     getRemindersForNextNMinutes
+  }
+}
+
+export const getReminderAssociatedId = (reminder: Reminder, workspaceId: string): string => {
+  switch (reminder.associated) {
+    case 'node':
+      return reminder.nodeid
+    case 'todo':
+      return reminder.todoid
+    case 'url': {
+      const hashedURL = md5(`${workspaceId}${reminder.url}`)
+      return hashedURL
+    }
+    default:
+      return reminder.nodeid
   }
 }

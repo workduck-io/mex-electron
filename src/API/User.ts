@@ -1,5 +1,4 @@
 import { apiURLs } from '@apis/routes'
-import { Options } from 'ky'
 import { AxiosX } from './AxiosX'
 
 export class UserAPI {
@@ -22,7 +21,7 @@ export class UserAPI {
     return await this.client.put(apiURLs.user.updateInfo, data, config)
   }
 
-  async updatePreference(userPreferences, options?: Options) {
+  async updatePreference(userPreferences, options?) {
     return await this.client.put(apiURLs.user.updatePreference, { preference: userPreferences }, options)
   }
 }
