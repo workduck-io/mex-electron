@@ -3,7 +3,7 @@ import { useContentStore } from '@store/useContentStore'
 import { mog } from '@utils/lib/mog'
 
 import { useAuth } from '@workduck-io/dwindle'
-import { API } from '../../src/API'
+import { API } from '../API'
 
 import { USE_API } from '../data/Defaults/dev_'
 import { useAuthStore } from '../services/auth/useAuth'

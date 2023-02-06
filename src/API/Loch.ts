@@ -1,9 +1,9 @@
-import { apiURLs } from '@apis/routes'
-import { AxiosX } from './AxiosX'
+import { apiURLs, GOOGLE_OAUTH2_REFRESH_URL } from '@apis/routes'
+import { KYClient } from '@workduck-io/dwindle'
 
 export class LochAPI {
-  private client: AxiosX
-  constructor(client: AxiosX) {
+  private client: KYClient
+  constructor(client: KYClient) {
     this.client = client
   }
   async get(nodeId: string, config?) {
@@ -24,5 +24,13 @@ export class LochAPI {
 
   async getAllConnected(config?) {
     return await this.client.get(apiURLs.loch.getConnectedServices, config)
+  }
+
+  async getGoogleAuthUrl(config?){
+    return await this.client.get<any>(apiURLs.getGoogleAuthUrl(),config)
+  }
+  
+  async fetchRefereshToken(data){
+    return await this.client.post(GOOGLE_OAUTH2_REFRESH_URL,data);
   }
 }

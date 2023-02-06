@@ -17,7 +17,7 @@ import toast from 'react-hot-toast'
 import create, { State } from 'zustand'
 import { devtools, persist } from 'zustand/middleware'
 
-import { client, useAuth } from '@workduck-io/dwindle'
+import { useAuth } from '@workduck-io/dwindle'
 import { UserCred } from '@workduck-io/mex-utils'
 
 import { apiURLs } from '../../apis/routes'
@@ -27,6 +27,7 @@ import { RegisterFormData } from '../../views/mex/Register'
 import useAnalytics from '../analytics'
 import { CustomEvents, Properties } from '../analytics/events'
 import { useTokenStore } from './useTokens'
+import { API } from '../../../src/API'
 
 interface WorkspaceDetails {
   name: string
@@ -193,7 +194,7 @@ export const useAuthentication = () => {
     let workspaceID = null
     for (let i = 0; i < 7; i++) {
       try {
-        const result = await client.get(apiURLs.user.registerStatus)
+        const result = await API.user.registerStatus()
         if (result.status === 200) {
           workspaceID = result.data.workspaceID
           break
@@ -242,22 +243,22 @@ export const useInitializeAfterAuth = () => {
     try {
       const { userDetails, workspaceDetails } = registerUser
         ? await registerNewUser(loginData)
-        : await client
-            .get(apiURLs.user.getUserRecords)
+        : await API.user
+            .getCurrent()
             .then(async (res) => {
               if (res) {
-                if (isGoogle && res.data.activeWorkspace === undefined) {
+                if (isGoogle && res.activeWorkspace === undefined) {
                   forceRefreshToken = true
                   return await registerNewUser(loginData)
-                } else if (res.data.activeWorkspace) {
+                } else if (res.activeWorkspace) {
                   const userDetails = {
                     email: loginData.email,
-                    alias: res.data.alias ?? res.data.properties?.alias ?? res.data.name,
-                    userID: res.data.id,
-                    name: res.data.name,
-                    roles: res.data?.metadata?.roles ?? ''
+                    alias: res.alias ?? res.properties?.alias ?? res.name,
+                    userID: res.id,
+                    name: res.name,
+                    roles: res.metadata?.roles ?? ''
                   }
-                  const workspaceDetails = { id: res.data.activeWorkspace, name: 'WORKSPACE_NAME' }
+                  const workspaceDetails = { id: res.activeWorkspace, name: 'WORKSPACE_NAME' }
                   return { workspaceDetails, userDetails }
                 } else {
                   throw new Error('Could Not Fetch User Records')

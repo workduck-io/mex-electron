@@ -1,6 +1,8 @@
+import { ACTION_ENV } from '@apis/routes'
+import { ActionHelperClient } from '@workduck-io/action-request-helper'
+import { KYClient } from '@workduck-io/dwindle'
 import { AxiosInstance } from 'axios'
 
-import { AxiosX } from './AxiosX'
 import { BookmarkAPI } from './Bookmarks'
 import { CommentAPI } from './Comment'
 import { LinkAPI } from './Links'
@@ -14,9 +16,9 @@ import { SnippetAPI } from './Snippet'
 import { UserAPI } from './User'
 import { ViewAPI } from './View'
 
-let instance
+let instance: APIClass
 class APIClass {
-  private client: AxiosX
+  private client: KYClient
   public node: NodeAPI
   public share: ShareAPI
   public snippet: SnippetAPI
@@ -29,6 +31,7 @@ class APIClass {
   public link: LinkAPI
   public reminder: ReminderAPI
   public user: UserAPI
+  public action: any
 
   constructor() {
     if (instance) {
@@ -37,8 +40,8 @@ class APIClass {
 
     instance = this
   }
-  init(client: AxiosInstance) {
-    this.client = new AxiosX(client)
+  init(client?: AxiosInstance) {
+    this.client = new KYClient(undefined, client)
     this.node = new NodeAPI(this.client)
     this.share = new ShareAPI(this.client)
     this.snippet = new SnippetAPI(this.client)
@@ -51,9 +54,13 @@ class APIClass {
     this.link = new LinkAPI(this.client)
     this.reminder = new ReminderAPI(this.client)
     this.user = new UserAPI(this.client)
+    this.action = new ActionHelperClient(this.client, undefined , ACTION_ENV )
   }
   setWorkspaceHeader(workspaceId: string) {
-    this.client.setHeader(workspaceId)
+    this.client.setWorkspaceHeader(workspaceId)
+  }
+  getClient(){
+    return this.client;
   }
 }
 

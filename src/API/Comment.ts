@@ -1,9 +1,9 @@
 import { apiURLs } from '@apis/routes'
-import { AxiosX } from './AxiosX'
+import { KYClient } from '@workduck-io/dwindle'
 
 export class CommentAPI {
-  private client: AxiosX
-  constructor(client: AxiosX) {
+  private client: KYClient
+  constructor(client: KYClient) {
     this.client = client
   }
 

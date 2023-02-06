@@ -2,7 +2,7 @@ import usePortalStore, { PortalType } from '@components/mex/Integrations/Portals
 import { useAuthStore } from '@services/auth/useAuth'
 import { mog } from '@utils/lib/mog'
 
-import { API } from '../../src/API'
+import { API } from '../API'
 
 import { useNamespaces } from './useNamespaces'
 

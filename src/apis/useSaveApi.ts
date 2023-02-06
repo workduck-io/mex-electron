@@ -12,8 +12,6 @@ import { getTagsFromContent } from '@utils/lib/content'
 import { mog } from '@utils/lib/mog'
 import toast from 'react-hot-toast'
 
-import { client } from '@workduck-io/dwindle'
-
 import { API } from '../API/Base'
 import { defaultContent } from '../data/Defaults/baseData'
 import { DEFAULT_NAMESPACE, GET_REQUEST_MINIMUM_GAP_IN_MS, WORKSPACE_HEADER } from '../data/Defaults/defaults'
@@ -93,10 +91,8 @@ export const useApi = () => {
       return
     }
 
-    const data = await client
-      .post(apiURLs.node.create, reqData, {
-        headers: workspaceHeaders()
-      })
+    const data = await await API.node
+      .save(reqData)
       .then((d) => {
         const metadata = extractMetadata(d.data)
         const content = deserializeContent(d.data.data ?? options.content)
@@ -319,10 +315,8 @@ export const useApi = () => {
   }
 
   const getNodesByWorkspace = async (): Promise<ILink[]> => {
-    const data = await client
-      .get(apiURLs.namespaces.getHierarchy, {
-        headers: workspaceHeaders()
-      })
+    const data = await API.namespace
+      .getHeirarchy()
       .then(async (d) => {
         if (d.data) {
           const parsedHierarchies: any = d.data
@@ -378,10 +372,11 @@ export const useApi = () => {
   }
 
   const getGoogleAuthUrl = async () => {
-    return await client
-      .get<any>(apiURLs.getGoogleAuthUrl(), {})
+    const resp = API.loch
+      .getGoogleAuthUrl()
       .then((resp) => resp.data)
       .catch((error) => console.error(error))
+    return resp;
   }
 
   const saveSnippetAPI = async ({
@@ -419,10 +414,13 @@ export const useApi = () => {
 
   const bulkGetSnippets = async (ids: string[]) => {
     const url = apiURLs.snippet.bulkGet
-    return client.post(url, { ids: ids }, { headers: workspaceHeaders() }).then((d: any) => {
+    const data = {ids: ids};
+    const resp = API.snippet
+      .bulkGet(data)
+      .then((d: any) => {
       if (d) {
-        if (d.data.failed.length > 0) mog('Failed API Requests: ', { url, ids: d.data.failed })
-        d.data.successful.forEach(async (snippet) => {
+        if (d.failed.length > 0) mog('Failed API Requests: ', { url, ids: d.failed })
+        d.successful.forEach(async (snippet) => {
           if (snippet) {
             updateSnippet(snippet.id, snippet)
             const tags = snippet.template ? ['template'] : ['snippet']
@@ -442,6 +440,7 @@ export const useApi = () => {
         return d.data.successful
       }
     })
+  return resp
   }
 
   const getAllSnippetsByWorkspace = async () => {
@@ -572,29 +571,25 @@ export const useApi = () => {
   const bulkGetNodes = async (ids: string[], namespaceID?: string, isShared = false) => {
     namespaceID = namespaceID && namespaceID !== 'NOT_SHARED' ? namespaceID : undefined
 
-    const url = isShared ? apiURLs.share.getBulk : apiURLs.node.getMultipleNode(namespaceID)
-    return client
-      .post(
-        url,
-        { ids: ids },
-        {
-          headers: workspaceHeaders()
-        }
-      )
+    const data = { ids: ids };
+    const url = apiURLs.share.getBulk
+    const resp = await API.share
+      .getBulk(data)
       .then((d) => {
         if (d) {
-          if (d.data.failed.length > 0) mog('Failed API Requests: ', { url, ids: d.data.failed })
+          if (d.failed.length > 0) mog('Failed API Requests: ', { url, ids: d.failed })
 
-          d.data.successful.forEach((node) => {
+          d.successful.forEach((node) => {
             const content = deserializeContent(node.data)
             const metadata = extractMetadata(node)
 
             updateFromContent(node.id, content, metadata)
           })
 
-          return d.data.successful
+          return d.successful
         }
       })
+    return resp;
   }
 
   const getAllNamespaces = async () => {

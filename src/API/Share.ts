@@ -1,10 +1,10 @@
 import { apiURLs } from '@apis/routes'
-import { AxiosX } from './AxiosX'
+import { KYClient } from '@workduck-io/dwindle'
 
 export class ShareAPI {
-  private client: AxiosX
+  private client: KYClient
 
-  constructor(client: AxiosX) {
+  constructor(client: KYClient) {
     this.client = client
   }
 
@@ -33,5 +33,9 @@ export class ShareAPI {
 
   async getNamespacePermissions(id: string, config?) {
     return await this.client.get(apiURLs.namespaces.getUsersOfShared(id), config)
+  }
+
+  async getBulk (data, config?){
+    return await this.client.post(apiURLs.share.getBulk, data, config);
   }
 }

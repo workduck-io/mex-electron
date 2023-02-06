@@ -1,13 +1,12 @@
 import { apiURLs } from '@apis/routes'
-import { AxiosX } from './AxiosX'
-
+import { KYClient } from '@workduck-io/dwindle'
 
 export class ViewAPI {
-  private client: AxiosX
+  private client: KYClient
   private versionHeaders = {
     'mex-api-ver': 'v2'
   }
-  constructor(client: AxiosX) {
+  constructor(client: KYClient) {
     this.client = client
   }
 

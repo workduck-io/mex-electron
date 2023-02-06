@@ -7,7 +7,7 @@ import { mog } from '@utils/lib/mog'
 import { useApi } from '../../apis/useSaveApi'
 import { UserPreferences } from '../../types/userPreference'
 import { useAuthStore } from './useAuth'
-import { API } from '../../../src/API'
+import { API } from '../../API'
 
 export interface TempUser {
   email: string

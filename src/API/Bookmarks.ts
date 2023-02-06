@@ -1,9 +1,9 @@
 import { apiURLs } from '@apis/routes'
-import { AxiosX } from './AxiosX'
+import { type CacheConfig, type KYClient } from '@workduck-io/dwindle'
 
 export class BookmarkAPI {
-  private client: AxiosX
-  constructor(client: AxiosX) {
+  private client: KYClient
+  constructor(client: KYClient) {
     this.client = client
   }
 

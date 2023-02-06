@@ -1,10 +1,10 @@
 import { apiURLs } from '@apis/routes'
-import { AxiosX } from './AxiosX'
+import { KYClient } from '@workduck-io/dwindle'
 
 export class SnippetAPI {
-  private client: AxiosX
+  private client: KYClient
 
-  constructor(client: AxiosX) {
+  constructor(client: KYClient) {
     this.client = client
   }
 
@@ -22,5 +22,9 @@ export class SnippetAPI {
 
   async allOfWorkspace(config?) {
     return await this.client.get(apiURLs.snippet.getAllSnippetsByWorkspace, config)
+  }
+
+  async bulkGet(data, config?){
+    return await this.client.post(apiURLs.snippet.bulkGet, data, config)
   }
 }

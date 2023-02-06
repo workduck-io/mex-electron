@@ -1,9 +1,9 @@
 import { apiURLs } from '@apis/routes'
-import { AxiosX } from './AxiosX'
+import { KYClient } from '@workduck-io/dwindle'
 
 export class UserAPI {
-  private client: AxiosX
-  constructor(client: AxiosX) {
+  private client: KYClient
+  constructor(client: KYClient) {
     this.client = client
   }
   async getCurrent(config?) {
@@ -23,5 +23,9 @@ export class UserAPI {
 
   async updatePreference(userPreferences, options?) {
     return await this.client.put(apiURLs.user.updatePreference, { preference: userPreferences }, options)
+  }
+
+  async registerStatus(cacheConfig?, options?) {
+    return await this.client.get(apiURLs.user.registerStatus, cacheConfig, options)
   }
 }

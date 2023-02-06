@@ -1,10 +1,10 @@
 import { apiURLs } from '@apis/routes'
-import { AxiosX } from './AxiosX'
+import { KYClient } from '@workduck-io/dwindle'
 
 export class NodeAPI {
-  private client: AxiosX
+  private client: KYClient
 
-  constructor(client: AxiosX) {
+  constructor(client: KYClient) {
     this.client = client
   }
 

@@ -17,7 +17,7 @@ import { mog } from '@utils/lib/mog'
 import { NavigationType, ROUTE_PATHS, useBrowserNavigation, useRouting } from '@views/routes/urls'
 
 
-import { client, useAuth } from '@workduck-io/dwindle'
+import { useAuth } from '@workduck-io/dwindle'
 
 import config from '../../../config.json'
 import { useActionsPerfomerClient } from '../../spotlight/Actions/useActionPerformer'
@@ -47,7 +47,7 @@ const Init = () => {
   useEffect(() => {
     
     const initUserAndApp = () => {
-      API.init(client as any)
+      API.init()
       const authenticatedUserEmail = initCognito(
         {
           UserPoolId: config.cognito.USER_POOL_ID,

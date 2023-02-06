@@ -7,7 +7,7 @@ import { mog } from '@utils/lib/mog'
 import { SHARED_NAMESPACE } from '@utils/lib/paths'
 
 
-import { API } from '../../../src/API'
+import { API } from '../../API'
 import { SharedNode } from '../../types/Types'
 import { AccessLevel } from '../../types/mentions'
 

@@ -1,10 +1,10 @@
 import { apiURLs } from '@apis/routes'
+import { KYClient } from '@workduck-io/dwindle'
 import { AccessLevel } from '../types/mentions'
-import { AxiosX } from './AxiosX'
 
 export class NamespaceAPI {
-  private client: AxiosX
-  constructor(client: AxiosX) {
+  private client: KYClient
+  constructor(client: KYClient) {
     this.client = client
   }
 
