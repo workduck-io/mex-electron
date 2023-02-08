@@ -1,11 +1,11 @@
-import axios from 'axios'
+import { KYClient } from '@workduck-io/dwindle'
 import { oembedProviders } from './embedProviders'
 
 const fetchOembed = async (url: string, endpoint: string): Promise<string | undefined> => {
   // Create URL for Oembed request
   const requestUrl = `${endpoint}?type=json&theme=dark&url=${encodeURIComponent(url)}`
-
-  const resp = await axios
+  const client = new KYClient;
+  const resp = await client
     .get(requestUrl)
     .then((r) => {
       return r.data.html

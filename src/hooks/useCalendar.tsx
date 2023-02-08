@@ -5,7 +5,6 @@ import { ActionGroupType } from '@components/spotlight/Actions/useActionStore'
 import { useUserService } from '@services/auth/useUserService'
 import { useContentStore } from '@store/useContentStore'
 import { mog } from '@utils/lib/mog'
-import axios from 'axios'
 import { add, format, formatDistanceToNow, sub } from 'date-fns'
 import jwt_decode from 'jwt-decode'
 import create from 'zustand'
@@ -26,6 +25,7 @@ import { ILink } from '../types/Types'
 import { GoogleEvent } from '../types/gcal'
 import { getSlug } from '../utils/lib/strings'
 import { useCreateNewNote } from './useCreateNewNote'
+import { KYClient } from '@workduck-io/dwindle'
 
 /*
  * Need
@@ -313,7 +313,7 @@ export const useCalendar = () => {
     const tokens = useTokenStore.getState().data
     const max = 15
 
-    const tokenStatus = checkTokenGoogleCalendar(tokens)
+    const tokenStatus = (tokens)
 
     switch (tokenStatus) {
       case 'absent':
@@ -339,8 +339,9 @@ export const useCalendar = () => {
       return user?.userID
     }
 
-    axios
-      .get(reqUrl, {
+    const client = new KYClient;
+    client
+      .get(reqUrl, null,{
         headers: {
           Authorization: `Bearer ${tokens.googleAuth.calendar.accessToken}`
         }

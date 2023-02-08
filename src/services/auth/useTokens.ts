@@ -2,9 +2,11 @@ import { mog } from '@utils/lib/mog'
 import { NavigationType, ROUTE_PATHS, useRouting } from '@views/routes/urls'
 import { formatDistanceToNow } from 'date-fns'
 import jwtDecode from 'jwt-decode'
-import { API } from '../../../src/API'
 import create from 'zustand'
 
+import { KYClient } from '@workduck-io/dwindle'
+
+import { API } from '../../../src/API'
 import { GOOGLE_OAUTH2_REFRESH_URL } from '../../apis/routes'
 import { useTokenData } from '../../hooks/useLocalData'
 import { AuthToken, AuthTokenData, GoogleOAuthTokenData } from '../../types/auth'
@@ -118,9 +120,11 @@ export const checkTokenGoogleCalendar = (tokens: AuthTokenData): TokenStatus => 
 }
 
 export const fetchNewCalendarToken = async (refreshToken: string) => {
-  const resp = await API
-    .loch
-    .fetchRefereshToken(refreshToken)
+  const client = new KYClient()
+  const resp = await client
+    .post(GOOGLE_OAUTH2_REFRESH_URL, {
+      refreshToken
+    })
     .catch((err) => {
       console.error('Error fetching new calendar token', err)
       return null

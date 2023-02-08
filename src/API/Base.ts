@@ -1,7 +1,6 @@
 import { ACTION_ENV } from '@apis/routes'
 import { ActionHelperClient } from '@workduck-io/action-request-helper'
-import { KYClient } from '@workduck-io/dwindle'
-import { AxiosInstance } from 'axios'
+import { type KYClient as KYInstance, KYClient } from '@workduck-io/dwindle'
 
 import { BookmarkAPI } from './Bookmarks'
 import { CommentAPI } from './Comment'
@@ -40,7 +39,7 @@ class APIClass {
 
     instance = this
   }
-  init(client?: AxiosInstance) {
+  init(client?: KYInstance) {
     this.client = new KYClient(undefined, client)
     this.node = new NodeAPI(this.client)
     this.share = new ShareAPI(this.client)
