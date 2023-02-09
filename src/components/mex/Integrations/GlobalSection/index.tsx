@@ -1,5 +1,5 @@
 import React, { useEffect, useMemo, useState } from 'react'
-import { actionPerformer, useActionPerformer } from '@components/spotlight/Actions/useActionPerformer'
+import { useActionPerformer } from '@components/spotlight/Actions/useActionPerformer'
 import { GlobalSectionContainer, GlobalSectionHeader } from './styled'
 import FormSelector from '@components/spotlight/ActionStage/Forms/FormSelector'
 import { FormProvider, useForm } from 'react-hook-form'
@@ -10,6 +10,7 @@ import { useTheme } from 'styled-components'
 import { useActionStore } from '@components/spotlight/Actions/useActionStore'
 import toast from 'react-hot-toast'
 import { LoadingButton } from '@workduck-io/mex-components'
+import { API } from '../../../../API'
 
 const GlobalSection: React.FC<{ globalId: string; actionGroupId: string }> = ({ actionGroupId, globalId }) => {
   const [isEdit, setIsEdit] = useState<boolean>(false)
@@ -59,7 +60,7 @@ const GlobalSection: React.FC<{ globalId: string; actionGroupId: string }> = ({ 
     setIsSubmitting(true)
 
     try {
-      await actionPerformer.createGlobalIdWorkspace(globalConfig?.actionGroupId?.toLowerCase(), updatedForm)
+      await API.action.createGlobalIdWorkspace(globalConfig?.actionGroupId?.toLowerCase(), updatedForm)
       setIsSubmitting(false)
       setIsEdit(false)
       toast('Successfully updated!')
@@ -70,7 +71,7 @@ const GlobalSection: React.FC<{ globalId: string; actionGroupId: string }> = ({ 
   }
 
   const globalIdsCache = useMemo(() => {
-    const globalIds = actionPerformer.getGlobalId(LOCALSTORAGE_NAMESPACES.GLOBAL, actionGroupId)
+    const globalIds = API.action.getGlobalId(LOCALSTORAGE_NAMESPACES.GLOBAL, actionGroupId)
     return globalIds
   }, [globalId])
 

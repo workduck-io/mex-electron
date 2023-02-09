@@ -1,12 +1,9 @@
-import { apiURLs } from '@apis/routes'
 import { useVersionStore } from '@store/useAppDataStore'
 import { useUserCacheStore } from '@store/useUserCacheStore'
 import { useUserPreferenceStore } from '@store/userPreferenceStore'
 import { mog } from '@utils/lib/mog'
 
-import { client } from '@workduck-io/dwindle'
-
-import { useApi } from '../../apis/useSaveApi'
+import { API } from '../../API'
 import { UserPreferences } from '../../types/userPreference'
 import { useAuthStore } from './useAuth'
 
@@ -38,7 +35,6 @@ export interface UserDetails {
 
 export const useUserService = () => {
   const addUser = useUserCacheStore((s) => s.addUser)
-  const { workspaceHeaders } = useApi()
   const getUser = useUserCacheStore((s) => s.getUser)
   const updateUserDetails = useAuthStore((s) => s.updateUserDetails)
   const getUserDetails = async (email: string): Promise<TempUser> => {
@@ -46,23 +42,7 @@ export const useUserService = () => {
     if (user) return user
 
     try {
-      return await client.get(apiURLs.user.getFromEmail(email)).then((resp) => {
-        mog('Response', { data: resp.data })
-        if (resp?.data?.userId && resp?.data?.name) {
-          addUser({
-            email,
-            userID: resp?.data?.userId,
-            alias: resp?.data?.alias ?? resp?.data?.name,
-            name: resp?.data?.name
-          })
-        }
-        return {
-          email,
-          userID: resp?.data?.userId,
-          alias: resp?.data?.alias ?? resp?.data?.name,
-          name: resp?.data?.name
-        }
-      })
+      return await API.user.getByMail(email)
     } catch (e) {
       mog('Error Fetching User Details', { error: e, email })
       return { email }
@@ -74,27 +54,23 @@ export const useUserService = () => {
     if (user) return user
 
     try {
-      return await client
-        .get(apiURLs.user.getFromUserId(userID), {
-          headers: workspaceHeaders()
-        })
-        .then((resp: any) => {
-          mog('Response', { data: resp?.data })
-          if (resp?.data?.email && resp?.data?.name) {
-            addUser({
-              userID,
-              email: resp?.data?.email,
-              alias: resp?.data?.alias ?? resp?.data?.name,
-              name: resp?.data?.name
-            })
-          }
-          return {
+      return await API.user.getByID(userID).then((resp) => {
+        mog('Response', { data: resp })
+        if (resp?.email && resp?.name) {
+          addUser({
             userID,
-            email: resp?.data?.email ?? undefined,
-            alias: resp?.data?.alias ?? resp?.data?.name,
-            name: resp?.data?.name
-          }
-        })
+            email: resp?.email,
+            alias: resp?.alias ?? resp?.name,
+            name: resp?.name
+          })
+        }
+        return {
+          userID,
+          email: resp?.email ?? undefined,
+          alias: resp?.alias ?? resp?.name,
+          name: resp?.name
+        }
+      })
     } catch (e) {
       mog('Error Fetching User Details', { error: e, userID })
       return { userID }
@@ -104,9 +80,9 @@ export const useUserService = () => {
   const updateUserInfo = async (userID: string, name?: string, alias?: string): Promise<boolean> => {
     try {
       if (name === undefined && alias === undefined) return false
-      return await client.put(apiURLs.user.updateInfo, { id: userID, name, alias }).then((resp) => {
-        mog('Response', { data: resp.data })
-        updateUserDetails({ name: resp?.data?.name, alias: resp?.data?.alias })
+      return await API.user.updateInfo({ id: userID, name, alias }).then((resp) => {
+        mog('Response', { data: resp })
+        updateUserDetails({ name: resp?.name, alias: resp?.alias })
         return true
       })
     } catch (e) {
@@ -130,7 +106,7 @@ export const useUserService = () => {
     }
 
     try {
-      return await client.put(apiURLs.user.updateInfo, { id: userID, preference: userPreferences }).then((resp) => {
+      return await API.user.updatePreference(userPreferences).then((resp) => {
         return true
       })
     } catch (e) {
@@ -141,10 +117,7 @@ export const useUserService = () => {
 
   const getCurrentUser = async (): Promise<UserDetails | undefined> => {
     try {
-      return await client.get(apiURLs.user.getUserRecords).then((resp) => {
-        mog('Response', { data: resp.data })
-        return resp?.data
-      })
+      return await API.user.getCurrent()
     } catch (e) {
       mog('Error Fetching Current User Info', { error: e })
       return undefined

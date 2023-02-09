@@ -2,14 +2,13 @@ import { useApi } from '@apis/useSaveApi'
 import { useContentStore } from '@store/useContentStore'
 import { mog } from '@utils/lib/mog'
 
-import { client, useAuth } from '@workduck-io/dwindle'
+import { useAuth } from '@workduck-io/dwindle'
+import { API } from '../API'
 
-import { apiURLs } from '../apis/routes'
 import { USE_API } from '../data/Defaults/dev_'
 import { useAuthStore } from '../services/auth/useAuth'
 import useDataStore from '../store/useDataStore'
 import { ILink } from '../types/Types'
-import { WORKSPACE_HEADER } from './../data/Defaults/defaults'
 import { getTitleFromPath } from './useLinks'
 import { useSaveData } from './useSaveData'
 import { useSearch } from './useSearch'
@@ -20,9 +19,7 @@ const useArchive = () => {
   const unArchive = useDataStore((state) => state.unArchive)
   const addInArchive = useDataStore((state) => state.addInArchive)
   const removeArchive = useDataStore((state) => state.removeFromArchive)
-  const { getDataAPI } = useApi()
 
-  const getWorkspaceId = useAuthStore((store) => store.getWorkspaceId)
 
   const setContent = useContentStore((store) => store.setContent)
   const updateTagsCache = useDataStore((state) => state.updateTagsCache)
@@ -60,25 +57,14 @@ const useArchive = () => {
     }
 
     if (userCred) {
-      return await client
-        .put(
-          apiURLs.archive.archiveInNamespace(namespaceID),
-          {
-            ids: nodes.map((i) => i.nodeid)
-          },
-          {
-            headers: {
-              [WORKSPACE_HEADER]: getWorkspaceId(),
-              Accept: 'application/json, text/plain, */*'
-            }
-          }
-        )
-        .then((d) => {
+      return await API.node
+      .archive(
+        namespaceID,
+        nodes.map((node) => node.nodeid)
+      )
+        .then((archivedNodeids) => {
           // We only get the data for archived nodeids in this response
-
-          const archivedNodeids = d.data
-
-          mog('Archived Nodes', { archivedNodeids, d })
+          mog('Archived Nodes', { archivedNodeids})
           if (archivedNodeids && archivedNodeids?.length > 0) {
             const archivedNodes = nodes
               .filter((n) => archivedNodeids.includes(n.nodeid))
@@ -118,23 +104,12 @@ const useArchive = () => {
     if (!USE_API) {
       return unArchive(nodes[0])
     }
-    await client
-      .put(
-        apiURLs.archive.unArchiveNodes,
-        {
-          ids: nodes.map((i) => i.nodeid)
-        },
-        {
-          headers: {
-            [WORKSPACE_HEADER]: getWorkspaceId(),
-            Accept: 'application/json, text/plain, */*'
-          }
-        }
-      )
+    await API.node
+      .unarchive(nodes.map((node) => node.nodeid))
       .then((d) => {
-        mog('Unarchive Data', d.data)
-        if (d.data) unArchive(nodes[0])
-        return d.data
+        mog('Unarchive Data', d)
+        if (d) unArchive(nodes[0])
+        return d
       })
       .catch(console.error)
   }
@@ -145,16 +120,10 @@ const useArchive = () => {
       return archive
     }
 
-    await client
-      .get(apiURLs.getArchiveNotesHierarchy(), {
-        headers: {
-          [WORKSPACE_HEADER]: getWorkspaceId(),
-          Accept: 'application/json, text/plain, */*'
-        }
-      })
-      .then((d) => {
-        if (d.data) {
-          const hierarchy = d.data
+    await API.node
+    .allArchived()
+    .then((hierarchy) => {
+      if (hierarchy) {
 
           mog('getArchiveNotesHierarchy', { hierarchy })
 
@@ -176,7 +145,7 @@ const useArchive = () => {
 
           // setArchive(archivedNotes)
         }
-        return d.data
+        return hierarchy
       })
       .catch(mog)
   }
@@ -204,20 +173,8 @@ const useArchive = () => {
     }
 
     if (userCred) {
-      const res = await client
-        .post(
-          apiURLs.archive.deleteArchivedNodes,
-          {
-            ids: nodeids.map((i) => i.nodeid)
-          },
-          {
-            headers: {
-              [WORKSPACE_HEADER]: getWorkspaceId(),
-              Accept: 'application/json, text/plain, */*'
-            }
-          }
-        )
-        // .then(console.log)
+      const res = await API.node
+        .deleteArchived(nodeids.map((i) => i.nodeid))
         .then(() => {
           removeArchive(nodeids)
         })

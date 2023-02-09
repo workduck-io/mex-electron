@@ -1,5 +1,5 @@
 import { generateNamespaceId } from '@data/Defaults/idPrefixes'
-import { hierarchyParser } from '@hooks/useHierarchy'
+
 import { useLastOpened } from '@hooks/useLastOpened'
 import { useNodes } from '@hooks/useNodes'
 import { useSearch } from '@hooks/useSearch'
@@ -12,23 +12,31 @@ import { getTagsFromContent } from '@utils/lib/content'
 import { mog } from '@utils/lib/mog'
 import toast from 'react-hot-toast'
 
-import { client } from '@workduck-io/dwindle'
-
+import { API } from '../API/Base'
 import { defaultContent } from '../data/Defaults/baseData'
-import { DEFAULT_NAMESPACE, WORKSPACE_HEADER } from '../data/Defaults/defaults'
+import { DEFAULT_NAMESPACE, GET_REQUEST_MINIMUM_GAP_IN_MS, WORKSPACE_HEADER } from '../data/Defaults/defaults'
 import { USE_API } from '../data/Defaults/dev_'
-import { getTitleFromPath, useLinks } from '../hooks/useLinks'
-import '../services/apiClient/apiClient'
+import { useLinks } from '../hooks/useLinks'
 import { useAuthStore } from '../services/auth/useAuth'
-import { isRequestedWithin } from '../store/useApiStore'
 import { useContentStore } from '../store/useContentStore'
 import { ILink, MIcon, NodeEditorContent } from '../types/Types'
 import { View } from '../types/data'
 import { extractMetadata } from '../utils/lib/metadata'
 import { deserializeContent, serializeContent } from '../utils/lib/serialize'
 import { apiURLs } from './routes'
+import { AccessLevel } from '../types/mentions'
+import { Reminder } from '../types/reminders'
+import { getReminderAssociatedId } from '@hooks/useReminders'
+import { APIReaction } from '../types/reaction'
+import { APIComment } from '../types/comment'
 
-const API_CACHE_LOG = `\nAPI has been requested before, cancelling.\n`
+interface ReactionRequests {
+  nodeId: string
+  blockId: string
+  reaction: MIcon
+  action: 'ADD' | 'DELETE'
+}
+
 
 export const useApi = () => {
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
@@ -41,7 +49,7 @@ export const useApi = () => {
   const { getTitleFromNoteId, updateILinks } = useLinks()
   const { getSharedNode } = useNodes()
   const { addLastOpened } = useLastOpened()
-  const addInArchive = useDataStore((store) => store.addInArchive)
+
   const setILinks = useDataStore((store) => store.setIlinks)
   const setNamespaces = useDataStore((s) => s.setNamespaces)
   const initSnippets = useSnippetStore((store) => store.initSnippets)
@@ -51,11 +59,6 @@ export const useApi = () => {
   const workspaceHeaders = () => ({
     [WORKSPACE_HEADER]: getWorkspaceId(),
     Accept: 'application/json, text/plain, */*'
-  })
-
-  const viewHeaders = () => ({
-    ...workspaceHeaders(),
-    'mex-api-ver': 'v2'
   })
 
   /*
@@ -88,10 +91,8 @@ export const useApi = () => {
       return
     }
 
-    const data = await client
-      .post(apiURLs.node.create, reqData, {
-        headers: workspaceHeaders()
-      })
+    const data = await await API.node
+      .save(reqData)
       .then((d) => {
         const metadata = extractMetadata(d.data)
         const content = deserializeContent(d.data.data ?? options.content)
@@ -114,15 +115,14 @@ export const useApi = () => {
     }
 
     // * TODO: Add append to Note for shared notes
-    const url = apiURLs.node.append(noteId)
+    const res = await API.node.append(noteId, reqData)
 
-    const res = await client.patch(url, reqData, { headers: workspaceHeaders() })
+    // const res = await client.patch(url, reqData, { headers: workspaceHeaders() })
 
-    if (res?.data) {
+    if (res) {
       // toast('Task added!')
     }
   }
-
 
   const bulkSaveNodes = async (
     noteId: string,
@@ -144,30 +144,22 @@ export const useApi = () => {
       tags: getTagsFromContent(options.content),
       data: serializeContent(options.content, noteId)
     }
-
+    mog('BulkCreateNodes', { reqData, noteId, namespace, options })
     setContent(noteId, options.content)
 
-    const data = await client
-      .post(apiURLs.node.bulkCreate, reqData, {
-        headers: workspaceHeaders()
+    const data = await API.node.bulkCreate(reqData).then((d: any) => {
+      const addedILinks = []
+      const removedILinks = []
+      const { changedPaths, node } = d
+      Object.entries(changedPaths).forEach(([nsId, changed]: [string, any]) => {
+        const { addedPaths: nsAddedILinks, removedPaths: nsRemovedILinks } = changed
+        addedILinks.push(...nsAddedILinks)
+        removedILinks.push(...nsRemovedILinks)
       })
-      .then((d: any) => {
-        const addedILinks = []
-        const removedILinks = []
-        const { changedPaths, node } = d.data
-        Object.entries(changedPaths).forEach(([nsId, changed]: [string, any]) => {
-          const { addedPaths: nsAddedILinks, removedPaths: nsRemovedILinks } = changed
-          addedILinks.push(...nsAddedILinks)
-          removedILinks.push(...nsRemovedILinks)
-        })
-
-        updateILinks(addedILinks, removedILinks)
-        setMetadata(noteId, extractMetadata(node))
-        addLastOpened(noteId)
-
-        return d.data
-      })
-
+      updateILinks(addedILinks, removedILinks)
+      setMetadata(noteId, extractMetadata(node))
+      addLastOpened(noteId)
+    })
     return data
   }
 
@@ -207,16 +199,14 @@ export const useApi = () => {
     if (!USE_API) {
       return
     }
-    const url = isShared ? apiURLs.share.updateNode : apiURLs.node.create
-    const data = await client
-      .post(url, reqData, {
-        headers: workspaceHeaders()
-      })
+    const dataPromise = isShared ? API.share.updateNode(reqData) : API.node.save(reqData)
+
+    const data = await dataPromise
       .then((d) => {
-        setMetadata(nodeid, extractMetadata(d.data))
+        setMetadata(nodeid, extractMetadata(d))
         addLastOpened(nodeid)
         // setContent(nodeid, deserializeContent(d.data.data), extractMetadata(d.data))
-        return d.data
+        return d
       })
       .catch((e) => {
         console.error(e)
@@ -225,15 +215,8 @@ export const useApi = () => {
   }
 
   const makeNotePublic = async (nodeId: string) => {
-    const URL = apiURLs.node.makePublic(nodeId)
-    return await client
-      .patch(URL, null, {
-        withCredentials: false,
-        headers: {
-          'mex-workspace-id': getWorkspaceId(),
-          Accept: 'application/json, text/plain, */*'
-        }
-      })
+    return await API.node
+      .makePublic(nodeId)
       .then((resp) => resp.data)
       .then((data: any) => {
         setMetadata(nodeId, { publicAccess: true })
@@ -245,15 +228,8 @@ export const useApi = () => {
   }
 
   const makeNotePrivate = async (nodeId: string) => {
-    const URL = apiURLs.node.makePrivate(nodeId)
-
-    return await client
-      .patch(URL, null, {
-        withCredentials: false,
-        headers: {
-          'mex-workspace-id': getWorkspaceId()
-        }
-      })
+    return await API.node
+      .makePrivate(nodeId)
       .then((resp) => resp.data)
       .then((data: any) => {
         setMetadata(nodeId, { publicAccess: false })
@@ -276,35 +252,23 @@ export const useApi = () => {
       type: 'RefactorRequest'
     }
 
-    const data = await client
-      .post(apiURLs.node.refactor, reqData, {
-        headers: workspaceHeaders()
-      })
-      .then((response) => {
-        mog('refactor', response.data)
-        return response.data
-      })
-      .catch((error) => {
-        console.log(error)
-      })
+    const data = await API.node.refactor(reqData).catch((error) => {
+      console.error(error)
+    })
 
     return data
   }
 
   const getPublicNoteApi = async (noteId: string) => {
-    const res = await client
-      .get(apiURLs.public.getPublicNode(noteId), {
-        headers: {
-          Accept: 'application/json, text/plain, */*'
-        }
-      })
+    const res = await API.node
+      .getPublic(noteId, {})
       .then((d: any) => {
         // console.log(metadata, d.data)
         return {
-          title: d.data.title,
-          data: d.data.data,
-          metadata: extractMetadata(d.data),
-          version: d.data.version ?? undefined
+          title: d.title,
+          data: d.data,
+          metadata: extractMetadata(d),
+          version: d.version ?? undefined
         }
       })
 
@@ -326,39 +290,33 @@ export const useApi = () => {
   }
 
   const getDataAPI = async (nodeid: string, isShared = false, isRefresh = false, isUpdate = true) => {
-    const url = isShared ? apiURLs.share.getSharedNode(nodeid) : apiURLs.node.get(nodeid)
-    if (!isShared && isRequestedWithin(2, url) && !isRefresh) {
-      console.log(API_CACHE_LOG)
-      return
-    }
+    // const url = isShared ? apiURLs.share.getSharedNode(nodeid) : apiURLs.node.get(nodeid)
+    // if (!isShared && isRequestedWithin(2, url) && !isRefresh) {
+    //   console.log(API_CACHE_LOG)
+    //   return
+    // }
 
-    const res = await client
-      .get(url, {
-        headers: workspaceHeaders()
-      })
+    const res = await API.node
+      .getById(nodeid, { cache: true, expiry: GET_REQUEST_MINIMUM_GAP_IN_MS })
       .then((d) => {
         // console.log(metadata, d.data)
-        const content = deserializeContent(d.data.data)
+        const content = d?.data?.length ? deserializeContent(d.data) : defaultContent.content
         const metadata = extractMetadata(d.data)
 
         if (isUpdate) updateFromContent(nodeid, content, metadata)
 
-        return { content, metadata, version: d.data.version ?? undefined }
+        return { content, metadata, version: d.version ?? undefined }
       })
       .catch((e) => {
         console.error(`MexError: Fetching nodeid ${nodeid} failed with: `, e)
       })
 
-    if (res) {
-      return { content: res?.content, metadata: res?.metadata ?? undefined, version: res.version }
-    }
+    return res
   }
 
   const getNodesByWorkspace = async (): Promise<ILink[]> => {
-    const data = await client
-      .get(apiURLs.namespaces.getHierarchy, {
-        headers: workspaceHeaders()
-      })
+    const data = await API.namespace
+      .getHeirarchy()
       .then(async (d) => {
         if (d.data) {
           const parsedHierarchies: any = d.data
@@ -414,10 +372,11 @@ export const useApi = () => {
   }
 
   const getGoogleAuthUrl = async () => {
-    return await client
-      .get<any>(apiURLs.getGoogleAuthUrl(), {})
+    const resp = API.loch
+      .getGoogleAuthUrl()
       .then((resp) => resp.data)
       .catch((error) => console.error(error))
+    return resp;
   }
 
   const saveSnippetAPI = async ({
@@ -440,14 +399,12 @@ export const useApi = () => {
       template: template ?? false
     }
 
-    const data = await client
-      .post(apiURLs.snippet.create, reqData, {
-        headers: workspaceHeaders()
-      })
+    const data = await API.snippet
+      .create(reqData)
       .then((d) => {
         mog('savedData', { d })
-        setMetadata(snippetId, extractMetadata(d.data))
-        return d.data
+        setMetadata(snippetId, extractMetadata(d))
+        return d
       })
       .catch((e) => {
         console.error(e)
@@ -457,10 +414,13 @@ export const useApi = () => {
 
   const bulkGetSnippets = async (ids: string[]) => {
     const url = apiURLs.snippet.bulkGet
-    return client.post(url, { ids: ids }, { headers: workspaceHeaders() }).then((d: any) => {
+    const data = {ids: ids};
+    const resp = API.snippet
+      .bulkGet(data)
+      .then((d: any) => {
       if (d) {
-        if (d.data.failed.length > 0) mog('Failed API Requests: ', { url, ids: d.data.failed })
-        d.data.successful.forEach(async (snippet) => {
+        if (d.failed.length > 0) mog('Failed API Requests: ', { url, ids: d.failed })
+        d.successful.forEach(async (snippet) => {
           if (snippet) {
             updateSnippet(snippet.id, snippet)
             const tags = snippet.template ? ['template'] : ['snippet']
@@ -480,17 +440,13 @@ export const useApi = () => {
         return d.data.successful
       }
     })
+  return resp
   }
 
   const getAllSnippetsByWorkspace = async () => {
-    const data = await client
-      .get(apiURLs.snippet.getAllSnippetsByWorkspace, {
-        headers: workspaceHeaders()
-      })
+    const data = await API.snippet
+      .allOfWorkspace()
       .then((d) => {
-        return d.data
-      })
-      .then((d: any) => {
         const snippets = useSnippetStore.getState().snippets
 
         const newSnippets = d.filter((snippet) => {
@@ -525,30 +481,28 @@ export const useApi = () => {
   }
 
   const deleteSnippetById = async (id: string) => {
-    const url = apiURLs.snippet.deleteAllVersionsOfSnippet(id)
-    try {
-      const res = await client.delete(url, {
-        headers: workspaceHeaders()
-      })
+    // const url = apiURLs.snippet.deleteAllVersionsOfSnippet(id)
+    // try {
+    //   const res = await client.delete(url, {
+    //     headers: workspaceHeaders()
+    //   })
 
-      return { status: true }
-    } catch (err) {
-      toast('Unable to delete Snippet')
-    }
+    //   return { status: true }
+    // } catch (err) {
+    //   toast('Unable to delete Snippet')
+    // }
+    await API.snippet
+      .deleteAllVersions(id)
+      .then((response) => {
+        mog('SnippetDeleteSuccessful')
+      })
+      .catch((error) => {
+        mog('SnippetDeleteFailed', { error })
+      })
   }
 
   const getSnippetById = async (id: string) => {
-    const url = apiURLs.snippet.getById(id)
-
-    const data = await client
-      .get(url, {
-        headers: workspaceHeaders()
-      })
-      .then((d) => {
-        mog('snippet by id', { d })
-        return d.data
-      })
-
+    const data = await API.snippet.getById(id)
     return data
   }
 
@@ -568,10 +522,7 @@ export const useApi = () => {
       filters: view.filters
     }
 
-    const resp = await client.post(apiURLs.view.saveView, reqData, { headers: viewHeaders() }).then((resp) => {
-      mog('We saved that view', { resp })
-      return resp.data
-    })
+    const resp = await API.view.create(reqData)
 
     return resp
   }
@@ -580,16 +531,10 @@ export const useApi = () => {
    * Returns undefined when request is not made
    */
   const getAllViews = async (): Promise<View[] | undefined> => {
-    const url = apiURLs.view.getAllViews
-
-    if (isRequestedWithin(5, url)) {
-      console.log(API_CACHE_LOG)
-      return
-    }
-
-    const resp = await client.get(url, { headers: viewHeaders() }).then((resp) => {
+    const resp = await API.view.getAll({ cache: true, expiry: GET_REQUEST_MINIMUM_GAP_IN_MS }).then((resp: any) => {
+      if (!resp) return
       // mog('We fetched them view', { resp })
-      const views = resp.data
+      const views = resp
         .map((item: any) => {
           // const itemCreated = new Date(item.created)
           // const isExpired = itemCreated.getTime() - new Date(TaskViewExpiryTime).getTime() < 0
@@ -615,9 +560,9 @@ export const useApi = () => {
   }
 
   const deleteView = async (viewid: string) => {
-    const resp = await client.delete(apiURLs.view.deleteView(viewid), { headers: viewHeaders() }).then((resp) => {
+    const resp = await API.view.delete(viewid).then((resp) => {
       mog('We saved that view', { resp })
-      return resp.data
+      return resp
     })
 
     return resp
@@ -626,39 +571,33 @@ export const useApi = () => {
   const bulkGetNodes = async (ids: string[], namespaceID?: string, isShared = false) => {
     namespaceID = namespaceID && namespaceID !== 'NOT_SHARED' ? namespaceID : undefined
 
-    const url = isShared ? apiURLs.share.getBulk : apiURLs.node.getMultipleNode(namespaceID)
-    return client
-      .post(
-        url,
-        { ids: ids },
-        {
-          headers: workspaceHeaders()
-        }
-      )
+    const data = { ids: ids };
+    const url = apiURLs.share.getBulk
+    const resp = await API.share
+      .getBulk(data)
       .then((d) => {
         if (d) {
-          if (d.data.failed.length > 0) mog('Failed API Requests: ', { url, ids: d.data.failed })
+          if (d.failed.length > 0) mog('Failed API Requests: ', { url, ids: d.failed })
 
-          d.data.successful.forEach((node) => {
+          d.successful.forEach((node) => {
             const content = deserializeContent(node.data)
             const metadata = extractMetadata(node)
 
             updateFromContent(node.id, content, metadata)
           })
 
-          return d.data.successful
+          return d.successful
         }
       })
+    return resp;
   }
 
   const getAllNamespaces = async () => {
-    const namespaces = await client
-      .get(apiURLs.namespaces.getAll(), {
-        headers: workspaceHeaders()
-      })
+    const namespaces = await API.namespace
+      .getAll()
       .then((d: any) => {
         // mog('namespaces all', d.data)
-        return d.data.map((item: any) => {
+        return d.map((item: any) => {
           // metadata is json string parse to object
           return {
             ns: {
@@ -677,7 +616,7 @@ export const useApi = () => {
         })
       })
       .catch((e) => {
-        mog('Error fetching all namespaces', e)
+        mog('Error fetching all namespaces', { e })
         return undefined
       })
 
@@ -704,33 +643,67 @@ export const useApi = () => {
     }
   }
 
+  const getNamespace = async (id: string) => {
+    const namespace = await API.namespace
+      .get(id)
+      .then((d: any) => {
+        mog('namespaces specific', { data: d, id })
+        // return d?.nodeHierarchy
+
+        return {
+          id: d?.id,
+          name: d?.name,
+          icon: d?.metadata?.icon ?? undefined,
+          nodeHierarchy: d?.nodeHierarchy,
+          createdAt: d?.createdAt,
+          updatedAt: d?.updatedAt,
+          publicAccess: d?.publicAccess
+        }
+      })
+      .catch((e) => {
+        mog('Save error', e)
+        return undefined
+      })
+
+    return namespace
+  }
+
+  const getPublicNamespaceAPI = async (namespaceID: string) => {
+    const res = await API.namespace.getPublic(namespaceID)
+    return res
+  }
+
+  const makeNamespacePublic = async (namespaceID: string) => {
+    const res = await API.namespace.makePublic(namespaceID)
+    return res
+  }
+
+  const makeNamespacePrivate = async (namespaceID: string) => {
+    const res = await API.namespace.makePrivate(namespaceID)
+    return res
+  }
+
   const createNewNamespace = async (name: string) => {
     try {
       const namespaceID = generateNamespaceId()
       const t = Date.now()
-      const res = await client
-        .post(
-          apiURLs.namespaces.create,
-          {
-            type: 'NamespaceRequest',
-            name,
-            id: namespaceID,
-            metadata: {
-              iconUrl: 'heroicons-outline:view-grid'
-            }
-          },
-          {
-            headers: workspaceHeaders()
-          }
-        )
-        .then((_d) => ({
-          id: namespaceID,
-          name: name,
-          iconUrl: 'heroicons-outline:view-grid',
-          createdAt: t,
-          updatedAt: t,
-          access: 'OWNER' as const
-        }))
+      const req = {
+        type: 'NamespaceRequest',
+        name,
+        id: namespaceID,
+        metadata: {
+          iconUrl: 'heroicons-outline:view-grid'
+        }
+      }
+      mog("req",{req});
+      const res = await API.namespace.create(req).then((d: any) => ({
+        id: req.id,
+        name: name,
+        iconUrl: req.metadata.iconUrl,
+        access: 'MANAGE' as const,
+        createdAt: Date.now(),
+        updatedAt: Date.now()
+      }))
 
       mog('We created a namespace', { res })
 
@@ -742,19 +715,7 @@ export const useApi = () => {
 
   const changeNamespaceName = async (id: string, name: string) => {
     try {
-      const res = await client
-        .patch(
-          apiURLs.namespaces.update,
-          {
-            type: 'NamespaceRequest',
-            id,
-            name
-          },
-          {
-            headers: workspaceHeaders()
-          }
-        )
-        .then(() => true)
+      const res = await API.namespace.update({ id, name }).then(() => true)
       return res
     } catch (err) {
       throw new Error('Unable to update namespace')
@@ -763,26 +724,199 @@ export const useApi = () => {
 
   const changeNamespaceIcon = async (id: string, name: string, icon: MIcon) => {
     try {
-      const res = await client
-        .patch(
-          apiURLs.namespaces.update,
-          {
-            type: 'NamespaceRequest',
-            id,
-            name,
-            metadata: {
-              icon
-            }
-          },
-          {
-            headers: workspaceHeaders()
-          }
-        )
+      const res = await API.namespace
+        .update({
+          id,
+          name,
+          metadata: { icon }
+        })
         .then(() => icon)
       return res
     } catch (err) {
       throw new Error('Unable to update namespace icon')
     }
+  }
+
+  const shareNamespace = async (id: string, userIDs: string[], accessType: AccessLevel) => {
+    try {
+      const res = await API.namespace.share(id, userIDs, accessType)
+      mog('Shared a namespace', { res })
+      return res
+    } catch (err) {
+      throw new Error(`Unable to share namespace: ${err}`)
+    }
+  }
+  const revokeNamespaceShare = async (id: string, userIDs: string[]) => {
+    try {
+      const res = await API.namespace.revokeAccess(id, userIDs)
+      mog('revoke access users', res)
+      return res
+    } catch (err) {
+      throw new Error(`Unable to revoke namespace access: ${err}`)
+    }
+  }
+
+  const updateNamespaceShare = async (id: string, userIDToAccessTypeMap: { [userid: string]: AccessLevel }) => {
+    try {
+      return await API.namespace.updateAccess(id, userIDToAccessTypeMap).then((resp) => {
+        mog('changeUsers resp', { resp })
+        return resp
+      })
+    } catch (err) {
+      throw new Error(`Unable to update namespace access: ${err}`)
+    }
+  }
+
+  const getAllSharedUsers = async (id: string): Promise<{ users: Record<string, string> }> => {
+    try {
+      return await API.share.getNamespacePermissions(id).then((resp: any) => {
+        mog('get all shared users', resp)
+        return { users: resp }
+      })
+    } catch (err) {
+      mog(`Unable to get shared namespace users: ${err}`)
+      return { users: {} }
+    }
+  }
+
+  // reminder
+  const getReminder = async (id: string) => {
+    const res = await API.reminder.get(id)
+    return res
+  }
+  const getAllWorkspaceReminders = async () => {
+    const res = await API.reminder.getAllOfWorkspace()
+    return res
+  }
+
+  const getAllNodeReminders = async (nodeId: string) => {
+    const res = await API.reminder.getAllOfNode(nodeId)
+    return res
+  }
+
+  const saveReminder = async (reminder: Reminder) => {
+    const workspaceIdStr = getWorkspaceId()
+    const reqData = {
+      workspaceId: workspaceIdStr,
+      // This is entity id
+      nodeId: getReminderAssociatedId(reminder, workspaceIdStr),
+      entityId: reminder.id,
+      properties: reminder
+    }
+
+    // mog('Saving reminder', { reminder, reqData })
+    const res = await API.reminder.save(reqData)
+    return res
+  }
+
+  const deleteReminder = async (id: string) => {
+    const res = await API.reminder.delete(id)
+    return res
+  }
+
+  const deleteAllNode = async (nodeId: string) => {
+    const res = await API.reminder.deleteAllOfNode(nodeId)
+    return res
+  }
+
+  const addReaction = async (reaction: APIReaction) => {
+    const reqData: ReactionRequests = {
+      action: 'ADD',
+      nodeId: reaction.nodeId,
+      blockId: reaction.blockId,
+      reaction: reaction.reaction
+    }
+    mog('Saving reaction', { reaction, reqData })
+    const res = await API.reaction.react(reqData)
+    return res
+  }
+
+  const deleteReaction = async (reaction: APIReaction) => {
+    const reqData: ReactionRequests = {
+      action: 'DELETE',
+      nodeId: reaction.nodeId,
+      blockId: reaction.blockId,
+      reaction: reaction.reaction
+    }
+    mog('Deleting reaction', { reaction, reqData })
+    const res = await API.reaction.react(reqData)
+    return res
+  }
+
+  const getReactionsOfNote = async (nodeId: string, force = false) => {
+    const res = await API.reaction.getAllOfNode(nodeId, {
+      cache: true,
+      expiry: GET_REQUEST_MINIMUM_GAP_IN_MS
+    })
+    return res
+  }
+
+  const getReactionsOfBlock = async (nodeId: string, blockId: string) => {
+    const res = await API.reaction.getAllOfBlock(nodeId, blockId)
+    return res
+  }
+
+  const getBlockReactionDetails = async (nodeId: string, blockId: string) => {
+    const res = await API.reaction.getDetailedOfBlock(nodeId, blockId)
+    return res
+  }
+  
+  // comment
+  const saveComment = async (comment: APIComment) => {
+    const reqData = {
+      nodeId: comment.nodeId,
+      blockId: comment.blockId,
+      threadId: comment.threadId,
+      content: comment.content,
+      entityId: comment.entityId
+    }
+
+    mog('Saving comment', { comment, reqData })
+    const res = await API.comment.create(reqData)
+    return res
+  }
+
+  const getComment = async (nodeid: string, id: string) => {
+    const res = await API.comment.get(nodeid, id)
+    return res
+  }
+
+  const deleteComment = async (nodeid: string, id: string) => {
+    const res = await API.comment.delete(nodeid, id)
+    return res
+  }
+
+  const getCommentsByNodeId = async (nodeId: string, force = false) => {
+    const res = await API.comment.getAllOfNode(nodeId, {
+      cache: true,
+      expiry: GET_REQUEST_MINIMUM_GAP_IN_MS
+    })
+    return res
+  }
+
+  const deleteCommentsByNodeId = async (nodeId: string) => {
+    const res = await API.comment.deleteAllOfNode(nodeId)
+    return res
+  }
+
+  const getCommentsByBlockId = async (nodeId: string, blockId: string) => {
+    const res = await API.comment.getAllOfBlock(nodeId, blockId)
+    return res
+  }
+
+  const deleteCommentsByBlockId = async (nodeId: string, blockId: string) => {
+    const res = await API.comment.deleteAllOfBlock(nodeId, blockId)
+    return res
+  }
+
+  const getCommentsByThreadId = async (nodeId: string, blockId: string, threadId: string) => {
+    const res = await API.comment.getAllOfThread(nodeId, blockId, threadId)
+    return res
+  }
+
+  const deleteCommentsByThreadId = async (nodeId: string, blockId: string, threadId: string) => {
+    const res = await API.comment.deleteAllOfThread(nodeId, blockId, threadId)
+    return res
   }
 
   return {
@@ -810,7 +944,35 @@ export const useApi = () => {
     changeNamespaceIcon,
     workspaceHeaders,
     createNewNamespace,
-    bulkGetNodes
+    bulkGetNodes,
+    getPublicNamespaceAPI,
+    makeNamespacePublic,
+    shareNamespace,
+    revokeNamespaceShare,
+    getAllSharedUsers,
+    updateNamespaceShare,
+    getNamespace,
+    makeNamespacePrivate,
+    getReminder,
+    getAllWorkspaceReminders,
+    getAllNodeReminders,
+    saveReminder,
+    deleteReminder,
+    deleteAllNode,
+    addReaction,
+    deleteReaction,
+    getReactionsOfNote,
+    getReactionsOfBlock,
+    getBlockReactionDetails,
+    saveComment,
+    getComment,
+    deleteComment,
+    getCommentsByNodeId,
+    deleteCommentsByNodeId,
+    getCommentsByBlockId,
+    deleteCommentsByBlockId,
+    getCommentsByThreadId,
+    deleteCommentsByThreadId
   }
 }
 

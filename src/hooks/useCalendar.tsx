@@ -5,19 +5,19 @@ import { ActionGroupType } from '@components/spotlight/Actions/useActionStore'
 import { useUserService } from '@services/auth/useUserService'
 import { useContentStore } from '@store/useContentStore'
 import { mog } from '@utils/lib/mog'
-import axios from 'axios'
 import { add, format, formatDistanceToNow, sub } from 'date-fns'
 import jwt_decode from 'jwt-decode'
 import create from 'zustand'
 
+import { KYClient } from '@workduck-io/dwindle'
+
 import { GOOGLE_CAL_BASE } from '../apis/routes'
 import { SEPARATOR } from '../components/mex/Sidebar/treeUtils'
 import { ItemActionType, ListItemType } from '../components/spotlight/SearchResults/types'
-import { testEvents } from '../data/Defaults/Test/calendar'
 import { MEETING_PREFIX } from '../data/Defaults/idPrefixes'
 import { MeetingSnippetContent } from '../data/initial/MeetingNote'
 import { useAuthStore } from '../services/auth/useAuth'
-import { checkTokenGoogleCalendar, fetchNewCalendarToken, useTokenStore } from '../services/auth/useTokens'
+import { fetchNewCalendarToken, useTokenStore } from '../services/auth/useTokens'
 import { CategoryType } from '../store/Context/context.spotlight'
 import { useSpotlightAppStore } from '../store/app.spotlight'
 import { useSpotlightEditorStore } from '../store/editor.spotlight'
@@ -313,7 +313,7 @@ export const useCalendar = () => {
     const tokens = useTokenStore.getState().data
     const max = 15
 
-    const tokenStatus = checkTokenGoogleCalendar(tokens)
+    const tokenStatus = tokens
 
     switch (tokenStatus) {
       case 'absent':
@@ -339,17 +339,19 @@ export const useCalendar = () => {
       return user?.userID
     }
 
-    axios
-      .get(reqUrl, {
+    const client = new KYClient()
+
+    client
+      .get(reqUrl, null, {
         headers: {
           Authorization: `Bearer ${tokens.googleAuth.calendar.accessToken}`
         }
       })
       .then(async (res) => {
         const events = await Promise.all(
-          res.data.items.map(async (event) => await converGoogleEventToCalendarEvent(event, getMexUserID))
+          res.items.map(async (event) => await converGoogleEventToCalendarEvent(event, getMexUserID))
         )
-        console.log('Got Events', res.data, events)
+        console.log('Got Events', res, events)
         setEvents(events)
       })
 
@@ -362,7 +364,7 @@ export const useCalendar = () => {
     //     }
     //   })
     //   .then((response) => {
-    //     const events = response.data.map(converGoogleEventToCalendarEvent)
+    //     const events = response.map(converGoogleEventToCalendarEvent)
     //     console.log('We got em events', { events })
     //     setEvents(events)
     //   })

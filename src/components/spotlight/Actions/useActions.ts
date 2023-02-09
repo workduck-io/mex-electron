@@ -5,9 +5,9 @@ import { orderBy } from 'lodash'
 import { ActionHelperConfig, ActionGroup, LOCALSTORAGE_NAMESPACES } from '@workduck-io/action-request-helper'
 
 import { getListItemFromAction } from '../Home/helper'
-import { actionPerformer } from './useActionPerformer'
 import { ActionGroupType } from './useActionStore'
 import { useActionsCache } from './useActionsCache'
+import { API } from '../../../API'
 
 const useActions = () => {
   const addActions = useActionsCache((store) => store.addActions)
@@ -21,7 +21,7 @@ const useActions = () => {
    */
   const fetchActionGroups = async () => {
     try {
-      const groups: Record<string, ActionGroup> = await actionPerformer?.getAllGroups(true)
+      const groups: Record<string, ActionGroup> = await API.action?.getAllGroups(true)
 
       setActionGroups(groups)
       return groups
@@ -38,7 +38,7 @@ const useActions = () => {
    */
   const getActionsFromGroup = async (actionGroupId: string) => {
     try {
-      const actions: Record<string, ActionHelperConfig> = await actionPerformer?.getAllActionsOfGroups(actionGroupId)
+      const actions: Record<string, ActionHelperConfig> = await API.action?.getAllActionsOfGroups(actionGroupId)
 
       addGroupedActions(actionGroupId, actions)
       return actions
@@ -94,7 +94,7 @@ const useActions = () => {
     const actionGroup = useActionsCache.getState().actionGroups
     const isGlobal = !!actionGroup?.[actionId]?.globalActionId
 
-    const globalIdsCache = !!actionPerformer.getGlobalId(LOCALSTORAGE_NAMESPACES.GLOBAL, actionGroupId)
+    const globalIdsCache = !!API.action.getGlobalId(LOCALSTORAGE_NAMESPACES.GLOBAL, actionGroupId)
 
     return isGlobal && globalIdsCache
   }
@@ -117,7 +117,7 @@ const useActions = () => {
 
   // * For Integrations page, check for Authorized action groups
   const getAuthorizedGroups = async (forceUpdate?: boolean) => {
-    const groupsAuth = await actionPerformer?.getAllAuths(forceUpdate)
+    const groupsAuth = await API.action?.getAllAuths(forceUpdate)
     const actionGroups = useActionsCache.getState().actionGroups
     const connected = useActionsCache.getState().connectedGroups
     const connectedGroups = { ...connected }
@@ -147,7 +147,7 @@ const useActions = () => {
   }
 
   const clearActionStore = () => {
-    actionPerformer?.clearStore()
+    API.action?.clearStore()
     // ! Clear action result
     // useActionStore()
   }

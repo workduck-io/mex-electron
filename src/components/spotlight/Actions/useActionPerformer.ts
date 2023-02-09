@@ -10,12 +10,14 @@ import {
   ClickPostActionType,
   ReturnType
 } from '@workduck-io/action-request-helper'
-import { client } from '@workduck-io/dwindle'
+
 
 import { ACTION_ENV } from '../../../apis/routes'
 import { useActionMenuStore } from '../ActionStage/ActionMenu/useActionMenuStore'
 import { UpdateActionsType, useActionStore } from './useActionStore'
 import { useActionsCache } from './useActionsCache'
+import { API } from '../../../../src/API'
+
 
 type PerfomerOptions = {
   formData?: Record<string, any>
@@ -30,7 +32,6 @@ export const getActionCacheKey = (key: string, blockId?: string) => {
   return hashKey
 }
 
-export const actionPerformer = new ActionHelperClient(client, undefined, ACTION_ENV)
 
 export const getIndexedResult = (res: ActionResponse) => {
   const d: ActionResponse = {
@@ -43,7 +44,7 @@ export const getIndexedResult = (res: ActionResponse) => {
 
 export const useActionsPerfomerClient = () => {
   const initActionPerfomerClient = (userId: string) => {
-    if (userId) actionPerformer.setUserId(userId)
+    if (userId) API.action.setUserId(userId)
   }
 
   return {
@@ -81,7 +82,7 @@ export const useActionPerformer = () => {
     if (!isMenuActionOpen) setIsLoading(true)
 
     try {
-      auth = await actionPerformer?.getAuth(actionConfig?.authTypeId)
+      auth = await API.action?.getAuth(actionConfig?.authTypeId)
     } catch (err) {
       mog('AUTH ERROR', { err })
     }
@@ -93,7 +94,7 @@ export const useActionPerformer = () => {
 
     try {
       // * if we have a previous action selection, use that
-      const result = await actionPerformer?.request({
+      const result = await API.action?.request({
         config: actionConfig,
         auth,
         configVal,
@@ -115,7 +116,7 @@ export const useActionPerformer = () => {
         const postContext = result?.contextData || { url: configVal.url }
         const resultActionConfig = groupedAction?.[actionGroupId]?.[resultAction?.actionId]
 
-        const postActionResult = await actionPerformer?.request({
+        const postActionResult = await API.action?.request({
           config: resultActionConfig,
           auth,
           configVal: postContext,

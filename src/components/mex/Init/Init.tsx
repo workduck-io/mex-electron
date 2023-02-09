@@ -15,7 +15,7 @@ import { useAuthStore } from '@services/auth/useAuth'
 import { useAnalysis } from '@store/useAnalysis'
 import { mog } from '@utils/lib/mog'
 import { NavigationType, ROUTE_PATHS, useBrowserNavigation, useRouting } from '@views/routes/urls'
-import { ipcRenderer } from 'electron'
+
 
 import { useAuth } from '@workduck-io/dwindle'
 
@@ -24,6 +24,7 @@ import { useActionsPerfomerClient } from '../../spotlight/Actions/useActionPerfo
 import { useInitLoader } from './useInitLoader'
 import { useIpcListenerOnInit } from './useIpcListenerOnInit'
 import { useNavigator } from './useNavigator'
+import { API } from '../../../API'
 
 const Init = () => {
   const { goTo } = useRouting()
@@ -44,7 +45,9 @@ const Init = () => {
    * Check auth first, hydrate all stores with local data
    * */
   useEffect(() => {
+    
     const initUserAndApp = () => {
+      API.init()
       const authenticatedUserEmail = initCognito(
         {
           UserPoolId: config.cognito.USER_POOL_ID,

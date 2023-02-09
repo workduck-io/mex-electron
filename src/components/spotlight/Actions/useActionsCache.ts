@@ -6,8 +6,9 @@ import { persist, devtools } from 'zustand/middleware'
 import { ActionGroup, ActionHelperConfig, LOCALSTORAGE_NAMESPACES } from '@workduck-io/action-request-helper'
 
 import { ListItemType } from '../SearchResults/types'
-import { getActionCacheKey, actionPerformer, getIndexedResult } from './useActionPerformer'
+import { getActionCacheKey, getIndexedResult } from './useActionPerformer'
 import { ActionGroupType } from './useActionStore'
+import { API } from '../../../API'
 
 export const ACTION_CACHE_NAME = 'mex-action-cache'
 
@@ -69,7 +70,7 @@ export const useActionsCache = create<ActionsCacheType>(
             const savedKey = getActionCacheKey(actionId, blockId)
             const key = useActionsCache.getState().resultHashCache?.[savedKey]
 
-            const result = actionPerformer.getItem(LOCALSTORAGE_NAMESPACES.REQUEST_CACHE, key)
+            const result = API.action.getItem(LOCALSTORAGE_NAMESPACES.REQUEST_CACHE, key)
             if (result && key) {
               const isObject = !Array.isArray(result?.contextData)
               return isObject ? result : getIndexedResult(result)
