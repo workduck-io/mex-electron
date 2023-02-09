@@ -1,4 +1,5 @@
 import { ACTION_ENV } from '@apis/routes'
+
 import { ActionHelperClient } from '@workduck-io/action-request-helper'
 import { type KYClient as KYInstance, KYClient } from '@workduck-io/dwindle'
 
@@ -30,7 +31,7 @@ class APIClass {
   public link: LinkAPI
   public reminder: ReminderAPI
   public user: UserAPI
-  public action: any
+  public action: ActionHelperClient
 
   constructor() {
     if (instance) {
@@ -53,13 +54,13 @@ class APIClass {
     this.link = new LinkAPI(this.client)
     this.reminder = new ReminderAPI(this.client)
     this.user = new UserAPI(this.client)
-    this.action = new ActionHelperClient(this.client, undefined , ACTION_ENV )
+    this.action = new ActionHelperClient(this.client, undefined, ACTION_ENV)
   }
   setWorkspaceHeader(workspaceId: string) {
     this.client.setWorkspaceHeader(workspaceId)
   }
-  getClient(){
-    return this.client;
+  getClient() {
+    return this.client
   }
 }
 

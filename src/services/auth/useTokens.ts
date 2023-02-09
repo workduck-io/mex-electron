@@ -1,12 +1,10 @@
 import { mog } from '@utils/lib/mog'
 import { NavigationType, ROUTE_PATHS, useRouting } from '@views/routes/urls'
-import { formatDistanceToNow } from 'date-fns'
 import jwtDecode from 'jwt-decode'
 import create from 'zustand'
 
 import { KYClient } from '@workduck-io/dwindle'
 
-import { API } from '../../../src/API'
 import { GOOGLE_OAUTH2_REFRESH_URL } from '../../apis/routes'
 import { useTokenData } from '../../hooks/useLocalData'
 import { AuthToken, AuthTokenData, GoogleOAuthTokenData } from '../../types/auth'

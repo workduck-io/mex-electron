@@ -20,14 +20,13 @@ import { devtools, persist } from 'zustand/middleware'
 import { useAuth } from '@workduck-io/dwindle'
 import { UserCred } from '@workduck-io/mex-utils'
 
-import { apiURLs } from '../../apis/routes'
+import { API } from '../../API'
 import useActions from '../../components/spotlight/Actions/useActions'
 import { UpdatableUserDetails, UserDetails } from '../../types/auth'
 import { RegisterFormData } from '../../views/mex/Register'
 import useAnalytics from '../analytics'
 import { CustomEvents, Properties } from '../analytics/events'
 import { useTokenStore } from './useTokens'
-import { API } from '../../../src/API'
 
 interface WorkspaceDetails {
   name: string
@@ -196,7 +195,7 @@ export const useAuthentication = () => {
       try {
         const result = await API.user.registerStatus()
         if (result.status === 200) {
-          workspaceID = result.data.workspaceID
+          workspaceID = result.workspaceID
           break
         }
       } catch (error) {

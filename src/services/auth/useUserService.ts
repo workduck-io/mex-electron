@@ -3,11 +3,9 @@ import { useUserCacheStore } from '@store/useUserCacheStore'
 import { useUserPreferenceStore } from '@store/userPreferenceStore'
 import { mog } from '@utils/lib/mog'
 
-
-import { useApi } from '../../apis/useSaveApi'
+import { API } from '../../API'
 import { UserPreferences } from '../../types/userPreference'
 import { useAuthStore } from './useAuth'
-import { API } from '../../API'
 
 export interface TempUser {
   email: string
@@ -59,20 +57,20 @@ export const useUserService = () => {
       return await API.user.getByID(userID).then((resp) => {
         mog('Response', { data: resp })
         if (resp?.email && resp?.name) {
-            addUser({
-              userID,
-              email: resp?.email,
-              alias: resp?.alias ?? resp?.data?.name,
-              name: resp?.name
-            })
-          }
-          return {
+          addUser({
             userID,
-            email: resp?.email ?? undefined,
-            alias: resp?.alias ?? resp?.data?.name,
+            email: resp?.email,
+            alias: resp?.alias ?? resp?.name,
             name: resp?.name
-          }
-        })
+          })
+        }
+        return {
+          userID,
+          email: resp?.email ?? undefined,
+          alias: resp?.alias ?? resp?.name,
+          name: resp?.name
+        }
+      })
     } catch (e) {
       mog('Error Fetching User Details', { error: e, userID })
       return { userID }
@@ -108,7 +106,7 @@ export const useUserService = () => {
     }
 
     try {
-      return await API.user.updatePreference( userPreferences ).then((resp) => {
+      return await API.user.updatePreference(userPreferences).then((resp) => {
         return true
       })
     } catch (e) {
